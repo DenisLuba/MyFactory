@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Contracts\Returns\" />
     <Folder Include="MIddlewares\" />
   </ItemGroup>
 
