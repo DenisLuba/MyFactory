@@ -3,6 +3,6 @@
 public record FinishedGoodsInventoryResponse(
     Guid SpecificationId,
     Guid WarehouseId,
-    int Quantity,
+    double Quantity,
     decimal UnitCost
 );

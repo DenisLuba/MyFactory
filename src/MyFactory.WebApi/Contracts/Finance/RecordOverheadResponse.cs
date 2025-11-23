@@ -1,4 +1,4 @@
 ﻿namespace MyFactory.WebApi.Contracts.Finance;
 
-public record RecordOverheadResponse(string Status);
+public record RecordOverheadResponse(FinanceStatus Status);
 

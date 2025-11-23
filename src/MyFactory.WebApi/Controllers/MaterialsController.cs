@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyFactory.WebApi.Contracts.Materials;
+using MyFactory.WebApi.SwaggerExamples.Materials;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace MyFactory.WebApi.Controllers;
 

@@ -9,7 +9,7 @@ public class FinishedGoodsController : ControllerBase
 {
     [HttpPost("receipt")]
     public IActionResult Receipt([FromBody] ReceiptFinishedGoodsRequest request)
-        => Created("", new ReceiptFinishedGoodsResponse("fg-rc-001", "accepted"));
+        => Created("", new ReceiptFinishedGoodsResponse("fg-rc-001", FinishedGoodsStatus.Accepted));
 
     [HttpGet]
     public IActionResult Inventory()
@@ -25,5 +25,5 @@ public class FinishedGoodsController : ControllerBase
 
     [HttpPost("move")]
     public IActionResult Move([FromBody] MoveFinishedGoodsRequest request)
-        => Ok(new MoveFinishedGoodsResponse("moved"));
+        => Ok(new MoveFinishedGoodsResponse(FinishedGoodsStatus.Moved));
 }

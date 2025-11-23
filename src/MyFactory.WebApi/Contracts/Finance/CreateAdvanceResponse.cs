@@ -1,4 +1,4 @@
 ﻿namespace MyFactory.WebApi.Contracts.Finance;
 
-public record CreateAdvanceResponse(string AdvanceId);
+public record CreateAdvanceResponse(Guid AdvanceId);
 

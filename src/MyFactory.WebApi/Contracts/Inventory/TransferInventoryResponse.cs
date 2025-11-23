@@ -1,4 +1,4 @@
 ﻿namespace MyFactory.WebApi.Contracts.Inventory;
 
-public record TransferInventoryResponse(string Status);
+public record TransferInventoryResponse(StatusInventory Status);
 

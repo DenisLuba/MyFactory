@@ -1,7 +1,7 @@
 ﻿namespace MyFactory.WebApi.Contracts.Finance;
 
 public record OverheadResponse(
-    string ExpenseType,
+    Guid ExpenseTypeId,
     decimal Amount,
     string Period
 );

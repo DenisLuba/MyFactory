@@ -1,4 +1,10 @@
 ﻿namespace MyFactory.WebApi.Contracts.Files;
 
-public record DeleteFileResponse(string Status, string Id);
+public record DeleteFileResponse(FileStatus Status, Guid FileId);
 
+public enum FileStatus
+{
+    Downloaded,
+    Deleted,
+    Saved
+}

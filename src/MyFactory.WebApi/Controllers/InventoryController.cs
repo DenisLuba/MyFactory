@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyFactory.WebApi.Contracts.Inventory;
+using MyFactory.WebApi.Contracts.Materials;
 
 namespace MyFactory.WebApi.Controllers;
 
@@ -16,7 +17,7 @@ public class InventoryController : ControllerBase
                 "Ткань Ситец",
                 Guid.Parse("st-001"),
                 120.0,
-                "m",
+                Units.Meter,
                 180.0m,
                 0.0
             )
@@ -31,7 +32,7 @@ public class InventoryController : ControllerBase
                 "Ткань Ситец",
                 Guid.Parse("st-001"),
                 120.0,
-                "m",
+                Units.Meter,
                 180.0m,
                 0.0
             )
@@ -39,13 +40,13 @@ public class InventoryController : ControllerBase
 
     [HttpPost("receipt")]
     public IActionResult CreateReceipt([FromBody] CreateInventoryReceiptRequest request)
-        => Created("", new CreateInventoryReceiptResponse("rc-001", "posted"));
+        => Created("", new CreateInventoryReceiptResponse(Guid.Parse("11111111-1111-1111-1111-111111111111"), StatusInventory.Posted));
 
     [HttpPost("adjust")]
     public IActionResult Adjust([FromBody] AdjustInventoryRequest request)
-        => Ok(new AdjustInventoryResponse("adjusted"));
+        => Ok(new AdjustInventoryResponse(StatusInventory.Adjusted));
 
     [HttpPost("transfer")]
     public IActionResult Transfer([FromBody] TransferInventoryRequest request)
-        => Ok(new TransferInventoryResponse("transferred"));
+        => Ok(new TransferInventoryResponse(StatusInventory.Transferred));
 }

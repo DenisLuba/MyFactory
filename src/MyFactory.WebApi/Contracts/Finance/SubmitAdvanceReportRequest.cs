@@ -10,5 +10,13 @@ public record SubmitAdvanceReportRequest(
 public record AdvanceReportItem(
     string ItemName,
     decimal Amount,
-    string Category
+    AdvanceReportCategories Category
 );
+
+public enum AdvanceReportCategories
+{
+    Finance,
+    Inventory,
+    Payroll,
+    Suppliers
+}

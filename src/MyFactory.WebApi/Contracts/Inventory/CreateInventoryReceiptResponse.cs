@@ -1,4 +1,4 @@
 ﻿namespace MyFactory.WebApi.Contracts.Inventory;
 
-public record CreateInventoryReceiptResponse(string ReceiptId, string Status);
+public record CreateInventoryReceiptResponse(Guid ReceiptId, StatusInventory Status);
 
