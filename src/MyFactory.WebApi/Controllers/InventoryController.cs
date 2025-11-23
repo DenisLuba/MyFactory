@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MyFactory.WebApi.Contracts.Finance;
 using MyFactory.WebApi.Contracts.Inventory;
 using MyFactory.WebApi.Contracts.Materials;
+using MyFactory.WebApi.SwaggerExamples.Inventory;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace MyFactory.WebApi.Controllers;
 
@@ -9,6 +12,9 @@ namespace MyFactory.WebApi.Controllers;
 public class InventoryController : ControllerBase
 {
     [HttpGet]
+    [Produces("application/json")]
+    [SwaggerResponseExample(200, typeof(InventoryItemResponseExample))]
+    [ProducesResponseType(typeof(IEnumerable<InventoryItemResponse>), StatusCodes.Status200OK)]
     public IActionResult GetAll([FromQuery] string? materialId = null)
         => Ok(new[]
         {
@@ -24,6 +30,9 @@ public class InventoryController : ControllerBase
         });
 
     [HttpGet("by-warehouse/{warehouseId}")]
+    [Produces("application/json")]
+    [SwaggerResponseExample(200, typeof(InventoryItemResponseExample))]
+    [ProducesResponseType(typeof(IEnumerable<InventoryItemResponse>), StatusCodes.Status200OK)]
     public IActionResult ByWarehouse(string warehouseId)
         => Ok(new[]
         {
@@ -39,14 +48,23 @@ public class InventoryController : ControllerBase
         });
 
     [HttpPost("receipt")]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [SwaggerRequestExample(typeof(CreateInventoryReceiptRequest), typeof(CreateInventoryReceiptRequestExample))]
+    [SwaggerResponseExample(201, typeof(CreateInventoryReceiptResponseExample))]
+    [ProducesResponseType(typeof(CreateInventoryReceiptResponse), StatusCodes.Status201Created)]
     public IActionResult CreateReceipt([FromBody] CreateInventoryReceiptRequest request)
         => Created("", new CreateInventoryReceiptResponse(Guid.Parse("11111111-1111-1111-1111-111111111111"), StatusInventory.Posted));
 
     [HttpPost("adjust")]
+    [SwaggerRequestExample(typeof(AdjustInventoryRequest), typeof(AdjustInventoryRequestExample))]
+    [SwaggerResponseExample(200, typeof(AdjustInventoryResponseExample))]
     public IActionResult Adjust([FromBody] AdjustInventoryRequest request)
         => Ok(new AdjustInventoryResponse(StatusInventory.Adjusted));
 
     [HttpPost("transfer")]
+    [SwaggerRequestExample(typeof(TransferInventoryRequest), typeof(TransferInventoryRequestExample))]
+    [SwaggerResponseExample(200, typeof(TransferInventoryResponseExample))]
     public IActionResult Transfer([FromBody] TransferInventoryRequest request)
         => Ok(new TransferInventoryResponse(StatusInventory.Transferred));
 }

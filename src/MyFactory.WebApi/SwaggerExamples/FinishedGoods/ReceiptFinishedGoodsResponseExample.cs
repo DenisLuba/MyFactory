@@ -7,7 +7,7 @@ public class ReceiptFinishedGoodsResponseExample : IExamplesProvider<ReceiptFini
 {
     public ReceiptFinishedGoodsResponse GetExamples() =>
         new(
-            ReceiptId: "fg-rc-001",
+            ReceiptId: Guid.Parse("11111111-1111-1111-1111-111111111222"),
             Status: FinishedGoodsStatus.Moved
         );
 }

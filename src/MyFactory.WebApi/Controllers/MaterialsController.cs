@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MyFactory.WebApi.Contracts.Finance;
 using MyFactory.WebApi.Contracts.Materials;
+using MyFactory.WebApi.SwaggerExamples.Finance;
 using MyFactory.WebApi.SwaggerExamples.Materials;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -19,6 +21,9 @@ public class MaterialsController : ControllerBase
     private static readonly Guid Supplier2 = Guid.Parse("bbbbbbb2-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
 
     [HttpGet]
+    [Produces("application/json")]
+    [SwaggerResponseExample(200, typeof(MaterialResponseExample))]
+    [ProducesResponseType(typeof(IEnumerable<MaterialResponse>), StatusCodes.Status200OK)]
     public IActionResult List([FromQuery] string? type = null)
         => Ok(new[]
         {
@@ -59,6 +64,9 @@ public class MaterialsController : ControllerBase
         });
 
     [HttpGet("{id}")]
+    [SwaggerResponseExample(200, typeof(MaterialResponseExample))]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(MaterialResponse), StatusCodes.Status200OK)]
     public IActionResult Get(string id)
         => Ok(
             new MaterialResponse(
@@ -81,14 +89,24 @@ public class MaterialsController : ControllerBase
         );
 
     [HttpPost]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [SwaggerRequestExample(typeof(CreateMaterialRequest), typeof(CreateMaterialRequestExample))]
+    [SwaggerResponseExample(201, typeof(CreateMaterialResponseExample))]
+    [ProducesResponseType(typeof(CreateMaterialResponse), StatusCodes.Status201Created)]
     public IActionResult Create([FromBody] CreateMaterialRequest request)
         => Created("", new CreateMaterialResponse(MaterialStatus.Created));
 
     [HttpPut("{id}")]
+    [SwaggerRequestExample(typeof(UpdateMaterialRequest), typeof(UpdateMaterialRequestExample))]
+    [SwaggerResponseExample(200, typeof(UpdateMaterialResponseExample))]
     public IActionResult Update(string id, [FromBody] UpdateMaterialRequest request)
         => Ok(new UpdateMaterialResponse(MaterialStatus.Updated, Guid.Parse(id)));
 
     [HttpGet("{id}/price-history")]
+    [Produces("application/json")]
+    [SwaggerResponseExample(200, typeof(MaterialPriceHistoryResponseExample))]
+    [ProducesResponseType(typeof(IEnumerable<MaterialPriceHistoryResponse>), StatusCodes.Status200OK)]
     public IActionResult PriceHistory(string id)
         => Ok(new[]
         {
@@ -101,6 +119,8 @@ public class MaterialsController : ControllerBase
         });
 
     [HttpPost("{id}/prices")]
+    [SwaggerRequestExample(typeof(AddMaterialPriceRequest), typeof(AddMaterialPriceRequestExample))]
+    [SwaggerResponseExample(200, typeof(AddMaterialPriceResponseExample))]
     public IActionResult AddPrice(string id, [FromBody] AddMaterialPriceRequest request)
         => Ok(new AddMaterialPriceResponse(MaterialPriceStatus.PriceUpdated, Guid.Parse(id)));
 }

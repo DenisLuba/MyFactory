@@ -1,23 +1,37 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Filters;
 using MyFactory.WebApi.Contracts.Files;
+using MyFactory.WebApi.SwaggerExamples.Files;
 
 namespace MyFactory.WebApi.Controllers;
 
 [ApiController]
 [Route("api/files")]
+[Produces("application/json")]
 public class FilesController : ControllerBase
 {
     [HttpPost("upload")]
-    public IActionResult Upload()
+    [Consumes("multipart/form-data")]
+    [ProducesResponseType(typeof(UploadFileResponse), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(200, typeof(UploadFileResponseExample))]
+    public IActionResult Upload([FromForm] UploadFileRequest request)
     {
-        return Ok(new UploadFileResponse("file-001", "image.jpg"));
+        return Ok(new UploadFileResponse(
+            FileId: Guid.Parse("11111111-1111-1111-1111-111111111111"),
+            FileName: "image.jpg"
+        ));
     }
 
     [HttpGet("{id}")]
-    public IActionResult Download(string id)
+    [Produces("application/octet-stream")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult Download(Guid id)
         => File([], "application/octet-stream", "download.bin");
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(string id)
-        => Ok(new DeleteFileResponse("deleted", id));
+    [ProducesResponseType(typeof(DeleteFileResponse), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(200, typeof(DeleteFileResponseExample))]
+    public IActionResult Delete(Guid id)
+        => Ok(new DeleteFileResponse(FileStatus.Deleted, id));
 }
+
