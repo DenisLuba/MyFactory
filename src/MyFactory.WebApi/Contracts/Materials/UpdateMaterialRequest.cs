@@ -1,6 +1,9 @@
 ﻿namespace MyFactory.WebApi.Contracts.Materials;
 
-public class UpdateMaterialRequest
-{
-    // TODO: Add properties
-}
+public record UpdateMaterialRequest(
+    string Code,
+    string Name,
+    Guid MaterialTypeId,
+    Units Unit,
+    bool IsActive
+);

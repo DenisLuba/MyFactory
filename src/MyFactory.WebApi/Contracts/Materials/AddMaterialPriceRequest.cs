@@ -1,6 +1,7 @@
 ﻿namespace MyFactory.WebApi.Contracts.Materials;
 
-public class AddMaterialPriceRequest
-{
-    // TODO: Add properties
-}
+public record AddMaterialPriceRequest(
+    Guid SupplierId,
+    decimal MaterialPrice,
+    DateTime EffectiveFrom
+);
