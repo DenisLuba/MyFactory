@@ -7,7 +7,7 @@ namespace MyFactory.WebApi.Controllers;
 public class UsersController : ControllerBase
 {
     [HttpGet]
-    public IActionResult Get([FromQuery] string? role = null)
+    public IActionResult GetByRole([FromQuery] string? role = null)
         => Ok(new[] {
             new { id = "usr-1", userName = "admin", email = "admin@acme", role = "Director", isActive = true },
             new { id = "usr-2", userName = "keeper", email = "keeper@acme", role = "Storekeeper", isActive = true }
