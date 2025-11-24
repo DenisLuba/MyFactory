@@ -1,0 +1,6 @@
+public enum PurchasesStatus
+{
+    Draft,
+    Created,
+    Converted
+}
