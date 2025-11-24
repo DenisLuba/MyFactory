@@ -7,19 +7,20 @@ namespace MyFactory.WebApi.Controllers;
 
 [ApiController]
 [Route("api/finance")]
+[Produces("application/json")]
 public class FinanceController : ControllerBase
 {
+    // POST /api/finance/overheads
     [HttpPost("overheads")]
     [Consumes("application/json")]
-    [Produces("application/json")]
     [SwaggerRequestExample(typeof(RecordOverheadRequest), typeof(RecordOverheadRequestExample))]
     [SwaggerResponseExample(200, typeof(RecordOverheadResponseExample))]
     [ProducesResponseType(typeof(RecordOverheadResponse), StatusCodes.Status200OK)]
     public IActionResult AddOverhead([FromBody] RecordOverheadRequest request)
         => Ok(new RecordOverheadResponse(FinanceStatus.OverheadRecorded));
 
+    // GET /api/finance/overheads
     [HttpGet("overheads")]
-    [Produces("application/json")]
     [SwaggerResponseExample(200, typeof(OverheadResponseExample))]
     [ProducesResponseType(typeof(IEnumerable<OverheadResponse>), StatusCodes.Status200OK)]
     public IActionResult GetOverheads([FromQuery] int month = 11, int year = 2025)
@@ -32,9 +33,9 @@ public class FinanceController : ControllerBase
             )
         });
 
+    // POST /api/finance/advances
     [HttpPost("advances")]
     [Consumes("application/json")]
-    [Produces("application/json")]
     [SwaggerRequestExample(typeof(CreateAdvanceRequest), typeof(CreateAdvanceRequestExample))]
     [SwaggerResponseExample(201, typeof(CreateAdvanceResponseExample))]
     [ProducesResponseType(typeof(CreateAdvanceResponse), StatusCodes.Status201Created)]
@@ -46,9 +47,9 @@ public class FinanceController : ControllerBase
             )
         );
 
+    // POST /api/finance/advances/{id}/report
     [HttpPost("advances/{id}/report")]
     [Consumes("application/json")]
-    [Produces("application/json")]
     [SwaggerRequestExample(typeof(SubmitAdvanceReportRequest), typeof(SubmitAdvanceReportRequestExample))]
     [SwaggerResponseExample(200, typeof(SubmitAdvanceReportResponseExample))]
     [ProducesResponseType(typeof(SubmitAdvanceReportResponse), StatusCodes.Status200OK)]
@@ -57,5 +58,6 @@ public class FinanceController : ControllerBase
         [FromBody] SubmitAdvanceReportRequest request)
         => Ok(new SubmitAdvanceReportResponse(Guid.Parse(id), FinanceStatus.ReportSubmitted));
 }
+
 
 

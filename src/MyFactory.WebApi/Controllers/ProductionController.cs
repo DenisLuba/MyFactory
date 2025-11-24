@@ -1,69 +1,99 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyFactory.WebApi.Contracts.Production;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace MyFactory.WebApi.Controllers;
 
 [ApiController]
 [Route("api/production")]
+[Produces("application/json")]
 public class ProductionController : ControllerBase
 {
+    // ----------------------------
+    // POST /api/production/orders
+    // ----------------------------
     [HttpPost("orders")]
-    public IActionResult CreateOrder([FromBody] object dto)
+    [Consumes("application/json")]
+    [SwaggerRequestExample(typeof(ProductionCreateOrderRequest), typeof(ProductionCreateOrderRequestExample))]
+    [SwaggerResponseExample(201, typeof(ProductionCreateOrderResponseExample))]
+    [ProducesResponseType(typeof(ProductionCreateOrderResponse), StatusCodes.Status201Created)]
+    public IActionResult CreateOrder([FromBody] ProductionCreateOrderRequest request)
         => Created(
-            "", 
-            new PurchasesCreateOrderResponse(
-                OrderId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), 
-                Status = ProductionStatus.Created
+            "",
+            new ProductionCreateOrderResponse(
+                OrderId: Guid.NewGuid(),
+                Status: ProductionStatus.Created
             )
         );
 
+    // ----------------------------
+    // GET /api/production/orders/{id}
+    // ----------------------------
     [HttpGet("orders/{id}")]
-    public IActionResult GetOrder(string id)
-        => Ok(new ProductionGetOrderStatusResponse
-            (
-                Id: Guid.Parse(id),
-                SpecificationId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                QtyOrdered: 10,
-                Allocation: new[] 
-                {
-                    new Allocation(WorkshopId = "ws-1", QtyAllocated = 8) 
-                }           
-            )
-        );
+    [SwaggerResponseExample(200, typeof(ProductionGetOrderResponseExample))]
+    [ProducesResponseType(typeof(ProductionGetOrderResponse), StatusCodes.Status200OK)]
+    public IActionResult GetOrder(Guid id)
+        => Ok(new ProductionGetOrderResponse(
+            Id: id,
+            SpecificationId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+            QtyOrdered: 10,
+            Allocation:
+            [
+                new Allocation(Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"), 8)
+            ]
+        ));
 
+    // ----------------------------
+    // GET /api/production/orders/{id}/status
+    // ----------------------------
     [HttpGet("orders/{id}/status")]
-    public IActionResult GetOrderStatus(string id)
-        => Ok(new ProductionGetOrderStatusResponse
-            (
-                Id: Guid.Parse(id),
-                Status = ProductionStatus.Allocated
-            )
-        );
+    [SwaggerResponseExample(200, typeof(ProductionGetOrderStatusResponseExample))]
+    [ProducesResponseType(typeof(ProductionGetOrderStatusResponse), StatusCodes.Status200OK)]
+    public IActionResult GetOrderStatus(Guid id)
+        => Ok(new ProductionGetOrderStatusResponse(
+            Id: id,
+            Status: ProductionStatus.Allocated
+        ));
 
+    // ----------------------------
+    // POST /api/production/orders/{id}/allocate
+    // ----------------------------
     [HttpPost("orders/{id}/allocate")]
-    public IActionResult Allocate(string id, [FromBody] object dto)
-        => Ok(new ProductionAllocateResponse
-            (
-                OrderId = Guid.Parse(id),
-                Status = ProductionStatus.Allocated
-            )
-        );
+    [Consumes("application/json")]
+    [SwaggerRequestExample(typeof(ProductionAllocateRequest), typeof(ProductionAllocateRequestExample))]
+    [SwaggerResponseExample(200, typeof(ProductionAllocateResponseExample))]
+    [ProducesResponseType(typeof(ProductionAllocateResponse), StatusCodes.Status200OK)]
+    public IActionResult Allocate(Guid id, [FromBody] ProductionAllocateRequest request)
+        => Ok(new ProductionAllocateResponse(
+            OrderId: id,
+            Status: ProductionStatus.Allocated
+        ));
 
+    // ----------------------------
+    // POST /api/production/orders/{id}/stages
+    // ----------------------------
     [HttpPost("orders/{id}/stages")]
-    public IActionResult RecordStage(string id, [FromBody] object dto)
-        => Ok(new ProductionRecordStageResponse
-            (
-                OrderId = Guid.Parse(id), 
-                Status = ProductionStatus.StageRecorded
-            }
-        );
+    [Consumes("application/json")]
+    [SwaggerRequestExample(typeof(ProductionRecordStageRequest), typeof(ProductionRecordStageRequestExample))]
+    [SwaggerResponseExample(200, typeof(ProductionRecordStageResponseExample))]
+    [ProducesResponseType(typeof(ProductionRecordStageResponse), StatusCodes.Status200OK)]
+    public IActionResult RecordStage(Guid id, [FromBody] ProductionRecordStageRequest request)
+        => Ok(new ProductionRecordStageResponse(
+            OrderId: id,
+            Status: ProductionStatus.StageRecorded
+        ));
 
+    // ----------------------------
+    // POST /api/production/orders/{id}/assign
+    // ----------------------------
     [HttpPost("orders/{id}/assign")]
-    public IActionResult AssignWorker(string id, [FromBody] object dto)
-        => Ok(new ProductionAssignWorkerResponse
-            (
-                OrderId = Guid.Parse(id), 
-                Status = ProductionStatus.WorkerAssigned
-            )
-        );
+    [Consumes("application/json")]
+    [SwaggerRequestExample(typeof(ProductionAssignWorkerRequest), typeof(ProductionAssignWorkerRequestExample))]
+    [SwaggerResponseExample(200, typeof(ProductionAssignWorkerResponseExample))]
+    [ProducesResponseType(typeof(ProductionAssignWorkerResponse), StatusCodes.Status200OK)]
+    public IActionResult AssignWorker(Guid id, [FromBody] ProductionAssignWorkerRequest request)
+        => Ok(new ProductionAssignWorkerResponse(
+            OrderId: id,
+            Status: ProductionStatus.WorkerAssigned
+        ));
 }

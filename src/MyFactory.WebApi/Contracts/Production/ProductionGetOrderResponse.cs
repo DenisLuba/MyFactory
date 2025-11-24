@@ -1,11 +1,11 @@
-﻿
-namespace MyFactory.WebApi.Contracts.Production;
+﻿namespace MyFactory.WebApi.Contracts.Production;
 
 public record ProductionGetOrderResponse(
     Guid Id,
     Guid SpecificationId,
     int QtyOrdered,
-    Allocation[] Allocations
-)
+    Allocation[] Allocation
+);
 
-public record Allocation(Guid WorkshopId, int QtyAllocated)
+
+

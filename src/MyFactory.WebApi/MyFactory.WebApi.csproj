@@ -23,7 +23,6 @@
   <ItemGroup>
     <Folder Include="Contracts\Returns\" />
     <Folder Include="MIddlewares\" />
-    <Folder Include="SwaggerExamples\" />
   </ItemGroup>
 
 </Project>

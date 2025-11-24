@@ -5,5 +5,6 @@ public enum ProductionStatus
     Created,
     Allocated,
     StageRecorded,
-    WorkerAssigned
+    WorkerAssigned,
+    Completed
 }
