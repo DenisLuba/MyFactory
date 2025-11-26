@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Filters;
+using MyFactory.WebApi.Contracts.Shipments;
+using MyFactory.WebApi.SwaggerExamples.Shipments;
 
 namespace MyFactory.WebApi.Controllers;
 
@@ -6,20 +9,53 @@ namespace MyFactory.WebApi.Controllers;
 [Route("api/shipments")]
 public class ShipmentsController : ControllerBase
 {
+    // POST /api/shipments
     [HttpPost]
-    public IActionResult CreateShipment([FromBody] object dto)
-        => Created("", new { shipmentId = "sh-001", status = "created" });
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [SwaggerRequestExample(typeof(ShipmentsCreateRequest), typeof(ShipmentsCreateRequestExample))]
+    [SwaggerResponseExample(201, typeof(ShipmentsCreateResponseExample))]
+    [ProducesResponseType(typeof(ShipmentsCreateResponse), StatusCodes.Status201Created)]
+    public IActionResult CreateShipment([FromBody] ShipmentsCreateRequest dto)
+        => Created(
+            "",
+            new ShipmentsCreateResponse(
+                ShipmentId: Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                Status: ShipmentsStatus.Created
+            )
+        );
 
+    // GET /api/shipments/{id}
     [HttpGet("{id}")]
-    public IActionResult Get(string id)
-        => Ok(new 
-        { 
-            id, 
-            customer = "ИП Клиент1", 
-            items = new[] { new { specificationId = "sp-001", qty = 10, unitPrice = 550.0 } } 
-        });
+    [Produces("application/json")]
+    [SwaggerResponseExample(200, typeof(ShipmentsGetResponseExample))]
+    [ProducesResponseType(typeof(ShipmentsGetResponse), StatusCodes.Status200OK)]
+    public IActionResult Get(Guid id)
+        => Ok(
+            new ShipmentsGetResponse(
+                Id: id,
+                Customer: "ИП Клиент1",
+                Items: new[]
+                {
+                    new ShipmentItemDto(
+                        SpecificationId: Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                        Qty: 10,
+                        UnitPrice: 550.0m
+                    )
+                }
+            )
+        );
 
+    // POST /api/shipments/{id}/confirm-payment
     [HttpPost("{id}/confirm-payment")]
-    public IActionResult ConfirmPayment(string id)
-        => Ok(new { id, status = "paid" });
+    [Produces("application/json")]
+    [SwaggerResponseExample(200, typeof(ShipmentsConfirmPaymentResponseExample))]
+    [ProducesResponseType(typeof(ShipmentsConfirmPaymentResponse), StatusCodes.Status200OK)]
+    public IActionResult ConfirmPayment(Guid id)
+        => Ok(
+            new ShipmentsConfirmPaymentResponse(
+                ShipmentId: id,
+                Status: ShipmentsStatus.Paid
+            )
+        );
 }
