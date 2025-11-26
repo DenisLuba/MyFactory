@@ -7,7 +7,7 @@ public class SpecificationsUpdateResponseExample : IExamplesProvider<Specificati
 {
     public SpecificationsUpdateResponse GetExamples() =>
         new(
-            "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
-            SpecificationsStatus.Updated
+            Id: Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+            Status: SpecificationsStatus.Updated
         );
 }

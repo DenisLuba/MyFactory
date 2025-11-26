@@ -8,8 +8,8 @@ public class SpecificationsDeleteBomItemResponseExample : IExamplesProvider<Spec
     public SpecificationsDeleteBomItemResponse GetExamples() =>
         new
         (
-            "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", 
-            "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa0000", 
-            SpecificationsStatus.BomDeleted
+            SpecificationId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), 
+            BomItemId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa0000"), 
+            Status: SpecificationsStatus.BomDeleted
         );
 }

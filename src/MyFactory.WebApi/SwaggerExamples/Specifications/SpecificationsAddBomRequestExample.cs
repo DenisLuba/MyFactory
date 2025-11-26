@@ -7,7 +7,7 @@ public class SpecificationsAddBomRequestExample : IExamplesProvider<Specificatio
 {
     public SpecificationsAddBomRequest GetExamples() =>
         new(
-            MaterialId: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+            MaterialId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
             Qty: 255,
             Unit: "м.",
             Price: 120.0m

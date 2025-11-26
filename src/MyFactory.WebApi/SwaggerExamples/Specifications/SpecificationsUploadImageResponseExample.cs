@@ -7,7 +7,7 @@ public class SpecificationsUploadImageResponseExample : IExamplesProvider<Specif
 {
     public SpecificationsUploadImageResponse GetExamples() =>
         new(
-            "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
-            SpecificationsStatus.ImageUploaded
+            SpecificationId: Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+            Status: SpecificationsStatus.ImageUploaded
         );
 }

@@ -7,7 +7,7 @@ public class SpecificationsAddBomResponseExample : IExamplesProvider<Specificati
 {
     public SpecificationsAddBomResponse GetExamples() =>
         new(
-            SpecificationId: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+            SpecificationId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
             BomItemId: Guid.NewGuid(),
             Status: SpecificationsStatus.BomAdded
         );

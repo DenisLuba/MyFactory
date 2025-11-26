@@ -2,7 +2,7 @@
 
 public record SpecificationsCostResponse(
     Guid SpecificationId,
-    DateTime AsOf,
+    DateTime AsOfDate,
     decimal MaterialsCost,
     decimal OperationsCost,
     decimal WorkshopExpenses,

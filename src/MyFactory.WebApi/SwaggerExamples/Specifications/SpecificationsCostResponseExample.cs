@@ -8,7 +8,7 @@ public class SpecificationsCostResponseExample : IExamplesProvider<Specification
     public SpecificationsCostResponse GetExamples() =>
         new(
             SpecificationId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-            AsOf: new DateTime(2025, 11, 20),
+            AsOfDate: new DateTime(2025, 11, 20),
             MaterialsCost: 336,
             OperationsCost: 68,
             WorkshopExpenses: 40,

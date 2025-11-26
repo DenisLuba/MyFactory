@@ -7,7 +7,7 @@ public class SpecificationsAddOperationResponseExample : IExamplesProvider<Speci
 {
     public SpecificationsAddOperationResponse GetExamples() =>
         new(
-            SpecificationId: id,
+            SpecificationId: Guid.Parse("11111111-1111-1111-1111-111111111111"),
             OperationId: Guid.NewGuid(),
             Status: SpecificationsStatus.OperationAdded
         );

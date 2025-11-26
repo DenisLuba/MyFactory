@@ -1,4 +1,6 @@
-﻿namespace MyFactory.WebApi.Contracts.Specifications;
+﻿using MyFactory.WebApi.Contracts.Materials;
+
+namespace MyFactory.WebApi.Contracts.Specifications;
 
 public record SpecificationsGetResponse(
     Guid Id,
@@ -6,18 +8,19 @@ public record SpecificationsGetResponse(
     string Name,
     double PlanPerHour,
     BomItemResponse[] Bom,
-    OperationResponse[] Operations
+    OperationItemResponse[] Operations
 );
 
 public record BomItemResponse(
     Guid MaterialId,
-    string Material,
-    double Qty,
-    string Unit,
+    string MaterialName,
+    double Quantity,
+    Units Unit,
     decimal Price
 );
 
-public record OperationResponse(
+public record OperationItemResponse(
+    Guid OperationId,
     string Code,
     string Name,
     double Minutes,

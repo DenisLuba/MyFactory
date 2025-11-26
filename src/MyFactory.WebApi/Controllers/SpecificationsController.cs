@@ -2,6 +2,7 @@
 using Swashbuckle.AspNetCore.Filters;
 using MyFactory.WebApi.Contracts.Specifications;
 using MyFactory.WebApi.SwaggerExamples.Specifications;
+using MyFactory.WebApi.Contracts.Materials;
 
 namespace MyFactory.WebApi.Controllers;
 
@@ -14,16 +15,36 @@ public class SpecificationsController : ControllerBase
     //  GET /api/specifications
     // -------------------------------------------------------------
     [HttpGet]
-    [SwaggerResponseExample(200, typeof(SpecificationsListResponseExample))]
-    [ProducesResponseType(typeof(IEnumerable<SpecificationsListResponse>), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(200, typeof(SpecificationsGetResponseExample))]
+    [ProducesResponseType(typeof(IEnumerable<SpecificationsGetResponse>), StatusCodes.Status200OK)]
     public IActionResult List()
         => Ok(new[]
         {
-            new SpecificationsListResponse(
-                Id: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+            new SpecificationsGetResponse(
+                Id: Guid.Parse("22222222-2222-2222-2222-222222222000"),
                 Sku: "SP-001",
                 Name: "Пижама женская",
-                PlanPerHour: 2.5
+                PlanPerHour: 2.5,
+                Bom:
+                [
+                    new BomItemResponse(
+                        MaterialId: Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                        MaterialName: "Ткань Ситец",
+                        Quantity: 1.8,
+                        Unit: Units.Meter                        ,
+                        Price: 180m
+                    )
+                ],
+                Operations:
+                [
+                    new OperationItemResponse(
+                        OperationId: Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                        Code: "CUT",
+                        Name: "Раскрой",
+                        Minutes: 6,
+                        Cost: 15
+                    )
+                ]
             )
         });
 
@@ -45,8 +66,8 @@ public class SpecificationsController : ControllerBase
                     new BomItemResponse(
                         MaterialId: Guid.Parse("11111111-1111-1111-1111-111111111111"),
                         MaterialName: "Ткань Ситец",
-                        Quantity: 1.8m,
-                        Unit: "m",
+                        Quantity: 1.8,
+                        Unit: Units.Meter                        ,
                         Price: 180m
                     )
                 ],
@@ -99,7 +120,13 @@ public class SpecificationsController : ControllerBase
     [SwaggerResponseExample(200, typeof(SpecificationsAddBomResponseExample))]
     [ProducesResponseType(typeof(SpecificationsAddBomResponse), StatusCodes.Status200OK)]
     public IActionResult AddBom(Guid id, [FromBody] SpecificationsAddBomRequest dto)
-        => Ok(new SpecificationsAddBomResponse(id, SpecificationsStatus.BomAdded));
+        => Ok(new SpecificationsAddBomResponse
+                (
+                    SpecificationId: id,
+                    BomItemId: Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                    Status: SpecificationsStatus.BomAdded
+                )
+            );
 
     // -------------------------------------------------------------
     // DELETE /api/specifications/{id}/bom/{bomId}
@@ -119,7 +146,13 @@ public class SpecificationsController : ControllerBase
     [SwaggerResponseExample(200, typeof(SpecificationsAddOperationResponseExample))]
     [ProducesResponseType(typeof(SpecificationsAddOperationResponse), StatusCodes.Status200OK)]
     public IActionResult AddOperation(Guid id, [FromBody] SpecificationsAddOperationRequest dto)
-        => Ok(new SpecificationsAddOperationResponse(id, SpecificationsStatus.OperationAdded));
+        => Ok(new SpecificationsAddOperationResponse
+                (
+                    SpecificationId: id, 
+                    OperationId: Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                    Status: SpecificationsStatus.OperationAdded
+                )
+            );
 
     // -------------------------------------------------------------
     // POST /api/specifications/{id}/images
