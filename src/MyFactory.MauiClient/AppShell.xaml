@@ -1,14 +1,57 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Shell
-    x:Class="MyFactory.MauiClient.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:MyFactory.MauiClient"
-    Title="MyFactory.MauiClient">
+	x:Class="MyFactory.MauiClient.AppShell"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:pages="clr-namespace:MyFactory.MauiClient.Views">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+	<!--  Модуль 1: Справочники и настройки -->
+	<FlyoutItem Title="Справочники" FlyoutDisplayOptions="AsMultipleItems">
+		<ShellContent Title="Материалы" ContentTemplate="{DataTemplate pages:MaterialsPage}" />
+		<ShellContent Title="Изделия" ContentTemplate="{DataTemplate pages:SpecificationsListPage}" />
+		<ShellContent Title="Операции" ContentTemplate="{DataTemplate pages:OperationsPage}" />
+		<ShellContent Title="Цеха" ContentTemplate="{DataTemplate pages:WorkCentersPage}" />
+		<ShellContent Title="Сотрудники" ContentTemplate="{DataTemplate pages:EmployeesPage}" />
+		<ShellContent Title="Цеховые расходы (история)" ContentTemplate="{DataTemplate pages:OverheadHistoryPage}" /> 
+		<ShellContent Title="Склады" ContentTemplate="{DataTemplate pages:WarehousesPage}" />
+		<ShellContent Title="Настройки системы" ContentTemplate="{DataTemplate pages:SettingsPage}" /> 
+		<!--  Остальные пока не созданы, добавим позже  -->
+	</FlyoutItem>
+
+	<!--  Модуль 2: Склад и поступления -->
+	<FlyoutItem Title="Склад">
+		<ShellContent Title="Остатки материалов" ContentTemplate="{DataTemplate pages:InventoryPage}" />
+		<ShellContent Title="Поступления" ContentTemplate="{DataTemplate pages:ReceiptListPage}" />
+		<!--  PurchaseRequestsPage – создадим позже  -->
+	</FlyoutItem>
+
+	<!--  Модуль 3: Спецификации и себестоимость -->
+	<FlyoutItem Title="Спецификации">
+		<ShellContent Title="Список" ContentTemplate="{DataTemplate pages:SpecificationsListPage}" />
+	</FlyoutItem>
+
+	<!--  Модуль 4: Производство  -->
+	<FlyoutItem Title="Производство">
+		<ShellContent Title="Заказы" ContentTemplate="{DataTemplate pages:ProductionOrdersPage}" />
+		<ShellContent Title="Запуски в производство" ContentTemplate="{DataTemplate pages:ProductionRunsPage}" />
+		<ShellContent Title="Сменные задания" ContentTemplate="{DataTemplate pages:ShiftPlansPage}" />
+		<ShellContent Title="Результаты смен" ContentTemplate="{DataTemplate pages:ShiftResultsPage}" />
+		<ShellContent Title="Распределение между участками" ContentTemplate="{DataTemplate pages:WorkCenterAllocationPage}" /> "
+		<!--  TransfersPage, StagesPage — позже  -->
+	</FlyoutItem>
+
+	<!--  Модуль 5: Готовая продукция, продажи и возвраты -->
+	<FlyoutItem Title="Продажи">
+		<ShellContent Title="Готовая продукция" ContentTemplate="{DataTemplate pages:FinishedGoodsPage}" />
+		<ShellContent Title="Заказы клиентов" ContentTemplate="{DataTemplate pages:CustomerOrdersPage}" />
+		<ShellContent Title="Возвраты" ContentTemplate="{DataTemplate pages:ReturnsPage}" />
+		<!--  Страниц пока нет, добавим позже  -->
+
+	<!--  Модуль 6: Финансы, расходы и подотчет -->
+	<FlyoutItem Title="Финансы">
+		<ShellContent Title="Накладные расходы" ContentTemplate="{DataTemplate pages:OverheadsPage}" />
+		<ShellContent Title="Подотчетные выдачи" ContentTemplate="{DataTemplate pages:AdvancesPage}" />
+		<ShellContent Title="Прибыль за месяц" ContentTemplate="{DataTemplate pages:MonthlyProfitPage}" />
+	</FlyoutItem>
 
 </Shell>
