@@ -1,106 +1,83 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Shell
-    x:Class="MyFactory.MauiClient.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:pages="clr-namespace:MyFactory.MauiClient.Pages">
+	x:Class="MyFactory.MauiClient.AppShell"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:pages="clr-namespace:MyFactory.MauiClient.Pages">
 
-    <!-- ========== МОДУЛЬ 1: Справочники ========== -->
-    <FlyoutItem Title="Справочники" FlyoutDisplayOptions="AsMultipleItems">
+	<!--  ========== МОДУЛЬ 1: Справочники ==========  -->
+	<FlyoutItem Title="Справочники" FlyoutDisplayOptions="AsMultipleItems">
 
-        <ShellContent Title="Материалы"
-                      ContentTemplate="{DataTemplate pages:MaterialsTablePage}" />
+		<ShellContent Title="Материалы" ContentTemplate="{DataTemplate pages:MaterialsTablePage}" />
 
-        <ShellContent Title="Изделия (справочник)"
-                      ContentTemplate="{DataTemplate pages:ProductsTablePage}" />
+		<ShellContent Title="Изделия (справочник)" ContentTemplate="{DataTemplate pages:ProductsTablePage}" />
 
-        <ShellContent Title="Операции"
-                      ContentTemplate="{DataTemplate pages:OperationsTablePage}" />
+		<ShellContent Title="Операции" ContentTemplate="{DataTemplate pages:OperationsTablePage}" />
 
-        <ShellContent Title="Цеха"
-                      ContentTemplate="{DataTemplate pages:WorkshopsTablePage}" />
+		<ShellContent Title="Цеха" ContentTemplate="{DataTemplate pages:WorkshopsTablePage}" />
 
-        <ShellContent Title="Цеховые расходы"
-                      ContentTemplate="{DataTemplate pages:WorkshopExpensesTablePage}" />
+		<ShellContent Title="Цеховые расходы" ContentTemplate="{DataTemplate pages:WorkshopExpensesTablePage}" />
 
-        <ShellContent Title="Сотрудники"
-                      ContentTemplate="{DataTemplate pages:EmployeesTablePage}" />
+		<ShellContent Title="Сотрудники" ContentTemplate="{DataTemplate pages:EmployeesTablePage}" />
 
-        <ShellContent Title="Склады"
-                      ContentTemplate="{DataTemplate pages:WarehousesTablePage}" />
+		<ShellContent Title="Склады" ContentTemplate="{DataTemplate pages:WarehousesTablePage}" />
 
-        <ShellContent Title="Настройки системы"
-                      ContentTemplate="{DataTemplate pages:SettingsTablePage}" />
-    </FlyoutItem>
+		<ShellContent Title="Настройки системы" ContentTemplate="{DataTemplate pages:SettingsTablePage}" />
+	</FlyoutItem>
 
 
-    <!-- ========== МОДУЛЬ 2: Склад ========== -->
-    <FlyoutItem Title="Склад">
+	<!--  ========== МОДУЛЬ 2: Склад ==========  -->
+	<FlyoutItem Title="Склад">
 
-        <ShellContent Title="Остатки материалов"
-                      ContentTemplate="{DataTemplate pages:MaterialStockTablePage}" />
+		<ShellContent Title="Остатки материалов" ContentTemplate="{DataTemplate pages:MaterialStockTablePage}" />
 
-        <ShellContent Title="Поступления материалов"
-                      ContentTemplate="{DataTemplate pages:MaterialReceiptsTablePage}" />
+		<ShellContent Title="Поступления материалов" ContentTemplate="{DataTemplate pages:MaterialReceiptsTablePage}" />
 
-        <ShellContent Title="Ведомости на закупку"
-                      ContentTemplate="{DataTemplate pages:PurchaseRequestsTablePage}" />
-    </FlyoutItem>
+		<ShellContent Title="Ведомости на закупку" ContentTemplate="{DataTemplate pages:PurchaseRequestsTablePage}" />
+	</FlyoutItem>
 
 
-    <!-- ========== МОДУЛЬ 3: Спецификации ========== -->
-    <FlyoutItem Title="Спецификации">
+	<!--  ========== МОДУЛЬ 3: Спецификации ==========  -->
+	<FlyoutItem Title="Спецификации">
 
-        <ShellContent Title="Список"
-                      ContentTemplate="{DataTemplate pages:SpecificationsListPage}" />
+		<ShellContent Title="Список" ContentTemplate="{DataTemplate pages:SpecificationsListPage}" />
 
-        <ShellContent Title="Себестоимость"
-                      ContentTemplate="{DataTemplate pages:SpecificationCostCardPage}" />
-    </FlyoutItem>
+		<ShellContent Title="Себестоимость" ContentTemplate="{DataTemplate pages:SpecificationCostCardPage}" />
+	</FlyoutItem>
 
 
-    <!-- ========== МОДУЛЬ 4: Производство ========== -->
-    <FlyoutItem Title="Производство">
+	<!--  ========== МОДУЛЬ 4: Производство ==========  -->
+	<FlyoutItem Title="Производство">
 
-        <ShellContent Title="Заказы"
-                      ContentTemplate="{DataTemplate pages:ProductionOrdersTablePage}" />
+		<ShellContent Title="Заказы" ContentTemplate="{DataTemplate pages:ProductionOrdersTablePage}" />
 
-        <ShellContent Title="Передача материалов"
-                      ContentTemplate="{DataTemplate pages:MaterialTransferTablePage}" />
+		<ShellContent Title="Передача материалов" ContentTemplate="{DataTemplate pages:MaterialTransferTablePage}" />
 
-        <ShellContent Title="Сменные задания"
-                      ContentTemplate="{DataTemplate pages:ShiftPlansTablePage}" />
+		<ShellContent Title="Сменные задания" ContentTemplate="{DataTemplate pages:ShiftPlansTablePage}" />
 
-        <ShellContent Title="Результаты смен"
-                      ContentTemplate="{DataTemplate pages:ShiftResultsTablePage}" />
-    </FlyoutItem>
+		<ShellContent Title="Результаты смен" ContentTemplate="{DataTemplate pages:ShiftResultsTablePage}" />
+	</FlyoutItem>
 
 
-    <!-- ========== МОДУЛЬ 5: Готовая продукция ========== -->
-    <FlyoutItem Title="Готовая продукция">
+	<!--  ========== МОДУЛЬ 5: Готовая продукция ==========  -->
+	<FlyoutItem Title="Готовая продукция">
 
-        <ShellContent Title="Оприходование"
-                      ContentTemplate="{DataTemplate pages:FinishedGoodsReceiptTablePage}" />
+		<ShellContent Title="Оприходование" ContentTemplate="{DataTemplate pages:FinishedGoodsReceiptTablePage}" />
 
-        <ShellContent Title="Отгрузки"
-                      ContentTemplate="{DataTemplate pages:ShipmentsTablePage}" />
+		<ShellContent Title="Отгрузки" ContentTemplate="{DataTemplate pages:ShipmentsTablePage}" />
 
-        <ShellContent Title="Возвраты"
-                      ContentTemplate="{DataTemplate pages:ReturnsTablePage}" />
-    </FlyoutItem>
+		<ShellContent Title="Возвраты" ContentTemplate="{DataTemplate pages:ReturnsTablePage}" />
+	</FlyoutItem>
 
 
-    <!-- ========== МОДУЛЬ 6: Финансы ========== -->
-    <FlyoutItem Title="Финансы">
+	<!--  ========== МОДУЛЬ 6: Финансы ==========  -->
+	<FlyoutItem Title="Финансы">
 
-        <ShellContent Title="Накладные расходы"
-                      ContentTemplate="{DataTemplate pages:OverheadsTablePage}" />
+		<ShellContent Title="Накладные расходы" ContentTemplate="{DataTemplate pages:OverheadsTablePage}" />
 
-        <ShellContent Title="Авансы"
-                      ContentTemplate="{DataTemplate pages:AdvancesTablePage}" />
+		<ShellContent Title="Авансы" ContentTemplate="{DataTemplate pages:AdvancesTablePage}" />
 
-        <ShellContent Title="Прибыль за месяц"
-                      ContentTemplate="{DataTemplate pages:MonthlyProfitReportPage}" />
-    </FlyoutItem>
+		<ShellContent Title="Прибыль за месяц" ContentTemplate="{DataTemplate pages:MonthlyProfitReportPage}" />
+	</FlyoutItem>
 
 </Shell>
