@@ -1,9 +1,10 @@
 namespace MyFactory.MauiClient.UIModels.Specifications;
 
+// BOM - Материалы спецификации
 public record SpecificationBomItem(
     string Material,
     decimal Quantity,
     string Unit,
-    decimal Price,
+    decimal AvgPrice,
     decimal TotalCost
 );

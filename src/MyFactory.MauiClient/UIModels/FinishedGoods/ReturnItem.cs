@@ -1,8 +1,9 @@
 namespace MyFactory.MauiClient.UIModels.FinishedGoods;
 
+// Возврат товара
 public record ReturnItem(
     string Customer,
-    string Product,
+    string ProductName,
     int Quantity,
     string Date,
     string Reason,

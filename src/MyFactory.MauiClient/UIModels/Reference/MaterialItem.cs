@@ -1,5 +1,6 @@
 namespace MyFactory.MauiClient.UIModels.Reference;
 
+// Материалы
 public record MaterialItem(
     string Code,
     string Name,

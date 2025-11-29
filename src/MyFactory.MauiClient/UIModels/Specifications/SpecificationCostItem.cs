@@ -1,7 +1,7 @@
 namespace MyFactory.MauiClient.UIModels.Specifications;
 
+// Карточка себестоимости (итог)
 public record SpecificationCostItem(
-    string Article,
     decimal MaterialsCost,
     decimal OperationsCost,
     decimal WorkshopExpenses,

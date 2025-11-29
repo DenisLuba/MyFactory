@@ -1,5 +1,6 @@
 namespace MyFactory.MauiClient.UIModels.Warehouse;
 
+// Журнал поступления материалов
 public record MaterialReceiptJournalItem(
     string Document,
     string Date,
