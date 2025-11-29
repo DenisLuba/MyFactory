@@ -27,5 +27,8 @@ namespace MyFactory.MauiClient.Services.MaterialsServices
         public async Task<AddMaterialPriceResponse?> AddPriceAsync(string id, AddMaterialPriceRequest request)
             => await _httpClient.PostAsJsonAsync($"api/materials/{id}/prices", request)
                 .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<AddMaterialPriceResponse>()).Unwrap();
+
+        public async Task<MaterialTypeResponse?> GetMaterialTypeByIdAsync(Guid id)
+            => await _httpClient.GetFromJsonAsync<MaterialTypeResponse>($"api/materials/type?id={id}");
     }
 }

@@ -127,6 +127,13 @@ public class MaterialsController : ControllerBase
     [ProducesResponseType(typeof(AddMaterialPriceResponse), StatusCodes.Status200OK)]
     public IActionResult AddPrice(string id, [FromBody] AddMaterialPriceRequest request)
         => Ok(new AddMaterialPriceResponse(MaterialPriceStatus.PriceUpdated, Guid.Parse(id)));
+
+    // GET /api/materials/type
+    [HttpGet("type")]
+    [SwaggerResponseExample(200, typeof(MaterialTypeResponseExample))]
+    [ProducesResponseType(typeof(MaterialTypeResponse), StatusCodes.Status200OK)]
+    public IActionResult GetMaterialTypeById([FromQuery] Guid id)
+        => Ok(new MaterialTypeResponse(id, "Ткань"));
 }
 
 

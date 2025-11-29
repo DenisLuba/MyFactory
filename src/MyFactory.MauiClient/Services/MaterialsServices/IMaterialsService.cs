@@ -10,5 +10,6 @@ namespace MyFactory.MauiClient.Services.MaterialsServices
         Task<UpdateMaterialResponse?> UpdateAsync(string id, UpdateMaterialRequest request);
         Task<List<MaterialPriceHistoryResponse>?> PriceHistoryAsync(string id);
         Task<AddMaterialPriceResponse?> AddPriceAsync(string id, AddMaterialPriceRequest request);
+        Task<MaterialTypeResponse?> GetMaterialTypeByIdAsync(Guid id);
     }
 }

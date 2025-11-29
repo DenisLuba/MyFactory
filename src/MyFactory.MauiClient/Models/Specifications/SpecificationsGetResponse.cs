@@ -1,4 +1,4 @@
-﻿using MyFactory.WebApi.Contracts.Materials;
+﻿using MyFactory.MauiClient.Models.Materials;
 
 namespace MyFactory.MauiClient.Models.Specifications;
 
