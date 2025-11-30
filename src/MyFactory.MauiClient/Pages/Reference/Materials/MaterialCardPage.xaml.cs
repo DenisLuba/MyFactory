@@ -1,4 +1,4 @@
-using MyFactory.MauiClient.ViewModels.Reference.Materials;
+﻿using MyFactory.MauiClient.ViewModels.Reference.Materials;
 
 namespace MyFactory.MauiClient.Pages.Reference.Materials;
 

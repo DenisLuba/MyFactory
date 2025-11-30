@@ -1,10 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
+﻿namespace MyFactory.MauiClient.ViewModels.Specifications;
 
-namespace MyFactory.MauiClient.ViewModels;
-
-public partial class SpecificationsListPageViewModel : ObservableObject
+public class SpecificationsListPageViewModel
 {
-    // TODO: implement ViewModel logic
 }

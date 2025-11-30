@@ -1,12 +1,9 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-	x:Class="MyFactory.MauiClient.Pages.Reference.Products.ProductsTablePage"
-	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels"
-	Title="ProductsTablePage"
-	x:DataType="view_model:ProductsTablePageViewModel">
-
-	<!--  TODO: UI layout  -->
+    x:Class="MyFactory.MauiClient.Pages.Reference.Products.ProductsTablePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Reference.Products"
+    x:DataType="view_model:ProductsTablePageViewModel">
 
 </ContentPage>

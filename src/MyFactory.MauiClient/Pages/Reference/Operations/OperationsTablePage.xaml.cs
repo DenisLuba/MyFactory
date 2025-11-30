@@ -1,4 +1,4 @@
-using MyFactory.MauiClient.ViewModels.Reference.Operations;
+﻿using MyFactory.MauiClient.ViewModels.Reference.Operations;
 
 namespace MyFactory.MauiClient.Pages.Reference.Operations;
 

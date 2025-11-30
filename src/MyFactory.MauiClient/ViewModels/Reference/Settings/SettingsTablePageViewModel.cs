@@ -1,10 +1,5 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
+﻿namespace MyFactory.MauiClient.ViewModels.Reference.Settings;
 
-namespace MyFactory.MauiClient.ViewModels.Reference.Settings;
-
-public partial class SettingsTablePageViewModel : ObservableObject
+public class SettingsTablePageViewModel
 {
-    // TODO: implement ViewModel logic
 }

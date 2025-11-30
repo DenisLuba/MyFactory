@@ -1,12 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="MyFactory.MauiClient.Pages.SpecificationsListPage"
+    x:Class="MyFactory.MauiClient.Pages.Specifications.SpecificationsListPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels"
-    x:DataType="view_model:SpecificationsListPageViewModel"
-    Title="SpecificationsListPage">
-
-    <!-- TODO: UI layout -->
+    xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Specifications"
+    x:DataType="view_model:SpecificationsListPageViewModel">
 
 </ContentPage>

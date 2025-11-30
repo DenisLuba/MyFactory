@@ -1,10 +1,5 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
+﻿namespace MyFactory.MauiClient.ViewModels.Reference.Employees;
 
-namespace MyFactory.MauiClient.ViewModels.Reference.Employees;
-
-public partial class EmployeesTablePageViewModel : ObservableObject
+public class EmployeesTablePageViewModel
 {
-    // TODO: implement ViewModel logic
 }

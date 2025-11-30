@@ -1,4 +1,4 @@
-using MyFactory.MauiClient.ViewModels.Reference.Workshops;
+﻿using MyFactory.MauiClient.ViewModels.Reference.Workshops;
 
 namespace MyFactory.MauiClient.Pages.Reference.Workshops;
 

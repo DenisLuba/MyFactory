@@ -1,4 +1,4 @@
-using MyFactory.MauiClient.ViewModels.Reference.Settings;
+﻿using MyFactory.MauiClient.ViewModels.Reference.Settings;
 
 namespace MyFactory.MauiClient.Pages.Reference.Settings;
 

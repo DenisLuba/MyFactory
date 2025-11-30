@@ -1,4 +1,4 @@
-using MyFactory.MauiClient.ViewModels.Reference.Warehouses;
+﻿using MyFactory.MauiClient.ViewModels.Reference.Warehouses;
 
 namespace MyFactory.MauiClient.Pages.Reference.Warehouses;
 

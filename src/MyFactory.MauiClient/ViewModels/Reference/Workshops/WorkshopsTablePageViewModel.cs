@@ -1,10 +1,5 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
+﻿namespace MyFactory.MauiClient.ViewModels.Reference.Workshops;
 
-namespace MyFactory.MauiClient.ViewModels.Reference.Workshops;
-
-public partial class WorkshopsTablePageViewModel : ObservableObject
+public class WorkshopsTablePageViewModel
 {
-    // TODO: implement ViewModel logic
 }
