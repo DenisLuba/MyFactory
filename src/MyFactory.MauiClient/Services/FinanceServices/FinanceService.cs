@@ -1,5 +1,8 @@
 using System.Net.Http.Json;
 using MyFactory.MauiClient.Models.Finance;
+using MyFactory.MauiClient.UIModels.Finance;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MyFactory.MauiClient.Services.FinanceServices
 {
@@ -25,5 +28,14 @@ namespace MyFactory.MauiClient.Services.FinanceServices
         public async Task<SubmitAdvanceReportResponse?> SubmitAdvanceReportAsync(string advanceId, SubmitAdvanceReportRequest request)
             => await _httpClient.PostAsJsonAsync($"api/finance/advances/{advanceId}/report", request)
                 .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<SubmitAdvanceReportResponse>()).Unwrap();
+
+        public async Task<List<AdvanceItem>?> GetAdvancesAsync()
+            => await _httpClient.GetFromJsonAsync<List<AdvanceItem>>("api/finance/advances");
+
+        public async Task CloseAdvanceAsync(string advanceNumber)
+            => await _httpClient.PostAsync($"api/finance/advances/{advanceNumber}/close", null);
+
+        public async Task DeleteAdvanceAsync(string advanceNumber)
+            => await _httpClient.DeleteAsync($"api/finance/advances/{advanceNumber}");
     }
 }

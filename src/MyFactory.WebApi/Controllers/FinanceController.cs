@@ -57,6 +57,29 @@ public class FinanceController : ControllerBase
         string id,
         [FromBody] SubmitAdvanceReportRequest request)
         => Ok(new SubmitAdvanceReportResponse(Guid.Parse(id), FinanceStatus.ReportSubmitted));
+
+    // GET /api/finance/advances
+    [HttpGet("advances")]
+    [SwaggerResponseExample(200, typeof(AdvanceItemDtoExample))]
+    [ProducesResponseType(typeof(IEnumerable<AdvanceItemDto>), StatusCodes.Status200OK)]
+    public IActionResult GetAdvances()
+        => Ok(new[]
+        {
+            new AdvanceItemDto(
+                "ADV-2024-001",
+                "Иванов И.И.",
+                15000,
+                "2024-06-01",
+                AdvanceStatus.Issued
+            ),
+            new AdvanceItemDto(
+                "ADV-2024-002",
+                "Петров П.П.",
+                20000,
+                "2024-06-05",
+                AdvanceStatus.Reported
+            )
+        });
 }
 
 

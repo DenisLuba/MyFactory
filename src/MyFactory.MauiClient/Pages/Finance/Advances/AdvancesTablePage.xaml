@@ -1,9 +1,55 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="MyFactory.MauiClient.Pages.Finance.Advances.AdvancesTablePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.Advances"
-    x:DataType="view_model:AdvancesTablePageViewModel">
+    x:Class="MyFactory.MauiClient.Pages.Finance.Advances.AdvancesTablePage"
+	xmlns:view_models="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.Advances"
+	xmlns:models="clr-namespace:MyFactory.MauiClient.UIModels.Finance"
+	x:DataType="view_models:AdvancesTablePageViewModel"
+    Title="Подотчётные выдачи">
 
+    <ContentPage.Content>
+        <VerticalStackLayout Padding="16" Spacing="12">
+            <!-- Фильтры -->
+            <HorizontalStackLayout Spacing="8">
+                <Entry WidthRequest="180" Placeholder="Сотрудник" Text="{Binding EmployeeFilter}" />
+                <Picker WidthRequest="140" Title="Статус" ItemsSource="{Binding Source={x:Static local:AdvanceStatus.Values}}" SelectedItem="{Binding StatusFilter}" />
+                <DatePicker WidthRequest="140" Date="{Binding PeriodStart}" />
+                <DatePicker WidthRequest="140" Date="{Binding PeriodEnd}" />
+                <Button Text="Сбросить" Command="{Binding LoadAdvancesCommand}" />
+            </HorizontalStackLayout>
+
+            <!-- Кнопка создания новой выдачи -->
+            <Button Text="Создать новую выдачу" Command="{Binding CreateAdvanceCommand}" />
+
+            <!-- Таблица выдач -->
+            <CollectionView ItemsSource="{Binding Advances}" SelectionMode="None">
+                <CollectionView.Header>
+                    <Grid ColumnDefinitions="80,180,100,120,100,80" Padding="0,0,0,8">
+                        <Label Text="№ выдачи" FontAttributes="Bold" />
+                        <Label Text="Сотрудник" FontAttributes="Bold" Grid.Column="1" />
+                        <Label Text="Сумма" FontAttributes="Bold" Grid.Column="2" />
+                        <Label Text="Дата" FontAttributes="Bold" Grid.Column="3" />
+                        <Label Text="Статус" FontAttributes="Bold" Grid.Column="4" />
+                        <Label Text="" Grid.Column="5" />
+                    </Grid>
+                </CollectionView.Header>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:AdvanceItem">
+                        <Grid ColumnDefinitions="80,180,100,120,100,80" Padding="0,4">
+                            <Label Text="{Binding AdvanceNumber}" />
+                            <Label Text="{Binding Employee}" Grid.Column="1" />
+                            <Label Text="{Binding AdvanceAmount, StringFormat='{0:N0} ₽'}" Grid.Column="2" />
+                            <Label Text="{Binding Date}" Grid.Column="3" />
+                            <Label Text="{Binding Status}" Grid.Column="4" />
+                            <HorizontalStackLayout Grid.Column="5" Spacing="4">
+                                <Button Text="Открыть" Command="{Binding Source={RelativeSource AncestorType={x:Type local:AdvancesTablePage}}, Path=BindingContext.OpenAdvanceCommand}" CommandParameter="{Binding .}" />
+                                <Button Text="Отчёт" Command="{Binding Source={RelativeSource AncestorType={x:Type local:AdvancesTablePage}}, Path=BindingContext.OpenReportCommand}" CommandParameter="{Binding .}" />
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ContentPage.Content>
 </ContentPage>
