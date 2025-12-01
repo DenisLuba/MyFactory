@@ -3,7 +3,91 @@
     x:Class="MyFactory.MauiClient.Pages.Reference.Materials.MaterialsTablePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ui="clr-namespace:MyFactory.MauiClient.UIModels.Reference"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Reference.Materials"
-    x:DataType="view_model:MaterialsTablePageViewModel">
+    x:DataType="view_model:MaterialsTablePageViewModel"
+    Title="Материалы">
 
+    <ContentPage.Resources>
+        <Style TargetType="Border" x:Key="CardBorderStyle">
+            <Setter Property="Stroke" Value="{AppThemeBinding Light=#E5E7EB, Dark=#374151}" />
+            <Setter Property="Background" Value="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Padding" Value="14" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="12" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid Padding="16" RowDefinitions="Auto,Auto,*" RowSpacing="12">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <Entry
+                Placeholder="Поиск по коду или названию"
+                Text="{Binding SearchText}" />
+            <Button
+                Command="{Binding LoadCommand}"
+                IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                Text="Обновить" />
+        </Grid>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <Entry
+                Placeholder="Тип материала (фильтр API)"
+                Text="{Binding TypeFilter}" />
+            <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                <Label Text="Строк:" />
+                <Label FontAttributes="Bold" Text="{Binding Materials.Count}" />
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            </HorizontalStackLayout>
+        </Grid>
+
+        <RefreshView Grid.Row="2" Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy}">
+            <CollectionView
+                ItemsSource="{Binding Materials}"
+                SelectionMode="Single"
+                SelectionChanged="OnMaterialSelectionChanged">
+                <CollectionView.EmptyView>
+                    <Label
+                        HorizontalOptions="Center"
+                        Padding="24"
+                        Text="Материалы не найдены"
+                        TextColor="{DynamicResource Gray400}"
+                        VerticalOptions="Center" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="ui:MaterialItem">
+                        <Border Style="{StaticResource CardBorderStyle}">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="12">
+                                <Label FontAttributes="Bold" FontSize="16" Text="{Binding Name}" />
+                                <Label
+                                    Grid.Column="1"
+                                    HorizontalTextAlignment="End"
+                                    Text="{Binding IsActive, Converter={StaticResource BooleanToActiveStatusConverter}}" />
+
+                                <Label
+                                    Grid.Row="1"
+                                    Text="{Binding Code, StringFormat='Код: {0}'}"
+                                    TextColor="{DynamicResource Gray500}" />
+                                <Label
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    HorizontalTextAlignment="End"
+                                    Text="{Binding Unit, StringFormat='Ед.: {0}'}"
+                                    TextColor="{DynamicResource Gray500}" />
+
+                                <StackLayout Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="12">
+                                    <Label Text="{Binding Type}" />
+                                    <Label Text="{Binding LastPrice, StringFormat='Цена: {0:N2} ₽'}" />
+                                </StackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
 </ContentPage>

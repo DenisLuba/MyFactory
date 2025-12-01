@@ -1,12 +1,12 @@
 using System;
 
-namespace MyFactory.MauiClient.UIModels.Reference;
+namespace MyFactory.MauiClient.Models.Materials;
 
-public record MaterialItem(
+public record MaterialListResponse(
     Guid Id,
     string Code,
     string Name,
-    string Type,
+    string MaterialType,
     string Unit,
     bool IsActive,
     decimal LastPrice

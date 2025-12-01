@@ -3,7 +3,102 @@
     x:Class="MyFactory.MauiClient.Pages.Reference.Materials.MaterialCardPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:MyFactory.MauiClient.Models.Materials"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Reference.Materials"
-    x:DataType="view_model:MaterialCardPageViewModel">
+    x:DataType="view_model:MaterialCardPageViewModel"
+    Title="Карточка материала">
 
+    <ContentPage.Resources>
+        <Style TargetType="Border" x:Key="CardBorderStyle">
+            <Setter Property="Stroke" Value="{AppThemeBinding Light=#E5E7EB, Dark=#374151}" />
+            <Setter Property="Background" Value="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="12" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+            <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                <VerticalStackLayout Spacing="2" HorizontalOptions="StartAndExpand">
+                    <Label FontAttributes="Bold" FontSize="20" Text="{Binding Name}" />
+                    <Label Text="{Binding Code}" TextColor="{DynamicResource Gray500}" />
+                </VerticalStackLayout>
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            </HorizontalStackLayout>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*" ColumnSpacing="12" RowSpacing="8">
+                    <Label Text="Тип" FontSize="12" TextColor="{DynamicResource Gray500}" />
+                    <Label Grid.Column="1" Text="Единица" FontSize="12" TextColor="{DynamicResource Gray500}" />
+                    <Label Grid.Row="1" Text="{Binding MaterialType}" FontAttributes="Bold" />
+                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding Unit}" FontAttributes="Bold" />
+
+                    <Label Grid.Row="2" Text="{Binding StatusDisplay}" />
+                    <Label
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        HorizontalTextAlignment="End"
+                        Text="{Binding LastPriceDisplay}" />
+                </Grid>
+            </Border>
+
+            <HorizontalStackLayout Spacing="12">
+                <Button
+                    Command="{Binding LoadMaterialCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                    Text="Обновить" />
+                <Button
+                    Command="{Binding AddPriceCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                    Text="Добавить цену" />
+            </HorizontalStackLayout>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="12">
+                    <Label FontAttributes="Bold" FontSize="18" Text="История цен" />
+                    <CollectionView ItemsSource="{Binding PriceHistory}" SelectionMode="None">
+                        <CollectionView.EmptyView>
+                            <Label
+                                HorizontalOptions="Center"
+                                Padding="16"
+                                Text="Изменения цены отсутствуют"
+                                TextColor="{DynamicResource Gray500}" />
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:MaterialPriceHistoryItem">
+                                <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,8">
+                                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12">
+                                        <Label FontAttributes="Bold" Text="{Binding SupplierName}" />
+                                        <Label
+                                            Grid.Column="1"
+                                            HorizontalTextAlignment="End"
+                                            Text="{Binding Price, StringFormat='{}{0:N2} ₽'}" />
+
+                                        <Label
+                                            Grid.Row="1"
+                                            Text="{Binding SupplierId}"
+                                            FontSize="12"
+                                            TextColor="{DynamicResource Gray500}" />
+                                        <Label
+                                            Grid.Row="1"
+                                            Grid.Column="1"
+                                            HorizontalTextAlignment="End"
+                                            Text="{Binding EffectiveFrom, StringFormat='С {0:dd.MM.yyyy}'}"
+                                            FontSize="12"
+                                            TextColor="{DynamicResource Gray500}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

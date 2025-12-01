@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using MyFactory.WebApi.Contracts.Materials;
 using MyFactory.WebApi.SwaggerExamples.Materials;
 using Swashbuckle.AspNetCore.Filters;
@@ -13,77 +16,46 @@ public class MaterialsController : ControllerBase
     private static readonly Guid Mat1 = Guid.Parse("11111111-1111-1111-1111-111111111111");
     private static readonly Guid Mat2 = Guid.Parse("22222222-2222-2222-2222-222222222222");
 
-    private static readonly Guid Type1 = Guid.Parse("aaaaaaa1-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
-    private static readonly Guid Type2 = Guid.Parse("aaaaaaa2-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
-
     private static readonly Guid Supplier1 = Guid.Parse("bbbbbbb1-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
     private static readonly Guid Supplier2 = Guid.Parse("bbbbbbb2-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
 
+    private static readonly IReadOnlyList<MaterialPriceHistoryItem> Mat1PriceHistory = new List<MaterialPriceHistoryItem>
+    {
+        new(Supplier1, "Фабрика ткани", 175.0m, new DateTime(2025, 11, 1)),
+        new(Supplier2, "ООО \"Текстильные решения\"", 182.0m, new DateTime(2025, 09, 15))
+    };
+
+    private static readonly IReadOnlyList<MaterialPriceHistoryItem> Mat2PriceHistory = new List<MaterialPriceHistoryItem>
+    {
+        new(Supplier2, "Фабрика фурнитуры", 115.0m, new DateTime(2025, 10, 10))
+    };
+
     // GET /api/materials
     [HttpGet]
-    [SwaggerResponseExample(200, typeof(MaterialResponseExample))]
-    [ProducesResponseType(typeof(IEnumerable<MaterialResponse>), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(MaterialListResponseExample))]
+    [ProducesResponseType(typeof(IEnumerable<MaterialListResponse>), StatusCodes.Status200OK)]
     public IActionResult List([FromQuery] string? type = null)
         => Ok(new[]
         {
-            new MaterialResponse(
-                Id: Mat1,
-                Code: "МАТ-001",
-                Name: "Ткань Ситец",
-                MaterialTypeId: Type1,
-                Unit: "m",
-                IsActive: true,
-                LastPrice: 180.0m,
-                Suppliers:
-                [
-                    new SupplierPrice(
-                        Id: Supplier1,
-                        Name: "Фабрика ткани",
-                        MaterialPrice: 160.0m
-                    )
-                ]
-            ),
-            new MaterialResponse(
-                Id: Mat2,
-                Code: "МАТ-002",
-                Name: "Молния 20 см",
-                MaterialTypeId: Type2,
-                Unit: "шт",
-                IsActive: true,
-                LastPrice: 100.0m,
-                Suppliers:
-                [
-                    new SupplierPrice(
-                        Id: Supplier2,
-                        Name: "Фабрика фурнитуры",
-                        MaterialPrice: 120.0m
-                    )
-                ]
-            )
+            new MaterialListResponse(Mat1, "МАТ-001", "Ткань Ситец", "Ткань", "м", true, 180.0m),
+            new MaterialListResponse(Mat2, "МАТ-002", "Молния 20 см", "Фурнитура", "шт", true, 100.0m)
         });
 
     // GET /api/materials/{id}
     [HttpGet("{id}")]
-    [SwaggerResponseExample(200, typeof(MaterialResponseExample))]
-    [ProducesResponseType(typeof(MaterialResponse), StatusCodes.Status200OK)]
-    public IActionResult Get(string id)
+    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(MaterialCardResponseExample))]
+    [ProducesResponseType(typeof(MaterialCardResponse), StatusCodes.Status200OK)]
+    public IActionResult Get(Guid id)
         => Ok(
-            new MaterialResponse(
-                Id: Guid.Parse(id),
-                Code: "МАТ-001",
-                Name: "Ткань Ситец",
-                MaterialTypeId: Type1,
-                Unit: "m",
+            new MaterialCardResponse(
+                Id: id,
+                Code: id == Mat2 ? "МАТ-002" : "МАТ-001",
+                Name: id == Mat2 ? "Молния 20 см" : "Ткань Ситец",
+                MaterialType: id == Mat2 ? "Фурнитура" : "Ткань",
+                Unit: id == Mat2 ? "шт" : "м",
                 IsActive: true,
-                LastPrice: 180.0m,
-                Suppliers:
-                [
-                    new SupplierPrice(
-                        Id: Supplier1,
-                        Name: "Фабрика ткани",
-                        MaterialPrice: 160.0m
-                    )
-                ]
+                LastPrice: id == Mat2 ? 100.0m : 180.0m,
+                PriceHistory: id == Mat2 ? Mat2PriceHistory : Mat1PriceHistory
             )
         );
 
@@ -106,18 +78,10 @@ public class MaterialsController : ControllerBase
 
     // GET /api/materials/{id}/price-history
     [HttpGet("{id}/price-history")]
-    [SwaggerResponseExample(200, typeof(MaterialPriceHistoryResponseExample))]
-    [ProducesResponseType(typeof(IEnumerable<MaterialPriceHistoryResponse>), StatusCodes.Status200OK)]
-    public IActionResult PriceHistory(string id)
-        => Ok(new[]
-        {
-            new MaterialPriceHistoryResponse(
-                MaterialId: Guid.Parse(id),
-                SupplierId: Supplier1,
-                Price: 175.0m,
-                EffectiveFrom: new DateTime(2025, 11, 1)
-            )
-        });
+    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(MaterialPriceHistoryResponseExample))]
+    [ProducesResponseType(typeof(IEnumerable<MaterialPriceHistoryItem>), StatusCodes.Status200OK)]
+    public IActionResult PriceHistory(Guid id)
+        => Ok(id == Mat2 ? Mat2PriceHistory : Mat1PriceHistory);
 
     // POST /api/materials/{id}/prices
     [HttpPost("{id}/prices")]
