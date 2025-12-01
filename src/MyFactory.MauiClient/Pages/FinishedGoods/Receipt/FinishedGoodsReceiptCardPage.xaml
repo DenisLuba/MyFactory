@@ -3,7 +3,81 @@
     x:Class="MyFactory.MauiClient.Pages.FinishedGoods.Receipt.FinishedGoodsReceiptCardPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:MyFactory.MauiClient.Converters"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.FinishedGoods.Receipt"
-    x:DataType="view_model:FinishedGoodsReceiptCardPageViewModel">
+    x:DataType="view_model:FinishedGoodsReceiptCardPageViewModel"
+    Title="Оприходование ГП">
 
+    <ContentPage.Resources>
+        <Color x:Key="TextSecondaryColor">#6B7280</Color>
+        <Color x:Key="PrimaryColor">#2563EB</Color>
+        <Color x:Key="SurfaceColor">#F9FAFB</Color>
+
+        <Style TargetType="Label" x:Key="CaptionLabelStyle">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="TextColor" Value="{StaticResource TextSecondaryColor}" />
+        </Style>
+
+        <Style TargetType="Frame" x:Key="CardFrameStyle">
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}" />
+            <Setter Property="BorderColor" Value="{AppThemeBinding Light=#E5E7EB, Dark=#374151}" />
+            <Setter Property="HasShadow" Value="False" />
+            <Setter Property="Padding" Value="16" />
+        </Style>
+
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ContentPage.Resources>
+
+    <Grid Padding="16">
+        <ScrollView>
+            <VerticalStackLayout Spacing="16">
+                <Frame Style="{StaticResource CardFrameStyle}">
+                    <VerticalStackLayout Spacing="4">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            Text="{Binding Receipt.ProductName}" />
+                        <Label
+                            FontSize="14"
+                            Text="{Binding Receipt.DocumentNumber}"
+                            TextColor="{StaticResource TextSecondaryColor}" />
+                        <Label
+                            FontSize="12"
+                            Text="{Binding Receipt.Status}"
+                            TextColor="{StaticResource PrimaryColor}" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame Style="{StaticResource CardFrameStyle}">
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="8">
+                        <Label Style="{StaticResource CaptionLabelStyle}" Text="Дата" />
+                        <Label Grid.Column="1" Text="{Binding Receipt.Date, StringFormat='{}{0:dd MMMM yyyy}'}" />
+
+                        <Label Grid.Row="1" Style="{StaticResource CaptionLabelStyle}" Text="Склад" />
+                        <Label Grid.Column="1" Grid.Row="1" Text="{Binding Receipt.Warehouse}" />
+
+                        <Label Grid.Row="2" Style="{StaticResource CaptionLabelStyle}" Text="Количество" />
+                        <Label Grid.Column="1" Grid.Row="2" Text="{Binding Receipt.Quantity}" />
+
+                        <Label Grid.Row="3" Style="{StaticResource CaptionLabelStyle}" Text="Цена за ед." />
+                        <Label Grid.Column="1" Grid.Row="3" Text="{Binding Receipt.UnitPrice, StringFormat='{}{0:N2} ₽'}" />
+
+                        <Label Grid.Row="4" Style="{StaticResource CaptionLabelStyle}" Text="Сумма" />
+                        <Label Grid.Column="1" Grid.Row="4" FontAttributes="Bold" Text="{Binding Receipt.Sum, StringFormat='{}{0:N2} ₽'}" />
+
+                        <Label Grid.Row="5" Style="{StaticResource CaptionLabelStyle}" Text="ID документа" />
+                        <Label Grid.Column="1" Grid.Row="5" Text="{Binding Receipt.ReceiptId}" />
+                    </Grid>
+                </Frame>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            InputTransparent="True"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center" />
+    </Grid>
 </ContentPage>

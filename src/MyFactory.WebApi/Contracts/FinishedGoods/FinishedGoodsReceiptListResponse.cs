@@ -1,8 +1,8 @@
 using System;
 
-namespace MyFactory.MauiClient.UIModels.FinishedGoods;
+namespace MyFactory.WebApi.Contracts.FinishedGoods;
 
-public record FinishedGoodsReceiptItem(
+public record FinishedGoodsReceiptListResponse(
     Guid ReceiptId,
     string ProductName,
     int Quantity,

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using MyFactory.WebApi.Contracts.FinishedGoods;
 using MyFactory.WebApi.SwaggerExamples.FinishedGoods;
 using Swashbuckle.AspNetCore.Filters;
@@ -29,6 +31,50 @@ public class FinishedGoodsController : ControllerBase
                 FinishedGoodsStatus.Accepted
             )
         );
+
+    // GET /api/finished-goods/receipt
+    [HttpGet("receipt")]
+    [SwaggerResponseExample(200, typeof(FinishedGoodsReceiptListResponseExample))]
+    [ProducesResponseType(typeof(IEnumerable<FinishedGoodsReceiptListResponse>), StatusCodes.Status200OK)]
+    public IActionResult GetReceipts()
+        => Ok(new[]
+        {
+            new FinishedGoodsReceiptListResponse(
+                ReceiptId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                ProductName: "Пижама женская",
+                Quantity: 20,
+                Date: new DateTime(2025, 11, 10),
+                Warehouse: "Готовая продукция",
+                UnitPrice: 444m,
+                Sum: 8880m
+            ),
+            new FinishedGoodsReceiptListResponse(
+                ReceiptId: Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                ProductName: "Футболка детская",
+                Quantity: 30,
+                Date: new DateTime(2025, 11, 12),
+                Warehouse: "Готовая продукция",
+                UnitPrice: 170m,
+                Sum: 5100m
+            )
+        });
+
+    // GET /api/finished-goods/receipt/{id}
+    [HttpGet("receipt/{id:guid}")]
+    [SwaggerResponseExample(200, typeof(FinishedGoodsReceiptCardResponseExample))]
+    [ProducesResponseType(typeof(FinishedGoodsReceiptCardResponse), StatusCodes.Status200OK)]
+    public IActionResult GetReceiptById(Guid id)
+        => Ok(new FinishedGoodsReceiptCardResponse(
+            ReceiptId: id,
+            DocumentNumber: "FG-2025-0001",
+            ProductName: "Пижама женская",
+            Quantity: 20,
+            UnitPrice: 444m,
+            Sum: 8880m,
+            Date: new DateTime(2025, 11, 10),
+            Warehouse: "Готовая продукция",
+            Status: FinishedGoodsStatus.Accepted
+        ));
 
     // GET /api/finished-goods
     [HttpGet]

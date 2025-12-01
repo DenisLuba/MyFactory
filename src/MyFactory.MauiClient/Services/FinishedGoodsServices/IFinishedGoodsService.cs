@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using MyFactory.MauiClient.Models.FinishedGoods;
 
 namespace MyFactory.MauiClient.Services.FinishedGoodsServices
@@ -7,5 +9,7 @@ namespace MyFactory.MauiClient.Services.FinishedGoodsServices
         Task<ReceiptFinishedGoodsResponse?> ReceiptAsync(ReceiptFinishedGoodsRequest request);
         Task<List<FinishedGoodsInventoryResponse>?> GetInventoryAsync();
         Task<MoveFinishedGoodsResponse?> MoveAsync(MoveFinishedGoodsRequest request);
+        Task<List<FinishedGoodsReceiptListResponse>?> GetReceiptsAsync();
+        Task<FinishedGoodsReceiptCardResponse?> GetReceiptByIdAsync(Guid receiptId);
     }
 }
