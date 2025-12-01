@@ -1,8 +1,7 @@
 ﻿namespace MyFactory.MauiClient.Models.Finance;
 
-public enum OverheadsStatus
+public enum OverheadStatus
 {
-    OverheadRecorded,
-    OverheadDeleted,
-    OverheadCompleted
+    Draft,
+    Posted
 }

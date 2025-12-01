@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using MyFactory.WebApi.Contracts.Finance;
 using MyFactory.WebApi.SwaggerExamples.Finance;
 using Swashbuckle.AspNetCore.Filters;
@@ -15,23 +16,63 @@ public class FinanceController : ControllerBase
     [Consumes("application/json")]
     [SwaggerRequestExample(typeof(RecordOverheadRequest), typeof(RecordOverheadRequestExample))]
     [SwaggerResponseExample(200, typeof(RecordOverheadResponseExample))]
-    [ProducesResponseType(typeof(RecordOverheadResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof<RecordOverheadResponse), StatusCodes.Status200OK)]
     public IActionResult AddOverhead([FromBody] RecordOverheadRequest request)
-        => Ok(new RecordOverheadResponse(FinanceStatus.OverheadRecorded));
+        => Ok(new RecordOverheadResponse(Guid.Parse("11111111-1111-1111-1111-111111111111"), OverheadStatus.Draft));
+
+    // PUT /api/finance/overheads/{id}
+    [HttpPut("overheads/{id}")]
+    [Consumes("application/json")]
+    [SwaggerRequestExample(typeof(RecordOverheadRequest), typeof(RecordOverheadRequestExample))]
+    [SwaggerResponseExample(200, typeof(RecordOverheadResponseExample))]
+    [ProducesResponseType(typeof<RecordOverheadResponse), StatusCodes.Status200OK)]
+    public IActionResult UpdateOverhead(Guid id, [FromBody] RecordOverheadRequest request)
+        => Ok(new RecordOverheadResponse(id, OverheadStatus.Draft));
+
+    // PUT /api/finance/overheads/{id}/post
+    [HttpPut("overheads/{id}/post")]
+    [SwaggerResponseExample(200, typeof(RecordOverheadResponseExample))]
+    [ProducesResponseType(typeof<RecordOverheadResponse), StatusCodes.Status200OK)]
+    public IActionResult PostOverhead(Guid id)
+        => Ok(new RecordOverheadResponse(id, OverheadStatus.Posted));
+
+    // DELETE /api/finance/overheads/{id}
+    [HttpDelete("overheads/{id}")]
+    [SwaggerResponseExample(200, typeof(RecordOverheadResponseExample))]
+    [ProducesResponseType(typeof(RecordOverheadResponse), StatusCodes.Status200OK)]
+    public IActionResult DeleteOverhead(Guid id)
+        => Ok(new RecordOverheadResponse(id, OverheadStatus.Draft));
 
     // GET /api/finance/overheads
     [HttpGet("overheads")]
     [SwaggerResponseExample(200, typeof(OverheadResponseExample))]
-    [ProducesResponseType(typeof(IEnumerable<OverheadResponse>), StatusCodes.Status200OK)]
-    public IActionResult GetOverheads([FromQuery] int month = 11, int year = 2025)
+    [ProducesResponseType(typeof(IEnumerable<OverheadItemDto>), StatusCodes.Status200OK)]
+    public IActionResult GetOverheads([FromQuery] int month = 11, int year = 2025, string? article = null, OverheadStatus? status = null)
         => Ok(new[]
         {
-            new OverheadResponse(
-                Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                120000,
-                $"{month}.{year}"
+            new OverheadItemDto(
+                Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                new DateTime(year, month, 1),
+                article ?? "Аренда",
+                25000m,
+                "Аренда офиса",
+                status ?? OverheadStatus.Posted
+            ),
+            new OverheadItemDto(
+                Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                new DateTime(year, month, 2),
+                "Коммуналка",
+                3200m,
+                "Свет + вода",
+                OverheadStatus.Draft
             )
         });
+
+    // GET /api/finance/overheads/articles
+    [HttpGet("overheads/articles")]
+    [ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status200OK)]
+    public IActionResult GetOverheadArticles()
+        => Ok(new[] { "Аренда", "Коммуналка", "Связь", "Прочие расходы" });
 
     // POST /api/finance/advances
     [HttpPost("advances")]

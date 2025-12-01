@@ -7,10 +7,10 @@ public class RecordOverheadRequestExample : IExamplesProvider<RecordOverheadRequ
 {
     public RecordOverheadRequest GetExamples() =>
         new(
-            PeriodMonth: 11,
-            PeriodYear: 2025,
-            ExpenseTypeId: Guid.Parse("11111111-1111-1111-1111-111111111111"),
-            Amount: 120000.00m
+            Date: new DateTime(2025, 11, 1),
+            Article: "Аренда",
+            Amount: 120000.00m,
+            Comment: "Оплата за ноябрь"
         );
 }
 

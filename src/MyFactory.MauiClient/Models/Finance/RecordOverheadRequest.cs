@@ -1,7 +1,9 @@
-﻿namespace MyFactory.MauiClient.Models.Finance;
+﻿using System;
+
+namespace MyFactory.MauiClient.Models.Finance;
 
 public record RecordOverheadRequest(
-    int PeriodMonth,
-    int PeriodYear,
-    Guid ExpenseTypeId,
-    decimal Amount);
+    DateTime Date,
+    string Article,
+    decimal Amount,
+    string Comment);

@@ -1,11 +1,14 @@
-﻿namespace MyFactory.MauiClient.UIModels.Finance;
+﻿using System;
 
-// Накладные расходы
-public record Overheads(
-    string Date,
+namespace MyFactory.MauiClient.UIModels.Finance;
+
+// Накладной расход для отображения в UI
+public record OverheadItem(
+    Guid Id,
+    DateTime Date,
     string Article,
     decimal Amount,
-    string Description,
-    OverheadsStatus Status
+    string Comment,
+    OverheadStatus Status
 );
 

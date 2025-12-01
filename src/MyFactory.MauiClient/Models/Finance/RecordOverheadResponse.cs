@@ -1,4 +1,8 @@
-﻿namespace MyFactory.MauiClient.Models.Finance;
+﻿using System;
+using MyFactory.MauiClient.UIModels.Finance;
+
+namespace MyFactory.MauiClient.Models.Finance;
 
 public record RecordOverheadResponse(
-    FinanceStatus Status);
+    Guid Id,
+    OverheadStatus Status);

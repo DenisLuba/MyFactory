@@ -1,4 +1,4 @@
-namespace MyFactory.MauiClient.UIModels.Finance;
+namespace MyFactory.WebApi.Contracts.Finance;
 
 public enum OverheadStatus
 {

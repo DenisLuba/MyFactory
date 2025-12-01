@@ -1,8 +1,9 @@
+using System;
+using System.Collections.Generic;
 using System.Net.Http.Json;
+using System.Threading.Tasks;
 using MyFactory.MauiClient.Models.Finance;
 using MyFactory.MauiClient.UIModels.Finance;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MyFactory.MauiClient.Services.FinanceServices
 {
@@ -18,8 +19,42 @@ namespace MyFactory.MauiClient.Services.FinanceServices
             => await _httpClient.PostAsJsonAsync("api/finance/overheads", request)
                 .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<RecordOverheadResponse>()).Unwrap();
 
-        public async Task<List<OverheadResponse>?> GetOverheadsAsync(int month, int year)
-            => await _httpClient.GetFromJsonAsync<List<OverheadResponse>>($"api/finance/overheads?month={month}&year={year}");
+        public async Task<RecordOverheadResponse?> UpdateOverheadAsync(Guid overheadId, RecordOverheadRequest request)
+            => await _httpClient.PutAsJsonAsync($"api/finance/overheads/{overheadId}", request)
+                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<RecordOverheadResponse>()).Unwrap();
+
+        public async Task<RecordOverheadResponse?> PostOverheadAsync(Guid overheadId)
+            => await _httpClient.PutAsync($"api/finance/overheads/{overheadId}/post", null)
+                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<RecordOverheadResponse>()).Unwrap();
+
+        public async Task<RecordOverheadResponse?> DeleteOverheadAsync(Guid overheadId)
+            => await _httpClient.DeleteAsync($"api/finance/overheads/{overheadId}")
+                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<RecordOverheadResponse>()).Unwrap();
+
+        public async Task<List<OverheadItem>?> GetOverheadsAsync(int month, int year, string? article = null, OverheadStatus? status = null)
+        {
+            var query = new List<string>
+            {
+                $"month={month}",
+                $"year={year}"
+            };
+
+            if (!string.IsNullOrWhiteSpace(article))
+            {
+                query.Add($"article={Uri.EscapeDataString(article)}");
+            }
+
+            if (status.HasValue)
+            {
+                query.Add($"status={status.Value}");
+            }
+
+            var url = $"api/finance/overheads?{string.Join("&", query)}";
+            return await _httpClient.GetFromJsonAsync<List<OverheadItem>>(url);
+        }
+
+        public async Task<List<string>?> GetOverheadArticlesAsync()
+            => await _httpClient.GetFromJsonAsync<List<string>>("api/finance/overheads/articles");
 
         public async Task<AdvanceStatusResponse?> CreateAdvanceAsync(CreateAdvanceRequest request)
             => await _httpClient.PostAsJsonAsync("api/finance/advances", request)
