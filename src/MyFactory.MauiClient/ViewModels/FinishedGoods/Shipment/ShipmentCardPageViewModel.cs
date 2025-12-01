@@ -57,7 +57,7 @@ public partial class ShipmentCardPageViewModel : ObservableObject
 		}
 		catch (Exception ex)
 		{
-			await Shell.Current.DisplayAlert("Ошибка", $"Не удалось загрузить отгрузку: {ex.Message}", "OK");
+			await Shell.Current.DisplayAlertAsync("Ошибка", $"Не удалось загрузить отгрузку: {ex.Message}", "OK");
 		}
 		finally
 		{
@@ -79,11 +79,11 @@ public partial class ShipmentCardPageViewModel : ObservableObject
 			CanConfirmPayment = response?.Status == ShipmentStatus.Draft;
 
 			await LoadShipmentAsync();
-			await Shell.Current.DisplayAlert("Оплата", "Оплата отгрузки подтверждена.", "OK");
+			await Shell.Current.DisplayAlertAsync("Оплата", "Оплата отгрузки подтверждена.", "OK");
 		}
 		catch (Exception ex)
 		{
-			await Shell.Current.DisplayAlert("Ошибка", $"Не удалось подтвердить оплату: {ex.Message}", "OK");
+			await Shell.Current.DisplayAlertAsync("Ошибка", $"Не удалось подтвердить оплату: {ex.Message}", "OK");
 		}
 		finally
 		{

@@ -17,7 +17,7 @@ public partial class AdvanceReportCardPageViewModel : ObservableObject
 {
     private readonly IFinanceService _financeService;
     private readonly RelayCommand _addReportItemCommand;
-    private readonly RelayCommand<AdvanceReportItem> _deleteReportItemCommand;
+    private readonly RelayCommand<AdvanceReportItem?> _deleteReportItemCommand;
     private readonly AsyncRelayCommand _saveReportCommand;
     private readonly AsyncRelayCommand _submitReportCommand;
     private AdvancesTablePageViewModel? _parentTableViewModel;
@@ -72,7 +72,7 @@ public partial class AdvanceReportCardPageViewModel : ObservableObject
         _financeService = financeService;
 
         _addReportItemCommand = new RelayCommand(AddReportItem, CanAddReportItem);
-        _deleteReportItemCommand = new RelayCommand<AdvanceReportItem>(DeleteReportItem);
+        _deleteReportItemCommand = new RelayCommand<AdvanceReportItem?>(DeleteReportItem);
         _saveReportCommand = new AsyncRelayCommand(SaveReportAsync, CanPersistReport);
         _submitReportCommand = new AsyncRelayCommand(SubmitReportAsync, CanPersistReport);
 
@@ -80,7 +80,7 @@ public partial class AdvanceReportCardPageViewModel : ObservableObject
     }
 
     public IRelayCommand AddReportItemCommand => _addReportItemCommand;
-    public IRelayCommand<AdvanceReportItem> DeleteReportItemCommand => _deleteReportItemCommand;
+    public IRelayCommand<AdvanceReportItem?> DeleteReportItemCommand => _deleteReportItemCommand;
     public IAsyncRelayCommand SaveReportCommand => _saveReportCommand;
     public IAsyncRelayCommand SubmitReportCommand => _submitReportCommand;
     public IReadOnlyList<AdvanceReportCategories> Categories { get; } = Enum.GetValues<AdvanceReportCategories>();
@@ -169,7 +169,7 @@ public partial class AdvanceReportCardPageViewModel : ObservableObject
     private bool CanAddReportItem()
         => !IsBusy && !string.IsNullOrWhiteSpace(NewItemName) && NewItemAmount > 0;
 
-    private void DeleteReportItem(AdvanceReportItem item)
+    private void DeleteReportItem(AdvanceReportItem? item)
     {
         if (item == null)
         {
@@ -282,5 +282,5 @@ public partial class AdvanceReportCardPageViewModel : ObservableObject
     }
 
     private Task ShowAlertAsync(string title, string message)
-        => Shell.Current?.DisplayAlert(title, message, "OK") ?? Task.CompletedTask;
+        => Shell.Current?.DisplayAlertAsync(title, message, "OK") ?? Task.CompletedTask;
 }

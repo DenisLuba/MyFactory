@@ -72,7 +72,7 @@ public partial class MaterialTransferTablePageViewModel : ObservableObject
 		}
 		catch (Exception ex)
 		{
-			await Shell.Current.DisplayAlert("Ошибка", $"Не удалось загрузить передачи материалов: {ex.Message}", "OK");
+			await Shell.Current.DisplayAlertAsync("Ошибка", $"Не удалось загрузить передачи материалов: {ex.Message}", "OK");
 		}
 		finally
 		{
@@ -107,7 +107,7 @@ public partial class MaterialTransferTablePageViewModel : ObservableObject
 	[RelayCommand]
 	private async Task CreateAsync()
 	{
-		await Shell.Current.DisplayAlert("Передачи", "Создание документа будет добавлено позже.", "OK");
+		await Shell.Current.DisplayAlertAsync("Передачи", "Создание документа будет добавлено позже.", "OK");
 	}
 
 	private void ApplyFilters()

@@ -7,8 +7,8 @@ public class AdvanceStatusResponseExample : IExamplesProvider<AdvanceStatusRespo
 {
     public AdvanceStatusResponse GetExamples() =>
         new(
-            AdvanceId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-            Status: FinanceStatus.ReportSubmitted
+            id: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+            Status: AdvanceStatus.ReportSubmitted
         );
 }
 

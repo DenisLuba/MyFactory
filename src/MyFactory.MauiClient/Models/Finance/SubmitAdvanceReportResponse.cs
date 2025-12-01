@@ -1,4 +1,6 @@
-﻿namespace MyFactory.MauiClient.Models.Finance;
+﻿using System;
+
+namespace MyFactory.MauiClient.Models.Finance;
 
 public record SubmitAdvanceReportResponse(
     Guid AdvanceId,

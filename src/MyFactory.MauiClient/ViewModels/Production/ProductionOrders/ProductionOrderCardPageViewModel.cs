@@ -43,7 +43,7 @@ public partial class ProductionOrderCardPageViewModel : ObservableObject
 		}
 		catch (Exception ex)
 		{
-			await Shell.Current.DisplayAlert("Ошибка", $"Не удалось загрузить заказ: {ex.Message}", "OK");
+			await Shell.Current.DisplayAlertAsync("Ошибка", $"Не удалось загрузить заказ: {ex.Message}", "OK");
 		}
 		finally
 		{

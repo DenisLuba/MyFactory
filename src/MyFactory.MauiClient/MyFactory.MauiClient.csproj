@@ -17,6 +17,8 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<!-- MVVMTK0045 flags WinRT-specific analyzer noise; MAUI app does not target WinRT -->
+		<NoWarn>$(NoWarn);MVVMTK0045</NoWarn>
 
 		<!-- Display name -->
 		<ApplicationTitle>MyFactory.MauiClient</ApplicationTitle>

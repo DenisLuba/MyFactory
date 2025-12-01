@@ -1,7 +1,1 @@
-namespace MyFactory.MauiClient.UIModels.Finance;
-
-public enum OverheadStatus
-{
-    Draft,
-    Posted
-}
+global using OverheadStatus = MyFactory.MauiClient.Models.Finance.OverheadStatus;

@@ -20,8 +20,8 @@ public partial class AdvancesTablePageViewModel : ObservableObject
     private ObservableCollection<AdvanceItem> _advances = new();
 
     [ObservableProperty]
-    private string _employeeFilter;
-    partial void OnEmployeeFilterChanged(string value) => ApplyFilters();
+    private string? _employeeFilter;
+    partial void OnEmployeeFilterChanged(string? value) => ApplyFilters();
 
     [ObservableProperty]
     private AdvanceStatus? _statusFilter;
@@ -39,17 +39,17 @@ public partial class AdvancesTablePageViewModel : ObservableObject
     {
         _financeService = financeService;
         LoadAdvancesCommand = new AsyncRelayCommand(LoadAdvancesAsync);
-        OpenAdvanceCommand = new RelayCommand<AdvanceItem>(OpenAdvance);
+        OpenAdvanceCommand = new RelayCommand<AdvanceItem?>(OpenAdvance);
         CreateAdvanceCommand = new RelayCommand(CreateAdvance);
-        OpenReportCommand = new RelayCommand<AdvanceItem>(OpenReport);
+        OpenReportCommand = new RelayCommand<AdvanceItem?>(OpenReport);
     }
 
     public IReadOnlyList<AdvanceStatus> Statuses { get; } = Enum.GetValues<AdvanceStatus>();
 
     public IAsyncRelayCommand LoadAdvancesCommand { get; }
-    public IRelayCommand<AdvanceItem> OpenAdvanceCommand { get; }
+    public IRelayCommand<AdvanceItem?> OpenAdvanceCommand { get; }
     public IRelayCommand CreateAdvanceCommand { get; }
-    public IRelayCommand<AdvanceItem> OpenReportCommand { get; }
+    public IRelayCommand<AdvanceItem?> OpenReportCommand { get; }
 
     private async Task LoadAdvancesAsync()
     {
@@ -77,8 +77,13 @@ public partial class AdvancesTablePageViewModel : ObservableObject
         Advances = new ObservableCollection<AdvanceItem>(filtered);
     }
 
-    private async void OpenAdvance(AdvanceItem advance)
+    private async void OpenAdvance(AdvanceItem? advance)
     {
+        if (advance is null)
+        {
+            return;
+        }
+
         await Shell.Current.GoToAsync(nameof(AdvanceCardPage), new Dictionary<string, object>
         {
             { "Advance", advance },
@@ -95,8 +100,13 @@ public partial class AdvancesTablePageViewModel : ObservableObject
         });
     }
 
-    private async void OpenReport(AdvanceItem advance)
+    private async void OpenReport(AdvanceItem? advance)
     {
+        if (advance is null)
+        {
+            return;
+        }
+
         await Shell.Current.GoToAsync(nameof(AdvanceReportCardPage), new Dictionary<string, object>
         {
             { "Advance", advance },

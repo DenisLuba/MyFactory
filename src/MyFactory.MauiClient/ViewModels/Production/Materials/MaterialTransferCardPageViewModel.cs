@@ -52,7 +52,7 @@ public partial class MaterialTransferCardPageViewModel : ObservableObject
 		}
 		catch (Exception ex)
 		{
-			await Shell.Current.DisplayAlert("Ошибка", $"Не удалось загрузить передачу: {ex.Message}", "OK");
+			await Shell.Current.DisplayAlertAsync("Ошибка", $"Не удалось загрузить передачу: {ex.Message}", "OK");
 		}
 		finally
 		{
@@ -65,7 +65,7 @@ public partial class MaterialTransferCardPageViewModel : ObservableObject
 	{
 		if (!CanSubmit)
 		{
-			await Shell.Current.DisplayAlert("Передача", "Документ уже проведён или отсутствует.", "OK");
+			await Shell.Current.DisplayAlertAsync("Передача", "Документ уже проведён или отсутствует.", "OK");
 			return;
 		}
 
@@ -76,7 +76,7 @@ public partial class MaterialTransferCardPageViewModel : ObservableObject
 		}
 		catch (Exception ex)
 		{
-			await Shell.Current.DisplayAlert("Ошибка", $"Не удалось провести документ: {ex.Message}", "OK");
+			await Shell.Current.DisplayAlertAsync("Ошибка", $"Не удалось провести документ: {ex.Message}", "OK");
 		}
 		finally
 		{

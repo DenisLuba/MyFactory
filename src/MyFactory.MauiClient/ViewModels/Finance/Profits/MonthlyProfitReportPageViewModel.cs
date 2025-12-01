@@ -86,7 +86,7 @@ public partial class MonthlyProfitReportPageViewModel : ObservableObject
 		}
 		catch (Exception ex)
 		{
-			await Shell.Current.DisplayAlert("Ошибка", $"Не удалось загрузить отчет: {ex.Message}", "OK");
+			await Shell.Current.DisplayAlertAsync("Ошибка", $"Не удалось загрузить отчет: {ex.Message}", "OK");
 		}
 		finally
 		{

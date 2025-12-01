@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyFactory.WebApi.Contracts.Finance;
 using MyFactory.WebApi.SwaggerExamples.Finance;
@@ -16,7 +17,7 @@ public class FinanceController : ControllerBase
     [Consumes("application/json")]
     [SwaggerRequestExample(typeof(RecordOverheadRequest), typeof(RecordOverheadRequestExample))]
     [SwaggerResponseExample(200, typeof(RecordOverheadResponseExample))]
-    [ProducesResponseType(typeof<RecordOverheadResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(RecordOverheadResponse), 200)]
     public IActionResult AddOverhead([FromBody] RecordOverheadRequest request)
         => Ok(new RecordOverheadResponse(Guid.Parse("11111111-1111-1111-1111-111111111111"), OverheadStatus.Draft));
 
@@ -25,28 +26,28 @@ public class FinanceController : ControllerBase
     [Consumes("application/json")]
     [SwaggerRequestExample(typeof(RecordOverheadRequest), typeof(RecordOverheadRequestExample))]
     [SwaggerResponseExample(200, typeof(RecordOverheadResponseExample))]
-    [ProducesResponseType(typeof<RecordOverheadResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(RecordOverheadResponse), 200)]
     public IActionResult UpdateOverhead(Guid id, [FromBody] RecordOverheadRequest request)
         => Ok(new RecordOverheadResponse(id, OverheadStatus.Draft));
 
     // PUT /api/finance/overheads/{id}/post
     [HttpPut("overheads/{id}/post")]
     [SwaggerResponseExample(200, typeof(RecordOverheadResponseExample))]
-    [ProducesResponseType(typeof<RecordOverheadResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(RecordOverheadResponse), 200)]
     public IActionResult PostOverhead(Guid id)
         => Ok(new RecordOverheadResponse(id, OverheadStatus.Posted));
 
     // DELETE /api/finance/overheads/{id}
     [HttpDelete("overheads/{id}")]
     [SwaggerResponseExample(200, typeof(RecordOverheadResponseExample))]
-    [ProducesResponseType(typeof(RecordOverheadResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(RecordOverheadResponse), 200)]
     public IActionResult DeleteOverhead(Guid id)
         => Ok(new RecordOverheadResponse(id, OverheadStatus.Draft));
 
     // GET /api/finance/overheads
     [HttpGet("overheads")]
     [SwaggerResponseExample(200, typeof(OverheadResponseExample))]
-    [ProducesResponseType(typeof(IEnumerable<OverheadItemDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<OverheadItemDto>), 200)]
     public IActionResult GetOverheads([FromQuery] int month = 11, int year = 2025, string? article = null, OverheadStatus? status = null)
         => Ok(new[]
         {
@@ -70,7 +71,7 @@ public class FinanceController : ControllerBase
 
     // GET /api/finance/overheads/articles
     [HttpGet("overheads/articles")]
-    [ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<string>), 200)]
     public IActionResult GetOverheadArticles()
         => Ok(new[] { "Аренда", "Коммуналка", "Связь", "Прочие расходы" });
 
@@ -79,7 +80,7 @@ public class FinanceController : ControllerBase
     [Consumes("application/json")]
     [SwaggerRequestExample(typeof(CreateAdvanceRequest), typeof(CreateAdvanceRequestExample))]
     [SwaggerResponseExample(201, typeof(AdvanceStatusResponseExample))]
-    [ProducesResponseType(typeof(AdvanceStatusResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(AdvanceStatusResponse), 201)]
     public IActionResult CreateAdvance([FromBody] CreateAdvanceRequest request)
         => Created(
             "",
@@ -91,7 +92,7 @@ public class FinanceController : ControllerBase
     [Consumes("application/json")]
     [SwaggerRequestExample(typeof(SubmitAdvanceReportRequest), typeof(SubmitAdvanceReportRequestExample))]
     [SwaggerResponseExample(200, typeof(AdvanceStatusResponseExample))]
-    [ProducesResponseType(typeof(AdvanceStatusResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AdvanceStatusResponse), 200)]
     public IActionResult SubmitAdvanceReport(
         string id,
         [FromBody] SubmitAdvanceReportRequest request)
@@ -100,7 +101,7 @@ public class FinanceController : ControllerBase
     // GET /api/finance/advances
     [HttpGet("advances")]
     [SwaggerResponseExample(200, typeof(AdvanceItemDtoExample))]
-    [ProducesResponseType(typeof(IEnumerable<AdvanceItemDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<AdvanceItemDto>), 200)]
     public IActionResult GetAdvances()
         => Ok(new[]
         {
@@ -123,14 +124,14 @@ public class FinanceController : ControllerBase
     // DELETE /api/finance/advances/{advanceNumber}
     [HttpDelete("advances/{advanceNumber}")]
     [SwaggerResponseExample(200, typeof(AdvanceStatusResponseExample))]
-    [ProducesResponseType(typeof(AdvanceStatusResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AdvanceStatusResponse), 200)]
     public IActionResult DeleteAdvance(string advanceNumber)
         => Ok(new AdvanceStatusResponse(Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), AdvanceStatus.AdvanceDeleted));
 
     // PUT /api/finance/advances/{advanceNumber}/close
     [HttpPut("advances/{advanceNumber}/close")]
     [SwaggerResponseExample(200, typeof(AdvanceStatusResponseExample))]
-    [ProducesResponseType(typeof(AdvanceStatusResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AdvanceStatusResponse), 200)]
     public IActionResult CloseAdvance(string advanceNumber)
         => Ok(new AdvanceStatusResponse(Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), AdvanceStatus.AdvanceClosed));
 }

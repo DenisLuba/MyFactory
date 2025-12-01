@@ -267,7 +267,7 @@ public partial class OverheadCardPageViewModel : ObservableObject
 			return;
 		}
 
-		var confirm = await Shell.Current.DisplayAlert("Удаление", "Удалить расход?", "Да", "Нет");
+		var confirm = await Shell.Current.DisplayAlertAsync("Удаление", "Удалить расход?", "Да", "Нет");
 		if (!confirm)
 		{
 			return;
@@ -315,5 +315,5 @@ public partial class OverheadCardPageViewModel : ObservableObject
 	}
 
 	private static Task ShowAlertAsync(string title, string message)
-		=> Shell.Current.DisplayAlert(title, message, "OK");
+		=> Shell.Current.DisplayAlertAsync(title, message, "OK");
 }

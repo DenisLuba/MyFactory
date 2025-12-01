@@ -1,5 +1,4 @@
 ﻿using System;
-using MyFactory.MauiClient.UIModels.Finance;
 
 namespace MyFactory.MauiClient.Models.Finance;
 

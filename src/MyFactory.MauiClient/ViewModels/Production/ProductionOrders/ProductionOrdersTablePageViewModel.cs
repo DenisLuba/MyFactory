@@ -53,7 +53,7 @@ public partial class ProductionOrdersTablePageViewModel : ObservableObject
 		}
 		catch (Exception ex)
 		{
-			await Shell.Current.DisplayAlert("Ошибка", $"Не удалось загрузить заказы: {ex.Message}", "OK");
+			await Shell.Current.DisplayAlertAsync("Ошибка", $"Не удалось загрузить заказы: {ex.Message}", "OK");
 		}
 		finally
 		{

@@ -55,7 +55,7 @@ public partial class StageDistributionPageViewModel : ObservableObject
 		}
 		catch (Exception ex)
 		{
-			await Shell.Current.DisplayAlert("Ошибка", $"Не удалось загрузить распределение: {ex.Message}", "OK");
+			await Shell.Current.DisplayAlertAsync("Ошибка", $"Не удалось загрузить распределение: {ex.Message}", "OK");
 		}
 		finally
 		{

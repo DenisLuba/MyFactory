@@ -106,7 +106,7 @@ public partial class AdvanceCardPageViewModel : ObservableObject
         await _financeService.CloseAdvanceAsync(Advance.AdvanceNumber);
         Advance = Advance with { Status = AdvanceStatus.Reported };
         // Уведомляем пользователя об успехе операции
-        await Shell.Current.DisplayAlert("Успех", "Выдача успешно закрыта.", "OK");
+        await Shell.Current.DisplayAlertAsync("Успех", "Выдача успешно закрыта.", "OK");
         // Обновляем таблицу авансов в родительской ViewModel
         _parentTableViewModel?.LoadAdvancesCommand.Execute(null);
     }
@@ -116,7 +116,7 @@ public partial class AdvanceCardPageViewModel : ObservableObject
         // Удаляем аванс через сервис
         await _financeService.DeleteAdvanceAsync(Advance.AdvanceNumber);
         // Уведомляем пользователя об успешном удалении
-        await Shell.Current.DisplayAlert("Удалено", "Выдача удалена.", "OK");
+        await Shell.Current.DisplayAlertAsync("Удалено", "Выдача удалена.", "OK");
         // Обновляем таблицу авансов в родительской ViewModel
         _parentTableViewModel?.LoadAdvancesCommand.Execute(null);
         // Навигация назад после удаления

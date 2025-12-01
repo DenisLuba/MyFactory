@@ -4,6 +4,45 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Reference.Employees"
-    x:DataType="view_model:EmployeeCardPageViewModel">
+    x:DataType="view_model:EmployeeCardPageViewModel"
+    Title="Карточка сотрудника">
 
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="14">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+            <Frame Padding="12" BackgroundColor="{DynamicResource Gray100}" CornerRadius="8">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="{Binding EmployeeCode, StringFormat='Табельный номер: {0}'}" FontAttributes="Bold" />
+                    <Label Text="{Binding HireDateDisplay, StringFormat='Дата приёма: {0}'}" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Entry
+                Text="{Binding FullName}"
+                Placeholder="ФИО"
+                Keyboard="Text" />
+
+            <Entry
+                Text="{Binding Position}"
+                Placeholder="Должность"
+                Keyboard="Text" />
+
+            <Entry
+                Text="{Binding GradeText}"
+                Placeholder="Разряд"
+                Keyboard="Numeric" />
+
+            <HorizontalStackLayout Spacing="12">
+                <Label Text="Активен" VerticalOptions="Center" />
+                <Switch IsToggled="{Binding IsActive}" />
+            </HorizontalStackLayout>
+
+            <Button
+                Text="Сохранить"
+                Command="{Binding SaveCommand}"
+                IsEnabled="{Binding IsSaving, Converter={StaticResource InvertedBoolConverter}}"
+                IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

@@ -68,7 +68,7 @@ public partial class FinishedGoodsReceiptTablePageViewModel : ObservableObject
 		}
 		catch (Exception ex)
 		{
-			await Shell.Current.DisplayAlert("Ошибка", $"Не удалось загрузить оприходования: {ex.Message}", "OK");
+			await Shell.Current.DisplayAlertAsync("Ошибка", $"Не удалось загрузить оприходования: {ex.Message}", "OK");
 		}
 		finally
 		{

@@ -55,7 +55,7 @@ public partial class MaterialTransfersForOrderPageViewModel : ObservableObject
 		}
 		catch (Exception ex)
 		{
-			await Shell.Current.DisplayAlert("Ошибка", $"Не удалось загрузить передачи: {ex.Message}", "OK");
+			await Shell.Current.DisplayAlertAsync("Ошибка", $"Не удалось загрузить передачи: {ex.Message}", "OK");
 		}
 		finally
 		{

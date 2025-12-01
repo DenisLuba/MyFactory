@@ -93,7 +93,7 @@ public partial class ShipmentsTablePageViewModel : ObservableObject
 		}
 		catch (Exception ex)
 		{
-			await Shell.Current.DisplayAlert("Ошибка", $"Не удалось загрузить отгрузки: {ex.Message}", "OK");
+			await Shell.Current.DisplayAlertAsync("Ошибка", $"Не удалось загрузить отгрузки: {ex.Message}", "OK");
 		}
 		finally
 		{
@@ -146,7 +146,7 @@ public partial class ShipmentsTablePageViewModel : ObservableObject
 
 	private async Task CreateShipmentAsync()
 	{
-		await Shell.Current.DisplayAlert("Создание отгрузки", "Форма создания будет добавлена позже.", "OK");
+		await Shell.Current.DisplayAlertAsync("Создание отгрузки", "Форма создания будет добавлена позже.", "OK");
 	}
 
 	private void ClearFilters()

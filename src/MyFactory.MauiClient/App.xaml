@@ -14,6 +14,7 @@
             <!-- Converters -->
             <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
             <converters:BooleanToYesNoConverter x:Key="BooleanToYesNoConverter" />
+            <converters:BooleanToActiveStatusConverter x:Key="BooleanToActiveStatusConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

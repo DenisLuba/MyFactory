@@ -1,9 +1,179 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="MyFactory.MauiClient.Pages.FinishedGoods.Returns.ReturnCardPage"
+    x:Name="ReturnCardPageRoot"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:MyFactory.MauiClient.Converters"
+    xmlns:models="clr-namespace:MyFactory.MauiClient.Models.Returns"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.FinishedGoods.Returns"
-    x:DataType="view_model:ReturnCardPageViewModel">
+    x:DataType="view_model:ReturnCardPageViewModel"
+    Title="Карточка возврата">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <converters:GreaterThanZeroConverter x:Key="GreaterThanZeroConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+            <Frame IsVisible="{Binding IsNewReturn}" Padding="16" CornerRadius="12" HasShadow="False" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}">
+                <VerticalStackLayout Spacing="16">
+                    <Label FontSize="20" FontAttributes="Bold" Text="Создание возврата" />
+
+                    <VerticalStackLayout Spacing="8">
+                        <Label FontAttributes="Bold" Text="Клиент" />
+                        <Entry
+                            Placeholder="Начните вводить клиента"
+                            Text="{Binding CustomerQuery}"
+                            Keyboard="Chat"
+                            ClearButtonVisibility="WhileEditing" />
+
+                        <Border
+                            BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#1E1B4B}"
+                            IsVisible="{Binding HasSelectedCustomer}"
+                            Padding="8"
+                            Stroke="Transparent">
+                            <Label
+                                FontSize="12"
+                                Text="{Binding SelectedCustomerSummary}" />
+                        </Border>
+
+                        <VerticalStackLayout
+                            BindableLayout.ItemsSource="{Binding CustomerSuggestions}"
+                            IsVisible="{Binding CustomerSuggestions.Count, Converter={StaticResource GreaterThanZeroConverter}}"
+                            Spacing="6">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:LookupSuggestion">
+                                    <Border
+                                        BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#111827}"
+                                        Padding="10"
+                                        Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#374151}">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="8" />
+                                        </Border.StrokeShape>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                Command="{Binding Source={x:Reference ReturnCardPageRoot}, Path=BindingContext.UseCustomerSuggestionCommand}"
+                                                CommandParameter="{Binding .}" />
+                                        </Border.GestureRecognizers>
+                                        <VerticalStackLayout Spacing="2">
+                                            <Label FontAttributes="Bold" Text="{Binding DisplayName}" />
+                                            <Label FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" Text="{Binding Id}" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+
+                        <Entry
+                            Placeholder="ID клиента (GUID)"
+                            Text="{Binding CustomerIdText}"
+                            Keyboard="Chat" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="8">
+                        <Label FontAttributes="Bold" Text="Изделие" />
+                        <Entry
+                            Placeholder="Название или артикул"
+                            Text="{Binding SpecificationQuery}"
+                            Keyboard="Chat"
+                            ClearButtonVisibility="WhileEditing" />
+
+                        <Border
+                            BackgroundColor="{AppThemeBinding Light=#ECFDF5, Dark=#064E3B}"
+                            IsVisible="{Binding HasSelectedProduct}"
+                            Padding="8"
+                            Stroke="Transparent">
+                            <Label
+                                FontSize="12"
+                                Text="{Binding SelectedProductSummary}" />
+                        </Border>
+
+                        <VerticalStackLayout
+                            BindableLayout.ItemsSource="{Binding ProductSuggestions}"
+                            IsVisible="{Binding ProductSuggestions.Count, Converter={StaticResource GreaterThanZeroConverter}}"
+                            Spacing="6">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:LookupSuggestion">
+                                    <Border
+                                        BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#111827}"
+                                        Padding="10"
+                                        Stroke="{AppThemeBinding Light=#E5E7EB, Dark=#374151}">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="8" />
+                                        </Border.StrokeShape>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                Command="{Binding Source={x:Reference ReturnCardPageRoot}, Path=BindingContext.UseProductSuggestionCommand}"
+                                                CommandParameter="{Binding .}" />
+                                        </Border.GestureRecognizers>
+                                        <VerticalStackLayout Spacing="2">
+                                            <Label FontAttributes="Bold" Text="{Binding DisplayName}" />
+                                            <Label FontSize="12" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" Text="{Binding Details}" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+
+                        <Entry
+                            Placeholder="ID спецификации (GUID)"
+                            Text="{Binding SpecificationIdText}"
+                            Keyboard="Chat" />
+                    </VerticalStackLayout>
+
+                    <DatePicker Date="{Binding Date}" />
+
+                    <Entry
+                        Placeholder="Количество"
+                        Text="{Binding QuantityText}"
+                        Keyboard="Numeric" />
+
+                    <Editor
+                        AutoSize="TextChanges"
+                        Placeholder="Причина возврата"
+                        Text="{Binding Reason}" />
+
+                    <Button
+                        Command="{Binding CreateReturnCommand}"
+                        IsEnabled="{Binding IsSaving, Converter={StaticResource InvertedBoolConverter}}"
+                        Text="Создать возврат" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame IsVisible="{Binding IsExistingReturn}" Padding="16" CornerRadius="12" HasShadow="False" BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}">
+                <VerticalStackLayout Spacing="12">
+                    <Label FontSize="20" FontAttributes="Bold" Text="Информация о возврате" />
+
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="8">
+                        <Label Text="Клиент" />
+                        <Label Grid.Column="1" Text="{Binding Customer}" />
+
+                        <Label Grid.Row="1" Text="Изделие" />
+                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding ProductName}" />
+
+                        <Label Grid.Row="2" Text="Количество" />
+                        <Label Grid.Row="2" Grid.Column="1" Text="{Binding Quantity}" />
+
+                        <Label Grid.Row="3" Text="Дата" />
+                        <Label Grid.Row="3" Grid.Column="1" Text="{Binding DateDisplay}" />
+
+                        <Label Grid.Row="4" Text="Статус" />
+                        <Label Grid.Row="4" Grid.Column="1" Text="{Binding Status}" />
+                    </Grid>
+
+                    <Label IsVisible="{Binding HasReason}" Text="Причина" />
+                    <Label IsVisible="{Binding HasReason}" Text="{Binding Reason}" />
+
+                    <Label IsVisible="{Binding HasComment}" Text="Комментарий" />
+                    <Label IsVisible="{Binding HasComment}" Text="{Binding Comment}" />
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

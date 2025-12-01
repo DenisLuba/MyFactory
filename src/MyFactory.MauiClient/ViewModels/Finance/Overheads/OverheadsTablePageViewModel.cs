@@ -104,7 +104,7 @@ public partial class OverheadsTablePageViewModel : ObservableObject
 		}
 		catch (Exception ex)
 		{
-			await Shell.Current.DisplayAlert("Ошибка", $"Не удалось загрузить накладные расходы: {ex.Message}", "OK");
+			await Shell.Current.DisplayAlertAsync("Ошибка", $"Не удалось загрузить накладные расходы: {ex.Message}", "OK");
 		}
 		finally
 		{
