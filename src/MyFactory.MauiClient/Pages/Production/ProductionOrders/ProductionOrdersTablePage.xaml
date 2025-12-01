@@ -4,6 +4,44 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Production.ProductionOrders"
-    x:DataType="view_model:ProductionOrdersTablePageViewModel">
+    x:DataType="view_model:ProductionOrdersTablePageViewModel"
+    Title="Производственные заказы">
 
+    <RefreshView Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy}">
+        <Grid Padding="16">
+            <CollectionView
+                ItemsSource="{Binding Orders}"
+                SelectionMode="Single"
+                SelectionChanged="OnOrderSelectionChanged">
+                <CollectionView.Header>
+                    <Grid ColumnDefinitions="Auto,2*,Auto,Auto,Auto,Auto" Padding="0,0,0,6">
+                        <Label Text="Заказ" FontAttributes="Bold" />
+                        <Label Text="Изделие" Grid.Column="1" FontAttributes="Bold" />
+                        <Label Text="Кол-во" Grid.Column="2" FontAttributes="Bold" HorizontalTextAlignment="End" />
+                        <Label Text="Дата начала" Grid.Column="3" FontAttributes="Bold" />
+                        <Label Text="Дата завершения" Grid.Column="4" FontAttributes="Bold" />
+                        <Label Text="Статус" Grid.Column="5" FontAttributes="Bold" />
+                    </Grid>
+                </CollectionView.Header>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="Auto,2*,Auto,Auto,Auto,Auto" Padding="0,4">
+                            <Label Text="{Binding OrderNumber}" />
+                            <Label Text="{Binding ProductName}" Grid.Column="1" />
+                            <Label Text="{Binding Quantity}" Grid.Column="2" HorizontalTextAlignment="End" />
+                            <Label Text="{Binding StartDate, StringFormat='{}{0:dd.MM.yyyy}'}" Grid.Column="3" />
+                            <Label Text="{Binding EndDate, StringFormat='{}{0:dd.MM.yyyy}'}" Grid.Column="4" />
+                            <Label Text="{Binding Status}" Grid.Column="5" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label
+                Text="Заказы не найдены"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                IsVisible="{Binding HasNoOrders}" />
+        </Grid>
+    </RefreshView>
 </ContentPage>
