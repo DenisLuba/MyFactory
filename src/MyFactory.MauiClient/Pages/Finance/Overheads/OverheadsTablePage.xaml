@@ -3,7 +3,142 @@
     x:Class="MyFactory.MauiClient.Pages.Finance.Overheads.OverheadsTablePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:MyFactory.MauiClient.Converters"
+    xmlns:finance="clr-namespace:MyFactory.MauiClient.UIModels.Finance"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.Overheads"
-    x:DataType="view_model:OverheadsTablePageViewModel">
+    x:DataType="view_model:OverheadsTablePageViewModel"
+    Title="Накладные расходы">
 
+    <ContentPage.Resources>
+        <Color x:Key="TextSecondaryColor">#6B7280</Color>
+        <Color x:Key="PrimaryColor">#2563EB</Color>
+        <Color x:Key="ErrorColor">#DC2626</Color>
+
+        <Style x:Key="CaptionLabelStyle" TargetType="Label">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="TextColor" Value="{StaticResource TextSecondaryColor}" />
+        </Style>
+
+        <Style x:Key="CardFrameStyle" TargetType="Frame">
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="HasShadow" Value="False" />
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}" />
+            <Setter Property="BorderColor" Value="{AppThemeBinding Light=#E5E7EB, Dark=#374151}" />
+        </Style>
+
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Добавить" Command="{Binding AddOverheadCommand}" Priority="0" />
+        <ToolbarItem Text="Сбросить" Command="{Binding ResetFiltersCommand}" Priority="1" />
+    </ContentPage.ToolbarItems>
+
+    <Grid
+        ColumnSpacing="0"
+        Padding="16"
+        RowDefinitions="Auto,*"
+        RowSpacing="16">
+        <VerticalStackLayout Spacing="12">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <VerticalStackLayout>
+                    <Label Text="Месяц" Style="{StaticResource CaptionLabelStyle}" />
+                    <Picker
+                        ItemsSource="{Binding Months}"
+                        SelectedItem="{Binding SelectedMonth}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout>
+                    <Label Text="Год" Style="{StaticResource CaptionLabelStyle}" />
+                    <Picker
+                        ItemsSource="{Binding Years}"
+                        SelectedItem="{Binding SelectedYear}" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <VerticalStackLayout>
+                    <Label Text="Статья" Style="{StaticResource CaptionLabelStyle}" />
+                    <Picker
+                        ItemsSource="{Binding Articles}"
+                        SelectedItem="{Binding SelectedArticle}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout>
+                    <Label Text="Статус" Style="{StaticResource CaptionLabelStyle}" />
+                    <Picker
+                        ItemsSource="{Binding Statuses}"
+                        SelectedItem="{Binding SelectedStatus}"
+                        Title="Все статусы" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <VerticalStackLayout>
+                    <Label Text="Сортировка" Style="{StaticResource CaptionLabelStyle}" />
+                    <Picker
+                        ItemsSource="{Binding SortOptions}"
+                        SelectedItem="{Binding SelectedSortOption}" />
+                </VerticalStackLayout>
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding LoadOverheadsCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                    Text="Обновить"
+                    VerticalOptions="End" />
+            </Grid>
+        </VerticalStackLayout>
+
+        <RefreshView
+            Grid.Row="1"
+            Command="{Binding LoadOverheadsCommand}"
+            IsRefreshing="{Binding IsBusy}">
+            <Grid>
+                <CollectionView
+                    ItemsSource="{Binding Overheads}"
+                    SelectionMode="None">
+                    <CollectionView.EmptyView>
+                        <Label
+                            HorizontalOptions="Center"
+                            Text="Нет данных"
+                            TextColor="{StaticResource TextSecondaryColor}"
+                            VerticalOptions="Center" />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="finance:OverheadItem">
+                            <Frame Margin="0,0,0,12" Padding="12" Style="{StaticResource CardFrameStyle}">
+                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                    <VerticalStackLayout Spacing="2">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Text="{Binding Article}" />
+                                        <Label
+                                            FontSize="12"
+                                            Text="{Binding Date, StringFormat='{}{0:dd.MM.yyyy}'}"
+                                            TextColor="{StaticResource TextSecondaryColor}" />
+                                    </VerticalStackLayout>
+
+                                    <Label
+                                        Grid.Column="1"
+                                        HorizontalOptions="End"
+                                        Text="{Binding Amount, StringFormat='{}{0:N2}'}"
+                                        TextColor="{StaticResource PrimaryColor}" />
+
+                                    <Label
+                                        Grid.ColumnSpan="2"
+                                        Grid.Row="1"
+                                        FontSize="12"
+                                        Text="{Binding Status}"
+                                        TextColor="{StaticResource TextSecondaryColor}" />
+                                </Grid>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenOverheadCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </RefreshView>
+    </Grid>
 </ContentPage>

@@ -83,9 +83,9 @@ public partial class AdvanceReportCardPageViewModel : ObservableObject
     public IRelayCommand<AdvanceReportItem> DeleteReportItemCommand => _deleteReportItemCommand;
     public IAsyncRelayCommand SaveReportCommand => _saveReportCommand;
     public IAsyncRelayCommand SubmitReportCommand => _submitReportCommand;
+    public IReadOnlyList<AdvanceReportCategories> Categories { get; } = Enum.GetValues<AdvanceReportCategories>();
 
     public void Initialize(AdvanceItem advance, IEnumerable<AdvanceReportItem>? existingItems = null)
-        public IReadOnlyList<AdvanceReportCategories> Categories { get; } = Enum.GetValues<AdvanceReportCategories>();
     {
         Advance = advance;
         AdvanceAmount = advance?.AdvanceAmount ?? 0;

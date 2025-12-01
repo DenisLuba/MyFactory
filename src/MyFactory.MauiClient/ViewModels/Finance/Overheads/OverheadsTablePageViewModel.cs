@@ -29,6 +29,7 @@ public partial class OverheadsTablePageViewModel : ObservableObject
 		AddOverheadCommand = new AsyncRelayCommand(AddOverheadAsync);
 		OpenOverheadCommand = new AsyncRelayCommand<OverheadItem?>(OpenOverheadAsync);
 		ChangeSortCommand = new RelayCommand<OverheadSortOption>(option => SelectedSortOption = option);
+		ResetFiltersCommand = new RelayCommand(ResetFilters);
 	}
 
 	public ObservableCollection<string> Articles { get; } = new();
@@ -68,12 +69,15 @@ public partial class OverheadsTablePageViewModel : ObservableObject
 		.OrderByDescending(y => y)
 		.ToList();
 
+	public IReadOnlyList<OverheadStatus> Statuses { get; } = Enum.GetValues<OverheadStatus>();
+
 	public IReadOnlyList<OverheadSortOption> SortOptions { get; } = Enum.GetValues<OverheadSortOption>();
 
 	public IAsyncRelayCommand LoadOverheadsCommand { get; }
 	public IAsyncRelayCommand AddOverheadCommand { get; }
 	public IAsyncRelayCommand<OverheadItem?> OpenOverheadCommand { get; }
 	public IRelayCommand<OverheadSortOption> ChangeSortCommand { get; }
+	public IRelayCommand ResetFiltersCommand { get; }
 
 	private async Task LoadOverheadsAsync()
 	{
@@ -179,6 +183,25 @@ public partial class OverheadsTablePageViewModel : ObservableObject
 			{ "Overhead", overhead },
 			{ "ParentViewModel", this }
 		});
+	}
+
+	private void ResetFilters()
+	{
+		SelectedArticle = AllArticlesFilter;
+		SelectedStatus = null;
+		SelectedSortOption = OverheadSortOption.DateDescending;
+
+		if (SelectedMonth != DateTime.Today.Month)
+		{
+			SelectedMonth = DateTime.Today.Month;
+		}
+
+		if (SelectedYear != DateTime.Today.Year)
+		{
+			SelectedYear = DateTime.Today.Year;
+		}
+
+		LoadOverheadsCommand.Execute(null);
 	}
 }
 
