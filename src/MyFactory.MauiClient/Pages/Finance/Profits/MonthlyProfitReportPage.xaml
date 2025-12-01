@@ -3,7 +3,91 @@
     x:Class="MyFactory.MauiClient.Pages.Finance.Profits.MonthlyProfitReportPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:MyFactory.MauiClient.Converters"
+    xmlns:finance="clr-namespace:MyFactory.MauiClient.UIModels.Finance"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.Profits"
-    x:DataType="view_model:MonthlyProfitReportPageViewModel">
+    x:DataType="view_model:MonthlyProfitReportPageViewModel"
+    Title="Прибыль за месяц">
 
+    <ContentPage.Resources>
+        <Color x:Key="TextSecondaryColor">#6B7280</Color>
+        <Color x:Key="PrimaryColor">#2563EB</Color>
+        <Color x:Key="SurfaceColor">#F3F4F6</Color>
+
+        <Style TargetType="Label" x:Key="CaptionLabelStyle">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="TextColor" Value="{StaticResource TextSecondaryColor}" />
+        </Style>
+
+        <Style TargetType="Grid" x:Key="TableGridStyle">
+            <Setter Property="ColumnDefinitions" Value="*,1.1*,1.1*,1.1*,1.1*,1.1*" />
+        </Style>
+
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ContentPage.Resources>
+
+    <Grid Padding="16" RowDefinitions="Auto,*" RowSpacing="16">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <VerticalStackLayout>
+                <Label Style="{StaticResource CaptionLabelStyle}" Text="Год" />
+                <Picker ItemsSource="{Binding Years}" SelectedItem="{Binding SelectedYear}" />
+            </VerticalStackLayout>
+            <Button
+                Command="{Binding RefreshCommand}"
+                IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                Text="Обновить"
+                VerticalOptions="End" />
+        </Grid>
+
+        <RefreshView Grid.Row="1" Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy}">
+            <Grid RowDefinitions="Auto,*" RowSpacing="0">
+                <Grid
+                    BackgroundColor="{StaticResource SurfaceColor}"
+                    ColumnSpacing="12"
+                    Padding="12,8"
+                    Style="{StaticResource TableGridStyle}">
+                    <Label FontAttributes="Bold" Text="Период" />
+                    <Label FontAttributes="Bold" Grid.Column="1" HorizontalTextAlignment="End" Text="Выручка" />
+                    <Label FontAttributes="Bold" Grid.Column="2" HorizontalTextAlignment="End" Text="Себестоимость" />
+                    <Label FontAttributes="Bold" Grid.Column="3" HorizontalTextAlignment="End" Text="Накладные" />
+                    <Label FontAttributes="Bold" Grid.Column="4" HorizontalTextAlignment="End" Text="Зарплата" />
+                    <Label FontAttributes="Bold" Grid.Column="5" HorizontalTextAlignment="End" Text="Прибыль" />
+                </Grid>
+
+                <CollectionView Grid.Row="1" ItemsSource="{Binding ReportItems}">
+                    <CollectionView.EmptyView>
+                        <Label
+                            HorizontalOptions="Center"
+                            Padding="24"
+                            Text="Нет данных"
+                            TextColor="{StaticResource TextSecondaryColor}"
+                            VerticalOptions="Center" />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="finance:MonthlyProfitItem">
+                            <Grid
+                                ColumnSpacing="12"
+                                Padding="12,10"
+                                Style="{StaticResource TableGridStyle}">
+                                <Label Text="{Binding Period}" />
+                                <Label Grid.Column="1" HorizontalTextAlignment="End" Text="{Binding Revenue, StringFormat='{}{0:N0} ₽'}" />
+                                <Label Grid.Column="2" HorizontalTextAlignment="End" Text="{Binding ProductionCost, StringFormat='{}{0:N0} ₽'}" />
+                                <Label Grid.Column="3" HorizontalTextAlignment="End" Text="{Binding Overhead, StringFormat='{}{0:N0} ₽'}" />
+                                <Label Grid.Column="4" HorizontalTextAlignment="End" Text="{Binding Payroll, StringFormat='{}{0:N0} ₽'}" />
+                                <Label Grid.Column="5" FontAttributes="Bold" HorizontalTextAlignment="End" Text="{Binding Profit, StringFormat='{}{0:N0} ₽'}" TextColor="{StaticResource PrimaryColor}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </RefreshView>
+
+        <ActivityIndicator
+            Grid.RowSpan="2"
+            HorizontalOptions="Center"
+            InputTransparent="True"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center" />
+    </Grid>
 </ContentPage>

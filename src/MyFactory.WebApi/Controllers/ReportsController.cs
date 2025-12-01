@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 using MyFactory.WebApi.Contracts.Reports;
 using MyFactory.WebApi.SwaggerExamples.Reports;
@@ -27,6 +29,25 @@ public class ReportsController : ControllerBase
                 Profit: 10600m
             )
         );
+
+    [HttpGet("monthly-profit/year/{year:int}")]
+    [SwaggerResponseExample(200, typeof(ReportsMonthlyProfitListExample))]
+    [ProducesResponseType(typeof(IEnumerable<ReportsMonthlyProfitResponse>), StatusCodes.Status200OK)]
+    public IActionResult MonthlyProfitByYear(int year)
+    {
+        var months = Enumerable.Range(1, 12)
+            .Select(m => new ReportsMonthlyProfitResponse(
+                Period: $"{m:D2}.{year}",
+                Revenue: 100000m + (12 - m) * 1500,
+                ProductionCost: 70000m + (12 - m) * 1200,
+                Overhead: 15000m + m * 150,
+                Wages: 5000m + (m % 3) * 400,
+                Profit: 15000m + (m % 4) * 500
+            ))
+            .OrderByDescending(r => r.Period);
+
+        return Ok(months);
+    }
 
     // -------------------------
     //  REVENUE BY PRODUCT

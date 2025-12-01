@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net.Http.Json;
 using MyFactory.MauiClient.Models.Reports;
 
@@ -9,6 +10,9 @@ namespace MyFactory.MauiClient.Services.ReportsServices
 
         public async Task<ReportsMonthlyProfitResponse?> MonthlyProfitAsync(int month, int year)
             => await _httpClient.GetFromJsonAsync<ReportsMonthlyProfitResponse>($"api/reports/monthly-profit?month={month}&year={year}");
+
+        public async Task<List<ReportsMonthlyProfitResponse>?> GetMonthlyProfitByYearAsync(int year)
+            => await _httpClient.GetFromJsonAsync<List<ReportsMonthlyProfitResponse>>($"api/reports/monthly-profit/year/{year}");
 
         public async Task<List<ReportsRevenueResponse>?> RevenueAsync(int month, int year)
             => await _httpClient.GetFromJsonAsync<List<ReportsRevenueResponse>>($"api/reports/revenue?month={month}&year={year}");
