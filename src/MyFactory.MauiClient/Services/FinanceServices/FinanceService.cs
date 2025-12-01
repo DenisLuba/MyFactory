@@ -33,7 +33,7 @@ namespace MyFactory.MauiClient.Services.FinanceServices
             => await _httpClient.GetFromJsonAsync<List<AdvanceItem>>("api/finance/advances");
 
         public async Task<AdvanceStatusResponse?> CloseAdvanceAsync(string advanceNumber)
-            => await _httpClient.PostAsync($"api/finance/advances/{advanceNumber}/close", null)
+            => await _httpClient.PutAsync($"api/finance/advances/{advanceNumber}/close", null)
                 .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<AdvanceStatusResponse>()).Unwrap();
 
         public async Task<AdvanceStatusResponse?> DeleteAdvanceAsync(string advanceNumber)

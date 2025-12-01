@@ -13,10 +13,10 @@ namespace MyFactory.MauiClient.ViewModels.Finance.Advances;
 public partial class AdvanceCardPageViewModel : ObservableObject
 {
     [ObservableProperty]
-    private AdvanceItem advance;
+    private AdvanceItem advance = new AdvanceItem("", "", 0, "", "");
 
     [ObservableProperty]
-    private string comment;
+    private string comment = string.Empty;
 
     [ObservableProperty]
     private ObservableCollection<AdvanceReportItem> reportItems = new();
@@ -29,21 +29,47 @@ public partial class AdvanceCardPageViewModel : ObservableObject
     private bool hasReport;
 
     private readonly IFinanceService _financeService;
-    private readonly AdvancesTablePageViewModel _parentTableViewModel;
+    private AdvancesTablePageViewModel? _parentTableViewModel;
 
     public IRelayCommand AddReportCommand { get; }
     public IRelayCommand EditAdvanceCommand { get; }
     public IAsyncRelayCommand CloseAdvanceCommand { get; }
     public IAsyncRelayCommand DeleteAdvanceCommand { get; }
 
-    public AdvanceCardPageViewModel(IFinanceService financeService, AdvancesTablePageViewModel parentTableViewModel)
+    public AdvanceCardPageViewModel(IFinanceService financeService)
     {
         _financeService = financeService;
-        _parentTableViewModel = parentTableViewModel;
         AddReportCommand = new RelayCommand(AddReport);
         EditAdvanceCommand = new RelayCommand(EditAdvance);
         CloseAdvanceCommand = new AsyncRelayCommand(CloseAdvanceAsync);
         DeleteAdvanceCommand = new AsyncRelayCommand(DeleteAdvanceAsync);
+    }
+
+    public void SetParentViewModel(AdvancesTablePageViewModel parentViewModel)
+    {
+        _parentTableViewModel = parentViewModel;
+    }
+
+    partial void OnAdvanceChanged(AdvanceItem value)
+    {
+        // Расчет баланса при установке аванса
+        CalculateBalance();
+    }
+
+    partial void OnReportItemsChanged(ObservableCollection<AdvanceReportItem> value)
+    {
+        // Пересчет при изменении списка расходов
+        CalculateBalance();
+    }
+
+    private void CalculateBalance()
+    {
+        if (Advance != null)
+        {
+            TotalSpent = ReportItems?.Sum(item => item.Amount) ?? 0;
+            Balance = Advance.AdvanceAmount - TotalSpent;
+            HasReport = ReportItems?.Any() ?? false;
+        }
     }
 
     private async void AddReport()
