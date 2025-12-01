@@ -1,8 +1,8 @@
 using System;
 
-namespace MyFactory.MauiClient.UIModels.Reference;
+namespace MyFactory.WebApi.Contracts.Operations;
 
-public record OperationItem(
+public record OperationListResponse(
     Guid Id,
     string Code,
     string Name,

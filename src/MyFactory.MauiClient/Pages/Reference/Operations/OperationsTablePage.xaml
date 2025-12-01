@@ -3,7 +3,82 @@
     x:Class="MyFactory.MauiClient.Pages.Reference.Operations.OperationsTablePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ui="clr-namespace:MyFactory.MauiClient.UIModels.Reference"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Reference.Operations"
-    x:DataType="view_model:OperationsTablePageViewModel">
+    x:DataType="view_model:OperationsTablePageViewModel"
+    Title="Операции">
 
+    <ContentPage.Resources>
+        <Style TargetType="Border" x:Key="CardBorderStyle">
+            <Setter Property="Stroke" Value="{AppThemeBinding Light=#E5E7EB, Dark=#374151}" />
+            <Setter Property="Background" Value="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Padding" Value="14" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="12" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid Padding="16" RowSpacing="12" RowDefinitions="Auto,Auto,*">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                <Label FontAttributes="Bold" FontSize="18" Text="Справочник операций" />
+                <Label Text="{Binding Operations.Count, StringFormat='Всего: {0}'}" TextColor="{DynamicResource Gray500}" />
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            </HorizontalStackLayout>
+            <Button
+                Grid.Column="1"
+                Command="{Binding LoadCommand}"
+                IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                Text="Обновить" />
+        </Grid>
+
+        <HorizontalStackLayout Grid.Row="1" Spacing="12" VerticalOptions="Center">
+            <Label FontAttributes="Bold" Text="Тип операции" />
+            <Picker
+                Title="Все типы"
+                ItemsSource="{Binding OperationTypes}"
+                SelectedItem="{Binding SelectedOperationType}"
+                HorizontalOptions="StartAndExpand"
+                WidthRequest="220" />
+        </HorizontalStackLayout>
+
+        <RefreshView Grid.Row="2" Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy}">
+            <CollectionView
+                ItemsSource="{Binding Operations}"
+                SelectionMode="Single"
+                SelectionChanged="OnOperationSelectionChanged">
+                <CollectionView.EmptyView>
+                    <Label
+                        HorizontalOptions="Center"
+                        Padding="24"
+                        Text="Операции не найдены"
+                        TextColor="{DynamicResource Gray500}" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="ui:OperationItem">
+                        <Border Style="{StaticResource CardBorderStyle}">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="6">
+                                <Label FontAttributes="Bold" FontSize="16" Text="{Binding Name}" />
+                                <Label
+                                    Grid.Column="1"
+                                    HorizontalTextAlignment="End"
+                                    Text="{Binding OperationType}" />
+
+                                <StackLayout Grid.Row="1" Orientation="Horizontal" Spacing="12" VerticalOptions="Center">
+                                    <Label Text="{Binding Code}" TextColor="{DynamicResource Gray500}" />
+                                    <Label Text="{Binding Minutes, StringFormat='Время: {0:F1} мин'}" />
+                                    <Label Text="{Binding Cost, StringFormat='Стоимость: {0:N2} ₽'}" />
+                                </StackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
 </ContentPage>

@@ -6,13 +6,16 @@ using Microsoft.Extensions.Logging;
 using MyFactory.MauiClient.Pages.FinishedGoods.Returns;
 using MyFactory.MauiClient.Pages.Reference.Employees;
 using MyFactory.MauiClient.Pages.Reference.Materials;
+using MyFactory.MauiClient.Pages.Reference.Operations;
 using MyFactory.MauiClient.Services.EmployeesServices;
 using MyFactory.MauiClient.Services.MaterialsServices;
+using MyFactory.MauiClient.Services.OperationsServices;
 using MyFactory.MauiClient.Services.ReturnsServices;
 using MyFactory.MauiClient.Services.SpecificationsServices;
 using MyFactory.MauiClient.ViewModels.FinishedGoods.Returns;
 using MyFactory.MauiClient.ViewModels.Reference.Employees;
 using MyFactory.MauiClient.ViewModels.Reference.Materials;
+using MyFactory.MauiClient.ViewModels.Reference.Operations;
 
 namespace MyFactory.MauiClient;
 
@@ -37,16 +40,21 @@ public static class MauiProgram
 
 		builder.Services.AddSingleton<IEmployeesService, EmployeesService>();
 		builder.Services.AddSingleton<IMaterialsService, MaterialsService>();
+		builder.Services.AddSingleton<IOperationsService, OperationsService>();
 		builder.Services.AddTransient<EmployeesTablePageViewModel>();
 		builder.Services.AddTransient<EmployeeCardPageViewModel>();
 		builder.Services.AddTransient<MaterialsTablePageViewModel>();
 		builder.Services.AddTransient<MaterialCardPageViewModel>();
 		builder.Services.AddTransient<MaterialPriceAddModalViewModel>();
+		builder.Services.AddTransient<OperationsTablePageViewModel>();
+		builder.Services.AddTransient<OperationCardPageViewModel>();
 		builder.Services.AddTransient<EmployeesTablePage>();
 		builder.Services.AddTransient<EmployeeCardPage>();
 		builder.Services.AddTransient<MaterialsTablePage>();
 		builder.Services.AddTransient<MaterialCardPage>();
 		builder.Services.AddTransient<MaterialPriceAddModal>();
+		builder.Services.AddTransient<OperationsTablePage>();
+		builder.Services.AddTransient<OperationCardPage>();
 
 		builder.Services.AddSingleton<ISpecificationsService, SpecificationsService>();
 		builder.Services.AddSingleton<IReturnLookupService, ReturnLookupService>();
