@@ -1,9 +1,8 @@
 using System;
-using MyFactory.MauiClient.Models.Returns;
 
-namespace MyFactory.MauiClient.UIModels.FinishedGoods;
+namespace MyFactory.WebApi.Contracts.Returns;
 
-public record ReturnItem(
+public record ReturnsListResponse(
     Guid ReturnId,
     string Customer,
     string ProductName,

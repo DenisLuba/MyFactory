@@ -1,8 +1,5 @@
-﻿namespace MyFactory.MauiClient.Models.Shipments;
+﻿// Legacy placeholder file. ShipmentCardResponse supersedes ShipmentsGetResponse.
 
-public record ShipmentsGetResponse(
-    Guid Id,
-    string Customer,
-    ShipmentItemDto[] Items
-);
+
+
 

@@ -1,7 +1,1 @@
-namespace MyFactory.WebApi.Contracts.Shipments;
-
-public enum ShipmentsStatus
-{
-    Created,
-    Paid
-}
+// Legacy placeholder file. ShipmentsStatus has been superseded by ShipmentStatus.

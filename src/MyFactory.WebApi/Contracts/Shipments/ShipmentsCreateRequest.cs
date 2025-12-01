@@ -1,4 +1,6 @@
-﻿namespace MyFactory.WebApi.Contracts.Shipments;
+﻿using System;
+
+namespace MyFactory.WebApi.Contracts.Shipments;
 
 public record ShipmentsCreateRequest(
     Guid CustomerId,
@@ -7,7 +9,9 @@ public record ShipmentsCreateRequest(
 
 public record ShipmentItemDto(
     Guid SpecificationId,
+    string ProductName,
     int Qty,
-    decimal UnitPrice
+    decimal UnitPrice,
+    decimal LineTotal
 );
 

@@ -1,8 +1,3 @@
-﻿namespace MyFactory.WebApi.Contracts.Shipments;
-
-public record ShipmentsGetResponse(
-    Guid Id,
-    string Customer,
-    ShipmentItemDto[] Items
-);
+﻿// Legacy placeholder file. ShipmentCardResponse now lives in ShipmentCardResponse.cs.
+public record ShipmentCardResponse(
 

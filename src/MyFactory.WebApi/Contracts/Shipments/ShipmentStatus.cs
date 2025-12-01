@@ -1,4 +1,4 @@
-﻿namespace MyFactory.MauiClient.Models.Shipments;
+namespace MyFactory.WebApi.Contracts.Shipments;
 
 public enum ShipmentStatus
 {

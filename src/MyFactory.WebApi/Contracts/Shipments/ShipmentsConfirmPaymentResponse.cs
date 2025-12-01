@@ -1,7 +1,9 @@
-﻿namespace MyFactory.WebApi.Contracts.Shipments;
+﻿using System;
+
+namespace MyFactory.WebApi.Contracts.Shipments;
 
 public record ShipmentsConfirmPaymentResponse(
     Guid ShipmentId,
-    ShipmentsStatus Status
+    ShipmentStatus Status
 );
 

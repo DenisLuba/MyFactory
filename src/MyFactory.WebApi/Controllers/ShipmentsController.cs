@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 using MyFactory.WebApi.Contracts.Shipments;
 using MyFactory.WebApi.SwaggerExamples.Shipments;
@@ -9,6 +11,36 @@ namespace MyFactory.WebApi.Controllers;
 [Route("api/shipments")]
 public class ShipmentsController : ControllerBase
 {
+    // GET /api/shipments
+    [HttpGet]
+    [Produces("application/json")]
+    [SwaggerResponseExample(200, typeof(ShipmentsListResponseExample))]
+    [ProducesResponseType(typeof(IEnumerable<ShipmentsListResponse>), StatusCodes.Status200OK)]
+    public IActionResult GetAll()
+        => Ok(
+            new[]
+            {
+                new ShipmentsListResponse(
+                    ShipmentId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    Customer: "ИП Клиент1",
+                    ProductName: "Пижама женская",
+                    Quantity: 10,
+                    Date: new DateTime(2025, 11, 12),
+                    TotalAmount: 5500m,
+                    Status: ShipmentStatus.Draft
+                ),
+                new ShipmentsListResponse(
+                    ShipmentId: Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                    Customer: "ООО \"Текстиль\"",
+                    ProductName: "Футболка детская",
+                    Quantity: 25,
+                    Date: new DateTime(2025, 11, 15),
+                    TotalAmount: 4250m,
+                    Status: ShipmentStatus.Paid
+                )
+            }
+        );
+
     // POST /api/shipments
     [HttpPost]
     [Consumes("application/json")]
@@ -21,26 +53,31 @@ public class ShipmentsController : ControllerBase
             "",
             new ShipmentsCreateResponse(
                 ShipmentId: Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                Status: ShipmentsStatus.Created
+                Status: ShipmentStatus.Draft
             )
         );
 
     // GET /api/shipments/{id}
     [HttpGet("{id}")]
     [Produces("application/json")]
-    [SwaggerResponseExample(200, typeof(ShipmentsGetResponseExample))]
-    [ProducesResponseType(typeof(ShipmentsGetResponse), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(200, typeof(ShipmentCardResponseExample))]
+    [ProducesResponseType(typeof(ShipmentCardResponse), StatusCodes.Status200OK)]
     public IActionResult Get(Guid id)
         => Ok(
-            new ShipmentsGetResponse(
-                Id: id,
+            new ShipmentCardResponse(
+                ShipmentId: id,
                 Customer: "ИП Клиент1",
+                Date: new DateTime(2025, 11, 12),
+                Status: ShipmentStatus.Draft,
+                TotalAmount: 5500m,
                 Items: new[]
                 {
                     new ShipmentItemDto(
                         SpecificationId: Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                        ProductName: "Пижама женская",
                         Qty: 10,
-                        UnitPrice: 550.0m
+                        UnitPrice: 550.0m,
+                        LineTotal: 5500m
                     )
                 }
             )
@@ -55,7 +92,7 @@ public class ShipmentsController : ControllerBase
         => Ok(
             new ShipmentsConfirmPaymentResponse(
                 ShipmentId: id,
-                Status: ShipmentsStatus.Paid
+                Status: ShipmentStatus.Paid
             )
         );
 }

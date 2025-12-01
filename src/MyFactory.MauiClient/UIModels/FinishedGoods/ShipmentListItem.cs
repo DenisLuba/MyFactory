@@ -1,14 +1,14 @@
 using System;
-using MyFactory.MauiClient.Models.Returns;
+using MyFactory.MauiClient.Models.Shipments;
 
 namespace MyFactory.MauiClient.UIModels.FinishedGoods;
 
-public record ReturnItem(
-    Guid ReturnId,
+public record ShipmentListItem(
+    Guid ShipmentId,
     string Customer,
     string ProductName,
     int Quantity,
     DateTime Date,
-    string Reason,
-    ReturnStatus Status
+    decimal TotalAmount,
+    ShipmentStatus Status
 );

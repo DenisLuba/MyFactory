@@ -1,14 +1,18 @@
-﻿using System;
+using System;
 using Swashbuckle.AspNetCore.Filters;
 using MyFactory.WebApi.Contracts.Shipments;
 
 namespace MyFactory.WebApi.SwaggerExamples.Shipments;
 
-public class ShipmentsCreateRequestExample : IExamplesProvider<ShipmentsCreateRequest>
+public class ShipmentCardResponseExample : IExamplesProvider<ShipmentCardResponse>
 {
-    public ShipmentsCreateRequest GetExamples() =>
+    public ShipmentCardResponse GetExamples() =>
         new(
-            CustomerId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+            ShipmentId: Guid.Parse("11111111-1111-1111-1111-111111111111"),
+            Customer: "ИП Клиент1",
+            Date: new DateTime(2025, 11, 12),
+            Status: ShipmentStatus.Draft,
+            TotalAmount: 5500m,
             Items: new[]
             {
                 new ShipmentItemDto(
@@ -21,4 +25,3 @@ public class ShipmentsCreateRequestExample : IExamplesProvider<ShipmentsCreateRe
             }
         );
 }
-

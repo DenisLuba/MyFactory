@@ -1,7 +1,9 @@
-﻿namespace MyFactory.MauiClient.Models.Shipments;
+﻿using System;
+
+namespace MyFactory.MauiClient.Models.Shipments;
 
 public record ShipmentsCreateResponse(
     Guid ShipmentId,
-    ShipmentsStatus Status
+    ShipmentStatus Status
 );
 
