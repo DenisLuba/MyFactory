@@ -1,7 +1,135 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
 	x:Class="MyFactory.MauiClient.Pages.Finance.Advances.AdvanceReportCardPage"
+	x:Name="ReportPage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.Advances"
-	x:DataType="view_model:AdvanceReportCardPageViewModel" />
+	xmlns:models="clr-namespace:MyFactory.MauiClient.Models.Finance"
+	x:DataType="view_model:AdvanceReportCardPageViewModel"
+	Title="Отчёт по подотчётным расходам">
+
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="16">
+			<!-- Информация по выдаче -->
+			<Frame BorderColor="LightGray" CornerRadius="8" Padding="12">
+				<Grid ColumnDefinitions="140,*" RowSpacing="8">
+					<Label Text="№ выдачи:" />
+					<Label Grid.Column="1" Text="{Binding Advance.AdvanceNumber}" FontAttributes="Bold" />
+
+					<Label Grid.Row="1" Text="Сотрудник:" />
+					<Label Grid.Row="1" Grid.Column="1" Text="{Binding Advance.Employee}" />
+
+					<Label Grid.Row="2" Text="Выдано:" />
+					<Label Grid.Row="2" Grid.Column="1" Text="{Binding Advance.AdvanceAmount, StringFormat='{0:N0} ₽'}" />
+
+					<Label Grid.Row="3" Text="Дата выдачи:" />
+					<Label Grid.Row="3" Grid.Column="1" Text="{Binding Advance.Date}" />
+
+					<Label Grid.Row="4" Text="Статус:" />
+					<Label Grid.Row="4" Grid.Column="1" Text="{Binding Advance.Status}" />
+				</Grid>
+			</Frame>
+
+			<!-- Описание отчёта -->
+			<Frame BorderColor="LightGray" CornerRadius="8" Padding="12">
+				<VerticalStackLayout Spacing="8">
+					<Label Text="Общее описание отчёта" FontAttributes="Bold" />
+					<Editor Text="{Binding ReportDescription}" Placeholder="Например: 'Командировка в Санкт-Петербург'" HeightRequest="80" />
+				</VerticalStackLayout>
+			</Frame>
+
+			<!-- Добавление строки расхода -->
+			<Frame BorderColor="LightGray" CornerRadius="8" Padding="12">
+				<VerticalStackLayout Spacing="10">
+					<Label Text="Добавить строку расхода" FontAttributes="Bold" />
+					<Grid ColumnDefinitions="*,140,120,140" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+						<Entry Grid.Column="0" Placeholder="Статья расхода" Text="{Binding NewItemName}" />
+						<DatePicker Grid.Column="1" Date="{Binding NewItemDate}" />
+						<Entry Grid.Column="2" Placeholder="Сумма" Keyboard="Numeric" Text="{Binding NewItemAmount}" />
+						<Picker Grid.Column="3" Title="Категория" ItemsSource="{Binding Categories}" SelectedItem="{Binding NewItemCategory}" />
+
+						<Entry Grid.Row="1" Grid.ColumnSpan="2" Placeholder="Комментарий" Text="{Binding NewItemComment}" />
+						<Entry Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Placeholder="Ссылка на фото чека" Text="{Binding NewItemReceiptUri}" />
+					</Grid>
+					<Button Text="Добавить расход" Command="{Binding AddReportItemCommand}" />
+				</VerticalStackLayout>
+			</Frame>
+
+			<!-- Таблица расходов -->
+			<Frame BorderColor="LightGray" CornerRadius="8" Padding="12">
+				<VerticalStackLayout Spacing="10">
+					<Label Text="Расходы сотрудника" FontAttributes="Bold" />
+					<CollectionView ItemsSource="{Binding ReportItems}" SelectionMode="None">
+						<CollectionView.Header>
+							<Grid ColumnDefinitions="*,120,100,*,100" Padding="0,0,0,8">
+								<Label Text="Статья" FontAttributes="Bold" />
+								<Label Text="Дата" Grid.Column="1" FontAttributes="Bold" />
+								<Label Text="Сумма" Grid.Column="2" FontAttributes="Bold" />
+								<Label Text="Комментарий" Grid.Column="3" FontAttributes="Bold" />
+								<Label Text="" Grid.Column="4" />
+							</Grid>
+						</CollectionView.Header>
+						<CollectionView.EmptyView>
+							<Label Text="Строки расходов пока не добавлены" HorizontalOptions="Center" TextColor="Gray" />
+						</CollectionView.EmptyView>
+						<CollectionView.ItemTemplate>
+							<DataTemplate x:DataType="models:AdvanceReportItem">
+								<Grid ColumnDefinitions="*,120,100,*,100" Padding="0,4" ColumnSpacing="8">
+									<Label Text="{Binding ItemName}" />
+									<Label Text="{Binding ExpenseDate, StringFormat='{0:dd.MM.yyyy}'}" Grid.Column="1" />
+									<Label Text="{Binding Amount, StringFormat='{0:N0} ₽'}" Grid.Column="2" />
+									<VerticalStackLayout Grid.Column="3" Spacing="2">
+										<Label Text="{Binding Comment}" />
+										<Label Text="{Binding Category}" FontSize="12" TextColor="Gray" />
+										<Label Text="{Binding ReceiptUri}" FontSize="12" TextColor="#0078D4" LineBreakMode="TailTruncation">
+											<Label.Triggers>
+												<DataTrigger TargetType="Label" Binding="{Binding ReceiptUri}" Value="">
+													<Setter Property="IsVisible" Value="False" />
+												</DataTrigger>
+												<DataTrigger TargetType="Label" Binding="{Binding ReceiptUri}" Value="{x:Null}">
+													<Setter Property="IsVisible" Value="False" />
+												</DataTrigger>
+											</Label.Triggers>
+										</Label>
+									</VerticalStackLayout>
+									<Button Text="Удалить" Grid.Column="4" Command="{Binding Source={x:Reference ReportPage}, Path=BindingContext.DeleteReportItemCommand}" CommandParameter="{Binding .}" />
+								</Grid>
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
+					</CollectionView>
+				</VerticalStackLayout>
+			</Frame>
+
+			<!-- Итоги -->
+			<Frame BorderColor="LightGray" CornerRadius="8" Padding="12">
+				<Grid ColumnDefinitions="170,*" RowSpacing="8">
+					<Label Text="Выдано" />
+					<Label Grid.Column="1" Text="{Binding AdvanceAmount, StringFormat='{0:N0} ₽'}" />
+
+					<Label Grid.Row="1" Text="Израсходовано" />
+					<Label Grid.Row="1" Grid.Column="1" Text="{Binding TotalSpent, StringFormat='{0:N0} ₽'}" />
+
+					<Label Grid.Row="2" Text="Остаток / Перерасход" />
+					<Label Grid.Row="2" Grid.Column="1" Text="{Binding Balance, StringFormat='{0:N0} ₽'}">
+						<Label.Triggers>
+							<DataTrigger TargetType="Label" Binding="{Binding IsOverSpent}" Value="True">
+								<Setter Property="TextColor" Value="Red" />
+							</DataTrigger>
+							<DataTrigger TargetType="Label" Binding="{Binding IsOverSpent}" Value="False">
+								<Setter Property="TextColor" Value="ForestGreen" />
+							</DataTrigger>
+						</Label.Triggers>
+					</Label>
+				</Grid>
+			</Frame>
+
+			<ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+			<Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+				<Button Text="Сохранить отчёт" Command="{Binding SaveReportCommand}" />
+				<Button Grid.Column="1" Text="Провести отчёт" Command="{Binding SubmitReportCommand}" BackgroundColor="#0F6CBD" TextColor="White" />
+			</Grid>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>

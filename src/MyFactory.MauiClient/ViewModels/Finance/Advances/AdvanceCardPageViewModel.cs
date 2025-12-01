@@ -2,7 +2,9 @@
 using CommunityToolkit.Mvvm.Input;
 using MyFactory.MauiClient.Models.Finance;
 using MyFactory.MauiClient.UIModels.Finance;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using MyFactory.MauiClient.Services.FinanceServices;
 using MyFactory.MauiClient.Pages.Finance.Advances;
@@ -13,7 +15,7 @@ namespace MyFactory.MauiClient.ViewModels.Finance.Advances;
 public partial class AdvanceCardPageViewModel : ObservableObject
 {
     [ObservableProperty]
-    private AdvanceItem advance = new AdvanceItem("", "", 0, "", "");
+    private AdvanceItem advance = new AdvanceItem("", "", 0, "", AdvanceStatus.Pending);
 
     [ObservableProperty]
     private string comment = string.Empty;
@@ -75,10 +77,17 @@ public partial class AdvanceCardPageViewModel : ObservableObject
     private async void AddReport()
     {
         // Навигация на страницу отчета по авансу
-        await Shell.Current.GoToAsync(nameof(AdvanceReportCardPage), new Dictionary<string, object>
+        var navigationParameters = new Dictionary<string, object>
         {
             { "Advance", Advance }
-        });
+        };
+
+        if (_parentTableViewModel != null)
+        {
+            navigationParameters.Add("ParentViewModel", _parentTableViewModel);
+        }
+
+        await Shell.Current.GoToAsync(nameof(AdvanceReportCardPage), navigationParameters);
     }
 
     private async void EditAdvance()
@@ -95,9 +104,9 @@ public partial class AdvanceCardPageViewModel : ObservableObject
     {
         // Закрываем аванс через сервис
         await _financeService.CloseAdvanceAsync(Advance.AdvanceNumber);
-        Advance = Advance with { Status = AdvanceStatus.Reported.ToString() };
+        Advance = Advance with { Status = AdvanceStatus.Reported };
         // Уведомляем пользователя об успехе операции
-        await Shell.Current.DisplayAlertAsync("Успех", "Выдача успешно закрыта.", "OK");
+        await Shell.Current.DisplayAlert("Успех", "Выдача успешно закрыта.", "OK");
         // Обновляем таблицу авансов в родительской ViewModel
         _parentTableViewModel?.LoadAdvancesCommand.Execute(null);
     }
@@ -107,7 +116,7 @@ public partial class AdvanceCardPageViewModel : ObservableObject
         // Удаляем аванс через сервис
         await _financeService.DeleteAdvanceAsync(Advance.AdvanceNumber);
         // Уведомляем пользователя об успешном удалении
-        await Shell.Current.DisplayAlertAsync("Удалено", "Выдача удалена.", "OK");
+        await Shell.Current.DisplayAlert("Удалено", "Выдача удалена.", "OK");
         // Обновляем таблицу авансов в родительской ViewModel
         _parentTableViewModel?.LoadAdvancesCommand.Execute(null);
         // Навигация назад после удаления

@@ -1,7 +1,12 @@
-﻿namespace MyFactory.MauiClient.Models.Finance;
+﻿using System;
+
+namespace MyFactory.MauiClient.Models.Finance;
 
 public record AdvanceReportItem(
     string ItemName,
+    DateTime ExpenseDate,
     decimal Amount,
-    AdvanceReportCategories Category);
+    string Comment,
+    AdvanceReportCategories Category,
+    string? ReceiptUri = null);
 

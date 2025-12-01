@@ -52,19 +52,22 @@
 					<!-- Таблица расходов -->
 					<CollectionView ItemsSource="{Binding ReportItems}" SelectionMode="None">
 						<CollectionView.Header>
-							<Grid ColumnDefinitions="*,100,100,*" Padding="0,0,0,8" BackgroundColor="LightGray">
-								<Label Text="Статья расхода" FontAttributes="Bold" Margin="4,0" />
+							<Grid ColumnDefinitions="*,130,110,*,130" Padding="0,0,0,8" BackgroundColor="LightGray">
+								<Label Text="Статья" FontAttributes="Bold" Margin="4,0" />
 								<Label Text="Дата" FontAttributes="Bold" Grid.Column="1" Margin="4,0" />
 								<Label Text="Сумма" FontAttributes="Bold" Grid.Column="2" Margin="4,0" />
-								<Label Text="Категория" FontAttributes="Bold" Grid.Column="3" Margin="4,0" />
+								<Label Text="Комментарий" FontAttributes="Bold" Grid.Column="3" Margin="4,0" />
+								<Label Text="Категория" FontAttributes="Bold" Grid.Column="4" Margin="4,0" />
 							</Grid>
 						</CollectionView.Header>
 						<CollectionView.ItemTemplate>
 							<DataTemplate x:DataType="models:AdvanceReportItem">
-								<Grid ColumnDefinitions="*,100,100,*" Padding="4,8">
+								<Grid ColumnDefinitions="*,130,110,*,130" Padding="4,8" ColumnSpacing="8">
 									<Label Text="{Binding ItemName}" VerticalOptions="Center" />
+									<Label Text="{Binding ExpenseDate, StringFormat='{0:dd.MM.yyyy}'}" Grid.Column="1" VerticalOptions="Center" />
 									<Label Text="{Binding Amount, StringFormat='{0:N0} ₽'}" Grid.Column="2" VerticalOptions="Center" />
-									<Label Text="{Binding Category}" Grid.Column="3" VerticalOptions="Center" />
+									<Label Text="{Binding Comment}" Grid.Column="3" VerticalOptions="Center" LineBreakMode="WordWrap" />
+									<Label Text="{Binding Category}" Grid.Column="4" VerticalOptions="Center" />
 								</Grid>
 							</DataTemplate>
 						</CollectionView.ItemTemplate>

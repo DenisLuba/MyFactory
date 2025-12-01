@@ -9,10 +9,10 @@ namespace MyFactory.MauiClient.Services.FinanceServices
     {
         Task<RecordOverheadResponse?> AddOverheadAsync(RecordOverheadRequest request);
         Task<List<OverheadResponse>?> GetOverheadsAsync(int month, int year);
-        Task<CreateAdvanceResponse?> CreateAdvanceAsync(CreateAdvanceRequest request);
-        Task<SubmitAdvanceReportResponse?> SubmitAdvanceReportAsync(string advanceId, SubmitAdvanceReportRequest request);
+        Task<AdvanceStatusResponse?> CreateAdvanceAsync(CreateAdvanceRequest request);
+        Task<AdvanceStatusResponse?> SubmitAdvanceReportAsync(string advanceId, SubmitAdvanceReportRequest request);
         Task<List<AdvanceItem>?> GetAdvancesAsync();
-        Task CloseAdvanceAsync(string advanceNumber);
-        Task DeleteAdvanceAsync(string advanceNumber);
+        Task<AdvanceStatusResponse?> CloseAdvanceAsync(string advanceNumber);
+        Task<AdvanceStatusResponse?> DeleteAdvanceAsync(string advanceNumber);
     }
 }

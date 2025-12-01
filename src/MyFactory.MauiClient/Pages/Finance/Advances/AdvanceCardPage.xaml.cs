@@ -1,5 +1,7 @@
-﻿using MyFactory.MauiClient.ViewModels.Finance.Advances;
+﻿using Microsoft.Maui.Controls;
+using MyFactory.MauiClient.ViewModels.Finance.Advances;
 using MyFactory.MauiClient.UIModels.Finance;
+using System.Collections.Generic;
 
 namespace MyFactory.MauiClient.Pages.Finance.Advances;
 
@@ -24,7 +26,7 @@ public partial class AdvanceCardPage : ContentPage, IQueryAttributable
             // Здесь можно загрузить дополнительные данные отчета, если нужно
             // Например, если есть отчет - установить HasReport = true и загрузить ReportItems
             // Для демонстрации можно добавить тестовые данные:
-            // _viewModel.ReportItems.Add(new AdvanceReportItem("Бензин", 1000, AdvanceReportCategories.Transport));
+            // _viewModel.ReportItems.Add(new AdvanceReportItem("Бензин", DateTime.Today, 1000, "Командировка", AdvanceReportCategories.Finance));
         }
 
         // Получаем родительскую ViewModel для обновления таблицы после действий

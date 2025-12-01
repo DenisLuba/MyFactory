@@ -1,4 +1,5 @@
-﻿using MyFactory.WebApi.Contracts.Finance;
+﻿using System;
+using MyFactory.WebApi.Contracts.Finance;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace MyFactory.WebApi.SwaggerExamples.Finance;
@@ -13,23 +14,35 @@ public class SubmitAdvanceReportRequestExample : IExamplesProvider<SubmitAdvance
             [
                 new(
                     ItemName: "Ткань Ситец - 50 метров",
+                    ExpenseDate: new DateTime(2025, 11, 10),
                     Amount: 9000.00m,
-                    Category: AdvanceReportCategories.Inventory
+                    Comment: "Склад №3, накладная 445",
+                    Category: AdvanceReportCategories.Inventory,
+                    ReceiptUri: "https://files.example.com/receipts/445.jpg"
                 ),
                 new(
                     ItemName: "Фурнитура (молнии, пуговицы)",
+                    ExpenseDate: new DateTime(2025, 11, 11),
                     Amount: 2500.00m,
-                    Category: AdvanceReportCategories.Suppliers
+                    Comment: "Поставщик ООО 'ШвейКомплект'",
+                    Category: AdvanceReportCategories.Suppliers,
+                    ReceiptUri: "https://files.example.com/receipts/446.jpg"
                 ),
                 new(
                     ItemName: "Транспортные расходы",
+                    ExpenseDate: new DateTime(2025, 11, 11),
                     Amount: 1350.00m,
-                    Category: AdvanceReportCategories.Finance
+                    Comment: "Такси до клиента",
+                    Category: AdvanceReportCategories.Finance,
+                    ReceiptUri: null
                 ),
                 new(
                     ItemName: "Срочная работа швеи",
+                    ExpenseDate: new DateTime(2025, 11, 12),
                     Amount: 2000.00m,
-                    Category: AdvanceReportCategories.Payroll
+                    Comment: "Почасовая оплата",
+                    Category: AdvanceReportCategories.Payroll,
+                    ReceiptUri: null
                 )
             ]
         );

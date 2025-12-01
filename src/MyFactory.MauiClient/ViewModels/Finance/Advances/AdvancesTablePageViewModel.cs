@@ -1,8 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls;
 using MyFactory.MauiClient.Pages.Finance.Advances;
 using MyFactory.MauiClient.Services.FinanceServices;
 using MyFactory.MauiClient.UIModels.Finance;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -41,6 +44,8 @@ public partial class AdvancesTablePageViewModel : ObservableObject
         OpenReportCommand = new RelayCommand<AdvanceItem>(OpenReport);
     }
 
+    public IReadOnlyList<AdvanceStatus> Statuses { get; } = Enum.GetValues<AdvanceStatus>();
+
     public IAsyncRelayCommand LoadAdvancesCommand { get; }
     public IRelayCommand<AdvanceItem> OpenAdvanceCommand { get; }
     public IRelayCommand CreateAdvanceCommand { get; }
@@ -61,7 +66,7 @@ public partial class AdvancesTablePageViewModel : ObservableObject
             filtered = filtered.Where(a => a.Employee.Contains(EmployeeFilter, StringComparison.OrdinalIgnoreCase));
 
         if (StatusFilter.HasValue)
-            filtered = filtered.Where(a => a.Status == StatusFilter.Value.ToString());
+            filtered = filtered.Where(a => a.Status == StatusFilter.Value);
 
         if (PeriodStart.HasValue)
             filtered = filtered.Where(a => DateTime.Parse(a.Date) >= PeriodStart.Value);

@@ -1,4 +1,7 @@
-﻿namespace MyFactory.WebApi.Contracts.Finance;
+﻿using System;
+using System.Collections.Generic;
+
+namespace MyFactory.WebApi.Contracts.Finance;
 
 public record SubmitAdvanceReportRequest(
     // TODO: Добавить свойства для отчета по авансу
@@ -9,8 +12,11 @@ public record SubmitAdvanceReportRequest(
 
 public record AdvanceReportItem(
     string ItemName,
+    DateTime ExpenseDate,
     decimal Amount,
-    AdvanceReportCategories Category
+    string Comment,
+    AdvanceReportCategories Category,
+    string? ReceiptUri = null
 );
 
 public enum AdvanceReportCategories
