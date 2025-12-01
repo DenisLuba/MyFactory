@@ -37,26 +37,24 @@ public class FinanceController : ControllerBase
     [HttpPost("advances")]
     [Consumes("application/json")]
     [SwaggerRequestExample(typeof(CreateAdvanceRequest), typeof(CreateAdvanceRequestExample))]
-    [SwaggerResponseExample(201, typeof(CreateAdvanceResponseExample))]
-    [ProducesResponseType(typeof(CreateAdvanceResponse), StatusCodes.Status201Created)]
+    [SwaggerResponseExample(201, typeof(AdvanceStatusResponseExample))]
+    [ProducesResponseType(typeof(AdvanceStatusResponse), StatusCodes.Status201Created)]
     public IActionResult CreateAdvance([FromBody] CreateAdvanceRequest request)
         => Created(
             "",
-            new CreateAdvanceResponse(
-                Guid.Parse("11111111-1111-1111-1111-111111111222")
-            )
+            new AdvanceStatusResponse(Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), AdvanceStatus.AdvanceCreated)
         );
 
     // POST /api/finance/advances/{id}/report
     [HttpPost("advances/{id}/report")]
     [Consumes("application/json")]
     [SwaggerRequestExample(typeof(SubmitAdvanceReportRequest), typeof(SubmitAdvanceReportRequestExample))]
-    [SwaggerResponseExample(200, typeof(SubmitAdvanceReportResponseExample))]
-    [ProducesResponseType(typeof(SubmitAdvanceReportResponse), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(200, typeof(AdvanceStatusResponseExample))]
+    [ProducesResponseType(typeof(AdvanceStatusResponse), StatusCodes.Status200OK)]
     public IActionResult SubmitAdvanceReport(
         string id,
         [FromBody] SubmitAdvanceReportRequest request)
-        => Ok(new SubmitAdvanceReportResponse(Guid.Parse(id), FinanceStatus.ReportSubmitted));
+        => Ok(new AdvanceStatusResponse(Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), AdvanceStatus.Reported));
 
     // GET /api/finance/advances
     [HttpGet("advances")]
@@ -80,6 +78,20 @@ public class FinanceController : ControllerBase
                 AdvanceStatus.Reported
             )
         });
+
+    // DELETE /api/finance/advances/{advanceNumber}
+    [HttpDelete("advances/{advanceNumber}")]
+    [SwaggerResponseExample(200, typeof(AdvanceStatusResponseExample))]
+    [ProducesResponseType(typeof(AdvanceStatusResponse), StatusCodes.Status200OK)]
+    public IActionResult DeleteAdvance(string advanceNumber)
+        => Ok(new AdvanceStatusResponse(Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), AdvanceStatus.AdvanceDeleted));
+
+    // PUT /api/finance/advances/{advanceNumber}/close
+    [HttpPut("advances/{advanceNumber}/close")]
+    [SwaggerResponseExample(200, typeof(AdvanceStatusResponseExample))]
+    [ProducesResponseType(typeof(AdvanceStatusResponse), StatusCodes.Status200OK)]
+    public IActionResult CloseAdvance(string advanceNumber)
+        => Ok(new AdvanceStatusResponse(Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), AdvanceStatus.AdvanceClosed));
 }
 
 

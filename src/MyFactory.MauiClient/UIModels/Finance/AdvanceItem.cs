@@ -1,6 +1,6 @@
 namespace MyFactory.MauiClient.UIModels.Finance;
 
-// Подотчетные выдачи 
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 
 public record AdvanceItem(
     string AdvanceNumber,
     string Employee,

@@ -3,6 +3,6 @@
 public enum FinanceStatus
 {
     ReportSubmitted,
-    OverheadRecorded
+    OverheadRecorded,
 }
 

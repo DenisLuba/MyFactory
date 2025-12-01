@@ -1,4 +1,4 @@
-﻿namespace MyFactory.MauiClient.UIModels.Finance;
+namespace MyFactory.WebApi.Contracts.Finance;
 
 public enum AdvanceStatus
 {
@@ -11,4 +11,3 @@ public enum AdvanceStatus
     AdvanceClosed,
     AdvanceCreated
 }
-

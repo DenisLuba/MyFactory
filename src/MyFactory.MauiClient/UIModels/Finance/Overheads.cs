@@ -4,6 +4,8 @@
 public record Overheads(
     string Date,
     string Article,
-    decimal Amount
+    decimal Amount,
+    string Description,
+    OverheadsStatus Status
 );
 

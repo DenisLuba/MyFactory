@@ -3,9 +3,9 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace MyFactory.WebApi.SwaggerExamples.Finance;
 
-public class SubmitAdvanceReportResponseExample : IExamplesProvider<SubmitAdvanceReportResponse>
+public class AdvanceStatusResponseExample : IExamplesProvider<AdvanceStatusResponse>
 {
-    public SubmitAdvanceReportResponse GetExamples() =>
+    public AdvanceStatusResponse GetExamples() =>
         new(
             AdvanceId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
             Status: FinanceStatus.ReportSubmitted

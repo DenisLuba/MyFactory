@@ -21,21 +21,23 @@ namespace MyFactory.MauiClient.Services.FinanceServices
         public async Task<List<OverheadResponse>?> GetOverheadsAsync(int month, int year)
             => await _httpClient.GetFromJsonAsync<List<OverheadResponse>>($"api/finance/overheads?month={month}&year={year}");
 
-        public async Task<CreateAdvanceResponse?> CreateAdvanceAsync(CreateAdvanceRequest request)
+        public async Task<AdvanceStatusResponse?> CreateAdvanceAsync(CreateAdvanceRequest request)
             => await _httpClient.PostAsJsonAsync("api/finance/advances", request)
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<CreateAdvanceResponse>()).Unwrap();
+                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<AdvanceStatusResponse>()).Unwrap();
 
-        public async Task<SubmitAdvanceReportResponse?> SubmitAdvanceReportAsync(string advanceId, SubmitAdvanceReportRequest request)
+        public async Task<AdvanceStatusResponse?> SubmitAdvanceReportAsync(string advanceId, SubmitAdvanceReportRequest request)
             => await _httpClient.PostAsJsonAsync($"api/finance/advances/{advanceId}/report", request)
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<SubmitAdvanceReportResponse>()).Unwrap();
+                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<AdvanceStatusResponse>()).Unwrap();
 
         public async Task<List<AdvanceItem>?> GetAdvancesAsync()
             => await _httpClient.GetFromJsonAsync<List<AdvanceItem>>("api/finance/advances");
 
-        public async Task CloseAdvanceAsync(string advanceNumber)
-            => await _httpClient.PostAsync($"api/finance/advances/{advanceNumber}/close", null);
+        public async Task<AdvanceStatusResponse?> CloseAdvanceAsync(string advanceNumber)
+            => await _httpClient.PostAsync($"api/finance/advances/{advanceNumber}/close", null)
+                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<AdvanceStatusResponse>()).Unwrap();
 
-        public async Task DeleteAdvanceAsync(string advanceNumber)
-            => await _httpClient.DeleteAsync($"api/finance/advances/{advanceNumber}");
+        public async Task<AdvanceStatusResponse?> DeleteAdvanceAsync(string advanceNumber)
+            => await _httpClient.DeleteAsync($"api/finance/advances/{advanceNumber}")
+                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<AdvanceStatusResponse>()).Unwrap();
     }
 }
