@@ -1,4 +1,5 @@
-﻿using Swashbuckle.AspNetCore.Filters;
+﻿using System;
+using Swashbuckle.AspNetCore.Filters;
 using MyFactory.WebApi.Contracts.Shifts;
 
 namespace MyFactory.WebApi.SwaggerExamples.Shifts;

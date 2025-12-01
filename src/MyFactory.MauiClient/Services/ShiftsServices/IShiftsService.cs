@@ -1,12 +1,13 @@
+using System;
+using System.Collections.Generic;
 using MyFactory.MauiClient.Models.Shifts;
 
 namespace MyFactory.MauiClient.Services.ShiftsServices
 {
     public interface IShiftsService
     {
-        Task<ShiftsCreatePlanResponse?> CreatePlanAsync(ShiftsCreatePlanRequest request);
-        Task<List<ShiftsGetPlansResponse>?> GetPlansAsync(DateTime? date = null);
-        Task<ShiftsRecordResultResponse?> RecordResultAsync(ShiftsRecordResultRequest request);
-        Task<List<ShiftsGetResultsResponse>?> GetResultsAsync(Guid? employeeId = null, DateTime? date = null);
+        Task<IReadOnlyList<ShiftResultListResponse>?> GetResultsAsync(Guid? employeeId = null, DateTime? date = null);
+        Task<ShiftResultCardResponse?> GetResultByIdAsync(Guid shiftPlanId);
+        Task<ShiftsRecordResultResponse?> SaveResultAsync(ShiftsRecordResultRequest request);
     }
 }

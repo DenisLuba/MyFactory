@@ -3,6 +3,7 @@
 public record ShiftsRecordResultRequest(
     Guid ShiftPlanId,
     int ActualQty,
-    double HoursWorked
+    double HoursWorked,
+    bool Bonus
 );
 

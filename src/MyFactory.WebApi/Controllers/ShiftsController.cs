@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 using MyFactory.WebApi.Contracts.Shifts;
 using MyFactory.WebApi.SwaggerExamples.Shifts;
@@ -28,19 +30,37 @@ public class ShiftsController : ControllerBase
     // GET /plans
     [HttpGet("plans")]
     [Produces("application/json")]
-    [SwaggerResponseExample(200, typeof(ShiftsGetPlansResponseExample))]
-    [ProducesResponseType(typeof(IEnumerable<ShiftsGetPlansResponse>), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(200, typeof(ShiftPlanListResponseExample))]
+    [ProducesResponseType(typeof(IEnumerable<ShiftPlanListResponse>), StatusCodes.Status200OK)]
     public IActionResult GetPlans([FromQuery] DateTime? date = null)
         => Ok(new[]
         {
-            new ShiftsGetPlansResponse(
+            new ShiftPlanListResponse(
                 ShiftPlanId: Guid.Parse("11111111-1111-1111-1111-111111111111"),
                 EmployeeId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                EmployeeName: "Иванова О.Г.",
                 SpecificationId: Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                SpecificationName: "Пижама женская",
                 PlannedQuantity: 12,
                 Date: date ?? new DateTime(2025, 12, 12)
             )
         });
+
+    // GET /plans/{id}
+    [HttpGet("plans/{shiftPlanId:guid}")]
+    [Produces("application/json")]
+    [SwaggerResponseExample(200, typeof(ShiftPlanCardResponseExample))]
+    [ProducesResponseType(typeof(ShiftPlanCardResponse), StatusCodes.Status200OK)]
+    public IActionResult GetPlanById(Guid shiftPlanId)
+        => Ok(new ShiftPlanCardResponse(
+            ShiftPlanId: shiftPlanId,
+            EmployeeId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+            EmployeeName: "Иванова О.Г.",
+            SpecificationId: Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+            SpecificationName: "Пижама женская",
+            Date: new DateTime(2025, 12, 12),
+            PlannedQuantity: 12
+        ));
 
     // POST /results
     [HttpPost("results")]
@@ -58,17 +78,39 @@ public class ShiftsController : ControllerBase
     // GET /results
     [HttpGet("results")]
     [Produces("application/json")]
-    [SwaggerResponseExample(200, typeof(ShiftsGetResultsResponseExample))]
-    [ProducesResponseType(typeof(IEnumerable<ShiftsGetResultsResponse>), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(200, typeof(ShiftResultListResponseExample))]
+    [ProducesResponseType(typeof(IEnumerable<ShiftResultListResponse>), StatusCodes.Status200OK)]
     public IActionResult GetResults(
         [FromQuery] Guid? employeeId = null,
         [FromQuery] DateTime? date = null)
         => Ok(new[]
         {
-            new ShiftsGetResultsResponse(
+            new ShiftResultListResponse(
                 ShiftPlanId: Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                EmployeeName: "Иванова О.Г.",
+                SpecificationName: "Пижама женская",
+                Date: date ?? new DateTime(2025, 12, 12),
+                PlannedQuantity: 12,
                 ActualQty: 14,
-                HoursWorked: 7.5
+                HoursWorked: 7.5,
+                Bonus: true
             )
         });
+
+    // GET /results/{shiftPlanId}
+    [HttpGet("results/{shiftPlanId:guid}")]
+    [Produces("application/json")]
+    [SwaggerResponseExample(200, typeof(ShiftResultCardResponseExample))]
+    [ProducesResponseType(typeof(ShiftResultCardResponse), StatusCodes.Status200OK)]
+    public IActionResult GetResultById(Guid shiftPlanId)
+        => Ok(new ShiftResultCardResponse(
+            ShiftPlanId: shiftPlanId,
+            EmployeeName: "Иванова О.Г.",
+            SpecificationName: "Пижама женская",
+            Date: new DateTime(2025, 12, 12),
+            PlannedQty: 12,
+            ActualQty: 14,
+            HoursWorked: 7.5,
+            Bonus: true
+        ));
 }

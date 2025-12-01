@@ -1,8 +1,5 @@
 ﻿namespace MyFactory.WebApi.Contracts.Shifts;
 
-public record ShiftsGetResultsResponse(
-    Guid ShiftPlanId,
+// Deprecated placeholder. Use ShiftResultListResponse instead.
     int ActualQty,
-    double HoursWorked
-);
 

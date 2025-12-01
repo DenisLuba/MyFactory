@@ -1,0 +1,11 @@
+namespace MyFactory.MauiClient.Models.Shifts;
+
+public record ShiftPlanListResponse(
+    Guid ShiftPlanId,
+    Guid EmployeeId,
+    string EmployeeName,
+    Guid SpecificationId,
+    string SpecificationName,
+    DateTime Date,
+    int PlannedQuantity
+);
