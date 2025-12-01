@@ -3,7 +3,72 @@
     x:Class="MyFactory.MauiClient.Pages.Reference.Products.ProductBomTablePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:MyFactory.MauiClient.Models.Products"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Reference.Products"
-    x:DataType="view_model:ProductBomTablePageViewModel">
+    x:DataType="view_model:ProductBomTablePageViewModel"
+    x:Name="ProductBomPage"
+    Title="{Binding Title}">
 
+    <ContentPage.Resources>
+        <Style TargetType="Border" x:Key="CardBorderStyle">
+            <Setter Property="Stroke" Value="{AppThemeBinding Light=#E5E7EB, Dark=#374151}" />
+            <Setter Property="Background" Value="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Padding" Value="12" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="12" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid Padding="16" RowSpacing="12" RowDefinitions="Auto,*">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                <Label FontAttributes="Bold" FontSize="18" Text="Материалы изделия" />
+                <Label Text="{Binding Items.Count, StringFormat='Позиций: {0}'}" TextColor="{DynamicResource Gray500}" />
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            </HorizontalStackLayout>
+            <Button
+                Grid.Column="1"
+                Text="Добавить"
+                Command="{Binding AddItemCommand}"
+                IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+        </Grid>
+
+        <RefreshView Grid.Row="1" Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy}">
+            <CollectionView ItemsSource="{Binding Items}">
+                <CollectionView.EmptyView>
+                    <Label
+                        HorizontalOptions="Center"
+                        Padding="24"
+                        Text="Материалы не найдены"
+                        TextColor="{DynamicResource Gray500}" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ProductBomItemResponse">
+                        <Border Style="{StaticResource CardBorderStyle}">
+                            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="4">
+                                <Label FontAttributes="Bold" Text="{Binding Material}" />
+                                <Label Grid.Column="1" Text="{Binding Qty, StringFormat='Расход: {0:0.##}'}" />
+                                <Label Grid.Column="2" Text="{Binding Unit}" />
+                                <Label Grid.Column="3" Text="{Binding Price, StringFormat='Цена: {0:N2} ₽'}" />
+                                <Button
+                                    Grid.RowSpan="2"
+                                    Grid.Column="4"
+                                    Text="Удалить"
+                                    Command="{Binding Source={x:Reference ProductBomPage}, Path=BindingContext.DeleteItemCommand}"
+                                    CommandParameter="{Binding .}"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Center" />
+                                <Label Grid.Row="1" Grid.ColumnSpan="4" Text="{Binding Total, StringFormat='Стоимость: {0:N2} ₽'}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
 </ContentPage>

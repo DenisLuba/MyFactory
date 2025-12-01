@@ -1,8 +1,8 @@
 using System;
 
-namespace MyFactory.MauiClient.UIModels.Reference;
+namespace MyFactory.MauiClient.Models.Products;
 
-public record ProductItem(
+public record ProductsListResponse(
     Guid Id,
     string Sku,
     string Name,

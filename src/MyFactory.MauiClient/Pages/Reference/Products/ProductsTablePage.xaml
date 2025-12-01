@@ -3,7 +3,73 @@
     x:Class="MyFactory.MauiClient.Pages.Reference.Products.ProductsTablePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ui="clr-namespace:MyFactory.MauiClient.UIModels.Reference"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Reference.Products"
-    x:DataType="view_model:ProductsTablePageViewModel">
+    x:DataType="view_model:ProductsTablePageViewModel"
+    Title="Изделия (справочник)">
 
+    <ContentPage.Resources>
+        <Style TargetType="Border" x:Key="CardBorderStyle">
+            <Setter Property="Stroke" Value="{AppThemeBinding Light=#E5E7EB, Dark=#374151}" />
+            <Setter Property="Background" Value="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Padding" Value="14" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="12" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid Padding="16" RowSpacing="12" RowDefinitions="Auto,*">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                <Label FontAttributes="Bold" FontSize="18" Text="Список изделий" />
+                <Label Text="{Binding Products.Count, StringFormat='Всего: {0}'}" TextColor="{DynamicResource Gray500}" />
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            </HorizontalStackLayout>
+            <Button
+                Grid.Column="1"
+                Command="{Binding LoadCommand}"
+                IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                Text="Обновить" />
+        </Grid>
+
+        <RefreshView Grid.Row="1" Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy}">
+            <CollectionView
+                ItemsSource="{Binding Products}"
+                SelectionMode="Single"
+                SelectionChanged="OnProductSelectionChanged">
+                <CollectionView.EmptyView>
+                    <Label
+                        HorizontalOptions="Center"
+                        Padding="24"
+                        Text="Изделия не найдены"
+                        TextColor="{DynamicResource Gray500}" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="ui:ProductItem">
+                        <Border Style="{StaticResource CardBorderStyle}">
+                            <Grid
+                                ColumnDefinitions="Auto,*,Auto"
+                                RowDefinitions="Auto,Auto"
+                                ColumnSpacing="12"
+                                RowSpacing="6">
+                                <Label FontAttributes="Bold" Text="{Binding Sku}" />
+                                <Label Grid.Column="1" FontAttributes="Bold" FontSize="16" Text="{Binding Name}" />
+                                <Label Grid.Column="2" HorizontalTextAlignment="End" Text="{Binding Status}" />
+
+                                <StackLayout Grid.Row="1" Grid.ColumnSpan="3" Orientation="Horizontal" Spacing="16">
+                                    <Label Text="{Binding PlanPerHour, StringFormat='План: {0:0.##}/ч'}" />
+                                    <Label Text="{Binding ImageCount, StringFormat='Картинок: {0}'}" />
+                                </StackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
 </ContentPage>

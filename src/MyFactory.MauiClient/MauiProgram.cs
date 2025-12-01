@@ -7,15 +7,18 @@ using MyFactory.MauiClient.Pages.FinishedGoods.Returns;
 using MyFactory.MauiClient.Pages.Reference.Employees;
 using MyFactory.MauiClient.Pages.Reference.Materials;
 using MyFactory.MauiClient.Pages.Reference.Operations;
+using MyFactory.MauiClient.Pages.Reference.Products;
 using MyFactory.MauiClient.Services.EmployeesServices;
 using MyFactory.MauiClient.Services.MaterialsServices;
 using MyFactory.MauiClient.Services.OperationsServices;
+using MyFactory.MauiClient.Services.ProductsServices;
 using MyFactory.MauiClient.Services.ReturnsServices;
 using MyFactory.MauiClient.Services.SpecificationsServices;
 using MyFactory.MauiClient.ViewModels.FinishedGoods.Returns;
 using MyFactory.MauiClient.ViewModels.Reference.Employees;
 using MyFactory.MauiClient.ViewModels.Reference.Materials;
 using MyFactory.MauiClient.ViewModels.Reference.Operations;
+using MyFactory.MauiClient.ViewModels.Reference.Products;
 
 namespace MyFactory.MauiClient;
 
@@ -41,6 +44,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<IEmployeesService, EmployeesService>();
 		builder.Services.AddSingleton<IMaterialsService, MaterialsService>();
 		builder.Services.AddSingleton<IOperationsService, OperationsService>();
+		builder.Services.AddSingleton<IProductsService, ProductsService>();
 		builder.Services.AddTransient<EmployeesTablePageViewModel>();
 		builder.Services.AddTransient<EmployeeCardPageViewModel>();
 		builder.Services.AddTransient<MaterialsTablePageViewModel>();
@@ -48,6 +52,10 @@ public static class MauiProgram
 		builder.Services.AddTransient<MaterialPriceAddModalViewModel>();
 		builder.Services.AddTransient<OperationsTablePageViewModel>();
 		builder.Services.AddTransient<OperationCardPageViewModel>();
+		builder.Services.AddTransient<ProductsTablePageViewModel>();
+		builder.Services.AddTransient<ProductCardPageViewModel>();
+		builder.Services.AddTransient<ProductBomTablePageViewModel>();
+		builder.Services.AddTransient<ProductOperationsTablePageViewModel>();
 		builder.Services.AddTransient<EmployeesTablePage>();
 		builder.Services.AddTransient<EmployeeCardPage>();
 		builder.Services.AddTransient<MaterialsTablePage>();
@@ -55,6 +63,10 @@ public static class MauiProgram
 		builder.Services.AddTransient<MaterialPriceAddModal>();
 		builder.Services.AddTransient<OperationsTablePage>();
 		builder.Services.AddTransient<OperationCardPage>();
+		builder.Services.AddTransient<ProductsTablePage>();
+		builder.Services.AddTransient<ProductCardPage>();
+		builder.Services.AddTransient<ProductBomTablePage>();
+		builder.Services.AddTransient<ProductOperationsTablePage>();
 
 		builder.Services.AddSingleton<ISpecificationsService, SpecificationsService>();
 		builder.Services.AddSingleton<IReturnLookupService, ReturnLookupService>();
