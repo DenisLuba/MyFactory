@@ -7,14 +7,17 @@ namespace MyFactory.MauiClient.Services.SettingsServices
     {
         private readonly HttpClient _httpClient = httpClient;
 
-        public async Task<List<SettingsGetResponse>?> GetAllAsync()
-            => await _httpClient.GetFromJsonAsync<List<SettingsGetResponse>>("api/settings");
+        public async Task<IReadOnlyList<SettingsListResponse>?> GetAllAsync()
+            => await _httpClient.GetFromJsonAsync<List<SettingsListResponse>>("api/settings");
 
-        public async Task<SettingsGetResponse?> GetAsync(string key)
-            => await _httpClient.GetFromJsonAsync<SettingsGetResponse>($"api/settings/{key}");
+        public async Task<SettingGetResponse?> GetAsync(string key)
+            => await _httpClient.GetFromJsonAsync<SettingGetResponse>($"api/settings/{key}");
 
-        public async Task<SettingsUpdateResponse?> UpdateAsync(string key, SettingsUpdateRequest request)
-            => await _httpClient.PutAsJsonAsync($"api/settings/{key}", request)
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<SettingsUpdateResponse>()).Unwrap();
+        public async Task<SettingUpdateResponse?> UpdateAsync(string key, SettingUpdateRequest request)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"api/settings/{key}", request);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<SettingUpdateResponse>();
+        }
     }
 }

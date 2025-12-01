@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 using MyFactory.WebApi.Contracts.Settings;
 using MyFactory.WebApi.SwaggerExamples.Settings;
@@ -11,17 +12,17 @@ public class SettingsController : ControllerBase
 {
     [HttpGet]
     [Produces("application/json")]
-    [SwaggerResponseExample(200, typeof(SettingsGetResponseExample))]
-    [ProducesResponseType(typeof(IEnumerable<SettingsGetResponse>), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(200, typeof(SettingsListResponseExample))]
+    [ProducesResponseType(typeof(IEnumerable<SettingsListResponse>), StatusCodes.Status200OK)]
     public IActionResult GetAll()
         => Ok(new[]
         {
-            new SettingsGetResponse(
+            new SettingsListResponse(
                 Key: "StandardShiftHours",
                 Value: "8",
                 Description: "Стандартная длительность смены (часы)"
             ),
-            new SettingsGetResponse(
+            new SettingsListResponse(
                 Key: "Currency",
                 Value: "₽",
                 Description: "Валюта системы"
@@ -30,11 +31,11 @@ public class SettingsController : ControllerBase
 
     [HttpGet("{key}")]
     [Produces("application/json")]
-    [SwaggerResponseExample(200, typeof(SettingsGetResponseExample))]
-    [ProducesResponseType(typeof(SettingsGetResponse), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(200, typeof(SettingGetResponseExample))]
+    [ProducesResponseType(typeof(SettingGetResponse), StatusCodes.Status200OK)]
     public IActionResult Get(string key)
         => Ok(
-            new SettingsGetResponse(
+            new SettingGetResponse(
                 Key: key,
                 Value: key switch
                 {
@@ -49,14 +50,14 @@ public class SettingsController : ControllerBase
     [HttpPut("{key}")]
     [Consumes("application/json")]
     [Produces("application/json")]
-    [SwaggerRequestExample(typeof(SettingsUpdateRequest), typeof(SettingsUpdateRequestExample))]
-    [SwaggerResponseExample(200, typeof(SettingsUpdateResponseExample))]
-    [ProducesResponseType(typeof(SettingsUpdateResponse), StatusCodes.Status200OK)]
-    public IActionResult Update(string key, [FromBody] SettingsUpdateRequest dto)
+    [SwaggerRequestExample(typeof(SettingUpdateRequest), typeof(SettingUpdateRequestExample))]
+    [SwaggerResponseExample(200, typeof(SettingUpdateResponseExample))]
+    [ProducesResponseType(typeof(SettingUpdateResponse), StatusCodes.Status200OK)]
+    public IActionResult Update(string key, [FromBody] SettingUpdateRequest dto)
         => Ok(
-            new SettingsUpdateResponse(
+            new SettingUpdateResponse(
                 Key: key,
-                Status: SettingsUpdateStatus.Updated
+                Status: SettingUpdateStatus.Updated
             )
         );
 }

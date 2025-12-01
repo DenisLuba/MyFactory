@@ -1,15 +1,14 @@
-﻿using Swashbuckle.AspNetCore.Filters;
+using Swashbuckle.AspNetCore.Filters;
 using MyFactory.WebApi.Contracts.Settings;
 
 namespace MyFactory.WebApi.SwaggerExamples.Settings;
 
-public class SettingsGetResponseExample : IExamplesProvider<SettingsGetResponse>
+public class SettingGetResponseExample : IExamplesProvider<SettingGetResponse>
 {
-    public SettingsGetResponse GetExamples() =>
-        new SettingsGetResponse(
+    public SettingGetResponse GetExamples() =>
+        new(
             Key: "StandardShiftHours",
             Value: "8",
             Description: "Стандартная длительность смены (часы)"
         );
 }
-

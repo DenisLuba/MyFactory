@@ -3,7 +3,63 @@
     x:Class="MyFactory.MauiClient.Pages.Reference.Settings.SettingsTablePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:model="clr-namespace:MyFactory.MauiClient.Models.Settings"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Reference.Settings"
-    x:DataType="view_model:SettingsTablePageViewModel">
+    x:DataType="view_model:SettingsTablePageViewModel"
+    Title="Настройки системы">
 
+    <ContentPage.Resources>
+        <Style TargetType="Border" x:Key="RowBorderStyle">
+            <Setter Property="Stroke" Value="{AppThemeBinding Light=#E5E7EB, Dark=#374151}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Background" Value="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}" />
+            <Setter Property="Padding" Value="12" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="10" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid Padding="16" RowDefinitions="Auto,*" RowSpacing="16">
+        <VerticalStackLayout Spacing="4">
+            <Label FontSize="24" FontAttributes="Bold" Text="Настройки системы" />
+            <Label FontSize="14" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" Text="Управление ключевыми параметрами работы системы" />
+        </VerticalStackLayout>
+
+        <RefreshView Grid.Row="1" Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy}">
+            <CollectionView
+                ItemsSource="{Binding Settings}"
+                SelectionMode="Single"
+                SelectionChanged="OnSelectionChanged">
+                <CollectionView.Header>
+                    <Grid ColumnDefinitions="2*,*,2*" Padding="12,0" Margin="0,0,0,8">
+                        <Label FontAttributes="Bold" Text="Ключ" />
+                        <Label Grid.Column="1" FontAttributes="Bold" Text="Значение" />
+                        <Label Grid.Column="2" FontAttributes="Bold" Text="Описание" />
+                    </Grid>
+                </CollectionView.Header>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:SettingsListResponse">
+                        <Border Style="{StaticResource RowBorderStyle}" Margin="0,0,0,8">
+                            <Grid ColumnDefinitions="2*,*,2*" ColumnSpacing="12">
+                                <Label Text="{Binding Key}" FontAttributes="Bold" />
+                                <Label Grid.Column="1" Text="{Binding Value}" />
+                                <Label Grid.Column="2" Text="{Binding Description}" LineBreakMode="WordWrap" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="24" Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label FontAttributes="Bold" FontSize="16" Text="Нет настроек" />
+                        <Label FontSize="13" TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" Text="Добавьте параметры через API" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
 </ContentPage>
