@@ -15,7 +15,7 @@ public class ReturnLookupService(HttpClient httpClient, ISpecificationsService s
 {
     private readonly HttpClient _httpClient = httpClient;
     private readonly ISpecificationsService _specificationsService = specificationsService;
-    private IReadOnlyList<SpecificationsGetResponse>? _cachedSpecifications;
+    private IReadOnlyList<SpecificationsListResponse>? _cachedSpecifications;
     private DateTime _specsCachedAt = DateTime.MinValue;
     private readonly TimeSpan _specCacheTtl = TimeSpan.FromMinutes(5);
 
@@ -68,7 +68,7 @@ public class ReturnLookupService(HttpClient httpClient, ISpecificationsService s
         return results;
     }
 
-    private async Task<IReadOnlyList<SpecificationsGetResponse>> GetSpecificationsAsync(CancellationToken cancellationToken)
+    private async Task<IReadOnlyList<SpecificationsListResponse>> GetSpecificationsAsync(CancellationToken cancellationToken)
     {
         if (_cachedSpecifications is { Count: > 0 }
             && DateTime.UtcNow - _specsCachedAt <= _specCacheTtl)
@@ -76,7 +76,7 @@ public class ReturnLookupService(HttpClient httpClient, ISpecificationsService s
             return _cachedSpecifications;
         }
 
-        var specs = await _specificationsService.ListAsync() ?? new List<SpecificationsGetResponse>();
+        var specs = await _specificationsService.ListAsync() ?? new List<SpecificationsListResponse>();
         cancellationToken.ThrowIfCancellationRequested();
 
         _cachedSpecifications = specs;

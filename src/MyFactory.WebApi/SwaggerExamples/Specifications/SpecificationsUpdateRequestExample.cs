@@ -9,6 +9,7 @@ public class SpecificationsUpdateRequestExample : IExamplesProvider<Specificatio
         new(
             Sku: "SP-001",
             Name: "Пижама",
-            PlanPerHour: 2.5
+            PlanPerHour: 2.5,
+            Description: "Обновленное описание изделия"
         );
 }

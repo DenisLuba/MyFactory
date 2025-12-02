@@ -8,31 +8,52 @@ namespace MyFactory.MauiClient.Services.SpecificationsServices
     {
         private readonly HttpClient _httpClient = httpClient;
 
-        public async Task<List<SpecificationsGetResponse>?> ListAsync()
-            => await _httpClient.GetFromJsonAsync<List<SpecificationsGetResponse>>("api/specifications");
+        public async Task<IReadOnlyList<SpecificationsListResponse>?> ListAsync()
+            => await _httpClient.GetFromJsonAsync<List<SpecificationsListResponse>>("api/specifications");
 
         public async Task<SpecificationsGetResponse?> GetAsync(Guid id)
             => await _httpClient.GetFromJsonAsync<SpecificationsGetResponse>($"api/specifications/{id}");
 
         public async Task<SpecificationsCreateResponse?> CreateAsync(SpecificationsCreateRequest request)
-            => await _httpClient.PostAsJsonAsync("api/specifications", request)
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<SpecificationsCreateResponse>()).Unwrap();
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/specifications", request);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<SpecificationsCreateResponse>();
+        }
 
         public async Task<SpecificationsUpdateResponse?> UpdateAsync(Guid id, SpecificationsUpdateRequest request)
-            => await _httpClient.PutAsJsonAsync($"api/specifications/{id}", request)
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<SpecificationsUpdateResponse>()).Unwrap();
+        {
+            var response = await _httpClient.PutAsJsonAsync($"api/specifications/{id}", request);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<SpecificationsUpdateResponse>();
+        }
+
+        public async Task<IReadOnlyList<SpecificationBomItemResponse>?> GetBomAsync(Guid id)
+            => await _httpClient.GetFromJsonAsync<List<SpecificationBomItemResponse>>($"api/specifications/{id}/bom");
 
         public async Task<SpecificationsAddBomResponse?> AddBomAsync(Guid id, SpecificationsAddBomRequest request)
-            => await _httpClient.PostAsJsonAsync($"api/specifications/{id}/bom", request)
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<SpecificationsAddBomResponse>()).Unwrap();
+        {
+            var response = await _httpClient.PostAsJsonAsync($"api/specifications/{id}/bom", request);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<SpecificationsAddBomResponse>();
+        }
 
         public async Task<SpecificationsDeleteBomItemResponse?> DeleteBomItemAsync(Guid id, Guid bomId)
-            => await _httpClient.DeleteAsync($"api/specifications/{id}/bom/{bomId}")
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<SpecificationsDeleteBomItemResponse>()).Unwrap();
+        {
+            var response = await _httpClient.DeleteAsync($"api/specifications/{id}/bom/{bomId}");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<SpecificationsDeleteBomItemResponse>();
+        }
+
+        public async Task<IReadOnlyList<SpecificationOperationItemResponse>?> GetOperationsAsync(Guid id)
+            => await _httpClient.GetFromJsonAsync<List<SpecificationOperationItemResponse>>($"api/specifications/{id}/operations");
 
         public async Task<SpecificationsAddOperationResponse?> AddOperationAsync(Guid id, SpecificationsAddOperationRequest request)
-            => await _httpClient.PostAsJsonAsync($"api/specifications/{id}/operations", request)
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<SpecificationsAddOperationResponse>()).Unwrap();
+        {
+            var response = await _httpClient.PostAsJsonAsync($"api/specifications/{id}/operations", request);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<SpecificationsAddOperationResponse>();
+        }
 
         public async Task<SpecificationsUploadImageResponse?> UploadImageAsync(Guid id, Stream imageStream, string fileName, string? contentType = "image/jpeg")
         {

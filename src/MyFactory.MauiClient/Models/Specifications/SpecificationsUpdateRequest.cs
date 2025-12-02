@@ -3,6 +3,7 @@
 public record SpecificationsUpdateRequest(
     string Sku,
     string Name,
-    double PlanPerHour
+    double PlanPerHour,
+    string? Description
 );
 

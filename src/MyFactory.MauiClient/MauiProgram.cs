@@ -10,6 +10,7 @@ using MyFactory.MauiClient.Pages.Reference.Operations;
 using MyFactory.MauiClient.Pages.Reference.Products;
 using MyFactory.MauiClient.Pages.Reference.Settings;
 using MyFactory.MauiClient.Pages.Reference.Workshops;
+using MyFactory.MauiClient.Pages.Specifications;
 using MyFactory.MauiClient.Services.EmployeesServices;
 using MyFactory.MauiClient.Services.MaterialsServices;
 using MyFactory.MauiClient.Services.OperationsServices;
@@ -26,6 +27,7 @@ using MyFactory.MauiClient.ViewModels.Reference.Operations;
 using MyFactory.MauiClient.ViewModels.Reference.Products;
 using MyFactory.MauiClient.ViewModels.Reference.Settings;
 using MyFactory.MauiClient.ViewModels.Reference.Workshops;
+using MyFactory.MauiClient.ViewModels.Specifications;
 
 namespace MyFactory.MauiClient;
 
@@ -66,6 +68,11 @@ public static class MauiProgram
 		builder.Services.AddTransient<ProductCardPageViewModel>();
 		builder.Services.AddTransient<ProductBomTablePageViewModel>();
 		builder.Services.AddTransient<ProductOperationsTablePageViewModel>();
+		builder.Services.AddTransient<SpecificationsListPageViewModel>();
+		builder.Services.AddTransient<SpecificationCardPageViewModel>();
+		builder.Services.AddTransient<SpecificationBomPageViewModel>();
+		builder.Services.AddTransient<SpecificationOperationsPageViewModel>();
+		builder.Services.AddTransient<SpecificationCostCardPageViewModel>();
 		builder.Services.AddTransient<SettingsTablePageViewModel>();
 		builder.Services.AddTransient<SettingEditModalViewModel>();
 		builder.Services.AddTransient<WorkshopsTablePageViewModel>();
@@ -83,6 +90,11 @@ public static class MauiProgram
 		builder.Services.AddTransient<ProductCardPage>();
 		builder.Services.AddTransient<ProductBomTablePage>();
 		builder.Services.AddTransient<ProductOperationsTablePage>();
+		builder.Services.AddTransient<SpecificationsListPage>();
+		builder.Services.AddTransient<SpecificationCardPage>();
+		builder.Services.AddTransient<SpecificationBomPage>();
+		builder.Services.AddTransient<SpecificationOperationsPage>();
+		builder.Services.AddTransient<SpecificationCostCardPage>();
 		builder.Services.AddTransient<SettingsTablePage>();
 		builder.Services.AddTransient<SettingEditModal>();
 		builder.Services.AddTransient<WorkshopsTablePage>();

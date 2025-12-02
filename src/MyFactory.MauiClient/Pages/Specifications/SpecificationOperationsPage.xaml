@@ -3,7 +3,57 @@
     x:Class="MyFactory.MauiClient.Pages.Specifications.SpecificationOperationsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:MyFactory.MauiClient.Models.Specifications"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Specifications"
-    x:DataType="view_model:SpecificationOperationsPageViewModel">
+    x:DataType="view_model:SpecificationOperationsPageViewModel"
+    Title="{Binding Title}">
 
+    <ContentPage.Resources>
+        <Style TargetType="Border" x:Key="OperationBorderStyle">
+            <Setter Property="Stroke" Value="{AppThemeBinding Light=#E5E7EB, Dark=#374151}" />
+            <Setter Property="Background" Value="{AppThemeBinding Light=#FFFFFF, Dark=#0F172A}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Padding" Value="12" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="12" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid Padding="16" RowDefinitions="Auto,*" RowSpacing="12">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                <Label FontAttributes="Bold" FontSize="18" Text="Операции спецификации" />
+                <Label Text="{Binding Operations.Count, StringFormat='Позиций: {0}'}" TextColor="{DynamicResource Gray500}" />
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            </HorizontalStackLayout>
+            <Button
+                Grid.Column="1"
+                Text="Добавить"
+                Command="{Binding AddOperationCommand}"
+                IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+        </Grid>
+
+        <RefreshView Grid.Row="1" Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy}">
+            <CollectionView ItemsSource="{Binding Operations}">
+                <CollectionView.EmptyView>
+                    <Label HorizontalOptions="Center" Padding="24" Text="Операции ещё не добавлены" TextColor="{DynamicResource Gray500}" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:SpecificationOperationItemResponse">
+                        <Border Style="{StaticResource OperationBorderStyle}">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="6">
+                                <Label FontAttributes="Bold" Text="{Binding Operation}" />
+                                <Label Grid.Column="1" Text="{Binding Cost, StringFormat='{0:N2} ₽'}" HorizontalTextAlignment="End" />
+                                <Label Grid.Row="1" Text="{Binding Minutes, StringFormat='Длительность: {0:0.##} мин'}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
 </ContentPage>

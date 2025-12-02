@@ -2,7 +2,7 @@
 
 public record SpecificationsAddOperationResponse(
     Guid SpecificationId,
-    Guid OperationId,
+    SpecificationOperationItemResponse Item,
     SpecificationsStatus Status
 );
 

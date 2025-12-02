@@ -1,8 +1,7 @@
 ﻿namespace MyFactory.MauiClient.Models.Specifications;
 
 public record SpecificationsAddOperationRequest(
-    string Code,
-    string Name,
+    Guid OperationId,
     double Minutes,
     decimal Cost
 );

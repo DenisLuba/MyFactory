@@ -3,7 +3,71 @@
     x:Class="MyFactory.MauiClient.Pages.Specifications.SpecificationsListPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ui="clr-namespace:MyFactory.MauiClient.UIModels.Specifications"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Specifications"
-    x:DataType="view_model:SpecificationsListPageViewModel">
+    x:DataType="view_model:SpecificationsListPageViewModel"
+    x:Name="SpecificationsList"
+    Title="Спецификации">
 
+    <ContentPage.Resources>
+        <Style TargetType="Border" x:Key="CardBorderStyle">
+            <Setter Property="Stroke" Value="{AppThemeBinding Light=#E5E7EB, Dark=#374151}" />
+            <Setter Property="Background" Value="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Padding" Value="14" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="12" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid Padding="16" RowDefinitions="Auto,Auto,*" RowSpacing="12">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                <Label FontAttributes="Bold" FontSize="18" Text="Список спецификаций" />
+                <Label Text="{Binding Specifications.Count, StringFormat='Всего: {0}'}" TextColor="{DynamicResource Gray500}" />
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            </HorizontalStackLayout>
+            <Button
+                Grid.Column="1"
+                Text="Обновить"
+                Command="{Binding LoadCommand}"
+                IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+        </Grid>
+
+        <Button
+            Grid.Row="1"
+            Text="Добавить спецификацию"
+            Command="{Binding CreateCommand}"
+            IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+
+        <RefreshView Grid.Row="2" Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy}">
+            <CollectionView
+                ItemsSource="{Binding Specifications}"
+                SelectionMode="Single"
+                SelectionChanged="OnSpecificationSelectionChanged">
+                <CollectionView.EmptyView>
+                    <Label HorizontalOptions="Center" Padding="24" Text="Спецификации не найдены" TextColor="{DynamicResource Gray500}" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="ui:SpecificationsListItem">
+                        <Border Style="{StaticResource CardBorderStyle}">
+                            <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="6">
+                                <Label FontAttributes="Bold" Text="{Binding Sku}" />
+                                <Label Grid.Column="1" FontAttributes="Bold" FontSize="16" Text="{Binding Name}" />
+                                <Label Grid.Column="2" HorizontalTextAlignment="End" Text="{Binding Status}" />
+                                <StackLayout Grid.Row="1" Grid.ColumnSpan="3" Orientation="Horizontal" Spacing="16">
+                                    <Label Text="{Binding PlanPerHour, StringFormat='План: {0:0.##}/ч'}" />
+                                    <Label Text="{Binding ImagesCount, StringFormat='Картинок: {0}'}" />
+                                </StackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
 </ContentPage>

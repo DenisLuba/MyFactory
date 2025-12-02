@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 using MyFactory.WebApi.Contracts.Specifications;
 using MyFactory.WebApi.SwaggerExamples.Specifications;
-using MyFactory.WebApi.Contracts.Materials;
 
 namespace MyFactory.WebApi.Controllers;
 
@@ -15,36 +15,26 @@ public class SpecificationsController : ControllerBase
     //  GET /api/specifications
     // -------------------------------------------------------------
     [HttpGet]
-    [SwaggerResponseExample(200, typeof(SpecificationsGetResponseExample))]
-    [ProducesResponseType(typeof(IEnumerable<SpecificationsGetResponse>), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(200, typeof(SpecificationsListResponseExample))]
+    [ProducesResponseType(typeof(IEnumerable<SpecificationsListResponse>), StatusCodes.Status200OK)]
     public IActionResult List()
         => Ok(new[]
         {
-            new SpecificationsGetResponse(
+            new SpecificationsListResponse(
                 Id: Guid.Parse("22222222-2222-2222-2222-222222222000"),
                 Sku: "SP-001",
                 Name: "Пижама женская",
                 PlanPerHour: 2.5,
-                Bom:
-                [
-                    new BomItemResponse(
-                        MaterialId: Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                        MaterialName: "Ткань Ситец",
-                        Quantity: 1.8,
-                        Unit: Units.Meter                        ,
-                        Price: 180m
-                    )
-                ],
-                Operations:
-                [
-                    new OperationItemResponse(
-                        OperationId: Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                        Code: "CUT",
-                        Name: "Раскрой",
-                        Minutes: 6,
-                        Cost: 15
-                    )
-                ]
+                Status: SpecificationsStatus.Updated,
+                ImagesCount: 3
+            ),
+            new SpecificationsListResponse(
+                Id: Guid.Parse("33333333-3333-3333-3333-333333333000"),
+                Sku: "SP-002",
+                Name: "Халат махровый",
+                PlanPerHour: 1.3,
+                Status: SpecificationsStatus.Created,
+                ImagesCount: 1
             )
         });
 
@@ -61,28 +51,61 @@ public class SpecificationsController : ControllerBase
                 Sku: "SP-001",
                 Name: "Пижама женская",
                 PlanPerHour: 2.5,
-                Bom:
-                [
-                    new BomItemResponse(
-                        MaterialId: Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                        MaterialName: "Ткань Ситец",
-                        Quantity: 1.8,
-                        Unit: Units.Meter                        ,
-                        Price: 180m
-                    )
-                ],
-                Operations:
-                [
-                    new OperationItemResponse(
-                        OperationId: Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                        Code: "CUT",
-                        Name: "Раскрой",
-                        Minutes: 6,
-                        Cost: 15
-                    )
-                ]
+                Description: "Классический комплект для сна",
+                Status: SpecificationsStatus.Updated,
+                ImagesCount: 3
             )
         );
+
+    // -------------------------------------------------------------
+    // GET /api/specifications/{id}/bom
+    // -------------------------------------------------------------
+    [HttpGet("{id}/bom")]
+    [SwaggerResponseExample(200, typeof(SpecificationBomItemsResponseExample))]
+    [ProducesResponseType(typeof(IEnumerable<SpecificationBomItemResponse>), StatusCodes.Status200OK)]
+    public IActionResult GetBom(Guid id)
+        => Ok(new[]
+        {
+            new SpecificationBomItemResponse(
+                Id: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa1"),
+                Material: "Ткань Ситец",
+                Quantity: 1.8,
+                Unit: "м",
+                Price: 180,
+                Cost: 324
+            ),
+            new SpecificationBomItemResponse(
+                Id: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa2"),
+                Material: "Фурнитура",
+                Quantity: 1,
+                Unit: "комплект",
+                Price: 60,
+                Cost: 60
+            )
+        });
+
+    // -------------------------------------------------------------
+    // GET /api/specifications/{id}/operations
+    // -------------------------------------------------------------
+    [HttpGet("{id}/operations")]
+    [SwaggerResponseExample(200, typeof(SpecificationOperationItemsResponseExample))]
+    [ProducesResponseType(typeof(IEnumerable<SpecificationOperationItemResponse>), StatusCodes.Status200OK)]
+    public IActionResult GetOperations(Guid id)
+        => Ok(new[]
+        {
+            new SpecificationOperationItemResponse(
+                Id: Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbb1"),
+                Operation: "Раскрой",
+                Minutes: 8,
+                Cost: 24
+            ),
+            new SpecificationOperationItemResponse(
+                Id: Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbb2"),
+                Operation: "Сборка",
+                Minutes: 12,
+                Cost: 44
+            )
+        });
 
     // -------------------------------------------------------------
     // POST /api/specifications
@@ -121,12 +144,18 @@ public class SpecificationsController : ControllerBase
     [ProducesResponseType(typeof(SpecificationsAddBomResponse), StatusCodes.Status200OK)]
     public IActionResult AddBom(Guid id, [FromBody] SpecificationsAddBomRequest dto)
         => Ok(new SpecificationsAddBomResponse
-                (
-                    SpecificationId: id,
-                    BomItemId: Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                    Status: SpecificationsStatus.BomAdded
-                )
-            );
+        (
+            SpecificationId: id,
+            Item: new SpecificationBomItemResponse(
+                Id: Guid.NewGuid(),
+                Material: "Ткань Ситец",
+                Quantity: dto.Qty,
+                Unit: dto.Unit,
+                Price: dto.Price,
+                Cost: (decimal)dto.Qty * dto.Price
+            ),
+            Status: SpecificationsStatus.BomAdded
+        ));
 
     // -------------------------------------------------------------
     // DELETE /api/specifications/{id}/bom/{bomId}
@@ -147,12 +176,16 @@ public class SpecificationsController : ControllerBase
     [ProducesResponseType(typeof(SpecificationsAddOperationResponse), StatusCodes.Status200OK)]
     public IActionResult AddOperation(Guid id, [FromBody] SpecificationsAddOperationRequest dto)
         => Ok(new SpecificationsAddOperationResponse
-                (
-                    SpecificationId: id, 
-                    OperationId: Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                    Status: SpecificationsStatus.OperationAdded
-                )
-            );
+        (
+            SpecificationId: id,
+            Item: new SpecificationOperationItemResponse(
+                Id: Guid.NewGuid(),
+                Operation: "Сборка",
+                Minutes: dto.Minutes,
+                Cost: dto.Cost
+            ),
+            Status: SpecificationsStatus.OperationAdded
+        ));
 
     // -------------------------------------------------------------
     // POST /api/specifications/{id}/images

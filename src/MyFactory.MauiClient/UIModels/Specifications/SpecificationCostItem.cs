@@ -1,6 +1,6 @@
 namespace MyFactory.MauiClient.UIModels.Specifications;
 
-// Карточка себестоимости (итог)
+// Aggregated cost values for a specification.
 public record SpecificationCostItem(
     decimal MaterialsCost,
     decimal OperationsCost,

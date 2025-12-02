@@ -2,7 +2,7 @@
 
 public record SpecificationsAddBomResponse(
     Guid SpecificationId,
-    Guid BomItemId,
+    SpecificationBomItemResponse Item,
     SpecificationsStatus Status
 );
 

@@ -1,12 +1,10 @@
-﻿namespace MyFactory.WebApi.Contracts.Specifications;
+namespace MyFactory.WebApi.Contracts.Specifications;
 
-public record SpecificationsGetResponse(
+public record SpecificationsListResponse(
     Guid Id,
     string Sku,
     string Name,
     double PlanPerHour,
-    string? Description,
     SpecificationsStatus Status,
     int ImagesCount
 );
-

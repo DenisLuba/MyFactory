@@ -1,6 +1,6 @@
 namespace MyFactory.MauiClient.UIModels.Specifications;
 
-// Карточка спецификации
+// Represents the editable fields of a specification card.
 public record SpecificationCardItem(
     string Sku,
     string Name,

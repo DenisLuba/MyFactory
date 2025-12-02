@@ -1,8 +1,8 @@
 namespace MyFactory.MauiClient.UIModels.Specifications;
 
-// Операции (спецификация)
+// Represents a single production operation linked to the specification.
 public record SpecificationOperationItem(
     string Operation,
-    int TimeMinutes,
+    double Minutes,
     decimal Cost
 );
