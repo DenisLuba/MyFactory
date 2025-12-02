@@ -1,7 +1,9 @@
+using System;
+
 namespace MyFactory.MauiClient.UIModels.Warehouse;
 
-// Журнал поступления материалов
 public record MaterialReceiptJournalItem(
+    Guid Id,
     string Document,
     string Date,
     string Supplier,

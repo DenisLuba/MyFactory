@@ -11,12 +11,15 @@ using MyFactory.MauiClient.Pages.Reference.Products;
 using MyFactory.MauiClient.Pages.Reference.Settings;
 using MyFactory.MauiClient.Pages.Reference.Workshops;
 using MyFactory.MauiClient.Pages.Specifications;
+using MyFactory.MauiClient.Pages.Warehouse.Materials;
 using MyFactory.MauiClient.Services.EmployeesServices;
+using MyFactory.MauiClient.Services.InventoryServices;
 using MyFactory.MauiClient.Services.MaterialsServices;
 using MyFactory.MauiClient.Services.OperationsServices;
 using MyFactory.MauiClient.Services.ProductsServices;
 using MyFactory.MauiClient.Services.ReturnsServices;
 using MyFactory.MauiClient.Services.SettingsServices;
+using MyFactory.MauiClient.Services.WarehouseMaterialsServices;
 using MyFactory.MauiClient.Services.WorkshopExpensesServices;
 using MyFactory.MauiClient.Services.WorkshopsServices;
 using MyFactory.MauiClient.Services.SpecificationsServices;
@@ -28,6 +31,7 @@ using MyFactory.MauiClient.ViewModels.Reference.Products;
 using MyFactory.MauiClient.ViewModels.Reference.Settings;
 using MyFactory.MauiClient.ViewModels.Reference.Workshops;
 using MyFactory.MauiClient.ViewModels.Specifications;
+using MyFactory.MauiClient.ViewModels.Warehouse.Materials;
 
 namespace MyFactory.MauiClient;
 
@@ -57,6 +61,8 @@ public static class MauiProgram
 		builder.Services.AddSingleton<ISettingsService, SettingsService>();
 		builder.Services.AddSingleton<IWorkshopsService, WorkshopsService>();
 		builder.Services.AddSingleton<IWorkshopExpensesService, WorkshopExpensesService>();
+		builder.Services.AddSingleton<IInventoryService, InventoryService>();
+		builder.Services.AddSingleton<IWarehouseMaterialsService, WarehouseMaterialsService>();
 		builder.Services.AddTransient<EmployeesTablePageViewModel>();
 		builder.Services.AddTransient<EmployeeCardPageViewModel>();
 		builder.Services.AddTransient<MaterialsTablePageViewModel>();
@@ -79,6 +85,11 @@ public static class MauiProgram
 		builder.Services.AddTransient<WorkshopCardPageViewModel>();
 		builder.Services.AddTransient<WorkshopExpensesTablePageViewModel>();
 		builder.Services.AddTransient<WorkshopExpenseCardPageViewModel>();
+		builder.Services.AddTransient<MaterialStockTablePageViewModel>();
+		builder.Services.AddTransient<MaterialReceiptsTablePageViewModel>();
+		builder.Services.AddTransient<MaterialReceiptCardPageViewModel>();
+		builder.Services.AddTransient<MaterialReceiptLinesPageViewModel>();
+		builder.Services.AddTransient<MaterialReceiptLineEditorViewModel>();
 		builder.Services.AddTransient<EmployeesTablePage>();
 		builder.Services.AddTransient<EmployeeCardPage>();
 		builder.Services.AddTransient<MaterialsTablePage>();
@@ -101,6 +112,11 @@ public static class MauiProgram
 		builder.Services.AddTransient<WorkshopCardPage>();
 		builder.Services.AddTransient<WorkshopExpensesTablePage>();
 		builder.Services.AddTransient<WorkshopExpenseCardPage>();
+		builder.Services.AddTransient<MaterialStockTablePage>();
+		builder.Services.AddTransient<MaterialReceiptsTablePage>();
+		builder.Services.AddTransient<MaterialReceiptCardPage>();
+		builder.Services.AddTransient<MaterialReceiptLinesPage>();
+		builder.Services.AddTransient<MaterialReceiptLineEditorModal>();
 
 		builder.Services.AddSingleton<ISpecificationsService, SpecificationsService>();
 		builder.Services.AddSingleton<IReturnLookupService, ReturnLookupService>();

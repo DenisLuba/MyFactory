@@ -3,7 +3,85 @@
     x:Class="MyFactory.MauiClient.Pages.Warehouse.Materials.MaterialReceiptsTablePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ui="clr-namespace:MyFactory.MauiClient.UIModels.Warehouse"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Warehouse.Materials"
-    x:DataType="view_model:MaterialReceiptsTablePageViewModel">
+    x:DataType="view_model:MaterialReceiptsTablePageViewModel"
+    Title="Поступления материалов">
 
+    <ContentPage.Resources>
+        <Style TargetType="Border" x:Key="CardBorderStyle">
+            <Setter Property="Stroke" Value="{AppThemeBinding Light=#E5E7EB, Dark=#374151}" />
+            <Setter Property="Background" Value="{AppThemeBinding Light=#FFFFFF, Dark=#111827}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="12" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid Padding="16" RowDefinitions="Auto,Auto,*" RowSpacing="12">
+        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
+            <Entry Placeholder="Поиск по номеру, складу или поставщику" Text="{Binding SearchText}" />
+            <Button
+                Grid.Column="1"
+                Text="Новое"
+                Command="{Binding CreateReceiptCommand}"
+                IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+            <Button
+                Grid.Column="2"
+                Text="Обновить"
+                Command="{Binding LoadCommand}"
+                IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+        </Grid>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <Label
+                VerticalOptions="Center"
+                Text="{Binding Receipts.Count, StringFormat='Всего документов: {0}'}" />
+            <ActivityIndicator Grid.Column="1" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+        </Grid>
+
+        <RefreshView Grid.Row="2" Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy}">
+            <CollectionView
+                ItemsSource="{Binding Receipts}"
+                SelectionMode="Single"
+                SelectionChanged="OnReceiptSelectionChanged">
+                <CollectionView.EmptyView>
+                    <Label
+                        HorizontalOptions="Center"
+                        Padding="24"
+                        Text="Поступления не найдены"
+                        TextColor="{DynamicResource Gray500}"
+                        VerticalOptions="Center" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="ui:MaterialReceiptJournalItem">
+                        <Border Style="{StaticResource CardBorderStyle}">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="6">
+                                <Label FontAttributes="Bold" FontSize="16" Text="{Binding Document}" />
+                                <Label Grid.Column="1" HorizontalTextAlignment="End" Text="{Binding Status}" />
+
+                                <Label Grid.Row="1" Text="{Binding Supplier, StringFormat='Поставщик: {0}'}" />
+                                <Label
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    HorizontalTextAlignment="End"
+                                    Text="{Binding Date}" />
+
+                                <Label
+                                    Grid.Row="2"
+                                    Grid.ColumnSpan="2"
+                                    FontAttributes="Bold"
+                                    Text="{Binding TotalAmount, StringFormat='Сумма: {0:N2} ₽'}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
 </ContentPage>

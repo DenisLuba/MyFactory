@@ -3,7 +3,92 @@
     x:Class="MyFactory.MauiClient.Pages.Warehouse.Materials.MaterialStockTablePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ui="clr-namespace:MyFactory.MauiClient.UIModels.Warehouse"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Warehouse.Materials"
-    x:DataType="view_model:MaterialStockTablePageViewModel">
+    x:DataType="view_model:MaterialStockTablePageViewModel"
+    Title="Остатки материалов">
 
+    <ContentPage.Resources>
+        <Style TargetType="Border" x:Key="CardBorderStyle">
+            <Setter Property="Stroke" Value="{AppThemeBinding Light=#E5E7EB, Dark=#374151}" />
+            <Setter Property="Background" Value="{AppThemeBinding Light=#FFFFFF, Dark=#111827}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="12" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid Padding="16" RowDefinitions="Auto,Auto,*" RowSpacing="12">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <Entry Placeholder="Поиск по материалу" Text="{Binding SearchText}" />
+            <Button
+                Text="Обновить"
+                Command="{Binding LoadCommand}"
+                IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+        </Grid>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <Entry Placeholder="Фильтр по складу" Text="{Binding WarehouseFilter}" />
+            <VerticalStackLayout HorizontalOptions="End" Spacing="2" VerticalOptions="Center">
+                <Label Text="{Binding Stock.Count, StringFormat='Позиции: {0}'}" />
+                <Label FontAttributes="Bold" Text="{Binding TotalAmountDisplay}" />
+            </VerticalStackLayout>
+        </Grid>
+
+        <RefreshView Grid.Row="2" Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy}">
+            <CollectionView ItemsSource="{Binding Stock}">
+                <CollectionView.EmptyView>
+                    <Label
+                        HorizontalOptions="Center"
+                        Padding="24"
+                        Text="Данные не найдены"
+                        TextColor="{DynamicResource Gray500}"
+                        VerticalOptions="Center" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="ui:MaterialStockItem">
+                        <Border Style="{StaticResource CardBorderStyle}">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="6">
+                                <Label FontAttributes="Bold" FontSize="16" Text="{Binding Material}" />
+                                <Label Grid.Column="1" HorizontalTextAlignment="End" Text="{Binding Warehouse}" />
+
+                                <Label
+                                    Grid.Row="1"
+                                    Text="{Binding Quantity, StringFormat='Кол-во: {0:N2}'}"
+                                    TextColor="{DynamicResource Gray500}" />
+                                <Label
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    HorizontalTextAlignment="End"
+                                    Text="{Binding Unit, StringFormat='Ед.: {0}'}"
+                                    TextColor="{DynamicResource Gray500}" />
+
+                                <Label
+                                    Grid.Row="2"
+                                    Text="{Binding AvgPrice, StringFormat='Средняя цена: {0:N2} ₽'}" />
+                                <Label
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    FontAttributes="Bold"
+                                    HorizontalTextAlignment="End"
+                                    Text="{Binding TotalAmount, StringFormat='Сумма: {0:N2} ₽'}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <ActivityIndicator
+            Grid.RowSpan="3"
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center" />
+    </Grid>
 </ContentPage>

@@ -25,9 +25,11 @@ public class InventoryController : ControllerBase
                 MaterialId: Mat1,
                 MaterialName: "Ткань Ситец",
                 WarehouseId: Wh1,
+                WarehouseName: "Основной склад",
                 Quantity: 120.0,
                 Unit: Units.Meter,
                 AvgPrice: 180.0m,
+                TotalAmount: 21600.0m,
                 ReservedQty: 0.0
             )
         });
@@ -43,9 +45,11 @@ public class InventoryController : ControllerBase
                 MaterialId: Mat1,
                 MaterialName: "Ткань Ситец",
                 WarehouseId: Guid.Parse(warehouseId),
+                WarehouseName: "Склад " + warehouseId[^4..],
                 Quantity: 120.0,
                 Unit: Units.Meter,
                 AvgPrice: 180.0m,
+                TotalAmount: 21600.0m,
                 ReservedQty: 0.0
             )
         });

@@ -1,7 +1,10 @@
+using System;
+
 namespace MyFactory.MauiClient.UIModels.Warehouse;
 
-// Позиция поступления материалов
 public record MaterialReceiptLineItem(
+    Guid Id,
+    Guid MaterialId,
     string Material,
     decimal Quantity,
     string Unit,
