@@ -16,12 +16,12 @@ public class WarehousesService(HttpClient httpClient) : IWarehousesService
     public async Task<WarehousesGetResponse?> GetAsync(Guid id)
         => await _httpClient.GetFromJsonAsync<WarehousesGetResponse>($"api/warehouses/{id}");
 
-    public async Task<WarehousesCreateResponse?> CreateAsync(WarehousesCreateRequest request)
+    /*public async Task<WarehousesCreateResponse?> CreateAsync(WarehousesCreateRequest request)
     {
         using var response = await _httpClient.PostAsJsonAsync("api/warehouses", request);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<WarehousesCreateResponse>();
-    }
+    }*/
 
     public async Task<WarehousesUpdateResponse?> UpdateAsync(Guid id, WarehousesUpdateRequest request)
     {

@@ -14,7 +14,7 @@ namespace MyFactory.MauiClient.Services.InventoryServices
         public async Task<List<InventoryItemResponse>?> GetAllAsync(string? materialId = null)
             => await _httpClient.GetFromJsonAsync<List<InventoryItemResponse>>($"api/inventory{(materialId != null ? "?materialId=" + materialId : "")}");
 
-        public async Task<List<InventoryItemResponse>?> GetByWarehouseAsync(string warehouseId)
+        /*public async Task<List<InventoryItemResponse>?> GetByWarehouseAsync(string warehouseId)
             => await _httpClient.GetFromJsonAsync<List<InventoryItemResponse>>($"api/inventory/by-warehouse/{warehouseId}");
 
         public async Task<CreateInventoryReceiptResponse?> CreateReceiptAsync(CreateInventoryReceiptRequest request)
@@ -27,6 +27,6 @@ namespace MyFactory.MauiClient.Services.InventoryServices
 
         public async Task<TransferInventoryResponse?> TransferAsync(TransferInventoryRequest request)
             => await _httpClient.PostAsJsonAsync("api/inventory/transfer", request)
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<TransferInventoryResponse>()).Unwrap();
+                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<TransferInventoryResponse>()).Unwrap();*/
     }
 }

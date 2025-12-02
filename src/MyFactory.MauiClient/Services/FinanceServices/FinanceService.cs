@@ -56,9 +56,9 @@ namespace MyFactory.MauiClient.Services.FinanceServices
         public async Task<List<string>?> GetOverheadArticlesAsync()
             => await _httpClient.GetFromJsonAsync<List<string>>("api/finance/overheads/articles");
 
-        public async Task<AdvanceStatusResponse?> CreateAdvanceAsync(CreateAdvanceRequest request)
+        /*public async Task<AdvanceStatusResponse?> CreateAdvanceAsync(CreateAdvanceRequest request)
             => await _httpClient.PostAsJsonAsync("api/finance/advances", request)
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<AdvanceStatusResponse>()).Unwrap();
+                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<AdvanceStatusResponse>()).Unwrap();*/
 
         public async Task<AdvanceStatusResponse?> SubmitAdvanceReportAsync(string advanceId, SubmitAdvanceReportRequest request)
             => await _httpClient.PostAsJsonAsync($"api/finance/advances/{advanceId}/report", request)

@@ -7,7 +7,7 @@ namespace MyFactory.MauiClient.Services.AuthServices
     {
         private readonly HttpClient _httpClient = httpClient;
 
-        public async Task<LoginResponse?> LoginAsync(LoginRequest request)
+        /*public async Task<LoginResponse?> LoginAsync(LoginRequest request)
             => await _httpClient.PostAsJsonAsync("api/auth/login", request)
                 .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<LoginResponse>()).Unwrap();
 
@@ -17,6 +17,6 @@ namespace MyFactory.MauiClient.Services.AuthServices
 
         public async Task<RegisterResponse?> RegisterAsync(RegisterRequest request)
             => await _httpClient.PostAsJsonAsync("api/auth/register", request)
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<RegisterResponse>()).Unwrap();
+                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<RegisterResponse>()).Unwrap();*/
     }
 }

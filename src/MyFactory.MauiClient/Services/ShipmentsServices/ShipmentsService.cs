@@ -10,12 +10,12 @@ public class ShipmentsService(HttpClient httpClient) : IShipmentsService
 {
     private readonly HttpClient _httpClient = httpClient;
 
-    public async Task<ShipmentsCreateResponse?> CreateShipmentAsync(ShipmentsCreateRequest request)
+    /*public async Task<ShipmentsCreateResponse?> CreateShipmentAsync(ShipmentsCreateRequest request)
     {
         using var response = await _httpClient.PostAsJsonAsync("api/shipments", request);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<ShipmentsCreateResponse>();
-    }
+    }*/
 
     public async Task<List<ShipmentsListResponse>?> GetShipmentsAsync()
         => await _httpClient.GetFromJsonAsync<List<ShipmentsListResponse>>("api/shipments");

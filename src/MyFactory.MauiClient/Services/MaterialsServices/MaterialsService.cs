@@ -17,7 +17,7 @@ public class MaterialsService(HttpClient httpClient) : IMaterialsService
     public Task<MaterialCardResponse?> GetAsync(string id)
         => _httpClient.GetFromJsonAsync<MaterialCardResponse>($"api/materials/{id}");
 
-    public async Task<CreateMaterialResponse?> CreateAsync(CreateMaterialRequest request)
+    /*public async Task<CreateMaterialResponse?> CreateAsync(CreateMaterialRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/materials", request);
         return await response.Content.ReadFromJsonAsync<CreateMaterialResponse>();
@@ -30,7 +30,7 @@ public class MaterialsService(HttpClient httpClient) : IMaterialsService
     }
 
     public Task<List<MaterialPriceHistoryItem>?> PriceHistoryAsync(string id)
-        => _httpClient.GetFromJsonAsync<List<MaterialPriceHistoryItem>>($"api/materials/{id}/price-history");
+        => _httpClient.GetFromJsonAsync<List<MaterialPriceHistoryItem>>($"api/materials/{id}/price-history");*/
 
     public async Task<AddMaterialPriceResponse?> AddPriceAsync(string id, AddMaterialPriceRequest request)
     {
@@ -38,6 +38,6 @@ public class MaterialsService(HttpClient httpClient) : IMaterialsService
         return await response.Content.ReadFromJsonAsync<AddMaterialPriceResponse>();
     }
 
-    public Task<MaterialTypeResponse?> GetMaterialTypeByIdAsync(Guid id)
-        => _httpClient.GetFromJsonAsync<MaterialTypeResponse>($"api/materials/type?id={id}");
+    /*public Task<MaterialTypeResponse?> GetMaterialTypeByIdAsync(Guid id)
+        => _httpClient.GetFromJsonAsync<MaterialTypeResponse>($"api/materials/type?id={id}");*/
 }

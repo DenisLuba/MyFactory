@@ -32,7 +32,7 @@ public class MaterialTransfersService(HttpClient httpClient) : IMaterialTransfer
     public async Task<MaterialTransferCardResponse?> GetByIdAsync(Guid transferId)
         => await _httpClient.GetFromJsonAsync<MaterialTransferCardResponse>($"api/material-transfers/{transferId}");
 
-    public async Task<MaterialTransferCreateResponse?> CreateAsync(MaterialTransferCreateRequest request)
+    /*public async Task<MaterialTransferCreateResponse?> CreateAsync(MaterialTransferCreateRequest request)
         => await _httpClient.PostAsJsonAsync("api/material-transfers", request)
             .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<MaterialTransferCreateResponse>()).Unwrap();
 
@@ -42,7 +42,7 @@ public class MaterialTransfersService(HttpClient httpClient) : IMaterialTransfer
 
     public async Task<MaterialTransferDeleteResponse?> DeleteAsync(Guid transferId)
         => await _httpClient.DeleteAsync($"api/material-transfers/{transferId}")
-            .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<MaterialTransferDeleteResponse>()).Unwrap();
+            .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<MaterialTransferDeleteResponse>()).Unwrap();*/
 
     public async Task<MaterialTransferSubmitResponse?> SubmitAsync(Guid transferId)
         => await _httpClient.PostAsync($"api/material-transfers/{transferId}/submit", null)

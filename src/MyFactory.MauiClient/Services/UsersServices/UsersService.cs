@@ -7,7 +7,7 @@ namespace MyFactory.MauiClient.Services.UsersServices
     {
         private readonly HttpClient _httpClient = httpClient;
 
-        public async Task<List<UsersGetByRoleResponse>?> GetByRoleAsync(string? role = null)
+        /*public async Task<List<UsersGetByRoleResponse>?> GetByRoleAsync(string? role = null)
             => await _httpClient.GetFromJsonAsync<List<UsersGetByRoleResponse>>($"api/users{(role != null ? "?role=" + role : "")}");
 
         public async Task<UsersGetByIdResponse?> GetByIdAsync(Guid id)
@@ -23,6 +23,6 @@ namespace MyFactory.MauiClient.Services.UsersServices
 
         public async Task<UsersDeleteResponse?> DeleteAsync(Guid id)
             => await _httpClient.DeleteAsync($"api/users/{id}")
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<UsersDeleteResponse>()).Unwrap();
+                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<UsersDeleteResponse>()).Unwrap();*/
     }
 }

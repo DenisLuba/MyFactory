@@ -55,7 +55,7 @@ namespace MyFactory.MauiClient.Services.SpecificationsServices
             return await response.Content.ReadFromJsonAsync<SpecificationsAddOperationResponse>();
         }
 
-        public async Task<SpecificationsUploadImageResponse?> UploadImageAsync(Guid id, Stream imageStream, string fileName, string? contentType = "image/jpeg")
+        /*public async Task<SpecificationsUploadImageResponse?> UploadImageAsync(Guid id, Stream imageStream, string fileName, string? contentType = "image/jpeg")
         {
             try
             {
@@ -76,7 +76,7 @@ namespace MyFactory.MauiClient.Services.SpecificationsServices
                 Trace.WriteLine($"Error uploading image: {ex.Message}");
                 return null;
             }
-        }
+        }*/
 
         public async Task<SpecificationsCostResponse?> CostAsync(Guid id, DateTime? asOf = null)
             => await _httpClient.GetFromJsonAsync<SpecificationsCostResponse>($"api/specifications/{id}/cost{(asOf.HasValue ? "?asOf=" + asOf.Value.ToString("yyyy-MM-dd") : "")}");

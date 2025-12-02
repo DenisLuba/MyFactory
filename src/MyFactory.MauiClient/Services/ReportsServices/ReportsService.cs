@@ -8,16 +8,16 @@ namespace MyFactory.MauiClient.Services.ReportsServices
     {
         private readonly HttpClient _httpClient = httpClient;
 
-        public async Task<ReportsMonthlyProfitResponse?> MonthlyProfitAsync(int month, int year)
-            => await _httpClient.GetFromJsonAsync<ReportsMonthlyProfitResponse>($"api/reports/monthly-profit?month={month}&year={year}");
-
         public async Task<List<ReportsMonthlyProfitResponse>?> GetMonthlyProfitByYearAsync(int year)
             => await _httpClient.GetFromJsonAsync<List<ReportsMonthlyProfitResponse>>($"api/reports/monthly-profit/year/{year}");
+        /*
+        public async Task<ReportsMonthlyProfitResponse?> MonthlyProfitAsync(int month, int year)
+            => await _httpClient.GetFromJsonAsync<ReportsMonthlyProfitResponse>($"api/reports/monthly-profit?month={month}&year={year}");
 
         public async Task<List<ReportsRevenueResponse>?> RevenueAsync(int month, int year)
             => await _httpClient.GetFromJsonAsync<List<ReportsRevenueResponse>>($"api/reports/revenue?month={month}&year={year}");
 
         public async Task<List<ReportsProductionCostResponse>?> ProductionCostAsync(int month, int year)
-            => await _httpClient.GetFromJsonAsync<List<ReportsProductionCostResponse>>($"api/reports/production-cost?month={month}&year={year}");
+            => await _httpClient.GetFromJsonAsync<List<ReportsProductionCostResponse>>($"api/reports/production-cost?month={month}&year={year}");*/
     }
 }

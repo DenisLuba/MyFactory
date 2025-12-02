@@ -5,8 +5,8 @@ namespace MyFactory.MauiClient.Services.SuppliersServices;
 public interface ISuppliersService
 {
     Task<List<SupplierResponse>?> ListAsync();
-    Task<SupplierResponse?> GetAsync(Guid id);
+    /*Task<SupplierResponse?> GetAsync(Guid id);
     Task<SuppliersCreateUpdateDeleteResponse?> CreateAsync(SuppliersCreateUpdateRequest request);
     Task<SuppliersCreateUpdateDeleteResponse?> UpdateAsync(Guid id, SuppliersCreateUpdateRequest request);
-    Task<SuppliersCreateUpdateDeleteResponse?> DeleteAsync(Guid id);
+    Task<SuppliersCreateUpdateDeleteResponse?> DeleteAsync(Guid id);*/
 }

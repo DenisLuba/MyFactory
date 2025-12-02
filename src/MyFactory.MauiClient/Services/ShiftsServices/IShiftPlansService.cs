@@ -6,9 +6,9 @@ namespace MyFactory.MauiClient.Services.ShiftsServices
 {
     public interface IShiftPlansService
     {
-        Task<ShiftsCreatePlanResponse?> CreatePlanAsync(ShiftsCreatePlanRequest request);
+        // Task<ShiftsCreatePlanResponse?> CreatePlanAsync(ShiftsCreatePlanRequest request);
         Task<IReadOnlyList<ShiftPlanListResponse>?> GetPlansAsync(DateTime? date = null);
         Task<ShiftPlanCardResponse?> GetPlanByIdAsync(Guid shiftPlanId);
-        Task<ShiftsRecordResultResponse?> RecordResultAsync(ShiftsRecordResultRequest request);
+        // Task<ShiftsRecordResultResponse?> RecordResultAsync(ShiftsRecordResultRequest request);
     }
 }

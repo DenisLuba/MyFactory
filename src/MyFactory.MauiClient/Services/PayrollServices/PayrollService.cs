@@ -7,7 +7,7 @@ namespace MyFactory.MauiClient.Services.PayrollServices
     {
         private readonly HttpClient _httpClient = httpClient;
 
-        public async Task<List<PayrollGetResponse>?> GetAsync(int periodMonth, int periodYear)
+        /*public async Task<List<PayrollGetResponse>?> GetAsync(int periodMonth, int periodYear)
             => await _httpClient.GetFromJsonAsync<List<PayrollGetResponse>>($"api/payroll?periodMonth={periodMonth}&periodYear={periodYear}");
 
         public async Task<PayrollCalculateResponse?> CalculateAsync(DateTime from, DateTime to)
@@ -16,6 +16,6 @@ namespace MyFactory.MauiClient.Services.PayrollServices
 
         public async Task<PayrollPayResponse?> PayAsync(PayrollPayRequest request)
             => await _httpClient.PostAsJsonAsync("api/payroll/pay", request)
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<PayrollPayResponse>()).Unwrap();
+                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<PayrollPayResponse>()).Unwrap();*/
     }
 }

@@ -7,7 +7,7 @@ namespace MyFactory.MauiClient.Services.ProductionServices
     {
         private readonly HttpClient _httpClient = httpClient;
 
-        public async Task<ProductionCreateOrderResponse?> CreateOrderAsync(ProductionCreateOrderRequest request)
+        /*public async Task<ProductionCreateOrderResponse?> CreateOrderAsync(ProductionCreateOrderRequest request)
             => await _httpClient.PostAsJsonAsync("api/production/orders", request)
                 .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<ProductionCreateOrderResponse>()).Unwrap();
 
@@ -27,6 +27,6 @@ namespace MyFactory.MauiClient.Services.ProductionServices
 
         public async Task<ProductionAssignWorkerResponse?> AssignWorkerAsync(Guid id, ProductionAssignWorkerRequest request)
             => await _httpClient.PostAsJsonAsync($"api/production/orders/{id}/assign", request)
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<ProductionAssignWorkerResponse>()).Unwrap();
+                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<ProductionAssignWorkerResponse>()).Unwrap();*/
     }
 }

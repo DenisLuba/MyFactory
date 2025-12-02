@@ -7,7 +7,7 @@ namespace MyFactory.MauiClient.Services.FilesServices
     {
         private readonly HttpClient _httpClient = httpClient;
 
-        public async Task<UploadFileResponse?> UploadAsync(UploadFileRequest request)
+        /*public async Task<UploadFileResponse?> UploadAsync(UploadFileRequest request)
             => await _httpClient.PostAsJsonAsync("api/files/upload", request)
                 .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<UploadFileResponse>()).Unwrap();
 
@@ -16,6 +16,6 @@ namespace MyFactory.MauiClient.Services.FilesServices
 
         public async Task<DeleteFileResponse?> DeleteAsync(Guid id)
             => await _httpClient.DeleteAsync($"api/files/{id}")
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<DeleteFileResponse>()).Unwrap();
+                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<DeleteFileResponse>()).Unwrap();*/
     }
 }

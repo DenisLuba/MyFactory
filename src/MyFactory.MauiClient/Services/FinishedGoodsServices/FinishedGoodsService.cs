@@ -9,7 +9,7 @@ namespace MyFactory.MauiClient.Services.FinishedGoodsServices
     {
         private readonly HttpClient _httpClient = httpClient;
 
-        public async Task<ReceiptFinishedGoodsResponse?> ReceiptAsync(ReceiptFinishedGoodsRequest request)
+        /*public async Task<ReceiptFinishedGoodsResponse?> ReceiptAsync(ReceiptFinishedGoodsRequest request)
             => await _httpClient.PostAsJsonAsync("api/finished-goods/receipt", request)
                 .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<ReceiptFinishedGoodsResponse>()).Unwrap();
 
@@ -18,7 +18,7 @@ namespace MyFactory.MauiClient.Services.FinishedGoodsServices
 
         public async Task<MoveFinishedGoodsResponse?> MoveAsync(MoveFinishedGoodsRequest request)
             => await _httpClient.PostAsJsonAsync("api/finished-goods/move", request)
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<MoveFinishedGoodsResponse>()).Unwrap();
+                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<MoveFinishedGoodsResponse>()).Unwrap();*/
 
         public async Task<List<FinishedGoodsReceiptListResponse>?> GetReceiptsAsync()
             => await _httpClient.GetFromJsonAsync<List<FinishedGoodsReceiptListResponse>>("api/finished-goods/receipt");

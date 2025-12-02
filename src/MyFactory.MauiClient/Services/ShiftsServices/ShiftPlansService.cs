@@ -9,9 +9,9 @@ namespace MyFactory.MauiClient.Services.ShiftsServices
     {
         private readonly HttpClient _httpClient = httpClient;
 
-        public async Task<ShiftsCreatePlanResponse?> CreatePlanAsync(ShiftsCreatePlanRequest request)
+        /*public async Task<ShiftsCreatePlanResponse?> CreatePlanAsync(ShiftsCreatePlanRequest request)
             => await _httpClient.PostAsJsonAsync("api/shifts/plans", request)
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<ShiftsCreatePlanResponse>()).Unwrap();
+                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<ShiftsCreatePlanResponse>()).Unwrap();*/
 
         public async Task<IReadOnlyList<ShiftPlanListResponse>?> GetPlansAsync(DateTime? date = null)
         {
@@ -22,8 +22,8 @@ namespace MyFactory.MauiClient.Services.ShiftsServices
         public async Task<ShiftPlanCardResponse?> GetPlanByIdAsync(Guid shiftPlanId)
             => await _httpClient.GetFromJsonAsync<ShiftPlanCardResponse>($"api/shifts/plans/{shiftPlanId}");
 
-        public async Task<ShiftsRecordResultResponse?> RecordResultAsync(ShiftsRecordResultRequest request)
+        /*public async Task<ShiftsRecordResultResponse?> RecordResultAsync(ShiftsRecordResultRequest request)
             => await _httpClient.PostAsJsonAsync("api/shifts/results", request)
-                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<ShiftsRecordResultResponse>()).Unwrap();
+                .ContinueWith(t => t.Result.Content.ReadFromJsonAsync<ShiftsRecordResultResponse>()).Unwrap();*/
     }
 }

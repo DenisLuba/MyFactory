@@ -14,7 +14,7 @@ namespace MyFactory.MauiClient.Services.FinanceServices
         Task<RecordOverheadResponse?> DeleteOverheadAsync(Guid overheadId);
         Task<List<OverheadItem>?> GetOverheadsAsync(int month, int year, string? article = null, OverheadStatus? status = null);
         Task<List<string>?> GetOverheadArticlesAsync();
-        Task<AdvanceStatusResponse?> CreateAdvanceAsync(CreateAdvanceRequest request);
+        // Task<AdvanceStatusResponse?> CreateAdvanceAsync(CreateAdvanceRequest request);
         Task<AdvanceStatusResponse?> SubmitAdvanceReportAsync(string advanceId, SubmitAdvanceReportRequest request);
         Task<List<AdvanceItem>?> GetAdvancesAsync();
         Task<AdvanceStatusResponse?> CloseAdvanceAsync(string advanceNumber);

@@ -13,7 +13,7 @@ namespace MyFactory.MauiClient.Services.SpecificationsServices
         Task<SpecificationsDeleteBomItemResponse?> DeleteBomItemAsync(Guid id, Guid bomId);
         Task<IReadOnlyList<SpecificationOperationItemResponse>?> GetOperationsAsync(Guid id);
         Task<SpecificationsAddOperationResponse?> AddOperationAsync(Guid id, SpecificationsAddOperationRequest request);
-        Task<SpecificationsUploadImageResponse?> UploadImageAsync(Guid id, Stream imageStream, string fileName, string? contentType);
+        /*Task<SpecificationsUploadImageResponse?> UploadImageAsync(Guid id, Stream imageStream, string fileName, string? contentType);*/
         Task<SpecificationsCostResponse?> CostAsync(Guid id, DateTime? asOf = null);
     }
 }
