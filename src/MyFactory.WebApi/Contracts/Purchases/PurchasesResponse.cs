@@ -2,9 +2,9 @@
 
 public record PurchasesResponse(
     Guid PurchaseId,
+    string DocumentNumber,
     DateTime CreatedAt,
-    PurchasesStatus Status,
-    PurchaseResponseItem[] Items
+    decimal TotalAmount,
+    string[] ItemsSummary,
+    PurchasesStatus Status
 );
-
-public record PurchaseResponseItem(Guid MaterialId, double Qty);

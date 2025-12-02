@@ -7,12 +7,20 @@ public class PurchasesCreateRequestExample : IExamplesProvider<PurchasesCreateRe
 {
     public PurchasesCreateRequest GetExamples() =>
         new(
+            DocumentNumber: "PR-0002",
+            CreatedAt: DateTime.UtcNow,
+            WarehouseName: "Основной склад",
             SupplierId: Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+            Comment: "Закупка к новому заказу",
             Items:
             [
                 new PurchaseItemRequest(
                     MaterialId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa11"),
-                    Qty: 50
+                    MaterialName: "Ткань Ситец",
+                    Quantity: 50,
+                    Unit: "м",
+                    Price: 250m,
+                    Note: "Основной цвет"
                 )
             ]
         );

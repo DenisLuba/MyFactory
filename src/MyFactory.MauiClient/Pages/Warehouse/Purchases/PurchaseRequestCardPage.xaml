@@ -3,7 +3,130 @@
     x:Class="MyFactory.MauiClient.Pages.Warehouse.Purchases.PurchaseRequestCardPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ui="clr-namespace:MyFactory.MauiClient.UIModels.Warehouse"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Warehouse.Purchases"
-    x:DataType="view_model:PurchaseRequestCardPageViewModel">
+    x:DataType="view_model:PurchaseRequestCardPageViewModel"
+    Title="{Binding Title}">
 
+    <ContentPage.Resources>
+        <Style TargetType="Border" x:Key="CardBorder">
+            <Setter Property="Stroke" Value="{AppThemeBinding Light=#E5E7EB, Dark=#374151}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Background" Value="{AppThemeBinding Light=#FFFFFF, Dark=#111827}" />
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="12" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+            <Border Style="{StaticResource CardBorder}">
+                <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="16">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                        <VerticalStackLayout>
+                            <Label FontSize="12" Text="Номер документа" TextColor="{DynamicResource Gray500}" />
+                            <Entry Text="{Binding DocumentNumber}" Placeholder="Например, REQ-001" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1">
+                            <Label FontSize="12" Text="Дата" TextColor="{DynamicResource Gray500}" />
+                            <DatePicker Date="{Binding CreatedAt}" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <VerticalStackLayout>
+                            <Label FontSize="12" Text="Склад" TextColor="{DynamicResource Gray500}" />
+                            <Entry Text="{Binding WarehouseName}" Placeholder="Основной склад" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1">
+                            <Label FontSize="12" Text="Поставщик" TextColor="{DynamicResource Gray500}" />
+                            <Picker
+                                ItemsSource="{Binding Suppliers}"
+                                SelectedItem="{Binding SelectedSupplier}"
+                                ItemDisplayBinding="{Binding DisplayName}"
+                                Title="Выберите поставщика" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <VerticalStackLayout Grid.Row="2">
+                        <Label FontSize="12" Text="Комментарий" TextColor="{DynamicResource Gray500}" />
+                        <Editor HeightRequest="80" Text="{Binding Comment}" Placeholder="Дополнительные замечания" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource CardBorder}">
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12">
+                    <Label Text="{Binding StatusDisplay}" FontAttributes="Bold" />
+                    <Label Grid.Column="1" Text="{Binding TotalAmountDisplay}" FontAttributes="Bold" HorizontalTextAlignment="End" />
+                    <Label Grid.Row="1" Text="{Binding Lines.Count, StringFormat='Позиций: {0}'}" />
+                    <ActivityIndicator Grid.Row="1" Grid.Column="1" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+                </Grid>
+            </Border>
+
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                <Button Text="Добавить позицию" Command="{Binding AddLineCommand}" />
+                <Button Grid.Column="1" Text="Сохранить" Command="{Binding SaveCommand}" />
+            </Grid>
+
+            <Label
+                HorizontalOptions="Center"
+                Text="Позиции не добавлены"
+                TextColor="{DynamicResource Gray500}"
+                IsVisible="{Binding HasNoLines}" />
+
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Lines}" Spacing="0">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="ui:PurchaseRequestLineItem">
+                        <Border Style="{StaticResource CardBorder}" Margin="0,0,0,12">
+                            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" ColumnSpacing="12" RowSpacing="6">
+                                <Label FontAttributes="Bold" Text="{Binding MaterialName}" />
+                                <Label Grid.Column="1" HorizontalTextAlignment="End" Text="{Binding TotalAmount, StringFormat='{0:N2} ₽'}" />
+
+                                <Label Grid.Row="1">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Кол-во: " />
+                                            <Span Text="{Binding Quantity, StringFormat='{0:0.###}'}" />
+                                            <Span Text=" " />
+                                            <Span Text="{Binding Unit}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Grid.Row="1" Grid.Column="1" HorizontalTextAlignment="End" Text="{Binding Price, StringFormat='Цена: {0:N2} ₽'}" />
+
+                                <Grid Grid.Row="2" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
+                                    <Label Text="{Binding Note}" />
+                                    <Button
+                                        Grid.Column="1"
+                                        Text="Изменить"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditLineCommand}"
+                                        CommandParameter="{Binding .}" />
+                                    <Button
+                                        Grid.Column="2"
+                                        Text="Удалить"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteLineCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <Button Text="Удалить" Command="{Binding DeleteCommand}" IsVisible="{Binding IsNew, Converter={StaticResource InvertedBoolConverter}}" />
+                <Button
+                    Grid.Column="1"
+                    Text="Преобразовать в заказ"
+                    Command="{Binding ConvertToOrderCommand}"
+                    IsEnabled="{Binding CanConvert}"
+                    IsVisible="{Binding IsNew, Converter={StaticResource InvertedBoolConverter}}" />
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

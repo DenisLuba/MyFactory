@@ -4,5 +4,6 @@ public enum PurchasesStatus
 {
     Draft,
     Created,
-    Converted
+    Converted,
+    ConvertedToOrder
 }

@@ -8,7 +8,7 @@ public class PurchasesConvertToOrderResponseExample : IExamplesProvider<Purchase
     public PurchasesConvertToOrderResponse GetExamples() =>
         new(
             PurchaseId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-            Status: PurchasesStatus.Converted
+            Status: PurchasesStatus.ConvertedToOrder
         );
 }
 

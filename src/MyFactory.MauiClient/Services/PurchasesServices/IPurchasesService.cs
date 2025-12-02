@@ -4,8 +4,11 @@ namespace MyFactory.MauiClient.Services.PurchasesServices
 {
     public interface IPurchasesService
     {
-        Task<PurchasesCreateResponse?> CreatePurchaseAsync(PurchasesCreateRequest request);
         Task<List<PurchasesResponse>?> PurchasesListAsync();
-        Task<PurchasesConvertToOrderResponse?> ConvertToOrderAsync(string id);
+        Task<PurchaseRequestDetailResponse?> GetPurchaseRequestAsync(Guid id);
+        Task<PurchasesCreateResponse?> CreatePurchaseAsync(PurchasesCreateRequest request);
+        Task<PurchasesCreateResponse?> UpdatePurchaseAsync(Guid id, PurchasesCreateRequest request);
+        Task DeletePurchaseAsync(Guid id);
+        Task<PurchasesConvertToOrderResponse?> ConvertToOrderAsync(Guid id);
     }
 }

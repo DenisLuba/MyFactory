@@ -2,4 +2,8 @@
 
 public record PurchaseItemRequest(
     Guid MaterialId,
-    double Qty);
+    string MaterialName,
+    double Quantity,
+    string Unit,
+    decimal Price,
+    string? Note);

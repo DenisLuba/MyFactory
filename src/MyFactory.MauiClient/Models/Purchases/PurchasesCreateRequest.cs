@@ -1,5 +1,9 @@
 ﻿namespace MyFactory.MauiClient.Models.Purchases;
 
 public record PurchasesCreateRequest(
-    Guid SupplierId,
+    string DocumentNumber,
+    DateTime CreatedAt,
+    string WarehouseName,
+    Guid? SupplierId,
+    string? Comment,
     PurchaseItemRequest[] Items);

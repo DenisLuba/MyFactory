@@ -9,15 +9,11 @@ public class PurchasesResponseExample : IExamplesProvider<IEnumerable<PurchasesR
     [
         new PurchasesResponse(
             PurchaseId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+            DocumentNumber: "PR-0001",
             CreatedAt: new DateTime(2025, 11, 12),
-            Status: PurchasesStatus.Draft,
-            Items:
-            [
-                new PurchaseResponseItem(
-                    MaterialId: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa11"),
-                    Qty: 50
-                )
-            ]
+            TotalAmount: 16000m,
+            ItemsSummary: new[] { "Ткань Ситец (50)", "Молния (100)" },
+            Status: PurchasesStatus.Draft
         )
     ];
 }
