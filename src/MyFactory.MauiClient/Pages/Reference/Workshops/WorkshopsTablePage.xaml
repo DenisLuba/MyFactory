@@ -4,6 +4,60 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Reference.Workshops"
-    x:DataType="view_model:WorkshopsTablePageViewModel">
+    x:DataType="view_model:WorkshopsTablePageViewModel"
+    Title="Цеха">
 
+    <ContentPage.Resources>
+        <Style x:Key="CardBorderStyle" TargetType="Border">
+            <Setter Property="Stroke" Value="{AppThemeBinding Light=#E5E7EB, Dark=#374151}" />
+            <Setter Property="Background" Value="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="12" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="Margin" Value="16,8" />
+        </Style>
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="+" Command="{Binding CreateNewCommand}" Priority="0" Order="Primary" />
+    </ContentPage.ToolbarItems>
+
+    <RefreshView Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy}">
+        <CollectionView ItemsSource="{Binding Workshops}" SelectionMode="None">
+            <CollectionView.EmptyView>
+                <Label
+                    HorizontalOptions="Center"
+                    Text="Цехи не найдены"
+                    TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Style="{StaticResource CardBorderStyle}">
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="12">
+                            <Label FontAttributes="Bold" FontSize="18" Text="{Binding Name}" />
+                            <Label Grid.Column="1" Text="{Binding Status}" TextColor="#10B981" HorizontalTextAlignment="End">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Inactive">
+                                        <Setter Property="TextColor" Value="#EF4444" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+
+                            <Label Grid.Row="1" Text="Тип" TextColor="#6B7280" />
+                            <Label Grid.Row="1" Grid.Column="1" Text="{Binding Type}" HorizontalTextAlignment="End" />
+
+                            <Label Grid.Row="2" Text="ID" TextColor="#6B7280" />
+                            <Label Grid.Row="2" Grid.Column="1" Text="{Binding Id}" FontSize="12" HorizontalTextAlignment="End" />
+                        </Grid>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type view_model:WorkshopsTablePageViewModel}}, Path=OpenCardCommand}" CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
 </ContentPage>
