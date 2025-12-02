@@ -2,6 +2,6 @@
 
 public enum WarehouseStatus
 {
-    Created,
-    Updated
+    Active,
+    Inactive
 }

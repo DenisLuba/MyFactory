@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 using MyFactory.WebApi.Contracts.Warehouses;
 using MyFactory.WebApi.SwaggerExamples.Warehouses;
@@ -11,22 +13,31 @@ namespace MyFactory.WebApi.Controllers;
 public class WarehousesController : ControllerBase
 {
     [HttpGet]
-    [SwaggerResponseExample(200, typeof(WarehousesGetResponseExample))]
-    [ProducesResponseType(typeof(IEnumerable<WarehousesGetResponse>), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(200, typeof(WarehousesListResponseExample))]
+    [ProducesResponseType(typeof(IEnumerable<WarehousesListResponse>), StatusCodes.Status200OK)]
     public IActionResult List()
         => Ok(new[]
         {
-            new WarehousesGetResponse(
+            new WarehousesListResponse(
                 Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                "ST-001",
                 "Основной склад",
                 WarehouseType.Materials,
-                "ул. Заводская, 1"
+                WarehouseStatus.Active
             ),
-            new WarehousesGetResponse(
+            new WarehousesListResponse(
                 Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                "Склад ГП",
+                "ST-002",
+                "Склад фурнитуры",
+                WarehouseType.Materials,
+                WarehouseStatus.Active
+            ),
+            new WarehousesListResponse(
+                Guid.Parse("33333333-3333-3333-3333-333333333333"),
+                "ST-003",
+                "Готовая продукция",
                 WarehouseType.FinishedGoods,
-                "ул. Заводская, 2"
+                WarehouseStatus.Active
             )
         });
 
@@ -37,9 +48,11 @@ public class WarehousesController : ControllerBase
         => Ok(
             new WarehousesGetResponse(
                 id,
+                "ST-001",
                 "Основной склад",
                 WarehouseType.Materials,
-                "ул. Заводская, 1"
+                "ул. Заводская, 1",
+                WarehouseStatus.Active
             )
         );
 
@@ -53,7 +66,7 @@ public class WarehousesController : ControllerBase
             "",
             new WarehousesCreateResponse(
                 Guid.NewGuid(),
-                WarehouseStatus.Created
+                dto.Status
             )
         );
 
@@ -66,7 +79,11 @@ public class WarehousesController : ControllerBase
         => Ok(
             new WarehousesUpdateResponse(
                 id,
-                WarehouseStatus.Updated
+                dto.Status
             )
         );
+
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public IActionResult Delete(Guid id) => NoContent();
 }

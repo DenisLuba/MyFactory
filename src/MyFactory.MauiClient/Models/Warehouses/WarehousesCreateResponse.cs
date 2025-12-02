@@ -1,4 +1,6 @@
-﻿namespace MyFactory.MauiClient.Models.Warehouses;
+﻿using System;
+
+namespace MyFactory.MauiClient.Models.Warehouses;
 
 public record WarehousesCreateResponse(
     Guid Id,

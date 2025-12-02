@@ -3,6 +3,7 @@
 public record WarehousesUpdateRequest(
     string Name,
     WarehouseType Type,
-    string Location
+    string Location,
+    WarehouseStatus Status
 );
 

@@ -1,9 +1,12 @@
+using System;
+using MyFactory.MauiClient.Models.Warehouses;
+
 namespace MyFactory.MauiClient.UIModels.Reference;
 
-// Склады
 public record WarehouseItem(
-    string Id,
+    Guid Id,
+    string Code,
     string Name,
-    string Type,
-    string? Status
+    WarehouseType Type,
+    WarehouseStatus Status
 );

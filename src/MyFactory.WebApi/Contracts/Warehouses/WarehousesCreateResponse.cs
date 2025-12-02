@@ -1,4 +1,6 @@
-﻿namespace MyFactory.WebApi.Contracts.Warehouses;
+﻿using System;
+
+namespace MyFactory.WebApi.Contracts.Warehouses;
 
 public record WarehousesCreateResponse(
     Guid Id,

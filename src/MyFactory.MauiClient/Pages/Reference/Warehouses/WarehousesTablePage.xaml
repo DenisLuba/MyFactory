@@ -3,7 +3,92 @@
     x:Class="MyFactory.MauiClient.Pages.Reference.Warehouses.WarehousesTablePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:MyFactory.MauiClient.Converters"
+    xmlns:ui="clr-namespace:MyFactory.MauiClient.UIModels.Reference"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Reference.Warehouses"
-    x:DataType="view_model:WarehousesTablePageViewModel">
+    x:DataType="view_model:WarehousesTablePageViewModel"
+    Title="Склады">
 
+    <ContentPage.Resources>
+        <Color x:Key="SecondaryTextColor">#6B7280</Color>
+        <Color x:Key="PrimaryColor">#2563EB</Color>
+
+        <Style x:Key="CardBorderStyle" TargetType="Border">
+            <Setter Property="Stroke" Value="{AppThemeBinding Light=#E5E7EB, Dark=#374151}" />
+            <Setter Property="Background" Value="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="12" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Padding" Value="14" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+        </Style>
+
+        <Style x:Key="Caption" TargetType="Label">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="TextColor" Value="{StaticResource SecondaryTextColor}" />
+        </Style>
+
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ContentPage.Resources>
+
+    <Grid Padding="16" RowDefinitions="Auto,*" RowSpacing="12">
+        <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+            <Label FontAttributes="Bold" FontSize="18" Text="Справочник складов" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+            <Button
+                Command="{Binding RefreshCommand}"
+                HorizontalOptions="EndAndExpand"
+                IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                Text="Обновить" />
+        </HorizontalStackLayout>
+
+        <RefreshView Grid.Row="1" Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy}">
+            <CollectionView ItemsSource="{Binding Warehouses}" SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <Label
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        Padding="24"
+                        Text="Склады отсутствуют"
+                        TextColor="{StaticResource SecondaryTextColor}" />
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="ui:WarehouseItem">
+                        <Border Style="{StaticResource CardBorderStyle}">
+                            <Grid ColumnDefinitions="Auto,*,*,Auto" ColumnSpacing="12" RowSpacing="6">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="{Binding Code}" FontAttributes="Bold" />
+                                    <Label Style="{StaticResource Caption}" Text="ID" />
+                                    <Label Style="{StaticResource Caption}" Text="{Binding Id}" />
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                    <Label FontAttributes="Bold" Text="{Binding Name}" />
+                                    <Label Style="{StaticResource Caption}" Text="Наименование" />
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Grid.Column="2" Spacing="4">
+                                    <Label Text="{Binding Type}" />
+                                    <Label Style="{StaticResource Caption}" Text="Тип" />
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Grid.Column="3" HorizontalOptions="End" Spacing="4">
+                                    <Label Text="{Binding Status}" TextColor="{StaticResource PrimaryColor}" HorizontalTextAlignment="End" />
+                                    <Label Style="{StaticResource Caption}" Text="Статус" HorizontalTextAlignment="End" />
+                                </VerticalStackLayout>
+                            </Grid>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenWarehouseCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
 </ContentPage>

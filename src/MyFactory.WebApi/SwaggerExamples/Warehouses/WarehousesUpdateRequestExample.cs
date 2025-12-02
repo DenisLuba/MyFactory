@@ -6,6 +6,6 @@ namespace MyFactory.WebApi.SwaggerExamples.Warehouses;
 public class WarehousesUpdateRequestExample : IExamplesProvider<WarehousesUpdateRequest>
 {
     public WarehousesUpdateRequest GetExamples() =>
-        new("Основной склад (обновлён)", WarehouseType.Materials, "ул. Заводская, 1");
+        new("Основной склад (обновлён)", WarehouseType.Materials, "ул. Заводская, 1", WarehouseStatus.Active);
 }
 
