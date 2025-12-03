@@ -1,0 +1,1829 @@
+﻿## Production/ProductionAllocateRequestExample -> ProductionAllocateRequest
+{
+  "allocations": [
+    {
+      "workshopId": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+      "qtyAllocated": 8
+    }
+  ]
+}
+
+## Production/ProductionAllocateResponseExample -> ProductionAllocateResponse
+{
+  "orderId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "status": 1
+}
+
+## Production/ProductionAssignWorkerRequestExample -> ProductionAssignWorkerRequest
+{
+  "employeeId": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+  "quantity": 2
+}
+
+## Production/ProductionAssignWorkerResponseExample -> ProductionAssignWorkerResponse
+{
+  "orderId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "status": 3
+}
+
+## Production/ProductionCreateOrderRequestExample -> ProductionCreateOrderRequest
+{
+  "specificationId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "quantity": 10
+}
+
+## Production/ProductionCreateOrderResponseExample -> ProductionCreateOrderResponse
+{
+  "orderId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "status": 0
+}
+
+## Production/ProductionGetOrderResponseExample -> ProductionGetOrderResponse
+{
+  "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "specificationId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "qtyOrdered": 10,
+  "allocation": [
+    {
+      "workshopId": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+      "qtyAllocated": 8
+    }
+  ]
+}
+
+## Production/ProductionGetOrderStatusResponseExample -> ProductionGetOrderStatusResponse
+{
+  "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "status": 1
+}
+
+## Production/ProductionRecordStageRequestExample -> ProductionRecordStageRequest
+{
+  "stage": "cutting",
+  "quantity": 4
+}
+
+## Production/ProductionRecordStageResponseExample -> ProductionRecordStageResponse
+{
+  "orderId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "status": 2
+}
+
+## Auth/LoginRequestExample -> LoginRequest
+{
+  "username": "admin",
+  "password": "P@ssw0rd"
+}
+
+## Auth/LoginResponseExample -> LoginResponse
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFkbWluIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+  "refreshToken": "rft_abc123def456ghi789jkl012mno345pqr678stu901vwx234yz",
+  "expiresIn": 3600
+}
+
+## Auth/RefreshRequestExample -> RefreshRequest
+{
+  "refreshToken": "rft_abc123def456ghi789jkl012mno345pqr678stu901vwx234yz"
+}
+
+## Auth/RefreshResponseExample -> RefreshResponse
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFkbWluIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyNDI2MjJ9.new_access_token_signature_here",
+  "expiresIn": 3600
+}
+
+## Auth/RegisterRequestExample -> RegisterRequest
+{
+  "userName": "ivanov",
+  "email": "i@domain.com",
+  "password": "P@ssw0rd123"
+}
+
+## Auth/RegisterResponseExample -> RegisterResponse
+{
+  "id": "11111111-1111-1111-1111-111111111111",
+  "status": 0
+}
+
+## Customers/CustomerLookupResponseExample -> IEnumerable`1
+[
+  {
+    "customerId": "11111111-1111-1111-1111-111111111111",
+    "name": "\u041E\u041E\u041E \u0022\u0422\u0435\u043A\u0441\u0442\u0438\u043B\u044C\u0022",
+    "segment": "\u0421\u0435\u0442\u0438 \u043D\u0430 \u0441\u0435\u0432\u0435\u0440\u043E-\u0437\u0430\u043F\u0430\u0434\u0435"
+  }
+]
+
+## Employees/EmployeeCardResponseExample -> EmployeeCardResponse
+{
+  "id": "aaaaaaaa-aa01-4a0a-b001-aaaaaaaa0001",
+  "fullName": "\u0418\u0432\u0430\u043D\u043E\u0432\u0430 \u041E.\u0413.",
+  "position": "\u0428\u0432\u0435\u044F",
+  "grade": 4,
+  "isActive": true,
+  "employeeCode": "EMP-01",
+  "hireDate": "2021-10-01"
+}
+
+## Employees/EmployeeListResponseExample -> IEnumerable`1
+[
+  {
+    "id": "aaaaaaaa-aa01-4a0a-b001-aaaaaaaa0001",
+    "fullName": "\u0418\u0432\u0430\u043D\u043E\u0432\u0430 \u041E.\u0413.",
+    "position": "\u0428\u0432\u0435\u044F",
+    "grade": 4,
+    "isActive": true
+  },
+  {
+    "id": "aaaaaaaa-aa01-4a0a-b001-aaaaaaaa0002",
+    "fullName": "\u0421\u0435\u0440\u0433\u0435\u0439\u0447\u0443\u043A \u0410.\u0410.",
+    "position": "\u0428\u0432\u0435\u044F",
+    "grade": 3,
+    "isActive": true
+  }
+]
+
+## Employees/EmployeeUpdateRequestExample -> EmployeeUpdateRequest
+{
+  "fullName": "\u0418\u0432\u0430\u043D\u043E\u0432\u0430 \u041E.\u0413.",
+  "position": "\u0428\u0432\u0435\u044F",
+  "grade": 4,
+  "isActive": true
+}
+
+## Files/DeleteFileResponseExample -> DeleteFileResponse
+{
+  "status": 1,
+  "fileId": "11111111-1111-1111-1111-111111111111"
+}
+
+## Files/UploadFileResponseExample -> UploadFileResponse
+{
+  "fileId": "11111111-1111-1111-1111-111111111111",
+  "fileName": "image.jpg"
+}
+
+## Finance/AdvanceItemDtoExample -> List`1
+[
+  {
+    "advanceNumber": "ADV-2024-001",
+    "employee": "\u0418\u0432\u0430\u043D\u043E\u0432 \u0418.\u0418.",
+    "advanceAmount": 15000,
+    "date": "2024-06-01",
+    "status": 0
+  },
+  {
+    "advanceNumber": "ADV-2024-002",
+    "employee": "\u041F\u0435\u0442\u0440\u043E\u0432 \u041F.\u041F.",
+    "advanceAmount": 20000,
+    "date": "2024-06-05",
+    "status": 1
+  }
+]
+
+## Finance/AdvanceStatusResponseExample -> AdvanceStatusResponse
+{
+  "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "status": 2
+}
+
+## Finance/CreateAdvanceRequestExample -> CreateAdvanceRequest
+{
+  "employeeId": "11111111-1111-1111-1111-111111111111",
+  "amount": 15000.00,
+  "purpose": "\u0417\u0430\u043A\u0443\u043F\u043A\u0430 \u043C\u0430\u0442\u0435\u0440\u0438\u0430\u043B\u043E\u0432 \u0434\u043B\u044F \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u044F \u0441\u0440\u043E\u0447\u043D\u043E\u0433\u043E \u0437\u0430\u043A\u0430\u0437\u0430",
+  "requestDate": "2025-11-15T00:00:00"
+}
+
+## Finance/OverheadResponseExample -> IEnumerable`1
+[
+  {
+    "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "date": "2025-11-01T00:00:00",
+    "article": "\u0410\u0440\u0435\u043D\u0434\u0430",
+    "amount": 25000,
+    "comment": "\u041E\u0444\u0438\u0441 \u043D\u0430 \u043D\u043E\u044F\u0431\u0440\u044C",
+    "status": 1
+  },
+  {
+    "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+    "date": "2025-11-02T00:00:00",
+    "article": "\u041A\u043E\u043C\u043C\u0443\u043D\u0430\u043B\u043A\u0430",
+    "amount": 3200,
+    "comment": "\u0421\u0432\u0435\u0442 \u002B \u0432\u043E\u0434\u0430",
+    "status": 0
+  }
+]
+
+## Finance/RecordOverheadRequestExample -> RecordOverheadRequest
+{
+  "date": "2025-11-01T00:00:00",
+  "article": "\u0410\u0440\u0435\u043D\u0434\u0430",
+  "amount": 120000.00,
+  "comment": "\u041E\u043F\u043B\u0430\u0442\u0430 \u0437\u0430 \u043D\u043E\u044F\u0431\u0440\u044C"
+}
+
+## Finance/RecordOverheadResponseExample -> RecordOverheadResponse
+{
+  "id": "22222222-2222-2222-2222-222222222222",
+  "status": 0
+}
+
+## Finance/SubmitAdvanceReportRequestExample -> SubmitAdvanceReportRequest
+{
+  "totalSpent": 14850.00,
+  "reportDescription": "\u041E\u0442\u0447\u0435\u0442 \u043F\u043E \u0430\u0432\u0430\u043D\u0441\u0443 \u043D\u0430 \u0437\u0430\u043A\u0443\u043F\u043A\u0443 \u043C\u0430\u0442\u0435\u0440\u0438\u0430\u043B\u043E\u0432 \u0434\u043B\u044F \u0441\u0440\u043E\u0447\u043D\u043E\u0433\u043E \u0437\u0430\u043A\u0430\u0437\u0430",
+  "items": [
+    {
+      "itemName": "\u0422\u043A\u0430\u043D\u044C \u0421\u0438\u0442\u0435\u0446 - 50 \u043C\u0435\u0442\u0440\u043E\u0432",
+      "expenseDate": "2025-11-10T00:00:00",
+      "amount": 9000.00,
+      "comment": "\u0421\u043A\u043B\u0430\u0434 \u21163, \u043D\u0430\u043A\u043B\u0430\u0434\u043D\u0430\u044F 445",
+      "category": 1,
+      "receiptUri": "https://files.example.com/receipts/445.jpg"
+    },
+    {
+      "itemName": "\u0424\u0443\u0440\u043D\u0438\u0442\u0443\u0440\u0430 (\u043C\u043E\u043B\u043D\u0438\u0438, \u043F\u0443\u0433\u043E\u0432\u0438\u0446\u044B)",
+      "expenseDate": "2025-11-11T00:00:00",
+      "amount": 2500.00,
+      "comment": "\u041F\u043E\u0441\u0442\u0430\u0432\u0449\u0438\u043A \u041E\u041E\u041E \u0027\u0428\u0432\u0435\u0439\u041A\u043E\u043C\u043F\u043B\u0435\u043A\u0442\u0027",
+      "category": 3,
+      "receiptUri": "https://files.example.com/receipts/446.jpg"
+    },
+    {
+      "itemName": "\u0422\u0440\u0430\u043D\u0441\u043F\u043E\u0440\u0442\u043D\u044B\u0435 \u0440\u0430\u0441\u0445\u043E\u0434\u044B",
+      "expenseDate": "2025-11-11T00:00:00",
+      "amount": 1350.00,
+      "comment": "\u0422\u0430\u043A\u0441\u0438 \u0434\u043E \u043A\u043B\u0438\u0435\u043D\u0442\u0430",
+      "category": 0
+    },
+    {
+      "itemName": "\u0421\u0440\u043E\u0447\u043D\u0430\u044F \u0440\u0430\u0431\u043E\u0442\u0430 \u0448\u0432\u0435\u0438",
+      "expenseDate": "2025-11-12T00:00:00",
+      "amount": 2000.00,
+      "comment": "\u041F\u043E\u0447\u0430\u0441\u043E\u0432\u0430\u044F \u043E\u043F\u043B\u0430\u0442\u0430",
+      "category": 2
+    }
+  ]
+}
+
+## FinishedGoods/FinishedGoodsInventoryResponseExample -> FinishedGoodsInventoryResponse
+{
+  "specificationId": "11111111-1111-1111-1111-111111111111",
+  "warehouseId": "22222222-2222-2222-2222-222222222222",
+  "quantity": 20,
+  "unitCost": 444.50
+}
+
+## FinishedGoods/FinishedGoodsReceiptCardResponseExample -> FinishedGoodsReceiptCardResponse
+{
+  "receiptId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "documentNumber": "FG-2025-0001",
+  "productName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+  "quantity": 20,
+  "unitPrice": 444,
+  "sum": 8880,
+  "date": "2025-11-10T00:00:00",
+  "warehouse": "\u0413\u043E\u0442\u043E\u0432\u0430\u044F \u043F\u0440\u043E\u0434\u0443\u043A\u0446\u0438\u044F",
+  "status": 0
+}
+
+## FinishedGoods/FinishedGoodsReceiptListResponseExample -> IEnumerable`1
+[
+  {
+    "receiptId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "productName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+    "quantity": 20,
+    "date": "2025-11-10T00:00:00",
+    "warehouse": "\u0413\u043E\u0442\u043E\u0432\u0430\u044F \u043F\u0440\u043E\u0434\u0443\u043A\u0446\u0438\u044F",
+    "unitPrice": 444,
+    "sum": 8880
+  },
+  {
+    "receiptId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+    "productName": "\u0424\u0443\u0442\u0431\u043E\u043B\u043A\u0430 \u0434\u0435\u0442\u0441\u043A\u0430\u044F",
+    "quantity": 30,
+    "date": "2025-11-12T00:00:00",
+    "warehouse": "\u0413\u043E\u0442\u043E\u0432\u0430\u044F \u043F\u0440\u043E\u0434\u0443\u043A\u0446\u0438\u044F",
+    "unitPrice": 170,
+    "sum": 5100
+  }
+]
+
+## FinishedGoods/MoveFinishedGoodsRequestExample -> MoveFinishedGoodsRequest
+{
+  "specificationId": "11111111-1111-1111-1111-111111111111",
+  "fromWarehouseId": "22222222-2222-2222-2222-222222222222",
+  "toWarehouseId": "33333333-3333-3333-3333-333333333333",
+  "quantity": 10,
+  "reason": "\u041F\u0435\u0440\u0435\u043C\u0435\u0449\u0435\u043D\u0438\u0435 \u0432 \u0437\u043E\u043D\u0443 \u043E\u0442\u0433\u0440\u0443\u0437\u043A\u0438 \u0434\u043B\u044F \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u044F \u0437\u0430\u043A\u0430\u0437\u0430"
+}
+
+## FinishedGoods/MoveFinishedGoodsResponseExample -> MoveFinishedGoodsResponse
+{
+  "status": 1
+}
+
+## FinishedGoods/ReceiptFinishedGoodsRequestExample -> ReceiptFinishedGoodsRequest
+{
+  "specificationId": "11111111-1111-1111-1111-111111111111",
+  "warehouseId": "22222222-2222-2222-2222-222222222222",
+  "quantity": 20,
+  "unitCost": 444.50,
+  "productionDate": "2025-11-15T00:00:00"
+}
+
+## FinishedGoods/ReceiptFinishedGoodsResponseExample -> ReceiptFinishedGoodsResponse
+{
+  "receiptId": "11111111-1111-1111-1111-111111111222",
+  "status": 1
+}
+
+## Inventory/AdjustInventoryRequestExample -> AdjustInventoryRequest
+{
+  "materialId": "11111111-1111-1111-1111-111111111111",
+  "warehouseId": "22222222-2222-2222-2222-222222222222",
+  "newQuantity": 150.5,
+  "reason": "\u0418\u043D\u0432\u0435\u043D\u0442\u0430\u0440\u0438\u0437\u0430\u0446\u0438\u044F: \u0440\u0430\u0441\u0445\u043E\u0436\u0434\u0435\u043D\u0438\u0435 \u043F\u043E \u0444\u0430\u043A\u0442\u0443",
+  "adjustmentDate": "2025-11-15T00:00:00"
+}
+
+## Inventory/AdjustInventoryResponseExample -> AdjustInventoryResponse
+{
+  "status": 0
+}
+
+## Inventory/CreateInventoryReceiptRequestExample -> CreateInventoryReceiptRequest
+{
+  "warehouseId": "11111111-1111-1111-1111-111111111111",
+  "receiptDate": "2025-11-15T00:00:00",
+  "referenceNumber": "\u041F\u0420\u0418\u0425-001",
+  "items": [
+    {
+      "materialId": "22222222-2222-2222-2222-222222222222",
+      "quantity": 100.5,
+      "unitPrice": 180.75,
+      "batchNumber": "BATCH-2025-11"
+    },
+    {
+      "materialId": "33333333-3333-3333-3333-333333333333",
+      "quantity": 50,
+      "unitPrice": 25.50
+    }
+  ]
+}
+
+## Inventory/CreateInventoryReceiptResponseExample -> CreateInventoryReceiptResponse
+{
+  "receiptId": "11111111-1111-1111-1111-111111111111",
+  "status": 2
+}
+
+## Inventory/InventoryItemResponseExample -> InventoryItemResponse
+{
+  "materialId": "11111111-1111-1111-1111-111111111111",
+  "materialName": "\u0422\u043A\u0430\u043D\u044C \u0421\u0438\u0442\u0435\u0446",
+  "warehouseId": "22222222-2222-2222-2222-222222222222",
+  "warehouseName": "\u041E\u0441\u043D\u043E\u0432\u043D\u043E\u0439 \u0441\u043A\u043B\u0430\u0434",
+  "quantity": 120.5,
+  "unit": 0,
+  "avgPrice": 180.75,
+  "totalAmount": 217.50,
+  "reservedQty": 15
+}
+
+## Inventory/TransferInventoryRequestExample -> TransferInventoryRequest
+{
+  "materialId": "11111111-1111-1111-1111-111111111111",
+  "fromWarehouseId": "22222222-2222-2222-2222-222222222222",
+  "toWarehouseId": "33333333-3333-3333-3333-333333333333",
+  "quantity": 50.5,
+  "reason": "\u041F\u0435\u0440\u0435\u043C\u0435\u0449\u0435\u043D\u0438\u0435 \u043C\u0435\u0436\u0434\u0443 \u0441\u043A\u043B\u0430\u0434\u0430\u043C\u0438 \u0434\u043B\u044F \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u044F \u0437\u0430\u043A\u0430\u0437\u0430",
+  "transferDate": "2025-11-15T00:00:00"
+}
+
+## Inventory/TransferInventoryResponseExample -> TransferInventoryResponse
+{
+  "status": 1
+}
+
+## Materials/AddMaterialPriceRequestExample -> AddMaterialPriceRequest
+{
+  "supplierId": "11111111-1111-1111-1111-111111111111",
+  "materialPrice": 180.0,
+  "effectiveFrom": "2025-11-01T00:00:00"
+}
+
+## Materials/AddMaterialPriceResponseExample -> AddMaterialPriceResponse
+{
+  "status": 0,
+  "id": "22222222-2222-2222-2222-222222222222"
+}
+
+## Materials/CreateMaterialRequestExample -> CreateMaterialRequest
+{
+  "code": "MAT-001",
+  "name": "\u0422\u043A\u0430\u043D\u044C \u0421\u0438\u0442\u0435\u0446",
+  "materialTypeId": "b5e0a3b5-1f6c-4a37-bfe6-6b4d64b74b4a",
+  "unit": 0,
+  "isActive": true
+}
+
+## Materials/CreateMaterialResponseExample -> CreateMaterialResponse
+{
+  "status": 0
+}
+
+## Materials/MaterialCardResponseExample -> MaterialCardResponse
+{
+  "id": "11111111-1111-1111-1111-111111111111",
+  "code": "\u041C\u0410\u0422-001",
+  "name": "\u0422\u043A\u0430\u043D\u044C \u0421\u0438\u0442\u0435\u0446",
+  "materialType": "\u0422\u043A\u0430\u043D\u044C",
+  "unit": "\u043C",
+  "isActive": true,
+  "lastPrice": 180.50,
+  "priceHistory": [
+    {
+      "supplierId": "bbbbbbb1-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+      "supplierName": "\u0424\u0430\u0431\u0440\u0438\u043A\u0430 \u0442\u043A\u0430\u043D\u0438",
+      "price": 175.00,
+      "effectiveFrom": "2025-11-01T00:00:00"
+    },
+    {
+      "supplierId": "bbbbbbb2-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+      "supplierName": "\u041E\u041E\u041E \u0022\u0422\u0435\u043A\u0441\u0442\u0438\u043B\u044C\u043D\u044B\u0435 \u0440\u0435\u0448\u0435\u043D\u0438\u044F\u0022",
+      "price": 182.00,
+      "effectiveFrom": "2025-09-15T00:00:00"
+    }
+  ]
+}
+
+## Materials/MaterialListResponseExample -> IEnumerable`1
+[
+  {
+    "id": "11111111-1111-1111-1111-111111111111",
+    "code": "\u041C\u0410\u0422-001",
+    "name": "\u0422\u043A\u0430\u043D\u044C \u0421\u0438\u0442\u0435\u0446",
+    "materialType": "\u0422\u043A\u0430\u043D\u044C",
+    "unit": "\u043C",
+    "isActive": true,
+    "lastPrice": 180.50
+  },
+  {
+    "id": "22222222-2222-2222-2222-222222222222",
+    "code": "\u041C\u0410\u0422-002",
+    "name": "\u041C\u043E\u043B\u043D\u0438\u044F 20 \u0441\u043C",
+    "materialType": "\u0424\u0443\u0440\u043D\u0438\u0442\u0443\u0440\u0430",
+    "unit": "\u0448\u0442",
+    "isActive": true,
+    "lastPrice": 99.90
+  }
+]
+
+## Materials/MaterialPriceHistoryResponseExample -> IEnumerable`1
+[
+  {
+    "supplierId": "22222222-2222-2222-2222-222222222222",
+    "supplierName": "\u0424\u0430\u0431\u0440\u0438\u043A\u0430 \u0442\u043A\u0430\u043D\u0438",
+    "price": 175.50,
+    "effectiveFrom": "2025-11-01T00:00:00"
+  }
+]
+
+## Materials/MaterialTypeResponseExample -> MaterialTypeResponse
+{
+  "id": "aaaaaaa1-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "name": "\u0422\u043A\u0430\u043D\u044C"
+}
+
+## Materials/UpdateMaterialRequestExample -> UpdateMaterialRequest
+{
+  "code": "MAT-001",
+  "name": "\u0422\u043A\u0430\u043D\u044C \u0421\u0438\u0442\u0435\u0446 (\u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u043D\u0430\u044F)",
+  "materialTypeId": "33333333-3333-3333-3333-333333333333",
+  "unit": 0,
+  "isActive": true
+}
+
+## Materials/UpdateMaterialResponseExample -> UpdateMaterialResponse
+{
+  "status": 1,
+  "id": "11111111-1111-1111-1111-111111111111"
+}
+
+## MaterialTransfers/MaterialTransferCardResponseExample -> MaterialTransferCardResponse
+{
+  "transferId": "aaaa1111-2222-3333-4444-555555555555",
+  "documentNumber": "TR-001",
+  "date": "2025-11-10T00:00:00",
+  "productionOrder": "PO-15",
+  "warehouse": "\u041E\u0441\u043D\u043E\u0432\u043D\u043E\u0439",
+  "totalAmount": 7850,
+  "status": 1,
+  "items": [
+    {
+      "materialId": "11111111-1111-1111-1111-111111111111",
+      "materialName": "\u0422\u043A\u0430\u043D\u044C \u0421\u0438\u0442\u0435\u0446",
+      "quantity": 15,
+      "unit": "\u043C",
+      "price": 180,
+      "lineTotal": 2700
+    },
+    {
+      "materialId": "22222222-2222-2222-2222-222222222222",
+      "materialName": "\u041C\u043E\u043B\u043D\u0438\u044F 20 \u0441\u043C",
+      "quantity": 100,
+      "unit": "\u0448\u0442",
+      "price": 12,
+      "lineTotal": 1200
+    }
+  ]
+}
+
+## MaterialTransfers/MaterialTransferCreateRequestExample -> MaterialTransferCreateRequest
+{
+  "date": "2025-11-14T00:00:00",
+  "productionOrder": "PO-18",
+  "warehouse": "\u041E\u0441\u043D\u043E\u0432\u043D\u043E\u0439",
+  "items": [
+    {
+      "materialId": "11111111-1111-1111-1111-111111111111",
+      "materialName": "\u0422\u043A\u0430\u043D\u044C \u0421\u0438\u0442\u0435\u0446",
+      "quantity": 10,
+      "unit": "\u043C",
+      "price": 185
+    },
+    {
+      "materialId": "22222222-2222-2222-2222-222222222222",
+      "materialName": "\u041C\u043E\u043B\u043D\u0438\u044F 20 \u0441\u043C",
+      "quantity": 50,
+      "unit": "\u0448\u0442",
+      "price": 13
+    }
+  ]
+}
+
+## MaterialTransfers/MaterialTransferCreateResponseExample -> MaterialTransferCreateResponse
+{
+  "transferId": "cccc1111-2222-3333-4444-555555555555",
+  "status": 0
+}
+
+## MaterialTransfers/MaterialTransferDeleteResponseExample -> MaterialTransferDeleteResponse
+{
+  "transferId": "bbbb1111-2222-3333-4444-555555555555",
+  "isDeleted": true
+}
+
+## MaterialTransfers/MaterialTransferListResponseExample -> MaterialTransferListResponse
+{
+  "transferId": "aaaa1111-2222-3333-4444-555555555555",
+  "documentNumber": "TR-001",
+  "date": "2025-11-10T00:00:00",
+  "productionOrder": "PO-15",
+  "warehouse": "\u041E\u0441\u043D\u043E\u0432\u043D\u043E\u0439",
+  "totalAmount": 7850,
+  "status": 1
+}
+
+## MaterialTransfers/MaterialTransfersForOrderExample -> IEnumerable`1
+[
+  {
+    "materialId": "11111111-1111-1111-1111-111111111111",
+    "materialName": "\u0422\u043A\u0430\u043D\u044C \u0421\u0438\u0442\u0435\u0446",
+    "quantity": 50,
+    "unit": "\u043C",
+    "price": 180,
+    "lineTotal": 9000
+  },
+  {
+    "materialId": "22222222-2222-2222-2222-222222222222",
+    "materialName": "\u041C\u043E\u043B\u043D\u0438\u044F 20 \u0441\u043C",
+    "quantity": 200,
+    "unit": "\u0448\u0442",
+    "price": 12,
+    "lineTotal": 2400
+  }
+]
+
+## MaterialTransfers/MaterialTransferSubmitResponseExample -> MaterialTransferSubmitResponse
+{
+  "transferId": "bbbb1111-2222-3333-4444-555555555555",
+  "status": 1,
+  "submittedAt": "2025-11-13T09:30:00Z"
+}
+
+## MaterialTransfers/MaterialTransferUpdateRequestExample -> MaterialTransferUpdateRequest
+{
+  "date": "2025-11-12T00:00:00",
+  "productionOrder": "PO-16",
+  "warehouse": "\u0424\u0443\u0440\u043D\u0438\u0442\u0443\u0440\u0430",
+  "items": [
+    {
+      "materialId": "33333333-3333-3333-3333-333333333333",
+      "materialName": "\u041F\u0443\u0433\u043E\u0432\u0438\u0446\u0430 \u043F\u043B\u0430\u0441\u0442\u0438\u043A",
+      "quantity": 220,
+      "unit": "\u0448\u0442",
+      "price": 6.5
+    }
+  ]
+}
+
+## MaterialTransfers/MaterialTransferUpdateResponseExample -> MaterialTransferUpdateResponse
+{
+  "transferId": "bbbb1111-2222-3333-4444-555555555555",
+  "status": 0
+}
+
+## Operations/OperationCardResponseExample -> OperationCardResponse
+{
+  "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "code": "OPR-001",
+  "name": "\u0420\u0430\u0441\u043A\u0440\u043E\u0439 \u0442\u043A\u0430\u043D\u0438",
+  "operationType": "\u0420\u0430\u0441\u043A\u0440\u043E\u0439",
+  "minutes": 12.5,
+  "cost": 180.0
+}
+
+## Operations/OperationListResponseExample -> IEnumerable`1
+[
+  {
+    "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "code": "OPR-001",
+    "name": "\u0420\u0430\u0441\u043A\u0440\u043E\u0439 \u0442\u043A\u0430\u043D\u0438",
+    "operationType": "\u0420\u0430\u0441\u043A\u0440\u043E\u0439",
+    "minutes": 12.5,
+    "cost": 180.0
+  },
+  {
+    "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+    "code": "OPR-002",
+    "name": "\u041F\u043E\u0448\u0438\u0432 \u043E\u0441\u043D\u043E\u0432\u044B",
+    "operationType": "\u041F\u043E\u0448\u0438\u0432",
+    "minutes": 35,
+    "cost": 520.0
+  }
+]
+
+## Operations/OperationUpdateRequestExample -> OperationUpdateRequest
+{
+  "code": "OPR-002",
+  "name": "\u041F\u043E\u0448\u0438\u0432 \u043E\u0441\u043D\u043E\u0432\u044B",
+  "operationType": "\u041F\u043E\u0448\u0438\u0432",
+  "minutes": 34,
+  "cost": 500.0
+}
+
+## Operations/OperationUpdateResponseExample -> OperationUpdateResponse
+{
+  "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "status": "Updated"
+}
+
+## Payroll/PayrollCalculateResponseExample -> PayrollCalculateResponse
+{
+  "status": 0,
+  "from": "2025-11-01T00:00:00",
+  "to": "2025-11-30T00:00:00"
+}
+
+## Payroll/PayrollGetResponseExample -> PayrollGetResponse
+{
+  "employeeId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "period": "11.2025",
+  "accrued": 32500,
+  "paid": 15000,
+  "outstanding": 17500
+}
+
+## Payroll/PayrollPayRequestExample -> PayrollPayRequest
+{
+  "employeeId": "aaaaaaaa-aaaa-aaaa-aaaa-bbbbbbbbbbbb",
+  "amount": 20000,
+  "date": "2025-11-20T00:00:00"
+}
+
+## Payroll/PayrollPayResponseExample -> PayrollPayResponse
+{
+  "status": 0
+}
+
+## ProductionOrders/ProductionOrderCardResponseExample -> ProductionOrderCardResponse
+{
+  "orderId": "10000000-0000-0000-0000-000000000001",
+  "orderNumber": "PO-001",
+  "productName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+  "quantity": 120,
+  "startDate": "2025-11-10T00:00:00",
+  "endDate": "2025-11-20T00:00:00",
+  "responsible": "\u0410\u043D\u043D\u0430 \u0421\u043C\u0438\u0440\u043D\u043E\u0432\u0430",
+  "status": "\u0412 \u0440\u0430\u0431\u043E\u0442\u0435"
+}
+
+## ProductionOrders/ProductionOrderCreateRequestExample -> ProductionOrderCreateRequest
+{
+  "productName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+  "quantity": 150,
+  "startDate": "2025-11-15T00:00:00",
+  "endDate": "2025-11-28T00:00:00",
+  "responsible": "\u0410\u043D\u043D\u0430 \u0421\u043C\u0438\u0440\u043D\u043E\u0432\u0430",
+  "status": "\u0427\u0435\u0440\u043D\u043E\u0432\u0438\u043A"
+}
+
+## ProductionOrders/ProductionOrderCreateResponseExample -> ProductionOrderCreateResponse
+{
+  "orderId": "20000000-0000-0000-0000-000000000001",
+  "orderNumber": "PO-003",
+  "status": "\u0427\u0435\u0440\u043D\u043E\u0432\u0438\u043A"
+}
+
+## ProductionOrders/ProductionOrderDeleteResponseExample -> ProductionOrderDeleteResponse
+{
+  "orderId": "10000000-0000-0000-0000-000000000002",
+  "isDeleted": true
+}
+
+## ProductionOrders/ProductionOrderListResponseExample -> IEnumerable`1
+[
+  {
+    "orderId": "10000000-0000-0000-0000-000000000001",
+    "orderNumber": "PO-001",
+    "productName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+    "quantity": 120,
+    "startDate": "2025-11-10T00:00:00",
+    "endDate": "2025-11-20T00:00:00",
+    "status": "\u0412 \u0440\u0430\u0431\u043E\u0442\u0435"
+  },
+  {
+    "orderId": "10000000-0000-0000-0000-000000000002",
+    "orderNumber": "PO-002",
+    "productName": "\u0425\u0430\u043B\u0430\u0442 \u043C\u0430\u0445\u0440\u043E\u0432\u044B\u0439",
+    "quantity": 80,
+    "startDate": "2025-11-12T00:00:00",
+    "endDate": "2025-11-25T00:00:00",
+    "status": "\u0427\u0435\u0440\u043D\u043E\u0432\u0438\u043A"
+  }
+]
+
+## ProductionOrders/ProductionOrderUpdateRequestExample -> ProductionOrderUpdateRequest
+{
+  "productName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+  "quantity": 120,
+  "startDate": "2025-11-10T00:00:00",
+  "endDate": "2025-11-22T00:00:00",
+  "responsible": "\u0410\u043D\u043D\u0430 \u0421\u043C\u0438\u0440\u043D\u043E\u0432\u0430",
+  "status": "\u0412 \u0440\u0430\u0431\u043E\u0442\u0435"
+}
+
+## ProductionOrders/ProductionOrderUpdateResponseExample -> ProductionOrderUpdateResponse
+{
+  "orderId": "10000000-0000-0000-0000-000000000001",
+  "status": "\u0412 \u0440\u0430\u0431\u043E\u0442\u0435"
+}
+
+## ProductionOrders/StageDistributionResponseExample -> IEnumerable`1
+[
+  {
+    "stage": "\u041A\u0440\u043E\u0439",
+    "employee": "\u0415\u043A\u0430\u0442\u0435\u0440\u0438\u043D\u0430 \u041A\u0440\u044B\u043B\u043E\u0432\u0430",
+    "hours": 6.5,
+    "quantity": 120,
+    "status": "\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u043E"
+  },
+  {
+    "stage": "\u041F\u043E\u0448\u0438\u0432",
+    "employee": "\u041C\u0430\u0440\u0438\u043D\u0430 \u041A\u0443\u0437\u043D\u0435\u0446\u043E\u0432\u0430",
+    "hours": 8,
+    "quantity": 60,
+    "status": "\u0412 \u0440\u0430\u0431\u043E\u0442\u0435"
+  }
+]
+
+## Products/ProductBomCreateRequestExample -> ProductBomCreateRequest
+{
+  "material": "\u0422\u043A\u0430\u043D\u044C \u0445\u043B\u043E\u043F\u043E\u043A",
+  "qty": 2.4,
+  "unit": "\u043C",
+  "price": 380
+}
+
+## Products/ProductBomDeleteResponseExample -> ProductBomDeleteResponse
+{
+  "lineId": "a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1",
+  "status": "Deleted"
+}
+
+## Products/ProductBomItemResponseExample -> IEnumerable`1
+[
+  {
+    "id": "a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1",
+    "material": "\u0422\u043A\u0430\u043D\u044C \u0445\u043B\u043E\u043F\u043E\u043A",
+    "qty": 2.4,
+    "unit": "\u043C",
+    "price": 380,
+    "total": 912
+  },
+  {
+    "id": "b2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+    "material": "\u0420\u0435\u0437\u0438\u043D\u043A\u0430 \u044D\u043B\u0430\u0441\u0442\u0438\u0447\u043D\u0430\u044F",
+    "qty": 1.2,
+    "unit": "\u043C",
+    "price": 52,
+    "total": 62.4
+  }
+]
+
+## Products/ProductCardResponseExample -> ProductCardResponse
+{
+  "id": "11111111-1111-1111-1111-111111111111",
+  "sku": "SP-001",
+  "name": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+  "planPerHour": 2.5,
+  "description": "\u041B\u0451\u0433\u043A\u0430\u044F \u043B\u0435\u0442\u043D\u044F\u044F \u043F\u0438\u0436\u0430\u043C\u0430",
+  "imageCount": 2
+}
+
+## Products/ProductOperationCreateRequestExample -> ProductOperationCreateRequest
+{
+  "operation": "\u041F\u043E\u0448\u0438\u0432 \u0438\u0437\u0434\u0435\u043B\u0438\u044F",
+  "minutes": 35,
+  "cost": 590
+}
+
+## Products/ProductOperationDeleteResponseExample -> ProductOperationDeleteResponse
+{
+  "lineId": "d4d4d4d4-d4d4-d4d4-d4d4-d4d4d4d4d4d4",
+  "status": "Deleted"
+}
+
+## Products/ProductOperationItemResponseExample -> IEnumerable`1
+[
+  {
+    "id": "d4d4d4d4-d4d4-d4d4-d4d4-d4d4d4d4d4d4",
+    "operation": "\u0420\u0430\u0441\u043A\u0440\u043E\u0439 \u043A\u043E\u043C\u043F\u043B\u0435\u043A\u0442\u043E\u0432",
+    "minutes": 18.5,
+    "cost": 265
+  },
+  {
+    "id": "e5e5e5e5-e5e5-e5e5-e5e5-e5e5e5e5e5e5",
+    "operation": "\u041F\u043E\u0448\u0438\u0432 \u0438\u0437\u0434\u0435\u043B\u0438\u044F",
+    "minutes": 42.5,
+    "cost": 590
+  }
+]
+
+## Products/ProductsListResponseExample -> IEnumerable`1
+[
+  {
+    "id": "11111111-1111-1111-1111-111111111111",
+    "sku": "SP-001",
+    "name": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+    "planPerHour": 2.5,
+    "status": "\u0410\u043A\u0442\u0438\u0432\u0435\u043D",
+    "imageCount": 2
+  },
+  {
+    "id": "22222222-2222-2222-2222-222222222222",
+    "sku": "DR-215",
+    "name": "\u041F\u043B\u0430\u0442\u044C\u0435 \u0442\u0440\u0438\u043A\u043E\u0442\u0430\u0436\u043D\u043E\u0435",
+    "planPerHour": 3.2,
+    "status": "\u0427\u0435\u0440\u043D\u043E\u0432\u0438\u043A",
+    "imageCount": 3
+  }
+]
+
+## Products/ProductUpdateRequestExample -> ProductUpdateRequest
+{
+  "sku": "SP-001",
+  "name": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+  "planPerHour": 2.7,
+  "description": "\u041E\u0431\u043D\u043E\u0432\u043B\u0451\u043D\u043D\u043E\u0435 \u043E\u043F\u0438\u0441\u0430\u043D\u0438\u0435 \u0438\u0437\u0434\u0435\u043B\u0438\u044F"
+}
+
+## Products/ProductUpdateResponseExample -> ProductUpdateResponse
+{
+  "id": "11111111-1111-1111-1111-111111111111",
+  "status": "Updated"
+}
+
+## Purchases/PurchaseRequestDetailResponseExample -> PurchaseRequestDetailResponse
+{
+  "purchaseId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "documentNumber": "PR-0001",
+  "createdAt": "2025-11-12T00:00:00",
+  "warehouseName": "\u041E\u0441\u043D\u043E\u0432\u043D\u043E\u0439 \u0441\u043A\u043B\u0430\u0434",
+  "supplierId": "99999999-0000-0000-0000-000000000001",
+  "comment": "\u0421\u0440\u043E\u0447\u043D\u0430\u044F \u0437\u0430\u043A\u0443\u043F\u043A\u0430",
+  "totalAmount": 16000,
+  "status": 0,
+  "items": [
+    {
+      "lineId": "bbbbbbbb-0000-0000-0000-000000000001",
+      "materialId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa11",
+      "materialName": "\u0422\u043A\u0430\u043D\u044C \u0421\u0438\u0442\u0435\u0446",
+      "quantity": 50,
+      "unit": "\u043C",
+      "price": 250,
+      "totalAmount": 12500,
+      "note": "\u041E\u0441\u043D\u043E\u0432\u043D\u0430\u044F \u043F\u0430\u0440\u0442\u0438\u044F"
+    },
+    {
+      "lineId": "bbbbbbbb-0000-0000-0000-000000000002",
+      "materialId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+      "materialName": "\u041C\u043E\u043B\u043D\u0438\u044F",
+      "quantity": 100,
+      "unit": "\u0448\u0442",
+      "price": 35,
+      "totalAmount": 3500
+    }
+  ]
+}
+
+## Purchases/PurchasesConvertToOrderResponseExample -> PurchasesConvertToOrderResponse
+{
+  "purchaseId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "status": 3
+}
+
+## Purchases/PurchasesCreateRequestExample -> PurchasesCreateRequest
+{
+  "documentNumber": "PR-0002",
+  "createdAt": "2025-12-03T10:10:21.4494804Z",
+  "warehouseName": "\u041E\u0441\u043D\u043E\u0432\u043D\u043E\u0439 \u0441\u043A\u043B\u0430\u0434",
+  "supplierId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "comment": "\u0417\u0430\u043A\u0443\u043F\u043A\u0430 \u043A \u043D\u043E\u0432\u043E\u043C\u0443 \u0437\u0430\u043A\u0430\u0437\u0443",
+  "items": [
+    {
+      "materialId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa11",
+      "materialName": "\u0422\u043A\u0430\u043D\u044C \u0421\u0438\u0442\u0435\u0446",
+      "quantity": 50,
+      "unit": "\u043C",
+      "price": 250,
+      "note": "\u041E\u0441\u043D\u043E\u0432\u043D\u043E\u0439 \u0446\u0432\u0435\u0442"
+    }
+  ]
+}
+
+## Purchases/PurchasesCreateResponseExample -> PurchasesCreateResponse
+{
+  "purchaseId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "status": 1
+}
+
+## Purchases/PurchasesResponseExample -> IEnumerable`1
+[
+  {
+    "purchaseId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "documentNumber": "PR-0001",
+    "createdAt": "2025-11-12T00:00:00",
+    "totalAmount": 16000,
+    "itemsSummary": [
+      "\u0422\u043A\u0430\u043D\u044C \u0421\u0438\u0442\u0435\u0446 (50)",
+      "\u041C\u043E\u043B\u043D\u0438\u044F (100)"
+    ],
+    "status": 0
+  }
+]
+
+## Reports/ReportsMonthlyProfitListExample -> IEnumerable`1
+[
+  {
+    "period": "11.2025",
+    "revenue": 122300,
+    "productionCost": 78500,
+    "overhead": 18200,
+    "wages": 5200,
+    "profit": 20400
+  },
+  {
+    "period": "10.2025",
+    "revenue": 115400,
+    "productionCost": 75900,
+    "overhead": 17900,
+    "wages": 5600,
+    "profit": 16000
+  }
+]
+
+## Reports/ReportsMonthlyProfitResponseExample -> ReportsMonthlyProfitResponse
+{
+  "period": "11.2025",
+  "revenue": 122300,
+  "productionCost": 78500,
+  "overhead": 18200,
+  "wages": 15000,
+  "profit": 10600
+}
+
+## Reports/ReportsProductionCostResponseExample -> IEnumerable`1
+[
+  {
+    "productionBatchId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+    "cost": 78500
+  }
+]
+
+## Reports/ReportsRevenueResponseExample -> IEnumerable`1
+[
+  {
+    "specificationId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "specificationName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+    "revenue": 55000
+  }
+]
+
+## Returns/ReturnCardResponseExample -> ReturnCardResponse
+{
+  "returnId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "customer": "\u0418\u041F \u0022\u041A\u043B\u0438\u0435\u043D\u04421\u0022",
+  "productName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+  "quantity": 2,
+  "date": "2025-11-13T00:00:00",
+  "reason": "\u0411\u0440\u0430\u043A",
+  "status": 0,
+  "comment": "\u0417\u0430\u043C\u0435\u043D\u0430 \u0438\u0437\u0434\u0435\u043B\u0438\u044F \u043E\u0444\u043E\u0440\u043C\u043B\u0435\u043D\u0430"
+}
+
+## Returns/ReturnsCreateRequestExample -> ReturnsCreateRequest
+{
+  "customerId": "11111111-1111-1111-1111-111111111111",
+  "specificationId": "22222222-2222-2222-2222-222222222222",
+  "quantity": 2,
+  "reason": "\u0411\u0440\u0430\u043A \u2014 \u0440\u0430\u0437\u043E\u0448\u0451\u043B\u0441\u044F \u0448\u043E\u0432",
+  "returnDate": "2025-11-13T00:00:00"
+}
+
+## Returns/ReturnsCreateResponseExample -> ReturnsCreateResponse
+{
+  "returnId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "status": 0
+}
+
+## Returns/ReturnsListResponseExample -> IEnumerable`1
+[
+  {
+    "returnId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "customer": "\u0418\u041F \u0022\u041A\u043B\u0438\u0435\u043D\u04421\u0022",
+    "productName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+    "quantity": 2,
+    "date": "2025-11-13T00:00:00",
+    "reason": "\u0411\u0440\u0430\u043A",
+    "status": 0
+  },
+  {
+    "returnId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+    "customer": "\u041E\u041E\u041E \u0022\u0422\u0435\u043A\u0441\u0442\u0438\u043B\u044C\u0022",
+    "productName": "\u0424\u0443\u0442\u0431\u043E\u043B\u043A\u0430 \u0434\u0435\u0442\u0441\u043A\u0430\u044F",
+    "quantity": 1,
+    "date": "2025-11-16T00:00:00",
+    "reason": "\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u043E\u0441\u0442\u0430\u0432\u043A\u0438",
+    "status": 0
+  }
+]
+
+## Settings/SettingGetResponseExample -> SettingGetResponse
+{
+  "key": "StandardShiftHours",
+  "value": "8",
+  "description": "\u0421\u0442\u0430\u043D\u0434\u0430\u0440\u0442\u043D\u0430\u044F \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0441\u043C\u0435\u043D\u044B (\u0447\u0430\u0441\u044B)"
+}
+
+## Settings/SettingsListResponseExample -> IEnumerable`1
+[
+  {
+    "key": "StandardShiftHours",
+    "value": "8",
+    "description": "\u0421\u0442\u0430\u043D\u0434\u0430\u0440\u0442\u043D\u0430\u044F \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0441\u043C\u0435\u043D\u044B (\u0447\u0430\u0441\u044B)"
+  },
+  {
+    "key": "Currency",
+    "value": "\u20BD",
+    "description": "\u0412\u0430\u043B\u044E\u0442\u0430 \u0441\u0438\u0441\u0442\u0435\u043C\u044B"
+  }
+]
+
+## Settings/SettingUpdateRequestExample -> SettingUpdateRequest
+{
+  "value": "9"
+}
+
+## Settings/SettingUpdateResponseExample -> SettingUpdateResponse
+{
+  "key": "StandardShiftHours",
+  "status": 0
+}
+
+## Shifts/ShiftPlanCardResponseExample -> ShiftPlanCardResponse
+{
+  "shiftPlanId": "11111111-1111-1111-1111-111111111111",
+  "employeeId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "employeeName": "\u0418\u0432\u0430\u043D\u043E\u0432\u0430 \u041E.\u0413.",
+  "specificationId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "specificationName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+  "date": "2025-12-12T00:00:00",
+  "plannedQuantity": 12
+}
+
+## Shifts/ShiftPlanListResponseExample -> IEnumerable`1
+[
+  {
+    "shiftPlanId": "11111111-1111-1111-1111-111111111111",
+    "employeeId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "employeeName": "\u0418\u0432\u0430\u043D\u043E\u0432\u0430 \u041E.\u0413.",
+    "specificationId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+    "specificationName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+    "date": "2025-12-12T00:00:00",
+    "plannedQuantity": 12
+  },
+  {
+    "shiftPlanId": "22222222-2222-2222-2222-222222222222",
+    "employeeId": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+    "employeeName": "\u0421\u0435\u0440\u0433\u0435\u0439\u0447\u0443\u043A \u0410.\u0410.",
+    "specificationId": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+    "specificationName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+    "date": "2025-12-12T00:00:00",
+    "plannedQuantity": 15
+  }
+]
+
+## Shifts/ShiftResultCardResponseExample -> ShiftResultCardResponse
+{
+  "shiftPlanId": "11111111-1111-1111-1111-111111111111",
+  "employeeName": "\u0418\u0432\u0430\u043D\u043E\u0432\u0430 \u041E.\u0413.",
+  "specificationName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+  "date": "2025-12-12T00:00:00",
+  "plannedQty": 12,
+  "actualQty": 14,
+  "hoursWorked": 7.5,
+  "bonus": true
+}
+
+## Shifts/ShiftResultListResponseExample -> IEnumerable`1
+[
+  {
+    "shiftPlanId": "11111111-1111-1111-1111-111111111111",
+    "employeeName": "\u0418\u0432\u0430\u043D\u043E\u0432\u0430 \u041E.\u0413.",
+    "specificationName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+    "date": "2025-12-12T00:00:00",
+    "plannedQuantity": 12,
+    "actualQty": 14,
+    "hoursWorked": 7.5,
+    "bonus": true
+  },
+  {
+    "shiftPlanId": "22222222-2222-2222-2222-222222222222",
+    "employeeName": "\u0421\u0435\u0440\u0433\u0435\u0439\u0447\u0443\u043A \u0410.\u0410.",
+    "specificationName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+    "date": "2025-12-12T00:00:00",
+    "plannedQuantity": 15,
+    "actualQty": 15,
+    "hoursWorked": 8,
+    "bonus": false
+  }
+]
+
+## Shifts/ShiftsCreatePlanRequestExample -> ShiftsCreatePlanRequest
+{
+  "employeeId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "specificationId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "plannedQuantity": 12,
+  "date": "2025-12-12T00:00:00"
+}
+
+## Shifts/ShiftsCreatePlanResponseExample -> ShiftsCreatePlanResponse
+{
+  "shiftPlanId": "11111111-1111-1111-1111-111111111111",
+  "status": 0
+}
+
+## Shifts/ShiftsRecordResultRequestExample -> ShiftsRecordResultRequest
+{
+  "shiftPlanId": "11111111-1111-1111-1111-111111111111",
+  "actualQty": 14,
+  "hoursWorked": 7.5,
+  "bonus": true
+}
+
+## Shifts/ShiftsRecordResultResponseExample -> ShiftsRecordResultResponse
+{
+  "shiftPlanId": "11111111-1111-1111-1111-111111111111",
+  "status": 2
+}
+
+## Shipments/ShipmentCardResponseExample -> ShipmentCardResponse
+{
+  "shipmentId": "11111111-1111-1111-1111-111111111111",
+  "customer": "\u0418\u041F \u041A\u043B\u0438\u0435\u043D\u04421",
+  "date": "2025-11-12T00:00:00",
+  "status": 0,
+  "totalAmount": 5500,
+  "items": [
+    {
+      "specificationId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+      "productName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+      "qty": 10,
+      "unitPrice": 550.0,
+      "lineTotal": 5500
+    }
+  ]
+}
+
+## Shipments/ShipmentsConfirmPaymentResponseExample -> ShipmentsConfirmPaymentResponse
+{
+  "shipmentId": "11111111-1111-1111-1111-111111111111",
+  "status": 2
+}
+
+## Shipments/ShipmentsCreateRequestExample -> ShipmentsCreateRequest
+{
+  "customerId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "items": [
+    {
+      "specificationId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+      "productName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+      "qty": 10,
+      "unitPrice": 550.0,
+      "lineTotal": 5500
+    }
+  ]
+}
+
+## Shipments/ShipmentsCreateResponseExample -> ShipmentsCreateResponse
+{
+  "shipmentId": "11111111-1111-1111-1111-111111111111",
+  "status": 0
+}
+
+## Shipments/ShipmentsListResponseExample -> IEnumerable`1
+[
+  {
+    "shipmentId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "customer": "\u0418\u041F \u041A\u043B\u0438\u0435\u043D\u04421",
+    "productName": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+    "quantity": 10,
+    "date": "2025-11-12T00:00:00",
+    "totalAmount": 5500,
+    "status": 0
+  },
+  {
+    "shipmentId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+    "customer": "\u041E\u041E\u041E \u0022\u0422\u0435\u043A\u0441\u0442\u0438\u043B\u044C\u0022",
+    "productName": "\u0424\u0443\u0442\u0431\u043E\u043B\u043A\u0430 \u0434\u0435\u0442\u0441\u043A\u0430\u044F",
+    "quantity": 25,
+    "date": "2025-11-15T00:00:00",
+    "totalAmount": 4250,
+    "status": 2
+  }
+]
+
+## Specifications/SpecificationBomItemsResponseExample -> IEnumerable`1
+[
+  {
+    "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa1",
+    "material": "\u0422\u043A\u0430\u043D\u044C \u0421\u0438\u0442\u0435\u0446",
+    "quantity": 1.8,
+    "unit": "\u043C",
+    "price": 180,
+    "cost": 324
+  },
+  {
+    "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa2",
+    "material": "\u0424\u0443\u0440\u043D\u0438\u0442\u0443\u0440\u0430",
+    "quantity": 1,
+    "unit": "\u043A\u043E\u043C\u043F\u043B\u0435\u043A\u0442",
+    "price": 60,
+    "cost": 60
+  }
+]
+
+## Specifications/SpecificationOperationItemsResponseExample -> IEnumerable`1
+[
+  {
+    "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbb1",
+    "operation": "\u0420\u0430\u0441\u043A\u0440\u043E\u0439",
+    "minutes": 8,
+    "cost": 24
+  },
+  {
+    "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbb2",
+    "operation": "\u0421\u0431\u043E\u0440\u043A\u0430",
+    "minutes": 12,
+    "cost": 44
+  }
+]
+
+## Specifications/SpecificationsAddBomRequestExample -> SpecificationsAddBomRequest
+{
+  "materialId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "qty": 255,
+  "unit": "\u043C.",
+  "price": 120.0
+}
+
+## Specifications/SpecificationsAddBomResponseExample -> SpecificationsAddBomResponse
+{
+  "specificationId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "item": {
+    "id": "5c1a2012-9347-4bb4-876d-4cf8bf757241",
+    "material": "\u0422\u043A\u0430\u043D\u044C \u0421\u0438\u0442\u0435\u0446",
+    "quantity": 1.8,
+    "unit": "\u043C",
+    "price": 180,
+    "cost": 324
+  },
+  "status": 2
+}
+
+## Specifications/SpecificationsAddOperationRequestExample -> SpecificationsAddOperationRequest
+{
+  "operationId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbb1",
+  "minutes": 120,
+  "cost": 150.0
+}
+
+## Specifications/SpecificationsAddOperationResponseExample -> SpecificationsAddOperationResponse
+{
+  "specificationId": "11111111-1111-1111-1111-111111111111",
+  "item": {
+    "id": "c0dff06c-478f-42d6-a029-cff700048d9b",
+    "operation": "\u0421\u0431\u043E\u0440\u043A\u0430",
+    "minutes": 12,
+    "cost": 48
+  },
+  "status": 3
+}
+
+## Specifications/SpecificationsCostResponseExample -> SpecificationsCostResponse
+{
+  "specificationId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "asOfDate": "2025-11-20T00:00:00",
+  "materialsCost": 336,
+  "operationsCost": 68,
+  "workshopExpenses": 40,
+  "totalCost": 444
+}
+
+## Specifications/SpecificationsCreateRequestExample -> SpecificationsCreateRequest
+{
+  "sku": "SP-001",
+  "name": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+  "planPerHour": 2.5,
+  "description": "\u0411\u0430\u0437\u043E\u0432\u044B\u0439 \u043A\u043E\u043C\u043F\u043B\u0435\u043A\u0442 \u0434\u043B\u044F \u0441\u043D\u0430"
+}
+
+## Specifications/SpecificationsCreateResponseExample -> SpecificationsCreateResponse
+{
+  "id": "3bc31725-1e76-4ad6-a680-caa3c8d3ec9b",
+  "status": 0
+}
+
+## Specifications/SpecificationsDeleteBomItemResponseExample -> SpecificationsDeleteBomItemResponse
+{
+  "specificationId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "bomItemId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa0000",
+  "status": 5
+}
+
+## Specifications/SpecificationsGetResponseExample -> SpecificationsGetResponse
+{
+  "id": "11111111-1111-1111-1111-111111111000",
+  "sku": "SP-001",
+  "name": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+  "planPerHour": 2.5,
+  "description": "\u041A\u043B\u0430\u0441\u0441\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u043A\u043E\u0441\u0442\u044E\u043C \u0434\u043B\u044F \u0441\u043D\u0430",
+  "status": 1,
+  "imagesCount": 3
+}
+
+## Specifications/SpecificationsListResponseExample -> IEnumerable`1
+[
+  {
+    "id": "11111111-1111-1111-1111-111111111000",
+    "sku": "SP-001",
+    "name": "\u041F\u0438\u0436\u0430\u043C\u0430 \u0436\u0435\u043D\u0441\u043A\u0430\u044F",
+    "planPerHour": 2.5,
+    "status": 1,
+    "imagesCount": 3
+  },
+  {
+    "id": "22222222-2222-2222-2222-222222222000",
+    "sku": "SP-002",
+    "name": "\u0425\u0430\u043B\u0430\u0442 \u043C\u0430\u0445\u0440\u043E\u0432\u044B\u0439",
+    "planPerHour": 1.3,
+    "status": 0,
+    "imagesCount": 1
+  }
+]
+
+## Specifications/SpecificationsUpdateRequestExample -> SpecificationsUpdateRequest
+{
+  "sku": "SP-001",
+  "name": "\u041F\u0438\u0436\u0430\u043C\u0430",
+  "planPerHour": 2.5,
+  "description": "\u041E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u043D\u043E\u0435 \u043E\u043F\u0438\u0441\u0430\u043D\u0438\u0435 \u0438\u0437\u0434\u0435\u043B\u0438\u044F"
+}
+
+## Specifications/SpecificationsUpdateResponseExample -> SpecificationsUpdateResponse
+{
+  "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "status": 1
+}
+
+## Specifications/SpecificationsUploadImageResponseExample -> SpecificationsUploadImageResponse
+{
+  "specificationId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "status": 4
+}
+
+## Suppliers/SupplierResponseExample -> SupplierResponse
+{
+  "id": "ee2abcf6-0d2b-4ebe-9952-914575afc5da",
+  "name": "\u0422\u0435\u043A\u0441\u041C\u0430\u0440\u043A\u0435\u0442",
+  "supplierType": 0,
+  "status": 0,
+  "address": "\u0433. \u0418\u0432\u0430\u043D\u043E\u0432\u043E, \u0443\u043B. \u0422\u0435\u043A\u0441\u0442\u0438\u043B\u044C\u0449\u0438\u043A\u043E\u0432, 12",
+  "phone": "\u002B7 (900) 111\u201322\u201333",
+  "email": "info@texmarket.ru"
+}
+
+## Suppliers/SuppliersCreateUpdateDeleteResponseExample -> SuppliersCreateUpdateDeleteResponse
+{
+  "status": 0
+}
+
+## Suppliers/SuppliersCreateUpdateRequestExample -> SuppliersCreateUpdateRequest
+{
+  "name": "\u0422\u0435\u043A\u0441\u041C\u0430\u0440\u043A\u0435\u0442",
+  "supplierType": 0,
+  "status": 0,
+  "address": "\u0433. \u0418\u0432\u0430\u043D\u043E\u0432\u043E, \u0443\u043B. \u0422\u0435\u043A\u0441\u0442\u0438\u043B\u044C\u0449\u0438\u043A\u043E\u0432, 12",
+  "phone": "\u002B7 (900) 111\u201322\u201333",
+  "email": "texmarket@mail.co"
+}
+
+## Suppliers/SuppliersListResponseExample -> IEnumerable`1
+[
+  {
+    "id": "4c98b344-f549-49b0-b730-00beaeade35b",
+    "name": "\u0422\u0435\u043A\u0441\u041C\u0430\u0440\u043A\u0435\u0442",
+    "supplierType": 0,
+    "status": 0,
+    "address": "\u0433. \u0418\u0432\u0430\u043D\u043E\u0432\u043E, \u0443\u043B. \u0422\u0435\u043A\u0441\u0442\u0438\u043B\u044C\u0449\u0438\u043A\u043E\u0432, 12",
+    "phone": "\u002B7 (900) 111\u201322\u201333",
+    "email": "info@texmarket.ru"
+  },
+  {
+    "id": "332b03d8-63dd-4a93-99ad-33eb49fe96db",
+    "name": "\u0424\u0430\u0431\u0440\u0438\u043A\u0430-\u0422\u0435\u043A\u0441\u0442\u0438\u043B\u044C",
+    "supplierType": 3,
+    "status": 0,
+    "address": "\u0433. \u041C\u043E\u0441\u043A\u0432\u0430, \u0443\u043B. \u041B\u0435\u043D\u0438\u043D\u0430, 123",
+    "phone": "\u002B7 (908) 999\u201322\u201312",
+    "email": "info@texfactory.ru"
+  }
+]
+
+## Users/UsersCreateRequestExample -> UsersCreateRequest
+{
+  "userName": "john",
+  "email": "john@acme",
+  "role": "Worker",
+  "password": "P@ssw0rd"
+}
+
+## Users/UsersCreateResponseExample -> UsersCreateResponse
+{
+  "id": "99999999-9999-9999-9999-999999999999",
+  "status": 0
+}
+
+## Users/UsersDeleteResponseExample -> UsersDeleteResponse
+{
+  "id": "11111111-1111-1111-1111-111111111111",
+  "status": 2
+}
+
+## Users/UsersGetByIdResponseExample -> UsersGetByIdResponse
+{
+  "id": "11111111-1111-1111-1111-111111111111",
+  "userName": "admin",
+  "email": "admin@acme",
+  "role": "Director",
+  "isActive": true
+}
+
+## Users/UsersGetByRoleResponseExample -> IEnumerable`1
+[
+  {
+    "id": "11111111-1111-1111-1111-111111111111",
+    "userName": "admin",
+    "email": "admin@acme",
+    "role": "Director",
+    "isActive": true
+  },
+  {
+    "id": "22222222-2222-2222-2222-222222222222",
+    "userName": "keeper",
+    "email": "keeper@acme",
+    "role": "Storekeeper",
+    "isActive": true
+  }
+]
+
+## Users/UsersUpdateRequestExample -> UsersUpdateRequest
+{
+  "userName": "admin",
+  "email": "admin@acme",
+  "role": "Director",
+  "isActive": true
+}
+
+## Users/UsersUpdateResponseExample -> UsersUpdateResponse
+{
+  "id": "11111111-1111-1111-1111-111111111111",
+  "status": 1
+}
+
+## WarehouseMaterials/MaterialReceiptCardResponseExample -> MaterialReceiptCardResponse
+{
+  "id": "aaaaaaaa-0000-0000-0000-000000000001",
+  "documentNumber": "RC-001",
+  "documentDate": "2025-11-01T00:00:00",
+  "supplierName": "\u0422\u0435\u043A\u0441\u041C\u0430\u0440\u043A\u0435\u0442",
+  "warehouseName": "\u041E\u0441\u043D\u043E\u0432\u043D\u043E\u0439 \u0441\u043A\u043B\u0430\u0434",
+  "totalAmount": 8750,
+  "status": 0,
+  "comment": "\u041F\u043E\u0441\u0442\u0443\u043F\u043B\u0435\u043D\u0438\u0435 \u0442\u043A\u0430\u043D\u0438 \u0434\u043B\u044F \u0437\u0438\u043C\u043D\u0435\u0439 \u043A\u043E\u043B\u043B\u0435\u043A\u0446\u0438\u0438"
+}
+
+## WarehouseMaterials/MaterialReceiptLineDeleteResponseExample -> MaterialReceiptLineDeleteResponse
+{
+  "receiptId": "aaaaaaaa-0000-0000-0000-000000000001",
+  "lineId": "bbbbbbbb-0000-0000-0000-000000000001",
+  "status": 5
+}
+
+## WarehouseMaterials/MaterialReceiptLineResponseExample -> IEnumerable`1
+[
+  {
+    "id": "bbbbbbbb-0000-0000-0000-000000000001",
+    "materialId": "11111111-1111-1111-1111-111111111111",
+    "materialName": "\u0422\u043A\u0430\u043D\u044C \u0421\u0438\u0442\u0435\u0446",
+    "quantity": 50,
+    "unit": "\u043C",
+    "price": 150,
+    "amount": 7500
+  },
+  {
+    "id": "bbbbbbbb-0000-0000-0000-000000000002",
+    "materialId": "22222222-2222-2222-2222-222222222222",
+    "materialName": "\u041D\u0438\u0442\u043A\u0438 \u0445\u043B\u043E\u043F\u043A\u043E\u0432\u044B\u0435",
+    "quantity": 200,
+    "unit": "\u0448\u0442",
+    "price": 2.5,
+    "amount": 500
+  }
+]
+
+## WarehouseMaterials/MaterialReceiptLineUpsertRequestExample -> MaterialReceiptLineUpsertRequest
+{
+  "materialId": "11111111-1111-1111-1111-111111111111",
+  "quantity": 10,
+  "unit": "\u043C",
+  "price": 200
+}
+
+## WarehouseMaterials/MaterialReceiptLineUpsertResponseExample -> MaterialReceiptLineUpsertResponse
+{
+  "receiptId": "aaaaaaaa-0000-0000-0000-000000000001",
+  "line": {
+    "id": "bbbbbbbb-0000-0000-0000-000000000010",
+    "materialId": "11111111-1111-1111-1111-111111111111",
+    "materialName": "\u0422\u043A\u0430\u043D\u044C \u0421\u0438\u0442\u0435\u0446",
+    "quantity": 10,
+    "unit": "\u043C",
+    "price": 200,
+    "amount": 2000
+  },
+  "status": 3
+}
+
+## WarehouseMaterials/MaterialReceiptListResponseExample -> IEnumerable`1
+[
+  {
+    "id": "aaaaaaaa-0000-0000-0000-000000000001",
+    "documentNumber": "RC-001",
+    "documentDate": "2025-11-01T00:00:00",
+    "supplierName": "\u0422\u0435\u043A\u0441\u041C\u0430\u0440\u043A\u0435\u0442",
+    "warehouseName": "\u041E\u0441\u043D\u043E\u0432\u043D\u043E\u0439 \u0441\u043A\u043B\u0430\u0434",
+    "totalAmount": 8750,
+    "status": 0
+  },
+  {
+    "id": "aaaaaaaa-0000-0000-0000-000000000002",
+    "documentNumber": "RC-002",
+    "documentDate": "2025-11-03T00:00:00",
+    "supplierName": "\u0422\u0435\u043A\u0441\u0442\u0438\u043B\u044C\u041E\u043F\u0442",
+    "warehouseName": "\u0421\u043A\u043B\u0430\u0434 \u21162",
+    "totalAmount": 5420,
+    "status": 2
+  }
+]
+
+## WarehouseMaterials/MaterialReceiptPostResponseExample -> MaterialReceiptPostResponse
+{
+  "id": "aaaaaaaa-0000-0000-0000-000000000001",
+  "status": 2,
+  "postedAt": "2025-12-03T10:10:21.5475936Z"
+}
+
+## WarehouseMaterials/MaterialReceiptUpsertRequestExample -> MaterialReceiptUpsertRequest
+{
+  "documentNumber": "RC-010",
+  "documentDate": "2025-12-03T00:00:00+03:00",
+  "supplierName": "\u0422\u0435\u043A\u0441\u041C\u0430\u0440\u043A\u0435\u0442",
+  "warehouseName": "\u041E\u0441\u043D\u043E\u0432\u043D\u043E\u0439 \u0441\u043A\u043B\u0430\u0434",
+  "totalAmount": 12345,
+  "comment": "\u0427\u0435\u0440\u043D\u043E\u0432\u0438\u043A \u043F\u043E\u0441\u0442\u0443\u043F\u043B\u0435\u043D\u0438\u044F"
+}
+
+## WarehouseMaterials/MaterialReceiptUpsertResponseExample -> MaterialReceiptUpsertResponse
+{
+  "id": "aaaaaaaa-0000-0000-0000-000000000010",
+  "status": 1
+}
+
+## Warehouses/WarehousesCreateRequestExample -> WarehousesCreateRequest
+{
+  "code": "ST-010",
+  "name": "\u041D\u043E\u0432\u044B\u0439 \u0441\u043A\u043B\u0430\u0434",
+  "type": 0,
+  "location": "\u0443\u043B. \u041D\u043E\u0432\u0430\u044F, 5",
+  "status": 0
+}
+
+## Warehouses/WarehousesCreateResponseExample -> WarehousesCreateResponse
+{
+  "id": "11111111-1111-1111-1111-111111111111",
+  "status": 0
+}
+
+## Warehouses/WarehousesGetResponseExample -> WarehousesGetResponse
+{
+  "id": "11111111-1111-1111-1111-111111111111",
+  "code": "ST-001",
+  "name": "\u041E\u0441\u043D\u043E\u0432\u043D\u043E\u0439 \u0441\u043A\u043B\u0430\u0434",
+  "type": 0,
+  "location": "\u0443\u043B. \u0417\u0430\u0432\u043E\u0434\u0441\u043A\u0430\u044F, 1",
+  "status": 0
+}
+
+## Warehouses/WarehousesListResponseExample -> IEnumerable`1
+[
+  {
+    "id": "11111111-1111-1111-1111-111111111111",
+    "code": "ST-001",
+    "name": "\u041E\u0441\u043D\u043E\u0432\u043D\u043E\u0439 \u0441\u043A\u043B\u0430\u0434",
+    "type": 0,
+    "status": 0
+  },
+  {
+    "id": "22222222-2222-2222-2222-222222222222",
+    "code": "ST-002",
+    "name": "\u0421\u043A\u043B\u0430\u0434 \u0444\u0443\u0440\u043D\u0438\u0442\u0443\u0440\u044B",
+    "type": 0,
+    "status": 0
+  },
+  {
+    "id": "33333333-3333-3333-3333-333333333333",
+    "code": "ST-003",
+    "name": "\u0413\u043E\u0442\u043E\u0432\u0430\u044F \u043F\u0440\u043E\u0434\u0443\u043A\u0446\u0438\u044F",
+    "type": 1,
+    "status": 1
+  }
+]
+
+## Warehouses/WarehousesUpdateRequestExample -> WarehousesUpdateRequest
+{
+  "name": "\u041E\u0441\u043D\u043E\u0432\u043D\u043E\u0439 \u0441\u043A\u043B\u0430\u0434 (\u043E\u0431\u043D\u043E\u0432\u043B\u0451\u043D)",
+  "type": 0,
+  "location": "\u0443\u043B. \u0417\u0430\u0432\u043E\u0434\u0441\u043A\u0430\u044F, 1",
+  "status": 0
+}
+
+## Warehouses/WarehousesUpdateResponseExample -> WarehousesUpdateResponse
+{
+  "id": "11111111-1111-1111-1111-111111111111",
+  "status": 0
+}
+
+## WorkshopExpenses/WorkshopExpenseCreateRequestExample -> WorkshopExpenseCreateRequest
+{
+  "workshopId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "amountPerUnit": 1500,
+  "effectiveFrom": "2025-01-01T00:00:00"
+}
+
+## WorkshopExpenses/WorkshopExpenseCreateResponseExample -> WorkshopExpenseCreateResponse
+{
+  "id": "ffffffff-ffff-ffff-ffff-ffffffffffff"
+}
+
+## WorkshopExpenses/WorkshopExpenseGetResponseExample -> WorkshopExpenseGetResponse
+{
+  "id": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+  "workshopId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "amountPerUnit": 1500,
+  "effectiveFrom": "2025-01-01T00:00:00"
+}
+
+## WorkshopExpenses/WorkshopExpensesListResponseExample -> IEnumerable`1
+[
+  {
+    "id": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+    "workshopId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "workshop": "\u041A\u0440\u043E\u0439",
+    "amountPerUnit": 1500,
+    "effectiveFrom": "2025-01-01T00:00:00"
+  },
+  {
+    "id": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee",
+    "workshopId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+    "workshop": "\u041F\u043E\u0448\u0438\u0432",
+    "amountPerUnit": 2200,
+    "effectiveFrom": "2025-02-01T00:00:00",
+    "effectiveTo": "2025-12-31T00:00:00"
+  }
+]
+
+## WorkshopExpenses/WorkshopExpenseUpdateRequestExample -> WorkshopExpenseUpdateRequest
+{
+  "workshopId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "amountPerUnit": 2200,
+  "effectiveFrom": "2025-02-01T00:00:00",
+  "effectiveTo": "2025-12-31T00:00:00"
+}
+
+## WorkshopExpenses/WorkshopExpenseUpdateResponseExample -> WorkshopExpenseUpdateResponse
+{
+  "id": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"
+}
+
+## Workshops/WorkshopCreateRequestExample -> WorkshopCreateRequest
+{
+  "name": "\u0426\u0435\u0445 \u043B\u0430\u0437\u0435\u0440\u043D\u043E\u0439 \u0440\u0435\u0437\u043A\u0438",
+  "type": 0,
+  "status": 0
+}
+
+## Workshops/WorkshopCreateResponseExample -> WorkshopCreateResponse
+{
+  "id": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+  "status": 0
+}
+
+## Workshops/WorkshopGetResponseExample -> WorkshopGetResponse
+{
+  "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "name": "\u041A\u0440\u043E\u0439",
+  "type": 0,
+  "status": 0
+}
+
+## Workshops/WorkshopsListResponseExample -> IEnumerable`1
+[
+  {
+    "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "name": "\u041A\u0440\u043E\u0439",
+    "type": 0,
+    "status": 0
+  },
+  {
+    "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+    "name": "\u041F\u043E\u0448\u0438\u0432",
+    "type": 1,
+    "status": 0
+  },
+  {
+    "id": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+    "name": "\u0423\u043F\u0430\u043A\u043E\u0432\u043A\u0430",
+    "type": 3,
+    "status": 1
+  }
+]
+
+## Workshops/WorkshopUpdateRequestExample -> WorkshopUpdateRequest
+{
+  "name": "\u041F\u043E\u0448\u0438\u0432",
+  "type": 1,
+  "status": 0
+}
+
+## Workshops/WorkshopUpdateResponseExample -> WorkshopUpdateResponse
+{
+  "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "status": 0
+}
+
