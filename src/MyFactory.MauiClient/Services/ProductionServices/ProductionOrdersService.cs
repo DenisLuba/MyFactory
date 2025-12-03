@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Net.Http.Json;
 using MyFactory.MauiClient.Models.Production.MaterialTransfers;
 using MyFactory.MauiClient.Models.Production.ProductionOrders;
@@ -9,14 +11,23 @@ public class ProductionOrdersService(HttpClient httpClient) : IProductionOrdersS
     private readonly HttpClient _httpClient = httpClient;
 
     public async Task<IReadOnlyList<ProductionOrderListResponse>?> GetListAsync()
-        => await _httpClient.GetFromJsonAsync<IReadOnlyList<ProductionOrderListResponse>>("api/production-orders");
+    {
+        IReadOnlyList<ProductionOrderListResponse>? orders = await _httpClient.GetFromJsonAsync<List<ProductionOrderListResponse>>("api/production-orders");
+        return orders ?? Array.Empty<ProductionOrderListResponse>();
+    }
 
     public async Task<ProductionOrderCardResponse?> GetByIdAsync(Guid orderId)
         => await _httpClient.GetFromJsonAsync<ProductionOrderCardResponse>($"api/production-orders/{orderId}");
 
     public async Task<IReadOnlyList<MaterialTransferItemDto>?> GetMaterialTransfersAsync(Guid orderId)
-        => await _httpClient.GetFromJsonAsync<IReadOnlyList<MaterialTransferItemDto>>($"api/production-orders/{orderId}/material-transfers");
+    {
+        IReadOnlyList<MaterialTransferItemDto>? transfers = await _httpClient.GetFromJsonAsync<List<MaterialTransferItemDto>>($"api/production-orders/{orderId}/material-transfers");
+        return transfers ?? Array.Empty<MaterialTransferItemDto>();
+    }
 
     public async Task<IReadOnlyList<StageDistributionItem>?> GetStageDistributionAsync(Guid orderId)
-        => await _httpClient.GetFromJsonAsync<IReadOnlyList<StageDistributionItem>>($"api/production-orders/{orderId}/stage-distribution");
+    {
+        IReadOnlyList<StageDistributionItem>? stages = await _httpClient.GetFromJsonAsync<List<StageDistributionItem>>($"api/production-orders/{orderId}/stage-distribution");
+        return stages ?? Array.Empty<StageDistributionItem>();
+    }
 }

@@ -14,7 +14,7 @@
                 SelectionMode="Single"
                 SelectionChanged="OnOrderSelectionChanged">
                 <CollectionView.Header>
-                    <Grid ColumnDefinitions="Auto,2*,Auto,Auto,Auto,Auto" Padding="0,0,0,6">
+                    <Grid ColumnDefinitions="Auto,2*,Auto,Auto,Auto,Auto" Padding="0,0,0,6" ColumnSpacing="16">
                         <Label Text="Заказ" FontAttributes="Bold" />
                         <Label Text="Изделие" Grid.Column="1" FontAttributes="Bold" />
                         <Label Text="Кол-во" Grid.Column="2" FontAttributes="Bold" HorizontalTextAlignment="End" />
@@ -25,7 +25,7 @@
                 </CollectionView.Header>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid ColumnDefinitions="Auto,2*,Auto,Auto,Auto,Auto" Padding="0,4">
+                        <Grid ColumnDefinitions="Auto,2*,Auto,Auto,Auto,Auto" ColumnSpacing="16" Padding="0,4">
                             <Label Text="{Binding OrderNumber}" />
                             <Label Text="{Binding ProductName}" Grid.Column="1" />
                             <Label Text="{Binding Quantity}" Grid.Column="2" HorizontalTextAlignment="End" />

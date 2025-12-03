@@ -1,4 +1,5 @@
-﻿using MyFactory.MauiClient.Pages.FinishedGoods.Receipt;
+﻿using MyFactory.MauiClient.Pages.Finance.Overheads;
+using MyFactory.MauiClient.Pages.FinishedGoods.Receipt;
 using MyFactory.MauiClient.Pages.FinishedGoods.Returns;
 using MyFactory.MauiClient.Pages.FinishedGoods.Shipment;
 using MyFactory.MauiClient.Pages.Reference.Employees;
@@ -20,5 +21,6 @@ public partial class AppShell : Shell
 		Routing.RegisterRoute(nameof(WorkshopCardPage), typeof(WorkshopCardPage));
 		Routing.RegisterRoute(nameof(WorkshopExpensesTablePage), typeof(WorkshopExpensesTablePage));
 		Routing.RegisterRoute(nameof(WorkshopExpenseCardPage), typeof(WorkshopExpenseCardPage));
+		Routing.RegisterRoute(nameof(OverheadCardPage), typeof(OverheadCardPage));
 	}
 }

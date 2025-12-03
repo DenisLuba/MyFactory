@@ -3,6 +3,7 @@
     x:Class="MyFactory.MauiClient.Pages.Reference.Workshops.WorkshopsTablePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:MyFactory.MauiClient.Models.Workshops"
     xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Reference.Workshops"
     x:DataType="view_model:WorkshopsTablePageViewModel"
     Title="Цеха">
@@ -34,7 +35,7 @@
                     TextColor="{AppThemeBinding Light=#6B7280, Dark=#9CA3AF}" />
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="models:WorkshopsListResponse">
                     <Border Style="{StaticResource CardBorderStyle}">
                         <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="12">
                             <Label FontAttributes="Bold" FontSize="18" Text="{Binding Name}" />
@@ -53,7 +54,9 @@
                             <Label Grid.Row="2" Grid.Column="1" Text="{Binding Id}" FontSize="12" HorizontalTextAlignment="End" />
                         </Grid>
                         <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type view_model:WorkshopsTablePageViewModel}}, Path=OpenCardCommand}" CommandParameter="{Binding .}" />
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenCardCommand}"
+                                CommandParameter="{Binding .}" />
                         </Border.GestureRecognizers>
                     </Border>
                 </DataTemplate>

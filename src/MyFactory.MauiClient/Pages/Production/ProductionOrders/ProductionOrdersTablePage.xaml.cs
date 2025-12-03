@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using MyFactory.MauiClient.Models.Production.ProductionOrders;
 using MyFactory.MauiClient.ViewModels.Production.ProductionOrders;
 
@@ -18,6 +19,21 @@ public partial class ProductionOrdersTablePage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        TriggerLoad();
+    }
+
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        base.OnNavigatedTo(args);
+        TriggerLoad();
+    }
+
+    private void TriggerLoad()
+    {
+        if (_viewModel.IsBusy)
+        {
+            return;
+        }
 
         if (_viewModel.LoadCommand.CanExecute(null))
         {

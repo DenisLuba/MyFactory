@@ -79,10 +79,13 @@
                                     Text="{Binding Unit, StringFormat='Ед.: {0}'}"
                                     TextColor="{DynamicResource Gray500}" />
 
-                                <StackLayout Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="12">
+                                <Grid Grid.Row="2" Grid.ColumnSpan="2" ColumnDefinitions="*,Auto" ColumnSpacing="12">
                                     <Label Text="{Binding Type}" />
-                                    <Label Text="{Binding LastPrice, StringFormat='Цена: {0:N2} ₽'}" />
-                                </StackLayout>
+                                    <Label
+                                        Grid.Column="1"
+                                        HorizontalTextAlignment="End"
+                                        Text="{Binding LastPrice, StringFormat='Цена: {0:N2} ₽'}" />
+                                </Grid>
                             </Grid>
                         </Border>
                     </DataTemplate>

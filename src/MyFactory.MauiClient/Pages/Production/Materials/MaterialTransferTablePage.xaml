@@ -37,44 +37,43 @@
         </VerticalStackLayout>
 
         <RefreshView Grid.Row="1" Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy}">
-            <Grid>
-                <CollectionView
-                    Margin="0,8,0,0"
-                    ItemsSource="{Binding Transfers}"
-                    SelectionMode="Single"
-                    SelectionChanged="OnTransferSelectionChanged">
-                    <CollectionView.Header>
-                        <Grid ColumnDefinitions="*,*,*,*,*" Padding="0,0,0,4">
-                            <Label Text="Документ" FontAttributes="Bold" />
-                            <Label Text="Дата" Grid.Column="1" FontAttributes="Bold" />
-                            <Label Text="Заказ" Grid.Column="2" FontAttributes="Bold" />
-                            <Label Text="Склад" Grid.Column="3" FontAttributes="Bold" />
-                            <Label Text="Сумма" Grid.Column="4" FontAttributes="Bold" HorizontalTextAlignment="End" />
+            <CollectionView
+                Margin="0,8,0,0"
+                ItemsSource="{Binding Transfers}"
+                SelectionMode="Single"
+                SelectionChanged="OnTransferSelectionChanged">
+                <CollectionView.EmptyView>
+                    <Label
+                        Margin="0,16,0,0"
+                        HorizontalOptions="Center"
+                        Text="Документы не найдены"
+                        TextColor="{DynamicResource Gray500}"
+                        VerticalOptions="Start" />
+                </CollectionView.EmptyView>
+                <CollectionView.Header>
+                    <Grid ColumnDefinitions="*,*,*,*,*" Padding="0,0,0,4">
+                        <Label Text="Документ" FontAttributes="Bold" />
+                        <Label Text="Дата" Grid.Column="1" FontAttributes="Bold" />
+                        <Label Text="Заказ" Grid.Column="2" FontAttributes="Bold" />
+                        <Label Text="Склад" Grid.Column="3" FontAttributes="Bold" />
+                        <Label Text="Сумма" Grid.Column="4" FontAttributes="Bold" HorizontalTextAlignment="End" />
+                    </Grid>
+                </CollectionView.Header>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="*,*,*,*,*" Padding="0,4">
+                            <Label Text="{Binding DocumentNumber}" />
+                            <Label Text="{Binding Date, StringFormat='{}{0:dd.MM.yyyy}'}" Grid.Column="1" />
+                            <Label Text="{Binding ProductionOrder}" Grid.Column="2" />
+                            <Label Text="{Binding Warehouse}" Grid.Column="3" />
+                            <Label
+                                Text="{Binding TotalAmount, StringFormat='{}{0:N0} ₽'}"
+                                Grid.Column="4"
+                                HorizontalTextAlignment="End" />
                         </Grid>
-                    </CollectionView.Header>
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid ColumnDefinitions="*,*,*,*,*" Padding="0,4">
-                                <Label Text="{Binding DocumentNumber}" />
-                                <Label Text="{Binding Date, StringFormat='{}{0:dd.MM.yyyy}'}" Grid.Column="1" />
-                                <Label Text="{Binding ProductionOrder}" Grid.Column="2" />
-                                <Label Text="{Binding Warehouse}" Grid.Column="3" />
-                                <Label
-                                    Text="{Binding TotalAmount, StringFormat='{}{0:N0} ₽'}"
-                                    Grid.Column="4"
-                                    HorizontalTextAlignment="End" />
-                            </Grid>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-
-                <Label
-                    Margin="0,16,0,0"
-                    Text="Документы не найдены"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Start"
-                    IsVisible="{Binding HasNoTransfers}" />
-            </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </RefreshView>
     </Grid>
 </ContentPage>

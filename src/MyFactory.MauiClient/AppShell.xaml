@@ -25,7 +25,7 @@
 	xmlns:workshops="clr-namespace:MyFactory.MauiClient.Pages.Reference.Workshops">
 
 	<!--  ========== МОДУЛЬ 1: Справочники ==========  -->
-	<FlyoutItem Title="Справочники" FlyoutDisplayOptions="AsMultipleItems">
+	<FlyoutItem Title="Справочники">
 		<ShellContent Title="Материалы" ContentTemplate="{DataTemplate materials:MaterialsTablePage}" />
 		<ShellContent Title="Изделия (справочник)" ContentTemplate="{DataTemplate products:ProductsTablePage}" />
 		<ShellContent Title="Операции" ContentTemplate="{DataTemplate operations:OperationsTablePage}" />

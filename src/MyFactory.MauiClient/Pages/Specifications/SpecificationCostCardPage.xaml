@@ -25,7 +25,7 @@
     <ScrollView>
         <VerticalStackLayout Padding="16" Spacing="16">
             <Border Style="{StaticResource CostBorderStyle}">
-                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="12" ColumnSpacing="12">
+                <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="12" ColumnSpacing="12">
                     <Label Grid.ColumnSpan="2" FontAttributes="Bold" Text="Параметры расчёта" />
 
                     <VerticalStackLayout>
@@ -42,7 +42,7 @@
                         <DatePicker Date="{Binding AsOfDate}" />
                     </VerticalStackLayout>
 
-                    <HorizontalStackLayout Grid.Row="1" Grid.ColumnSpan="2" Spacing="12" HorizontalOptions="End">
+                    <HorizontalStackLayout Grid.Row="2" Grid.ColumnSpan="2" Spacing="12" HorizontalOptions="End">
                         <Button Text="Обновить список" Command="{Binding LoadSpecificationsCommand}" />
                         <Button Text="Рассчитать" Command="{Binding RefreshCostCommand}">
                             <Button.Triggers>

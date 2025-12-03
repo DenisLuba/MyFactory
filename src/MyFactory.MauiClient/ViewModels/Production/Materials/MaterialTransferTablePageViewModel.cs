@@ -30,8 +30,6 @@ public partial class MaterialTransferTablePageViewModel : ObservableObject
 	[ObservableProperty]
 	private bool hasTransfers;
 
-	public bool HasNoTransfers => !HasTransfers;
-
 	[ObservableProperty]
 	private string? warehouseFilter;
 
@@ -154,5 +152,4 @@ public partial class MaterialTransferTablePageViewModel : ObservableObject
 
 	partial void OnIsDateFilterActiveChanged(bool value) => ApplyFilters();
 
-	partial void OnHasTransfersChanged(bool value) => OnPropertyChanged(nameof(HasNoTransfers));
 }
