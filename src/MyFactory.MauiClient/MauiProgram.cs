@@ -9,6 +9,7 @@ using MyFactory.MauiClient.Pages.Reference.Materials;
 using MyFactory.MauiClient.Pages.Reference.Operations;
 using MyFactory.MauiClient.Pages.Reference.Products;
 using MyFactory.MauiClient.Pages.Reference.Settings;
+using MyFactory.MauiClient.Pages.Reference.Warehouses;
 using MyFactory.MauiClient.Pages.Reference.Workshops;
 using MyFactory.MauiClient.Pages.Specifications;
 using MyFactory.MauiClient.Pages.Warehouse.Materials;
@@ -23,6 +24,7 @@ using MyFactory.MauiClient.Services.SuppliersServices;
 using MyFactory.MauiClient.Services.ReturnsServices;
 using MyFactory.MauiClient.Services.SettingsServices;
 using MyFactory.MauiClient.Services.WarehouseMaterialsServices;
+using MyFactory.MauiClient.Services.WarehousesServices;
 using MyFactory.MauiClient.Services.WorkshopExpensesServices;
 using MyFactory.MauiClient.Services.WorkshopsServices;
 using MyFactory.MauiClient.Services.SpecificationsServices;
@@ -32,6 +34,7 @@ using MyFactory.MauiClient.ViewModels.Reference.Materials;
 using MyFactory.MauiClient.ViewModels.Reference.Operations;
 using MyFactory.MauiClient.ViewModels.Reference.Products;
 using MyFactory.MauiClient.ViewModels.Reference.Settings;
+using MyFactory.MauiClient.ViewModels.Reference.Warehouses;
 using MyFactory.MauiClient.ViewModels.Reference.Workshops;
 using MyFactory.MauiClient.ViewModels.Specifications;
 using MyFactory.MauiClient.ViewModels.Warehouse.Materials;
@@ -41,23 +44,38 @@ namespace MyFactory.MauiClient;
 
 public static class MauiProgram
 {
+#region CreateMauiApp Method
 	public static MauiApp CreateMauiApp()
 	{
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
-            .UseMauiCommunityToolkit()
-            .ConfigureFonts(fonts =>
+			.UseMauiCommunityToolkit()
+			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-			});
+			})
+			.AddMyFactoryServices()
+			.AddViewModelsServices()
+			.AddPagesServices();
 
 		builder.Services.AddSingleton(_ => new HttpClient
 		{
-			BaseAddress = new Uri("https://localhost:5001")
+			BaseAddress = new Uri("http://localhost:5237")
 		});
 
+#if DEBUG
+		builder.Logging.AddDebug();
+		builder.Logging.AddConsole();
+#endif
+		return builder.Build();
+	} 
+#endregion
+
+#region AddMyFactoryServices Method
+	private static MauiAppBuilder AddMyFactoryServices(this MauiAppBuilder builder)
+	{
 		builder.Services.AddSingleton<IEmployeesService, EmployeesService>();
 		builder.Services.AddSingleton<IMaterialsService, MaterialsService>();
 		builder.Services.AddSingleton<IOperationsService, OperationsService>();
@@ -69,6 +87,18 @@ public static class MauiProgram
 		builder.Services.AddSingleton<IWarehouseMaterialsService, WarehouseMaterialsService>();
 		builder.Services.AddSingleton<IPurchasesService, PurchasesService>();
 		builder.Services.AddSingleton<ISuppliersService, SuppliersService>();
+		builder.Services.AddSingleton<ISpecificationsService, SpecificationsService>();
+		builder.Services.AddSingleton<IWarehousesService, WarehousesService>();
+		builder.Services.AddSingleton<IReturnLookupService, ReturnLookupService>();
+		builder.Services.AddSingleton<IReturnsService, ReturnsService>();
+
+		return builder;
+	}
+#endregion
+
+#region AddViewModelsServices Method
+	private static MauiAppBuilder AddViewModelsServices(this MauiAppBuilder builder)
+	{
 		builder.Services.AddTransient<EmployeesTablePageViewModel>();
 		builder.Services.AddTransient<EmployeeCardPageViewModel>();
 		builder.Services.AddTransient<MaterialsTablePageViewModel>();
@@ -99,6 +129,20 @@ public static class MauiProgram
 		builder.Services.AddTransient<PurchaseRequestsTablePageViewModel>();
 		builder.Services.AddTransient<PurchaseRequestCardPageViewModel>();
 		builder.Services.AddTransient<PurchaseRequestLineEditorViewModel>();
+		builder.Services.AddTransient<ReturnsTablePageViewModel>();
+		builder.Services.AddTransient<ReturnCardPageViewModel>();
+		builder.Services.AddTransient<WarehousesTablePageViewModel>();
+		builder.Services.AddTransient<WarehouseCardPageViewModel>();
+
+		return builder;
+	}
+#endregion
+
+#region AddPagesServices Method
+	private static MauiAppBuilder AddPagesServices(this MauiAppBuilder builder)
+	{
+		builder.Services.AddTransient<ReturnsTablePage>();
+		builder.Services.AddTransient<ReturnCardPage>();
 		builder.Services.AddTransient<EmployeesTablePage>();
 		builder.Services.AddTransient<EmployeeCardPage>();
 		builder.Services.AddTransient<MaterialsTablePage>();
@@ -129,19 +173,10 @@ public static class MauiProgram
 		builder.Services.AddTransient<PurchaseRequestsTablePage>();
 		builder.Services.AddTransient<PurchaseRequestCardPage>();
 		builder.Services.AddTransient<PurchaseRequestLineEditorModal>();
+		builder.Services.AddTransient<WarehousesTablePage>();
+		builder.Services.AddTransient<WarehouseCardPage>();
 
-		builder.Services.AddSingleton<ISpecificationsService, SpecificationsService>();
-		builder.Services.AddSingleton<IReturnLookupService, ReturnLookupService>();
-		builder.Services.AddSingleton<IReturnsService, ReturnsService>();
-		builder.Services.AddTransient<ReturnsTablePageViewModel>();
-		builder.Services.AddTransient<ReturnCardPageViewModel>();
-		builder.Services.AddTransient<ReturnsTablePage>();
-		builder.Services.AddTransient<ReturnCardPage>();
-
-#if DEBUG
-		builder.Logging.AddDebug();
-#endif
-
-		return builder.Build();
+		return builder;
 	}
+#endregion
 }

@@ -12,7 +12,7 @@
 
         <VerticalStackLayout Spacing="6">
             <Label Text="Фильтры" FontAttributes="Bold" />
-            <Grid ColumnDefinitions="* Auto" ColumnSpacing="8">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                 <Entry
                     Grid.Column="0"
                     Placeholder="Должность или роль"

@@ -1,4 +1,7 @@
-﻿using Microsoft.UI.Xaml;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using Microsoft.UI.Xaml;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -17,6 +20,27 @@ public partial class App : MauiWinUIApplication
 	public App()
 	{
 		this.InitializeComponent();
+		UnhandledException += OnUnhandledException;
+	}
+
+	private static readonly string WinUiLogPath = Path.Combine(AppContext.BaseDirectory, "winui-errors.log");
+
+	private static void OnUnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+	{
+		var message = $"{DateTime.Now:O} {e.Exception}";
+		try
+		{
+			File.AppendAllText(WinUiLogPath, message + Environment.NewLine);
+		}
+		catch (Exception logError)
+		{
+			Debug.WriteLine($"Failed to write WinUI error log: {logError}");
+		}
+
+		Trace.WriteLine(message);
+		Trace.WriteLine("WinUI Unhandled Exception: " + e.Exception);
+		// keep the crash visible to highlight the faulty screen but make the reason discoverable
+		e.Handled = false;
 	}
 
 	protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
