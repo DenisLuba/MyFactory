@@ -1,0 +1,398 @@
+%% --------------------
+    %% Users & Roles
+    USERS {
+        uuid id PK
+        string username
+        string email
+        string password_hash
+        uuid role_id FK
+        bool is_active
+        timestamp created_at
+    }
+    ROLES {
+        uuid id PK
+        string name
+    }
+
+    %% --------------------
+    %% Employees & Time/Payroll
+    EMPLOYEES {
+        uuid id PK
+        string full_name
+        string position
+        int grade
+        numeric rate_per_norm_hour
+        numeric premium_percent
+        bool is_active
+    }
+    TIMESHEETENTRIES {
+        uuid id PK
+        uuid employee_id FK
+        date work_date
+        numeric hours
+        string status
+    }
+    PAYROLLENTRIES {
+        uuid id PK
+        uuid employee_id FK
+        date period_start
+        date period_end
+        numeric accrued_amount
+        numeric paid_amount
+        numeric outstanding
+    }
+
+    %% --------------------
+    %% Materials, Suppliers, Pricing
+    MATERIALTYPES {
+        uuid id PK
+        string name
+    }
+    MATERIALS {
+        uuid id PK
+        string name
+        uuid material_type_id FK
+        string unit
+        bool is_active
+    }
+    SUPPLIERS {
+        uuid id PK
+        string name
+        string contact
+    }
+    MATERIALPRICEHISTORY {
+        uuid id PK
+        uuid material_id FK
+        uuid supplier_id FK
+        numeric price
+        date effective_from
+        date effective_to
+        string doc_ref
+    }
+
+    %% --------------------
+    %% Operations & Workshops & Workshop expenses
+    OPERATIONS {
+        uuid id PK
+        string code
+        string name
+        numeric default_time_min
+        numeric default_cost
+        string type
+    }
+    WORKSHOPS {
+        uuid id PK
+        string name
+        string type
+    }
+    WORKSHOPEXPENSEHISTORY {
+        uuid id PK
+        uuid workshop_id FK
+        uuid specification_id FK
+        numeric amount_per_unit
+        date effective_from
+        date effective_to
+    }
+
+    %% --------------------
+    %% Specifications & BOM & Spec operations
+    SPECIFICATIONS {
+        uuid id PK
+        string sku
+        string name
+        string description
+        numeric plan_per_hour
+        string status
+        int version
+    }
+    SPECIFICATIONBOM {
+        uuid id PK
+        uuid specification_id FK
+        uuid material_id FK
+        numeric qty_per_unit
+        string unit
+    }
+    SPECIFICATIONOPERATIONS {
+        uuid id PK
+        uuid specification_id FK
+        uuid operation_id FK
+        numeric time_minutes
+        numeric operation_cost
+        uuid workshop_id FK
+    }
+
+    %% --------------------
+    %% Warehouses & Inventory & Receipts
+    WAREHOUSES {
+        uuid id PK
+        string name
+        string type
+        string location
+    }
+    INVENTORY {
+        uuid id PK
+        uuid material_id FK
+        uuid warehouse_id FK
+        numeric quantity
+        numeric avg_price
+        numeric reserved_qty
+    }
+    INVENTORYRECEIPTS {
+        uuid id PK
+        string receipt_number
+        date receipt_date
+        uuid supplier_id FK
+        numeric total_amount
+        string status
+    }
+    INVENTORYRECEIPTITEMS {
+        uuid id PK
+        uuid receipt_id FK
+        uuid material_id FK
+        numeric quantity
+        numeric price
+    }
+    PURCHASEREQUESTS {
+        uuid id PK
+        string pr_number
+        date created_at
+        string status
+    }
+    PURCHASEREQUESTITEMS {
+        uuid id PK
+        uuid purchase_request_id FK
+        uuid material_id FK
+        numeric qty_required
+    }
+
+    %% --------------------
+    %% Production Orders, allocation, stages, assignments
+    PRODUCTIONORDERS {
+        uuid id PK
+        string order_number
+        uuid specification_id FK
+        numeric qty_ordered
+        string status
+        date created_at
+    }
+    PRODUCTIONORDERALLOCATION {
+        uuid id PK
+        uuid production_order_id FK
+        uuid workshop_id FK
+        numeric qty_allocated
+    }
+    PRODUCTIONSTAGES {
+        uuid id PK
+        uuid production_order_id FK
+        uuid workshop_id FK
+        string stage_type
+        numeric qty_in
+        numeric qty_out
+        date recorded_at
+    }
+    WORKERASSIGNMENTS {
+        uuid id PK
+        uuid stage_id FK
+        uuid employee_id FK
+        numeric qty_assigned
+        numeric qty_completed
+    }
+
+    %% --------------------
+    %% Shifts and shift results
+    SHIFTPLANS {
+        uuid id PK
+        uuid employee_id FK
+        uuid specification_id FK
+        date shift_date
+        string shift_type
+        numeric planned_qty
+    }
+    SHIFTRESULTS {
+        uuid id PK
+        uuid shift_plan_id FK
+        numeric actual_qty
+        numeric hours_worked
+        date recorded_at
+    }
+
+    %% --------------------
+    %% Finished goods, movements, shipments, returns, customers
+    FINISHEDGOODSINVENTORY {
+        uuid id PK
+        uuid specification_id FK
+        uuid warehouse_id FK
+        numeric quantity
+        numeric unit_cost
+        date updated_at
+    }
+    FINISHEDGOODSMOVEMENTS {
+        uuid id PK
+        uuid from_warehouse_id FK
+        uuid to_warehouse_id FK
+        uuid specification_id FK
+        numeric qty
+        date moved_at
+    }
+    CUSTOMERS {
+        uuid id PK
+        string name
+        string contact
+    }
+    SHIPMENTS {
+        uuid id PK
+        string shipment_number
+        date date
+        uuid customer_id FK
+        numeric total_amount
+        string status
+    }
+    SHIPMENTITEMS {
+        uuid id PK
+        uuid shipment_id FK
+        uuid specification_id FK
+        numeric qty
+        numeric unit_price
+    }
+    RETURNS {
+        uuid id PK
+        string return_number
+        uuid customer_id FK
+        date date
+        string reason
+        string status
+    }
+    RETURNITEMS {
+        uuid id PK
+        uuid return_id FK
+        uuid specification_id FK
+        numeric qty
+        string disposition
+    }
+
+    %% --------------------
+    %% Advances / Reports (petty cash)
+    ADVANCES {
+        uuid id PK
+        uuid employee_id FK
+        numeric amount
+        date issued_at
+        string status
+    }
+    ADVANCE_REPORTS {
+        uuid id PK
+        uuid advance_id FK
+        string description
+        numeric amount
+        uuid file_id FK
+        date spent_at
+    }
+
+    %% --------------------
+    %% Expenses & Finance & Reports
+    EXPENSETYPES {
+        uuid id PK
+        string name
+        string category
+    }
+    OVERHEADMONTHLY {
+        uuid id PK
+        int period_month
+        int period_year
+        uuid expense_type_id FK
+        numeric amount
+        string notes
+    }
+    REVENUEREPORT {
+        uuid id PK
+        int period_month
+        int period_year
+        uuid specification_id FK
+        numeric qty
+        numeric unit_price
+        numeric total_revenue
+        bool is_paid
+        date payment_date
+    }
+    PRODUCTIONCOSTFACT {
+        uuid id PK
+        int period_month
+        int period_year
+        uuid specification_id FK
+        numeric qty_produced
+        numeric material_cost
+        numeric labor_cost
+        numeric overhead_cost
+        numeric total_cost
+    }
+    MONTHLYPROFIT {
+        uuid id PK
+        int period_month
+        int period_year
+        numeric revenue
+        numeric production_cost
+        numeric overhead
+        numeric profit
+    }
+
+    %% --------------------
+    %% Files / FileResources
+    FILES {
+        uuid id PK
+        string filename
+        string path
+        string content_type
+        bigint size
+        uuid uploaded_by FK
+        date uploaded_at
+    }
+
+    %% --------------------
+    %% Relationships
+    USERS }o--|| ROLES : has_role
+
+    EMPLOYEES ||--o{ TIMESHEETENTRIES : timesheet_of
+    EMPLOYEES ||--o{ PAYROLLENTRIES : payroll_of
+
+    MATERIALS }o--|| MATERIALTYPES : has_type
+    MATERIALS ||--o{ MATERIALPRICEHISTORY : has_price
+    SUPPLIERS ||--o{ MATERIALPRICEHISTORY : supplies
+
+    OPERATIONS ||--o{ SPECIFICATIONOPERATIONS : op_used
+    WORKSHOPS ||--o{ WORKSHOPEXPENSEHISTORY : cost_history
+    SPECIFICATIONS ||--o{ WORKSHOPEXPENSEHISTORY : affects
+
+    SPECIFICATIONS ||--o{ SPECIFICATIONBOM : has_bom
+    SPECIFICATIONS ||--o{ SPECIFICATIONOPERATIONS : has_ops
+
+    INVENTORY ||--o{ INVENTORYRECEIPTITEMS : receipt_items_link
+    INVENTORYRECEIPTS ||--o{ INVENTORYRECEIPTITEMS : contains
+    WAREHOUSES ||--o{ INVENTORY : holds
+    MATERIALS ||--o{ INVENTORY : stored_in
+
+    PURCHASEREQUESTS ||--o{ PURCHASEREQUESTITEMS : contains
+    MATERIALS ||--o{ PURCHASEREQUESTITEMS : pr_for
+
+    PRODUCTIONORDERS ||--o{ PRODUCTIONORDERALLOCATION : alloc
+    PRODUCTIONORDERS ||--o{ PRODUCTIONSTAGES : stages
+    PRODUCTIONSTAGES ||--o{ WORKERASSIGNMENTS : assigned
+    WORKERASSIGNMENTS ||--o{ EMPLOYEES : performed_by
+
+    SHIFTPLANS ||--o{ SHIFTRESULTS : produces
+    SHIFTPLANS }o--|| EMPLOYEES : planned_for
+    SHIFTRESULTS }o--|| EMPLOYEES : result_of
+
+    FINISHEDGOODSINVENTORY ||--o{ FINISHEDGOODSMOVEMENTS : moved
+    WAREHOUSES ||--o{ FINISHEDGOODSMOVEMENTS : from_or_to
+
+    CUSTOMERS ||--o{ SHIPMENTS : orders
+    SHIPMENTS ||--o{ SHIPMENTITEMS : contains
+    RETURNS ||--o{ RETURNITEMS : contains
+
+    ADVANCES ||--o{ ADVANCE_REPORTS : reports_for
+    FILES ||--o{ ADVANCE_REPORTS : attach
+
+    EXPENSETYPES ||--o{ OVERHEADMONTHLY : expense_type
+    SPECIFICATIONS ||--o{ REVENUEREPORT : sold
+    SPECIFICATIONS ||--o{ PRODUCTIONCOSTFACT : cost_fact
+    MONTHLYPROFIT ||--o{ REVENUEREPORT : driven_by
