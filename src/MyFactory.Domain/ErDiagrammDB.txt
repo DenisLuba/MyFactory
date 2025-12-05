@@ -71,15 +71,7 @@
     }
 
     %% --------------------
-    %% Operations & Workshops & Workshop expenses
-    OPERATIONS {
-        uuid id PK
-        string code
-        string name
-        numeric default_time_min
-        numeric default_cost
-        string type
-    }
+    %% Workshops & Workshop expenses
     WORKSHOPS {
         uuid id PK
         string name
@@ -95,15 +87,23 @@
     }
 
     %% --------------------
-    %% Specifications & BOM & Spec operations
+    %% Operations & Specifications & BOM & Spec operations
+    OPERATIONS {
+        uuid id PK
+        string code
+        string name
+        numeric default_time_min
+        numeric default_cost
+        string type
+    }
     SPECIFICATIONS {
         uuid id PK
         string sku
         string name
-        string description
         numeric plan_per_hour
         string status
         int version
+        string description
     }
     SPECIFICATIONBOM {
         uuid id PK
@@ -116,9 +116,9 @@
         uuid id PK
         uuid specification_id FK
         uuid operation_id FK
+        uuid workshop_id FK
         numeric time_minutes
         numeric operation_cost
-        uuid workshop_id FK
     }
 
     %% --------------------
