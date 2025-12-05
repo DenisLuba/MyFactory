@@ -71,9 +71,9 @@ public sealed class ProductionOrder : BaseEntity
         Status = ProductionOrderStatus.Completed;
     }
 
-    public ProductionOrderItem AddItem(Guid specificationVersionId, decimal quantity)
+    public ProductionOrderItem AddItem(Guid specificationId, decimal quantity)
     {
-        var item = new ProductionOrderItem(Id, specificationVersionId, quantity);
+        var item = new ProductionOrderItem(Id, specificationId, quantity);
         _items.Add(item);
         return item;
     }
@@ -87,21 +87,21 @@ public sealed class ProductionOrderItem : BaseEntity
     {
     }
 
-    public ProductionOrderItem(Guid productionOrderId, Guid specificationVersionId, decimal quantity)
+    public ProductionOrderItem(Guid productionOrderId, Guid specificationId, decimal quantity)
     {
         Guard.AgainstEmptyGuid(productionOrderId, nameof(productionOrderId));
-        Guard.AgainstEmptyGuid(specificationVersionId, nameof(specificationVersionId));
+        Guard.AgainstEmptyGuid(specificationId, nameof(specificationId));
         Guard.AgainstNonPositive(quantity, nameof(quantity));
 
         ProductionOrderId = productionOrderId;
-        SpecificationVersionId = specificationVersionId;
+        SpecificationId = specificationId;
         Quantity = quantity;
     }
 
     public Guid ProductionOrderId { get; }
     public ProductionOrder? ProductionOrder { get; private set; }
-    public Guid SpecificationVersionId { get; }
-    public SpecificationVersion? SpecificationVersion { get; private set; }
+    public Guid SpecificationId { get; }
+    public Specification? Specification { get; private set; }
     public decimal Quantity { get; private set; }
     public decimal CompletedQuantity { get; private set; }
     public decimal RemainingQuantity => Quantity - CompletedQuantity;

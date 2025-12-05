@@ -1,87 +1,114 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Materials;
 using MyFactory.Domain.Entities.Operations;
+using MyFactory.Domain.Entities.Workshops;
 
 namespace MyFactory.Domain.Entities.Specifications;
 
 public sealed class Specification : BaseEntity
 {
-    private readonly List<SpecificationVersion> _versions = new();
+    private readonly List<SpecificationBomItem> _bomItems = new();
+    private readonly List<SpecificationOperation> _operations = new();
 
     private Specification()
     {
     }
 
-    public Specification(string code, string name)
+    public Specification(string sku, string name, decimal planPerHour, string status, DateTime createdAt, string? description = null)
     {
-        UpdateCode(code);
-        UpdateName(name);
+        UpdateSku(sku);
+        Rename(name);
+        UpdatePlanPerHour(planPerHour);
+        ChangeStatus(status);
+        UpdateDescription(description);
+        CreatedAt = EnsureCreatedAt(createdAt);
     }
 
-    public string Code { get; private set; } = string.Empty;
+    public string Sku { get; private set; } = string.Empty;
+
     public string Name { get; private set; } = string.Empty;
-    public IReadOnlyCollection<SpecificationVersion> Versions => _versions.AsReadOnly();
 
-    public void UpdateCode(string code)
+    public string? Description { get; private set; }
+
+    public decimal PlanPerHour { get; private set; }
+
+    public string Status { get; private set; } = string.Empty;
+
+    public DateTime CreatedAt { get; private set; }
+
+    public IReadOnlyCollection<SpecificationBomItem> BomItems => _bomItems.AsReadOnly();
+
+    public IReadOnlyCollection<SpecificationOperation> Operations => _operations.AsReadOnly();
+
+    public void UpdateSku(string sku)
     {
-        Guard.AgainstNullOrWhiteSpace(code, "Specification code is required.");
-        Code = code.Trim();
+        Guard.AgainstNullOrWhiteSpace(sku, "Specification SKU is required.");
+        Sku = sku.Trim();
     }
 
-    public void UpdateName(string name)
+    public void Rename(string name)
     {
         Guard.AgainstNullOrWhiteSpace(name, "Specification name is required.");
         Name = name.Trim();
     }
-}
 
-public sealed class SpecificationVersion : BaseEntity
-{
-    private readonly List<SpecificationBomItem> _bomItems = new();
-    private readonly List<SpecificationOperation> _operations = new();
-
-    private SpecificationVersion()
+    public void UpdateDescription(string? description)
     {
+        Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
     }
 
-    public SpecificationVersion(Guid specificationId, string versionNumber, DateTime effectiveFrom)
+    public void UpdatePlanPerHour(decimal planPerHour)
     {
-        Guard.AgainstEmptyGuid(specificationId, nameof(specificationId));
-        Guard.AgainstNullOrWhiteSpace(versionNumber, nameof(versionNumber));
-        Guard.AgainstDefaultDate(effectiveFrom, nameof(effectiveFrom));
-
-        SpecificationId = specificationId;
-        VersionNumber = versionNumber.Trim();
-        EffectiveFrom = effectiveFrom;
+        Guard.AgainstNonPositive(planPerHour, "Plan per hour must be positive.");
+        PlanPerHour = planPerHour;
     }
 
-    public Guid SpecificationId { get; }
-    public Specification? Specification { get; private set; }
-    public string VersionNumber { get; private set; } = string.Empty;
-    public DateTime EffectiveFrom { get; private set; }
-    public DateTime? EffectiveTo { get; private set; }
-    public bool IsReleased { get; private set; }
-    public IReadOnlyCollection<SpecificationBomItem> BomItems => _bomItems.AsReadOnly();
-    public IReadOnlyCollection<SpecificationOperation> Operations => _operations.AsReadOnly();
-
-    public void Release()
+    public void ChangeStatus(string status)
     {
-        if (IsReleased)
+        Guard.AgainstNullOrWhiteSpace(status, "Specification status is required.");
+        Status = status.Trim();
+    }
+
+    public SpecificationBomItem AddBomItem(Guid materialId, decimal quantity, string unit, decimal? unitCost = null)
+    {
+        Guard.AgainstEmptyGuid(materialId, "Material id is required.");
+        Guard.AgainstNonPositive(quantity, "Quantity must be positive.");
+        Guard.AgainstNullOrWhiteSpace(unit, "Unit is required.");
+
+        if (_bomItems.Any(item => item.MaterialId == materialId))
         {
-            throw new DomainException("Specification version already released.");
+            throw new DomainException("Material already exists in BOM.");
         }
 
-        IsReleased = true;
+        var bomItem = new SpecificationBomItem(Id, materialId, quantity, unit, unitCost);
+        _bomItems.Add(bomItem);
+        return bomItem;
     }
 
-    public void SetEffectiveTo(DateTime effectiveTo)
+    public SpecificationOperation AddOperation(Guid operationId, Guid workshopId, decimal timeMinutes, decimal operationCost)
     {
-        if (effectiveTo < EffectiveFrom)
+        Guard.AgainstEmptyGuid(operationId, "Operation id is required.");
+        Guard.AgainstEmptyGuid(workshopId, "Workshop id is required.");
+        Guard.AgainstNonPositive(timeMinutes, "Time minutes must be positive.");
+        Guard.AgainstNonPositive(operationCost, "Operation cost must be positive.");
+
+        if (_operations.Any(item => item.OperationId == operationId && item.WorkshopId == workshopId))
         {
-            throw new DomainException("Effective to date cannot be before effective from.");
+            throw new DomainException("Operation already assigned for this workshop.");
         }
 
-        EffectiveTo = effectiveTo;
+        var operation = new SpecificationOperation(Id, operationId, workshopId, timeMinutes, operationCost);
+        _operations.Add(operation);
+        return operation;
+    }
+
+    private static DateTime EnsureCreatedAt(DateTime createdAt)
+    {
+        Guard.AgainstDefaultDate(createdAt, "Specification creation date is required.");
+        return createdAt;
     }
 }
 
@@ -91,30 +118,48 @@ public sealed class SpecificationBomItem : BaseEntity
     {
     }
 
-    public SpecificationBomItem(Guid specificationVersionId, Guid materialId, decimal quantity, string unit)
+    public SpecificationBomItem(Guid specificationId, Guid materialId, decimal quantity, string unit, decimal? unitCost = null)
     {
-        Guard.AgainstEmptyGuid(specificationVersionId, nameof(specificationVersionId));
-        Guard.AgainstEmptyGuid(materialId, nameof(materialId));
-        Guard.AgainstNonPositive(quantity, nameof(quantity));
-        Guard.AgainstNullOrWhiteSpace(unit, nameof(unit));
+        Guard.AgainstEmptyGuid(specificationId, "Specification id is required.");
+        Guard.AgainstEmptyGuid(materialId, "Material id is required.");
+        Guard.AgainstNonPositive(quantity, "Quantity must be positive.");
+        Guard.AgainstNullOrWhiteSpace(unit, "Unit is required.");
 
-        SpecificationVersionId = specificationVersionId;
+        SpecificationId = specificationId;
         MaterialId = materialId;
         Quantity = quantity;
         Unit = unit.Trim();
+        UpdateUnitCost(unitCost);
     }
 
-    public Guid SpecificationVersionId { get; }
-    public SpecificationVersion? SpecificationVersion { get; private set; }
-    public Guid MaterialId { get; }
+    public Guid SpecificationId { get; private set; }
+
+    public Specification? Specification { get; private set; }
+
+    public Guid MaterialId { get; private set; }
+
     public Material? Material { get; private set; }
+
     public decimal Quantity { get; private set; }
+
     public string Unit { get; private set; } = string.Empty;
+
+    public decimal? UnitCost { get; private set; }
 
     public void UpdateQuantity(decimal quantity)
     {
-        Guard.AgainstNonPositive(quantity, nameof(quantity));
+        Guard.AgainstNonPositive(quantity, "Quantity must be positive.");
         Quantity = quantity;
+    }
+
+    public void UpdateUnitCost(decimal? unitCost)
+    {
+        if (unitCost.HasValue && unitCost.Value <= 0)
+        {
+            throw new DomainException("Unit cost must be positive.");
+        }
+
+        UnitCost = unitCost;
     }
 }
 
@@ -124,41 +169,48 @@ public sealed class SpecificationOperation : BaseEntity
     {
     }
 
-    public SpecificationOperation(Guid specificationVersionId, Guid operationId, int sequence)
+    public SpecificationOperation(Guid specificationId, Guid operationId, Guid workshopId, decimal timeMinutes, decimal operationCost)
     {
-        Guard.AgainstEmptyGuid(specificationVersionId, nameof(specificationVersionId));
-        Guard.AgainstEmptyGuid(operationId, nameof(operationId));
-        if (sequence <= 0)
-        {
-            throw new DomainException("Operation sequence must be positive.");
-        }
+        Guard.AgainstEmptyGuid(specificationId, "Specification id is required.");
+        Guard.AgainstEmptyGuid(operationId, "Operation id is required.");
+        Guard.AgainstEmptyGuid(workshopId, "Workshop id is required.");
+        Guard.AgainstNonPositive(timeMinutes, "Time minutes must be positive.");
+        Guard.AgainstNonPositive(operationCost, "Operation cost must be positive.");
 
-        SpecificationVersionId = specificationVersionId;
+        SpecificationId = specificationId;
         OperationId = operationId;
-        Sequence = sequence;
+        WorkshopId = workshopId;
+        TimeMinutes = timeMinutes;
+        OperationCost = operationCost;
     }
 
-    public Guid SpecificationVersionId { get; }
-    public SpecificationVersion? SpecificationVersion { get; private set; }
-    public Guid OperationId { get; }
+    public Guid SpecificationId { get; private set; }
+
+    public Specification? Specification { get; private set; }
+
+    public Guid OperationId { get; private set; }
+
     public Operation? Operation { get; private set; }
-    public int Sequence { get; private set; }
-    public decimal? OverrideTimeMinutes { get; private set; }
-    public decimal? OverrideCost { get; private set; }
 
-    public void UpdateOverrides(decimal? timeMinutes, decimal? cost)
+    public Guid WorkshopId { get; private set; }
+
+    public Workshop? Workshop { get; private set; }
+
+    public decimal TimeMinutes { get; private set; }
+
+    public decimal OperationCost { get; private set; }
+
+    public void UpdateTime(decimal timeMinutes)
     {
-        if (timeMinutes.HasValue && timeMinutes <= 0)
-        {
-            throw new DomainException("Override time must be positive.");
-        }
-
-        if (cost.HasValue && cost <= 0)
-        {
-            throw new DomainException("Override cost must be positive.");
-        }
-
-        OverrideTimeMinutes = timeMinutes;
-        OverrideCost = cost;
+        Guard.AgainstNonPositive(timeMinutes, "Time minutes must be positive.");
+        TimeMinutes = timeMinutes;
     }
+
+    public void UpdateCost(decimal operationCost)
+    {
+        Guard.AgainstNonPositive(operationCost, "Operation cost must be positive.");
+        OperationCost = operationCost;
+    }
+
+    internal bool Matches(Guid operationId, Guid workshopId) => OperationId == operationId && WorkshopId == workshopId;
 }
