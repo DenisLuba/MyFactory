@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -268,6 +269,7 @@ public partial class ProductCardPageViewModel : ObservableObject
                 using var ms = new MemoryStream();
                 await stream.CopyToAsync(ms);
                 var bytes = ms.ToArray();
+				Trace.WriteLine($"Загружаем файл {fileResult.FileName}, размер {bytes.Length} байт.");
 
                 // Construct upload request. Adjust fields to the UploadFileRequest contract
                 var request = new Models.Files.UploadFileRequest(
@@ -280,10 +282,14 @@ public partial class ProductCardPageViewModel : ObservableObject
                 if (uploadResponse is not null && !string.IsNullOrEmpty(uploadResponse.FileName))
                 {
                     // Add to UI images collection for immediate feedback
-                    Images.Add(ImageSource.FromStream(() => new MemoryStream(bytes)));
-                    ImageCount = Images.Count;
+					await MainThread.InvokeOnMainThreadAsync(() =>
+					{
+						Images.Add(ImageSource.FromStream(() => new MemoryStream(bytes)));
+						ImageCount = Images.Count;
+					});
                 }
             }
+            Trace.WriteLine($"Загружено {result.Count()} изображений.");
         }
         catch (Exception ex)
         {

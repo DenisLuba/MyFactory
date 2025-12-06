@@ -8,17 +8,33 @@
 	Title="{Binding Title}"
 	x:DataType="view_model:ProductCardPageViewModel">
 
-	<ScrollView>
-		<VerticalStackLayout Padding="16" Spacing="12">
-			<ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
 
-			<Grid>
-				<Button
-					Command="{Binding BackCommand}"
-					HorizontalOptions="End"
-					Text="Назад" />
-			</Grid>
-			<Border>
+	<VerticalStackLayout Padding="16" Spacing="12">
+		<ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+		<Grid ColumnDefinitions="Auto, Auto, *" RowDefinitions="Auto, Auto">
+			<Button
+				Command="{Binding StartEditingCommand}"
+				HorizontalOptions="Center"
+				IsEnabled="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
+				IsVisible="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
+				Text="Редактировать" />
+			<Button
+				Command="{Binding SaveCommand}"
+				HorizontalOptions="Center"
+				IsEnabled="{Binding IsEditing}"
+				IsVisible="{Binding IsEditing}"
+				Text="Сохранить" />
+			<Button
+				Grid.Column="2"
+				Command="{Binding BackCommand}"
+				HorizontalOptions="End"
+				Text="Назад" />
+		</Grid>
+
+		<Border>
+			<ScrollView HeightRequest="300">
+
 				<VerticalStackLayout Spacing="10">
 					<Label
 						FontAttributes="Bold"
@@ -38,92 +54,81 @@
 						Placeholder="План/час"
 						Text="{Binding PlanPerHourText}" />
 					<Editor
-						HeightRequest="120"
+						HeightRequest="100"
 						IsReadOnly="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
 						Placeholder="Описание"
 						Text="{Binding Description}" />
 				</VerticalStackLayout>
-			</Border>
+			</ScrollView>
+		</Border>
 
-			<Border>
-				<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-					<!--  Horizontal images list  -->
-					<CollectionView
-						Grid.Column="0"
-						HorizontalScrollBarVisibility="Always"
-						ItemsLayout="HorizontalList"
-						ItemsSource="{Binding Images}">
-						<CollectionView.ItemTemplate>
-							<DataTemplate>
-								<Border
-									Margin="4"
-									Padding="4"
-									Stroke="#DDD"
-									StrokeThickness="1">
+
+		<Grid ColumnDefinitions="*,*" ColumnSpacing="40">
+			<Button
+				Grid.Column="0"
+				Command="{Binding OpenBomCommand}"
+				HorizontalOptions="End"
+				Text="Материалы (BOM)" />
+			<Button
+				Grid.Column="1"
+				Command="{Binding OpenOperationsCommand}"
+				HorizontalOptions="Start"
+				Text="Операции" />
+		</Grid>
+
+		<Border>
+			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+				<!--  Horizontal images list  -->
+				<CollectionView
+					Grid.Column="0"
+					HeightRequest="150"
+					HorizontalScrollBarVisibility="Always"
+					ItemsLayout="HorizontalList"
+					ItemsSource="{Binding Images}"
+					VerticalOptions="Start">
+					<CollectionView.ItemTemplate>
+						<DataTemplate>
+							<VerticalStackLayout>
+								<Label
+									FontSize="10"
+									FormattedText=""
+									HorizontalOptions="Center"
+									Text="{Binding ., StringFormat=' {0}'}" />
+								<Border>
 									<Image
-										Aspect="AspectFill"
-										HeightRequest="120"
+										Aspect="AspectFit"
+										HeightRequest="81"
+										HorizontalOptions="Center"
 										Source="{Binding .}"
-										WidthRequest="120" />
+										VerticalOptions="Center"
+										WidthRequest="80" />
 								</Border>
-							</DataTemplate>
-						</CollectionView.ItemTemplate>
-						<CollectionView.EmptyView>
-							<Label Text="Нет изображений" TextColor="#888" />
-						</CollectionView.EmptyView>
-					</CollectionView>
+							</VerticalStackLayout>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+					<CollectionView.EmptyView>
+						<Label Text="Нет изображений" TextColor="#888" />
+					</CollectionView.EmptyView>
+				</CollectionView>
 
-					<!--  Upload button (visible only when editing)  -->
-					<Border Grid.Column="1">
-						<ImageButton
-							Padding="8"
-							BackgroundColor="Transparent"
-							Command="{Binding UploadImageCommand}"
-							HeightRequest="120"
-							HorizontalOptions="End"
-							IsEnabled="{Binding IsEditing}"
-							IsVisible="{Binding IsEditing}"
-							Source="upload_image.png"
-							VerticalOptions="Start"
-							WidthRequest="120" />
-					</Border>
-
-				</Grid>
-
-			</Border>
-
-			<VerticalStackLayout Spacing="8">
-				<Border>
-					<Grid>
-						<Button
-							Command="{Binding StartEditingCommand}"
-							HorizontalOptions="Center"
-							IsEnabled="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
-							IsVisible="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
-							Text="Редактировать" />
-						<Button
-							Command="{Binding SaveCommand}"
-							HorizontalOptions="Center"
-							IsEnabled="{Binding IsEditing}"
-							IsVisible="{Binding IsEditing}"
-							Text="Сохранить" />
-					</Grid>
+				<!--  Upload button (visible only when editing)  -->
+				<Border Grid.Column="1" IsVisible="{Binding IsEditing}">
+					<ImageButton
+						Padding="8"
+						BackgroundColor="Transparent"
+						Command="{Binding UploadImageCommand}"
+						HeightRequest="80"
+						HorizontalOptions="End"
+						IsEnabled="{Binding IsEditing}"
+						IsVisible="{Binding IsEditing}"
+						Source="upload_image.png"
+						VerticalOptions="Start"
+						WidthRequest="80" />
 				</Border>
-				<Border>
-					<Grid ColumnDefinitions="*,*" ColumnSpacing="40">
-						<Button
-							Grid.Column="0"
-							Command="{Binding OpenBomCommand}"
-							HorizontalOptions="End"
-							Text="Материалы (BOM)" />
-						<Button
-							Grid.Column="1"
-							Command="{Binding OpenOperationsCommand}"
-							HorizontalOptions="Start"
-							Text="Операции" />
-					</Grid>
-				</Border>
-			</VerticalStackLayout>
-		</VerticalStackLayout>
-	</ScrollView>
+			</Grid>
+		</Border>
+
+
+
+	</VerticalStackLayout>
 </ContentPage>
