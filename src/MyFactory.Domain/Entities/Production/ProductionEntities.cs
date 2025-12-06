@@ -49,7 +49,7 @@ public sealed class ProductionOrder : BaseEntity
 
     public ProductionOrderAllocation AllocateWorkshop(Guid workshopId, decimal quantity)
     {
-        EnsurePlanningPhase();
+        EnsureAllocationAllowed();
         Guard.AgainstEmptyGuid(workshopId, nameof(workshopId));
         Guard.AgainstNonPositive(quantity, nameof(quantity));
 
@@ -114,11 +114,11 @@ public sealed class ProductionOrder : BaseEntity
         Status = ProductionOrderStatus.Completed;
     }
 
-    private void EnsurePlanningPhase()
+    private void EnsureAllocationAllowed()
     {
-        if (Status != ProductionOrderStatus.Planned)
+        if (Status != ProductionOrderStatus.Planned && Status != ProductionOrderStatus.InProgress)
         {
-            throw new DomainException("Only planned orders can be modified.");
+            throw new DomainException("Allocations are allowed only for planned or in-progress orders.");
         }
     }
 }
@@ -238,10 +238,19 @@ public sealed class ProductionStage : BaseEntity
         Guard.AgainstNonPositive(quantityAssigned, nameof(quantityAssigned));
         Guard.AgainstDefaultDate(assignedAt, nameof(assignedAt));
 
-        var totalAssigned = _assignments.Sum(a => a.QuantityAssigned);
+        var existingAssignment = _assignments.FirstOrDefault(a => a.EmployeeId == employeeId);
+        var totalAssigned = _assignments
+            .Where(a => existingAssignment is null || a.Id != existingAssignment.Id)
+            .Sum(a => a.QuantityAssigned);
         if (totalAssigned + quantityAssigned > QuantityIn)
         {
             throw new DomainException("Assigned quantity exceeds stage capacity.");
+        }
+
+        if (existingAssignment is not null)
+        {
+            existingAssignment.UpdateAssignedQuantity(quantityAssigned);
+            return existingAssignment;
         }
 
         var assignment = WorkerAssignment.Create(Id, employeeId, quantityAssigned, assignedAt);
@@ -275,14 +284,25 @@ public sealed class WorkerAssignment : BaseEntity
         return new WorkerAssignment(productionStageId, employeeId, quantityAssigned, assignedAt);
     }
 
-    public Guid ProductionStageId { get; }
+    public Guid ProductionStageId { get; private set; }
     public ProductionStage? ProductionStage { get; private set; }
-    public Guid EmployeeId { get; }
+    public Guid EmployeeId { get; private set; }
     public Employee? Employee { get; private set; }
     public decimal QuantityAssigned { get; private set; }
     public decimal? QuantityCompleted { get; private set; }
     public DateTime AssignedAt { get; private set; }
     public WorkerAssignmentStatus Status { get; private set; }
+
+    public void UpdateAssignedQuantity(decimal quantityAssigned)
+    {
+        Guard.AgainstNonPositive(quantityAssigned, nameof(quantityAssigned));
+        if (QuantityCompleted.HasValue && quantityAssigned < QuantityCompleted.Value)
+        {
+            throw new DomainException("Assigned quantity cannot be less than already completed work.");
+        }
+
+        QuantityAssigned = quantityAssigned;
+    }
 
     public void StartWork()
     {

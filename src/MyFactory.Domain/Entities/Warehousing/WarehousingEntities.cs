@@ -267,6 +267,7 @@ public sealed class PurchaseRequest : BaseEntity
     public PurchaseRequestItem AddItem(Guid materialId, decimal quantity)
     {
         EnsureDraft();
+        Guard.AgainstEmptyGuid(materialId, nameof(materialId));
         Guard.AgainstNonPositive(quantity, nameof(quantity));
 
         var existing = _items.FirstOrDefault(item => item.MaterialId == materialId);
@@ -279,6 +280,36 @@ public sealed class PurchaseRequest : BaseEntity
         var item = new PurchaseRequestItem(Id, materialId, quantity);
         _items.Add(item);
         return item;
+    }
+
+    public PurchaseRequestItem UpdateItem(Guid itemId, Guid materialId, decimal quantity)
+    {
+        EnsureDraft();
+        Guard.AgainstEmptyGuid(itemId, nameof(itemId));
+        Guard.AgainstEmptyGuid(materialId, nameof(materialId));
+        Guard.AgainstNonPositive(quantity, nameof(quantity));
+
+        var item = _items.FirstOrDefault(entity => entity.Id == itemId)
+            ?? throw new DomainException("Purchase request item not found.");
+
+        if (_items.Any(entity => entity.Id != itemId && entity.MaterialId == materialId))
+        {
+            throw new DomainException("Material already exists within this purchase request.");
+        }
+
+        item.Update(materialId, quantity);
+        return item;
+    }
+
+    public void RemoveItem(Guid itemId)
+    {
+        EnsureDraft();
+        Guard.AgainstEmptyGuid(itemId, nameof(itemId));
+
+        var item = _items.FirstOrDefault(entity => entity.Id == itemId)
+            ?? throw new DomainException("Purchase request item not found.");
+
+        _items.Remove(item);
     }
 
     public void Submit()
@@ -312,6 +343,16 @@ public sealed class PurchaseRequest : BaseEntity
         Status = PurchaseRequestStatus.Rejected;
     }
 
+    public void Cancel()
+    {
+        if (Status != PurchaseRequestStatus.Draft && Status != PurchaseRequestStatus.Submitted)
+        {
+            throw new DomainException("Only draft or submitted purchase requests can be cancelled.");
+        }
+
+        Status = PurchaseRequestStatus.Cancelled;
+    }
+
     private void EnsureDraft()
     {
         if (Status != PurchaseRequestStatus.Draft)
@@ -343,7 +384,7 @@ public sealed class PurchaseRequestItem : BaseEntity
 
     public Guid PurchaseRequestId { get; }
     public PurchaseRequest? PurchaseRequest { get; private set; }
-    public Guid MaterialId { get; }
+    public Guid MaterialId { get; private set; }
     public Material? Material { get; private set; }
     public decimal Quantity { get; private set; }
 
@@ -352,6 +393,15 @@ public sealed class PurchaseRequestItem : BaseEntity
         Guard.AgainstNonPositive(quantity, nameof(quantity));
         Quantity += quantity;
     }
+
+    public void Update(Guid materialId, decimal quantity)
+    {
+        Guard.AgainstEmptyGuid(materialId, nameof(materialId));
+        Guard.AgainstNonPositive(quantity, nameof(quantity));
+
+        MaterialId = materialId;
+        Quantity = quantity;
+    }
 }
 
 public enum PurchaseRequestStatus
@@ -359,5 +409,6 @@ public enum PurchaseRequestStatus
     Draft = 1,
     Submitted = 2,
     Approved = 3,
-    Rejected = 4
+    Rejected = 4,
+    Cancelled = 5
 }

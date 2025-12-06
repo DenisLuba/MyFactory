@@ -29,9 +29,9 @@ public sealed class ShiftPlan : BaseEntity
 		PlannedQuantity = plannedQuantity;
 	}
 
-	public Guid EmployeeId { get; }
+	public Guid EmployeeId { get; private set; }
 	public Employee? Employee { get; private set; }
-	public Guid SpecificationId { get; }
+	public Guid SpecificationId { get; private set; }
 	public Specification? Specification { get; private set; }
 	public DateOnly ShiftDate { get; private set; }
 	public string ShiftType { get; private set; } = string.Empty;
@@ -80,7 +80,7 @@ public sealed class ShiftResult : BaseEntity
 		RecordedAt = recordedAt;
 	}
 
-	public Guid ShiftPlanId { get; }
+	public Guid ShiftPlanId { get; private set; }
 	public ShiftPlan? ShiftPlan { get; private set; }
 	public decimal ActualQuantity { get; private set; }
 	public decimal HoursWorked { get; private set; }
