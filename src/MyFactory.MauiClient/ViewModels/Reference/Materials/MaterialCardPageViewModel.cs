@@ -9,21 +9,24 @@ using Microsoft.Maui.Controls;
 using MyFactory.MauiClient.Models.Materials;
 using MyFactory.MauiClient.Pages.Reference.Materials;
 using MyFactory.MauiClient.Services.MaterialsServices;
+using MyFactory.MauiClient.Services.SuppliersServices;
 
 namespace MyFactory.MauiClient.ViewModels.Reference.Materials;
 
 public partial class MaterialCardPageViewModel : ObservableObject
 {
 	private readonly IMaterialsService _materialsService;
+	private readonly ISuppliersService _suppliersService;
 
-	public MaterialCardPageViewModel(IMaterialsService materialsService)
+	public MaterialCardPageViewModel(IMaterialsService materialsService, ISuppliersService suppliersService)
 	{
 		_materialsService = materialsService;
+		_suppliersService = suppliersService;
 		LoadMaterialCommand = new AsyncRelayCommand(LoadAsync, CanLoad);
 		AddPriceCommand = new AsyncRelayCommand(OpenAddPriceModalAsync, CanExecutePriceActions);
 	}
 
-	public ObservableCollection<MaterialPriceHistoryItem> PriceHistory { get; } = new();
+	public ObservableCollection<MaterialPriceHistoryItem> PriceHistory { get; } = [];
 
 	[ObservableProperty]
 	private Guid materialId;
@@ -44,6 +47,9 @@ public partial class MaterialCardPageViewModel : ObservableObject
 	private bool isActive;
 
 	[ObservableProperty]
+	private string supplierName = string.Empty;
+
+	[ObservableProperty]
 	private decimal lastPrice;
 
 	[ObservableProperty]
@@ -53,6 +59,7 @@ public partial class MaterialCardPageViewModel : ObservableObject
 	public IAsyncRelayCommand AddPriceCommand { get; }
 
 	public string StatusDisplay => IsActive ? "Активен" : "Неактивен";
+	public string SupplierDisplay => string.IsNullOrWhiteSpace(SupplierName) ? "-" : SupplierName;
 	public string LastPriceDisplay => LastPrice <= 0 ? "-" : $"{LastPrice:N2} ₽";
 	public bool HasPriceHistory => PriceHistory.Count > 0;
 
@@ -76,6 +83,7 @@ public partial class MaterialCardPageViewModel : ObservableObject
 	}
 
 	partial void OnIsActiveChanged(bool value) => OnPropertyChanged(nameof(StatusDisplay));
+	partial void OnSupplierNameChanged(string value) => OnPropertyChanged(nameof(SupplierDisplay));
 	partial void OnLastPriceChanged(decimal value) => OnPropertyChanged(nameof(LastPriceDisplay));
 
 	private bool CanLoad() => !IsBusy && MaterialId != Guid.Empty;
@@ -98,14 +106,15 @@ public partial class MaterialCardPageViewModel : ObservableObject
 				return;
 			}
 
+			UpdatePriceHistory(material.PriceHistory);
+
 			Code = material.Code;
 			Name = material.Name;
 			MaterialType = material.MaterialType;
 			Unit = material.Unit;
 			IsActive = material.IsActive;
-			LastPrice = material.LastPrice;
-
-			UpdatePriceHistory(material.PriceHistory);
+			SupplierName = PriceHistory.OrderByDescending(h => h.EffectiveFrom).FirstOrDefault()?.SupplierName ?? string.Empty;
+			LastPrice = PriceHistory.OrderByDescending(h => h.EffectiveFrom).FirstOrDefault()?.Price ?? 0;
 		}
 		catch (Exception ex)
 		{
@@ -138,7 +147,7 @@ public partial class MaterialCardPageViewModel : ObservableObject
 			return;
 		}
 
-		var modalViewModel = new MaterialPriceAddModalViewModel(_materialsService);
+		var modalViewModel = new MaterialPriceAddModalViewModel(_materialsService, _suppliersService);
 		modalViewModel.Initialize(MaterialId, Code, Name);
 		var modalPage = new MaterialPriceAddModal(modalViewModel);
 

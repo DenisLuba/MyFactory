@@ -31,8 +31,13 @@
             <Border Style="{StaticResource FormBorderStyle}">
                 <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="16">
                     <VerticalStackLayout>
-                        <Label Text="GUID поставщика" FontSize="12" TextColor="{DynamicResource Gray500}" />
-                        <Entry Text="{Binding SupplierIdText}" Placeholder="00000000-0000-0000-0000-000000000000" />
+                        <Label Text="Поставщик" FontSize="12" TextColor="{DynamicResource Gray500}" />
+                        <Picker
+                            ItemsSource="{Binding Suppliers}"
+                            ItemDisplayBinding="{Binding Name}"
+                            SelectedItem="{Binding SelectedSupplier}"
+                            Title="Выберите поставщика"
+                            IsEnabled="{Binding IsSuppliersLoading, Converter={StaticResource InvertedBoolConverter}}" />
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Grid.Row="1">
@@ -47,6 +52,7 @@
                 </Grid>
             </Border>
 
+            <ActivityIndicator IsRunning="{Binding IsSuppliersLoading}" IsVisible="{Binding IsSuppliersLoading}" />
             <ActivityIndicator IsRunning="{Binding IsSubmitting}" IsVisible="{Binding IsSubmitting}" />
 
             <Grid ColumnDefinitions="*,*" ColumnSpacing="12">

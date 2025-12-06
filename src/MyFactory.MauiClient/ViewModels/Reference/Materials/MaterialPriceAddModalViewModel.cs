@@ -1,27 +1,36 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
 using MyFactory.MauiClient.Models.Materials;
+using MyFactory.MauiClient.Models.Suppliers;
 using MyFactory.MauiClient.Services.MaterialsServices;
+using MyFactory.MauiClient.Services.SuppliersServices;
 
 namespace MyFactory.MauiClient.ViewModels.Reference.Materials;
 
 public partial class MaterialPriceAddModalViewModel : ObservableObject
 {
 	private readonly IMaterialsService _materialsService;
+	private readonly ISuppliersService _suppliersService;
 	private readonly TaskCompletionSource<bool> _closingCompletion = new(TaskCreationOptions.RunContinuationsAsynchronously);
+	private bool _suppliersLoaded;
 	private bool _isClosing;
 
-	public MaterialPriceAddModalViewModel(IMaterialsService materialsService)
+	public MaterialPriceAddModalViewModel(IMaterialsService materialsService, ISuppliersService suppliersService)
 	{
 		_materialsService = materialsService;
-		SubmitCommand = new AsyncRelayCommand(SaveAsync, () => !IsSubmitting);
+		_suppliersService = suppliersService;
+		SubmitCommand = new AsyncRelayCommand(SaveAsync, () => !IsSubmitting && !IsSuppliersLoading);
 		CancelCommand = new AsyncRelayCommand(CancelAsync);
 		EffectiveFrom = DateTime.Today;
 	}
+
+	public ObservableCollection<SupplierResponse> Suppliers { get; } = [];
 
 	[ObservableProperty]
 	private Guid materialId;
@@ -33,9 +42,6 @@ public partial class MaterialPriceAddModalViewModel : ObservableObject
 	private string materialName = string.Empty;
 
 	[ObservableProperty]
-	private string supplierIdText = string.Empty;
-
-	[ObservableProperty]
 	private string priceText = string.Empty;
 
 	[ObservableProperty]
@@ -43,6 +49,12 @@ public partial class MaterialPriceAddModalViewModel : ObservableObject
 
 	[ObservableProperty]
 	private bool isSubmitting;
+
+	[ObservableProperty]
+	private SupplierResponse? selectedSupplier;
+
+	[ObservableProperty]
+	private bool isSuppliersLoading;
 
 	public IAsyncRelayCommand SubmitCommand { get; }
 	public IAsyncRelayCommand CancelCommand { get; }
@@ -52,9 +64,21 @@ public partial class MaterialPriceAddModalViewModel : ObservableObject
 		MaterialId = materialId;
 		MaterialCode = materialCode;
 		MaterialName = materialName;
-		SupplierIdText = string.Empty;
 		PriceText = string.Empty;
 		EffectiveFrom = DateTime.Today;
+		SelectedSupplier = null;
+		Suppliers.Clear();
+		_suppliersLoaded = false;
+	}
+
+	public async Task EnsureSuppliersLoadedAsync()
+	{
+		if (_suppliersLoaded || IsSuppliersLoading)
+		{
+			return;
+		}
+
+		await LoadSuppliersAsync();
 	}
 
 	public Task<bool> WaitForCompletionAsync() => _closingCompletion.Task;
@@ -70,6 +94,7 @@ public partial class MaterialPriceAddModalViewModel : ObservableObject
 	}
 
 	partial void OnIsSubmittingChanged(bool value) => SubmitCommand.NotifyCanExecuteChanged();
+	partial void OnIsSuppliersLoadingChanged(bool value) => SubmitCommand.NotifyCanExecuteChanged();
 
 	private async Task SaveAsync()
 	{
@@ -84,10 +109,9 @@ public partial class MaterialPriceAddModalViewModel : ObservableObject
 			return;
 		}
 
-		var supplierInput = SupplierIdText?.Trim();
-		if (!Guid.TryParse(supplierInput, out var supplierId))
+		if (SelectedSupplier is null)
 		{
-			await ShowAlertAsync("Ошибка", "Введите корректный GUID поставщика");
+			await ShowAlertAsync("Ошибка", "Выберите поставщика");
 			return;
 		}
 
@@ -105,7 +129,7 @@ public partial class MaterialPriceAddModalViewModel : ObservableObject
 		try
 		{
 			IsSubmitting = true;
-			var request = new AddMaterialPriceRequest(supplierId, price, effectiveDate);
+			var request = new AddMaterialPriceRequest(SelectedSupplier.Id, price, effectiveDate);
 			var response = await _materialsService.AddPriceAsync(MaterialId.ToString(), request);
 			var statusText = response?.Status switch
 			{
@@ -148,4 +172,33 @@ public partial class MaterialPriceAddModalViewModel : ObservableObject
 
 	private static Task ShowAlertAsync(string title, string message)
 		=> Shell.Current.DisplayAlertAsync(title, message, "OK");
+
+	private async Task LoadSuppliersAsync()
+	{
+		try
+		{
+			IsSuppliersLoading = true;
+			var suppliers = await _suppliersService.ListAsync();
+
+			Suppliers.Clear();
+			if (suppliers is { Count: > 0 })
+			{
+				foreach (var supplier in suppliers.OrderBy(s => s.Name, StringComparer.CurrentCultureIgnoreCase))
+				{
+					Suppliers.Add(supplier);
+				}
+			}
+
+			SelectedSupplier ??= Suppliers.FirstOrDefault();
+			_suppliersLoaded = true;
+		}
+		catch (Exception ex)
+		{
+			await ShowAlertAsync("Ошибка", $"Не удалось загрузить поставщиков: {ex.Message}");
+		}
+		finally
+		{
+			IsSuppliersLoading = false;
+		}
+	}
 }

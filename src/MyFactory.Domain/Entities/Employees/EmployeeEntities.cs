@@ -1,20 +1,13 @@
 using System;
 using System.Collections.Generic;
 using MyFactory.Domain.Common;
-using MyFactory.Domain.Entities.Finance;
-using MyFactory.Domain.Entities.Production;
-using MyFactory.Domain.Entities.Shifts;
 
 namespace MyFactory.Domain.Entities.Employees;
 
-public class Employee : BaseEntity
+public sealed class Employee : BaseEntity
 {
     private readonly List<TimesheetEntry> _timesheetEntries = new();
     private readonly List<PayrollEntry> _payrollEntries = new();
-    private readonly List<WorkerAssignment> _assignments = new();
-    private readonly List<ShiftPlan> _shiftPlans = new();
-    private readonly List<ShiftResult> _shiftResults = new();
-    private readonly List<Advance> _advances = new();
 
     private Employee()
     {
@@ -46,14 +39,6 @@ public class Employee : BaseEntity
 
     public IReadOnlyCollection<PayrollEntry> PayrollEntries => _payrollEntries.AsReadOnly();
 
-    public IReadOnlyCollection<WorkerAssignment> WorkerAssignments => _assignments.AsReadOnly();
-
-    public IReadOnlyCollection<ShiftPlan> ShiftPlans => _shiftPlans.AsReadOnly();
-
-    public IReadOnlyCollection<ShiftResult> ShiftResults => _shiftResults.AsReadOnly();
-
-    public IReadOnlyCollection<Advance> Advances => _advances.AsReadOnly();
-
     public void UpdateName(string name)
     {
         Guard.AgainstNullOrWhiteSpace(name, "Employee name is required.");
@@ -78,17 +63,13 @@ public class Employee : BaseEntity
 
     public void UpdateRate(decimal rate)
     {
-        Guard.AgainstNonPositive(rate, "Rate per norm hour must be positive.");
+        Guard.AgainstNegative(rate, "Rate per norm hour cannot be negative.");
         RatePerNormHour = rate;
     }
 
     public void UpdatePremium(decimal percent)
     {
-        if (percent is < 0 or > 100)
-        {
-            throw new DomainException("Premium percent must be between 0 and 100.");
-        }
-
+        Guard.AgainstNegative(percent, "Premium percent cannot be negative.");
         PremiumPercent = percent;
     }
 
@@ -103,27 +84,27 @@ public class Employee : BaseEntity
     }
 }
 
-public class TimesheetEntry : BaseEntity
+public sealed class TimesheetEntry : BaseEntity
 {
     private TimesheetEntry()
     {
     }
 
-    public TimesheetEntry(Guid employeeId, DateTime workDate, decimal hours, string status)
+    public TimesheetEntry(Guid employeeId, DateOnly workDate, decimal hours, string status)
     {
         Guard.AgainstEmptyGuid(employeeId, "Employee id is required.");
         Guard.AgainstDefaultDate(workDate, "Work date is required.");
-        UpdateHours(hours);
-        ChangeStatus(status);
         EmployeeId = employeeId;
         WorkDate = workDate;
+        UpdateHours(hours);
+        UpdateStatus(status);
     }
 
     public Guid EmployeeId { get; private set; }
 
     public Employee? Employee { get; private set; }
 
-    public DateTime WorkDate { get; private set; }
+    public DateOnly WorkDate { get; private set; }
 
     public decimal Hours { get; private set; }
 
@@ -131,24 +112,24 @@ public class TimesheetEntry : BaseEntity
 
     public void UpdateHours(decimal hours)
     {
-        Guard.AgainstNonPositive(hours, "Hours must be positive.");
+        Guard.AgainstNegative(hours, "Hours cannot be negative.");
         Hours = hours;
     }
 
-    public void ChangeStatus(string status)
+    public void UpdateStatus(string status)
     {
         Guard.AgainstNullOrWhiteSpace(status, "Status is required.");
         Status = status.Trim();
     }
 }
 
-public class PayrollEntry : BaseEntity
+public sealed class PayrollEntry : BaseEntity
 {
     private PayrollEntry()
     {
     }
 
-    public PayrollEntry(Guid employeeId, DateTime periodStart, DateTime periodEnd, decimal accruedAmount)
+    public PayrollEntry(Guid employeeId, DateOnly periodStart, DateOnly periodEnd, decimal accruedAmount)
     {
         Guard.AgainstEmptyGuid(employeeId, "Employee id is required.");
         Guard.AgainstDefaultDate(periodStart, "Period start is required.");
@@ -168,28 +149,29 @@ public class PayrollEntry : BaseEntity
 
     public Employee? Employee { get; private set; }
 
-    public DateTime PeriodStart { get; private set; }
+    public DateOnly PeriodStart { get; private set; }
 
-    public DateTime PeriodEnd { get; private set; }
+    public DateOnly PeriodEnd { get; private set; }
 
     public decimal AccruedAmount { get; private set; }
 
     public decimal PaidAmount { get; private set; }
 
-    public decimal Outstanding => AccruedAmount - PaidAmount;
+    public decimal Outstanding { get; private set; }
 
     public void UpdateAccruedAmount(decimal amount)
     {
-        Guard.AgainstNonPositive(amount, "Accrued amount must be positive.");
+        Guard.AgainstNegative(amount, "Accrued amount cannot be negative.");
         if (amount < PaidAmount)
         {
             throw new DomainException("Accrued amount cannot be less than already paid amount.");
         }
 
         AccruedAmount = amount;
+        RecalculateOutstanding();
     }
 
-    public void RegisterPayment(decimal amount)
+    public void AddPayment(decimal amount)
     {
         Guard.AgainstNonPositive(amount, "Payment amount must be positive.");
         if (amount > Outstanding)
@@ -198,5 +180,15 @@ public class PayrollEntry : BaseEntity
         }
 
         PaidAmount += amount;
+        RecalculateOutstanding();
+    }
+
+    public void RecalculateOutstanding()
+    {
+        Outstanding = AccruedAmount - PaidAmount;
+        if (Outstanding < 0)
+        {
+            throw new DomainException("Outstanding amount cannot be negative.");
+        }
     }
 }

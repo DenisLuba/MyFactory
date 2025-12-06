@@ -13,6 +13,12 @@ public partial class MaterialPriceAddModal : ContentPage
         BindingContext = _viewModel;
     }
 
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _viewModel.EnsureSuppliersLoadedAsync();
+    }
+
     protected override void OnDisappearing()
     {
         base.OnDisappearing();

@@ -9,6 +9,7 @@ using Microsoft.Maui.Controls;
 using MyFactory.MauiClient.Models.Materials;
 using MyFactory.MauiClient.Pages.Reference.Materials;
 using MyFactory.MauiClient.Services.MaterialsServices;
+using MyFactory.MauiClient.Services.SuppliersServices;
 using MyFactory.MauiClient.UIModels.Reference;
 
 namespace MyFactory.MauiClient.ViewModels.Reference.Materials;
@@ -16,11 +17,13 @@ namespace MyFactory.MauiClient.ViewModels.Reference.Materials;
 public partial class MaterialsTablePageViewModel : ObservableObject
 {
 	private readonly IMaterialsService _materialsService;
+	private readonly ISuppliersService _suppliersService;
 	private readonly List<MaterialListResponse> _materialsCache = new();
 
-	public MaterialsTablePageViewModel(IMaterialsService materialsService)
+	public MaterialsTablePageViewModel(IMaterialsService materialsService, ISuppliersService suppliersService)
 	{
 		_materialsService = materialsService;
+		_suppliersService = suppliersService;
 		LoadCommand = new AsyncRelayCommand(LoadAsync, () => !IsBusy);
 		RefreshCommand = new AsyncRelayCommand(LoadAsync, () => !IsBusy);
 		OpenCardCommand = new AsyncRelayCommand<MaterialItem?>(OpenCardAsync);
@@ -59,6 +62,14 @@ public partial class MaterialsTablePageViewModel : ObservableObject
 		if (!IsBusy)
 		{
 			ApplyFilters();
+		}
+	}
+
+	partial void OnTypeFilterChanged(string? value)
+	{
+		if (!IsBusy)
+		{
+			_ = LoadAsync();
 		}
 	}
 
@@ -105,6 +116,13 @@ public partial class MaterialsTablePageViewModel : ObservableObject
 				material.Code.Contains(term, StringComparison.OrdinalIgnoreCase) ||
 				material.Name.Contains(term, StringComparison.OrdinalIgnoreCase));
 		}
+		if (!string.IsNullOrWhiteSpace(TypeFilter))
+		{
+			var term = TypeFilter!.Trim();
+			query = query.Where(material =>
+				material.MaterialType.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+				material.MaterialType.Equals(term, StringComparison.OrdinalIgnoreCase));
+		}
 
 		foreach (var material in query.OrderBy(m => m.Code))
 		{
@@ -128,7 +146,7 @@ public partial class MaterialsTablePageViewModel : ObservableObject
 			return;
 		}
 
-		var viewModel = new MaterialCardPageViewModel(_materialsService);
+		var viewModel = new MaterialCardPageViewModel(_materialsService, _suppliersService);
 		viewModel.Initialize(material.Id, material.Code, material.Name);
 		var page = new MaterialCardPage(viewModel);
 

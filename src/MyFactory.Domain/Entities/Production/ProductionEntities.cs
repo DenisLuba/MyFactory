@@ -3,54 +3,91 @@ using System.Collections.Generic;
 using System.Linq;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Employees;
-using MyFactory.Domain.Entities.Operations;
-using MyFactory.Domain.Entities.Shifts;
+using MyFactory.Domain.Entities.Materials;
 using MyFactory.Domain.Entities.Specifications;
+using MyFactory.Domain.Entities.Warehousing;
 using MyFactory.Domain.Entities.Workshops;
 
 namespace MyFactory.Domain.Entities.Production;
 
 public sealed class ProductionOrder : BaseEntity
 {
-    private readonly List<ProductionOrderItem> _items = new();
+    private readonly List<ProductionOrderAllocation> _allocations = new();
+    private readonly List<ProductionStage> _stages = new();
 
     private ProductionOrder()
     {
     }
 
-    public ProductionOrder(string orderNumber, DateOnly dueDate)
+    private ProductionOrder(string orderNumber, Guid specificationId, decimal quantityOrdered, DateTime createdAt)
     {
         Guard.AgainstNullOrWhiteSpace(orderNumber, nameof(orderNumber));
+        Guard.AgainstEmptyGuid(specificationId, nameof(specificationId));
+        Guard.AgainstNonPositive(quantityOrdered, nameof(quantityOrdered));
+        Guard.AgainstDefaultDate(createdAt, nameof(createdAt));
+
         OrderNumber = orderNumber.Trim();
-        DueDate = dueDate;
+        SpecificationId = specificationId;
+        QuantityOrdered = quantityOrdered;
+        CreatedAt = createdAt;
         Status = ProductionOrderStatus.Planned;
     }
 
-    public string OrderNumber { get; private set; } = string.Empty;
-    public DateOnly DueDate { get; private set; }
-    public ProductionOrderStatus Status { get; private set; }
-    public IReadOnlyCollection<ProductionOrderItem> Items => _items.AsReadOnly();
-
-    public void Approve()
+    public static ProductionOrder Create(string orderNumber, Guid specificationId, decimal quantityOrdered, DateTime createdAt)
     {
-        if (Status != ProductionOrderStatus.Planned)
+        return new ProductionOrder(orderNumber, specificationId, quantityOrdered, createdAt);
+    }
+
+    public string OrderNumber { get; private set; } = string.Empty;
+    public Guid SpecificationId { get; private set; }
+    public Specification? Specification { get; private set; }
+    public decimal QuantityOrdered { get; private set; }
+    public ProductionOrderStatus Status { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    public IReadOnlyCollection<ProductionOrderAllocation> Allocations => _allocations.AsReadOnly();
+    public IReadOnlyCollection<ProductionStage> Stages => _stages.AsReadOnly();
+
+    public ProductionOrderAllocation AllocateWorkshop(Guid workshopId, decimal quantity)
+    {
+        EnsurePlanningPhase();
+        Guard.AgainstEmptyGuid(workshopId, nameof(workshopId));
+        Guard.AgainstNonPositive(quantity, nameof(quantity));
+
+        var totalAllocated = _allocations.Sum(a => a.QuantityAllocated) + quantity;
+        if (totalAllocated > QuantityOrdered)
         {
-            throw new DomainException("Only planned orders can be approved.");
+            throw new DomainException("Allocated quantity exceeds ordered quantity.");
         }
 
-        if (_items.Count == 0)
+        var allocation = new ProductionOrderAllocation(Id, workshopId, quantity);
+        _allocations.Add(allocation);
+        return allocation;
+    }
+
+    public ProductionStage ScheduleStage(Guid workshopId, string stageType)
+    {
+        Guard.AgainstEmptyGuid(workshopId, nameof(workshopId));
+        Guard.AgainstNullOrWhiteSpace(stageType, nameof(stageType));
+        if (Status == ProductionOrderStatus.Completed)
         {
-            throw new DomainException("Cannot approve order without items.");
+            throw new DomainException("Cannot modify a completed production order.");
         }
 
-        Status = ProductionOrderStatus.Approved;
+        var stage = ProductionStage.Create(Id, workshopId, stageType);
+        _stages.Add(stage);
+        return stage;
     }
 
     public void Start()
     {
-        if (Status != ProductionOrderStatus.Approved)
+        if (Status != ProductionOrderStatus.Planned)
         {
-            throw new DomainException("Order must be approved before starting.");
+            throw new DomainException("Only planned orders can be started.");
+        }
+
+        if (!_stages.Any())
+        {
+            throw new DomainException("Cannot start production order without scheduled stages.");
         }
 
         Status = ProductionOrderStatus.InProgress;
@@ -63,127 +100,151 @@ public sealed class ProductionOrder : BaseEntity
             throw new DomainException("Only in-progress orders can be completed.");
         }
 
-        if (_items.Any(i => i.RemainingQuantity > 0))
+        if (_stages.Count == 0 || _stages.Any(stage => stage.Status != ProductionStageStatus.Completed))
         {
-            throw new DomainException("Cannot complete order with remaining quantity.");
+            throw new DomainException("All stages must be completed before closing the order.");
+        }
+
+        var producedQuantity = _stages.Sum(stage => stage.QuantityOut);
+        if (producedQuantity < QuantityOrdered)
+        {
+            throw new DomainException("Produced quantity is less than ordered quantity.");
         }
 
         Status = ProductionOrderStatus.Completed;
     }
 
-    public ProductionOrderItem AddItem(Guid specificationId, decimal quantity)
+    private void EnsurePlanningPhase()
     {
-        var item = new ProductionOrderItem(Id, specificationId, quantity);
-        _items.Add(item);
-        return item;
+        if (Status != ProductionOrderStatus.Planned)
+        {
+            throw new DomainException("Only planned orders can be modified.");
+        }
     }
 }
 
-public sealed class ProductionOrderItem : BaseEntity
+public sealed class ProductionOrderAllocation : BaseEntity
 {
-    private readonly List<WorkOrder> _workOrders = new();
-
-    private ProductionOrderItem()
+    private ProductionOrderAllocation()
     {
     }
 
-    public ProductionOrderItem(Guid productionOrderId, Guid specificationId, decimal quantity)
+    internal ProductionOrderAllocation(Guid productionOrderId, Guid workshopId, decimal quantityAllocated)
     {
         Guard.AgainstEmptyGuid(productionOrderId, nameof(productionOrderId));
-        Guard.AgainstEmptyGuid(specificationId, nameof(specificationId));
-        Guard.AgainstNonPositive(quantity, nameof(quantity));
+        Guard.AgainstEmptyGuid(workshopId, nameof(workshopId));
+        Guard.AgainstNonPositive(quantityAllocated, nameof(quantityAllocated));
 
         ProductionOrderId = productionOrderId;
-        SpecificationId = specificationId;
-        Quantity = quantity;
+        WorkshopId = workshopId;
+        QuantityAllocated = quantityAllocated;
     }
 
     public Guid ProductionOrderId { get; }
     public ProductionOrder? ProductionOrder { get; private set; }
-    public Guid SpecificationId { get; }
-    public Specification? Specification { get; private set; }
-    public decimal Quantity { get; private set; }
-    public decimal CompletedQuantity { get; private set; }
-    public decimal RemainingQuantity => Quantity - CompletedQuantity;
-    public IReadOnlyCollection<WorkOrder> WorkOrders => _workOrders.AsReadOnly();
+    public Guid WorkshopId { get; }
+    public Workshop? Workshop { get; private set; }
+    public decimal QuantityAllocated { get; private set; }
 
-    public WorkOrder CreateWorkOrder(Guid operationId, Guid workstationId, decimal plannedQuantity)
-    {
-        var workOrder = new WorkOrder(Id, operationId, workstationId, plannedQuantity);
-        _workOrders.Add(workOrder);
-        return workOrder;
-    }
-
-    public void RegisterCompletion(decimal quantity)
+    public void UpdateQuantity(decimal quantity)
     {
         Guard.AgainstNonPositive(quantity, nameof(quantity));
-        if (CompletedQuantity + quantity > Quantity)
-        {
-            throw new DomainException("Completion exceeds ordered quantity.");
-        }
-
-        CompletedQuantity += quantity;
+        QuantityAllocated = quantity;
     }
 }
 
-public sealed class WorkOrder : BaseEntity
+public sealed class ProductionStage : BaseEntity
 {
     private readonly List<WorkerAssignment> _assignments = new();
 
-    private WorkOrder()
+    private ProductionStage()
     {
     }
 
-    public WorkOrder(Guid productionOrderItemId, Guid operationId, Guid workstationId, decimal plannedQuantity)
+    private ProductionStage(Guid productionOrderId, Guid workshopId, string stageType)
     {
-        Guard.AgainstEmptyGuid(productionOrderItemId, nameof(productionOrderItemId));
-        Guard.AgainstEmptyGuid(operationId, nameof(operationId));
-        Guard.AgainstEmptyGuid(workstationId, nameof(workstationId));
-        Guard.AgainstNonPositive(plannedQuantity, nameof(plannedQuantity));
+        Guard.AgainstEmptyGuid(productionOrderId, nameof(productionOrderId));
+        Guard.AgainstEmptyGuid(workshopId, nameof(workshopId));
+        Guard.AgainstNullOrWhiteSpace(stageType, nameof(stageType));
 
-        ProductionOrderItemId = productionOrderItemId;
-        OperationId = operationId;
-        WorkstationId = workstationId;
-        PlannedQuantity = plannedQuantity;
-        Status = WorkOrderStatus.Created;
+        ProductionOrderId = productionOrderId;
+        WorkshopId = workshopId;
+        StageType = stageType.Trim();
+        Status = ProductionStageStatus.Scheduled;
     }
 
-    public Guid ProductionOrderItemId { get; }
-    public ProductionOrderItem? ProductionOrderItem { get; private set; }
-    public Guid OperationId { get; }
-    public Operation? Operation { get; private set; }
-    public Guid WorkstationId { get; }
-    public Workstation? Workstation { get; private set; }
-    public decimal PlannedQuantity { get; private set; }
-    public decimal CompletedQuantity { get; private set; }
-    public WorkOrderStatus Status { get; private set; }
+    public static ProductionStage Create(Guid productionOrderId, Guid workshopId, string stageType)
+    {
+        return new ProductionStage(productionOrderId, workshopId, stageType);
+    }
+
+    public Guid ProductionOrderId { get; }
+    public ProductionOrder? ProductionOrder { get; private set; }
+    public Guid WorkshopId { get; }
+    public Workshop? Workshop { get; private set; }
+    public string StageType { get; private set; } = string.Empty;
+    public decimal QuantityIn { get; private set; }
+    public decimal QuantityOut { get; private set; }
+    public DateTime? StartedAt { get; private set; }
+    public DateTime? CompletedAt { get; private set; }
+    public DateTime? RecordedAt { get; private set; }
+    public ProductionStageStatus Status { get; private set; }
     public IReadOnlyCollection<WorkerAssignment> Assignments => _assignments.AsReadOnly();
 
-    public void Start()
+    public void Start(decimal quantityIn, DateTime startedAt)
     {
-        if (Status != WorkOrderStatus.Created)
+        if (Status != ProductionStageStatus.Scheduled)
         {
-            throw new DomainException("Work order already started or finished.");
+            throw new DomainException("Stage can only be started once.");
         }
 
-        Status = WorkOrderStatus.InProgress;
+        Guard.AgainstNonPositive(quantityIn, nameof(quantityIn));
+        Guard.AgainstDefaultDate(startedAt, nameof(startedAt));
+
+        QuantityIn = quantityIn;
+        StartedAt = startedAt;
+        RecordedAt = startedAt;
+        Status = ProductionStageStatus.InProgress;
     }
 
-    public void Complete(decimal completedQuantity)
+    public void Complete(decimal quantityOut, DateTime completedAt)
     {
-        Guard.AgainstNonPositive(completedQuantity, nameof(completedQuantity));
-        if (completedQuantity > PlannedQuantity)
+        if (Status != ProductionStageStatus.InProgress)
         {
-            throw new DomainException("Completed quantity cannot exceed plan.");
+            throw new DomainException("Stage must be in progress to complete.");
         }
 
-        CompletedQuantity = completedQuantity;
-        Status = WorkOrderStatus.Completed;
+        Guard.AgainstNonPositive(quantityOut, nameof(quantityOut));
+        Guard.AgainstDefaultDate(completedAt, nameof(completedAt));
+        if (quantityOut > QuantityIn)
+        {
+            throw new DomainException("Output quantity cannot exceed input quantity.");
+        }
+
+        QuantityOut = quantityOut;
+        CompletedAt = completedAt;
+        RecordedAt = completedAt;
+        Status = ProductionStageStatus.Completed;
     }
 
-    public WorkerAssignment AssignWorker(Guid employeeId, DateOnly assignedDate, Guid? shiftPlanId)
+    public WorkerAssignment AssignWorker(Guid employeeId, decimal quantityAssigned, DateTime assignedAt)
     {
-        var assignment = new WorkerAssignment(Id, employeeId, assignedDate, shiftPlanId);
+        if (Status != ProductionStageStatus.InProgress)
+        {
+            throw new DomainException("Workers can only be assigned to in-progress stages.");
+        }
+
+        Guard.AgainstEmptyGuid(employeeId, nameof(employeeId));
+        Guard.AgainstNonPositive(quantityAssigned, nameof(quantityAssigned));
+        Guard.AgainstDefaultDate(assignedAt, nameof(assignedAt));
+
+        var totalAssigned = _assignments.Sum(a => a.QuantityAssigned);
+        if (totalAssigned + quantityAssigned > QuantityIn)
+        {
+            throw new DomainException("Assigned quantity exceeds stage capacity.");
+        }
+
+        var assignment = WorkerAssignment.Create(Id, employeeId, quantityAssigned, assignedAt);
         _assignments.Add(assignment);
         return assignment;
     }
@@ -195,27 +256,35 @@ public sealed class WorkerAssignment : BaseEntity
     {
     }
 
-    public WorkerAssignment(Guid workOrderId, Guid employeeId, DateOnly assignedDate, Guid? shiftPlanId)
+    private WorkerAssignment(Guid productionStageId, Guid employeeId, decimal quantityAssigned, DateTime assignedAt)
     {
-        Guard.AgainstEmptyGuid(workOrderId, nameof(workOrderId));
+        Guard.AgainstEmptyGuid(productionStageId, nameof(productionStageId));
         Guard.AgainstEmptyGuid(employeeId, nameof(employeeId));
-        AssignedDate = assignedDate;
-        WorkOrderId = workOrderId;
+        Guard.AgainstNonPositive(quantityAssigned, nameof(quantityAssigned));
+        Guard.AgainstDefaultDate(assignedAt, nameof(assignedAt));
+
+        ProductionStageId = productionStageId;
         EmployeeId = employeeId;
-        ShiftPlanId = shiftPlanId;
+        QuantityAssigned = quantityAssigned;
+        AssignedAt = assignedAt;
         Status = WorkerAssignmentStatus.Assigned;
     }
 
-    public Guid WorkOrderId { get; }
-    public WorkOrder? WorkOrder { get; private set; }
+    internal static WorkerAssignment Create(Guid productionStageId, Guid employeeId, decimal quantityAssigned, DateTime assignedAt)
+    {
+        return new WorkerAssignment(productionStageId, employeeId, quantityAssigned, assignedAt);
+    }
+
+    public Guid ProductionStageId { get; }
+    public ProductionStage? ProductionStage { get; private set; }
     public Guid EmployeeId { get; }
     public Employee? Employee { get; private set; }
-    public Guid? ShiftPlanId { get; private set; }
-    public ShiftPlan? ShiftPlan { get; private set; }
-    public DateOnly AssignedDate { get; private set; }
+    public decimal QuantityAssigned { get; private set; }
+    public decimal? QuantityCompleted { get; private set; }
+    public DateTime AssignedAt { get; private set; }
     public WorkerAssignmentStatus Status { get; private set; }
 
-    public void Start()
+    public void StartWork()
     {
         if (Status != WorkerAssignmentStatus.Assigned)
         {
@@ -225,27 +294,34 @@ public sealed class WorkerAssignment : BaseEntity
         Status = WorkerAssignmentStatus.InProgress;
     }
 
-    public void Complete(decimal producedQuantity)
+    public void CompleteWork(decimal quantityCompleted)
     {
-        Guard.AgainstNonPositive(producedQuantity, nameof(producedQuantity));
-        Status = WorkerAssignmentStatus.Completed;
-        ProducedQuantity = producedQuantity;
-    }
+        if (Status != WorkerAssignmentStatus.InProgress)
+        {
+            throw new DomainException("Assignment must be in progress to complete.");
+        }
 
-    public decimal? ProducedQuantity { get; private set; }
+        Guard.AgainstNonPositive(quantityCompleted, nameof(quantityCompleted));
+        if (quantityCompleted > QuantityAssigned)
+        {
+            throw new DomainException("Completed quantity cannot exceed assigned quantity.");
+        }
+
+        QuantityCompleted = quantityCompleted;
+        Status = WorkerAssignmentStatus.Completed;
+    }
 }
 
 public enum ProductionOrderStatus
 {
     Planned = 1,
-    Approved = 2,
-    InProgress = 3,
-    Completed = 4
+    InProgress = 2,
+    Completed = 3
 }
 
-public enum WorkOrderStatus
+public enum ProductionStageStatus
 {
-    Created = 1,
+    Scheduled = 1,
     InProgress = 2,
     Completed = 3
 }

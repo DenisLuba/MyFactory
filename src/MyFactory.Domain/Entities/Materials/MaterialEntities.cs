@@ -97,6 +97,18 @@ public class Material : BaseEntity
 
         IsActive = false;
     }
+
+    public MaterialPriceHistory AddPrice(Guid supplierId, decimal price, DateTime effectiveFrom, string docRef)
+    {
+        Guard.AgainstEmptyGuid(supplierId, "Supplier id is required.");
+        Guard.AgainstNonPositive(price, "Price must be positive.");
+        Guard.AgainstDefaultDate(effectiveFrom, "Effective from date is required.");
+        Guard.AgainstNullOrWhiteSpace(docRef, "Document reference is required.");
+
+        var entry = new MaterialPriceHistory(Id, supplierId, price, effectiveFrom, docRef);
+        _priceHistory.Add(entry);
+        return entry;
+    }
 }
 
 public class Supplier : BaseEntity
@@ -112,11 +124,14 @@ public class Supplier : BaseEntity
     {
         UpdateName(name);
         UpdateContact(contact);
+        IsActive = true;
     }
 
     public string Name { get; private set; } = string.Empty;
 
     public string Contact { get; private set; } = string.Empty;
+
+    public bool IsActive { get; private set; }
 
     public IReadOnlyCollection<MaterialPriceHistory> PriceEntries => _priceEntries.AsReadOnly();
 
@@ -132,6 +147,16 @@ public class Supplier : BaseEntity
     {
         Guard.AgainstNullOrWhiteSpace(contact, "Contact info is required.");
         Contact = contact.Trim();
+    }
+
+    public void Deactivate()
+    {
+        if (!IsActive)
+        {
+            throw new DomainException("Supplier already inactive.");
+        }
+
+        IsActive = false;
     }
 }
 

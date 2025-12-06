@@ -1,3 +1,5 @@
+using System;
+
 namespace MyFactory.Domain.Common;
 
 public static class Guard
@@ -43,6 +45,14 @@ public static class Guard
     }
 
     public static void AgainstDefaultDate(DateTime value, string message)
+    {
+        if (value == default)
+        {
+            throw new DomainException(message);
+        }
+    }
+
+    public static void AgainstDefaultDate(DateOnly value, string message)
     {
         if (value == default)
         {
