@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
 using MyFactory.MauiClient.Models.Products;
 using MyFactory.MauiClient.Pages.Reference.Products;
+using MyFactory.MauiClient.Services.FilesServices;
 using MyFactory.MauiClient.Services.ProductsServices;
 using MyFactory.MauiClient.UIModels.Reference;
 
@@ -15,11 +16,13 @@ namespace MyFactory.MauiClient.ViewModels.Reference.Products;
 public partial class ProductsTablePageViewModel : ObservableObject
 {
 	private readonly IProductsService _productsService;
+	private readonly IFilesService _filesService;
 
-	public ProductsTablePageViewModel(IProductsService productsService)
+    public ProductsTablePageViewModel(IProductsService productsService, IFilesService filesService)
 	{
 		_productsService = productsService;
-		LoadCommand = new AsyncRelayCommand(LoadAsync, () => !IsBusy);
+		_filesService = filesService;
+        LoadCommand = new AsyncRelayCommand(LoadAsync, () => !IsBusy);
 		RefreshCommand = new AsyncRelayCommand(LoadAsync, () => !IsBusy);
 		OpenCardCommand = new AsyncRelayCommand<ProductItem?>(OpenCardAsync);
 	}
@@ -88,7 +91,7 @@ public partial class ProductsTablePageViewModel : ObservableObject
 			return;
 		}
 
-		var viewModel = new ProductCardPageViewModel(_productsService);
+		var viewModel = new ProductCardPageViewModel(_productsService, _filesService);
 		viewModel.Initialize(product.Id);
 		var page = new ProductCardPage(viewModel);
 		await Shell.Current.Navigation.PushAsync(page);

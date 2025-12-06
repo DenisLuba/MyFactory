@@ -43,16 +43,23 @@
                 </Grid>
             </Border>
 
-            <HorizontalStackLayout Spacing="12">
+            <Grid ColumnSpacing="12" ColumnDefinitions="Auto,Auto,*">
                 <Button
                     Command="{Binding LoadMaterialCommand}"
                     IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
                     Text="Обновить" />
                 <Button
                     Command="{Binding AddPriceCommand}"
+                    Grid.Column="1"
                     IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
                     Text="Добавить цену" />
-            </HorizontalStackLayout>
+
+                <Button
+                    Grid.Column="2"
+                    Command="{Binding BackCommand}"
+                    HorizontalOptions="End"
+                    Text="Назад" />
+            </Grid>
 
             <Border>
                 <VerticalStackLayout Spacing="12">

@@ -24,6 +24,7 @@ public partial class MaterialCardPageViewModel : ObservableObject
 		_suppliersService = suppliersService;
 		LoadMaterialCommand = new AsyncRelayCommand(LoadAsync, CanLoad);
 		AddPriceCommand = new AsyncRelayCommand(OpenAddPriceModalAsync, CanExecutePriceActions);
+		BackCommand = new AsyncRelayCommand(GoBackAsync);
 	}
 
 	public ObservableCollection<MaterialPriceHistoryItem> PriceHistory { get; } = [];
@@ -57,6 +58,7 @@ public partial class MaterialCardPageViewModel : ObservableObject
 
 	public IAsyncRelayCommand LoadMaterialCommand { get; }
 	public IAsyncRelayCommand AddPriceCommand { get; }
+	public IAsyncRelayCommand BackCommand { get; }
 
 	public string StatusDisplay => IsActive ? "Активен" : "Неактивен";
 	public string SupplierDisplay => string.IsNullOrWhiteSpace(SupplierName) ? "-" : SupplierName;
@@ -159,5 +161,10 @@ public partial class MaterialCardPageViewModel : ObservableObject
 		{
 			await LoadAsync();
 		}
+	}
+
+	private async Task GoBackAsync()
+	{
+		await Shell.Current.Navigation.PopAsync();
 	}
 }

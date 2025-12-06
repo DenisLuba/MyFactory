@@ -79,9 +79,9 @@ public sealed class InventoryItem : BaseEntity
         MaterialId = materialId;
     }
 
-    public Guid WarehouseId { get; }
+    public Guid WarehouseId { get; private set; }
     public Warehouse? Warehouse { get; private set; }
-    public Guid MaterialId { get; }
+    public Guid MaterialId { get; private set; }
     public Material? Material { get; private set; }
     public decimal Quantity { get; private set; }
     public decimal AveragePrice { get; private set; }
@@ -222,9 +222,9 @@ public sealed class InventoryReceiptItem : BaseEntity
         UnitPrice = unitPrice;
     }
 
-    public Guid InventoryReceiptId { get; }
+    public Guid InventoryReceiptId { get; private set; }
     public InventoryReceipt? InventoryReceipt { get; private set; }
-    public Guid MaterialId { get; }
+    public Guid MaterialId { get; private set; }
     public Material? Material { get; private set; }
     public decimal Quantity { get; private set; }
     public decimal UnitPrice { get; private set; }

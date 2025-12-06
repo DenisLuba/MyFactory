@@ -1,52 +1,53 @@
-﻿<?xml version = "1.0" encoding = "UTF-8" ?>
-<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:MyFactory.MauiClient"
-             xmlns:converters="clr-namespace:MyFactory.MauiClient.Converters"
-             x:Class="MyFactory.MauiClient.App">
-    <Application.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
-                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-            
-            <!-- Converters -->
-            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
-            <converters:BooleanToYesNoConverter x:Key="BooleanToYesNoConverter" />
-            <converters:BooleanToActiveStatusConverter x:Key="BooleanToActiveStatusConverter" />
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Application
+	x:Class="MyFactory.MauiClient.App"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:converters="clr-namespace:MyFactory.MauiClient.Converters"
+	xmlns:local="clr-namespace:MyFactory.MauiClient">
+	<Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+				<ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+			</ResourceDictionary.MergedDictionaries>
 
-            <Style TargetType="Border">
-                <Setter Property="Stroke" Value="{AppThemeBinding Light=#CDCED1, Dark=#374151}" />
-                <Setter Property="Background" Value="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}" />
-                <Setter Property="StrokeThickness" Value="1" />
-                <Setter Property="Padding" Value="16" />
-                <Setter Property="StrokeShape">
-                    <Setter.Value>
-                        <RoundRectangle CornerRadius="12" />
-                    </Setter.Value>
-                </Setter>
-            </Style>
+			<!--  Converters  -->
+			<converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+			<converters:BooleanToYesNoConverter x:Key="BooleanToYesNoConverter" />
+			<converters:BooleanToActiveStatusConverter x:Key="BooleanToActiveStatusConverter" />
 
-            <Style TargetType="CollectionView">
-                <Setter Property="ItemsLayout">
-                    <Setter.Value>
-                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="4" />
-                    </Setter.Value>
-                </Setter>
-            </Style>
+			<Style TargetType="Border">
+				<Setter Property="Stroke" Value="{AppThemeBinding Light=#CDCED1, Dark=#374151}" />
+				<Setter Property="Background" Value="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}" />
+				<Setter Property="StrokeThickness" Value="1" />
+				<Setter Property="Padding" Value="16" />
+				<Setter Property="StrokeShape">
+					<Setter.Value>
+						<RoundRectangle CornerRadius="12" />
+					</Setter.Value>
+				</Setter>
+			</Style>
 
-            <Style TargetType="Button">
-                <Setter Property="CornerRadius" Value="28" />
-                <Setter Property="Padding" Value="20,12,20,12" />
-                <Setter Property="HorizontalOptions" Value="Center" />
-                <Setter Property="TextColor" Value="{AppThemeBinding Light=White, Dark=Black}" />
-                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#3B65C9, Dark=#60A5FA}" /> 
-                <Setter Property="FontSize" Value="16" />
-                <Setter Property="FontAttributes" Value="SemiBold" />
-                <Setter Property="TextTransform" Value="Uppercase" />
-            </Style> 
+			<Style TargetType="CollectionView">
+				<Setter Property="ItemsLayout">
+					<Setter.Value>
+						<LinearItemsLayout ItemSpacing="4" Orientation="Vertical" />
+					</Setter.Value>
+				</Setter>
+			</Style>
 
-        </ResourceDictionary>
-    </Application.Resources>
+			<Style TargetType="Button">
+				<Setter Property="CornerRadius" Value="28" />
+				<Setter Property="Padding" Value="20,12,20,12" />
+				<Setter Property="HorizontalOptions" Value="Center" />
+				<Setter Property="TextColor" Value="{AppThemeBinding Light=White, Dark=Black}" />
+				<Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#3B65C9, Dark=#60A5FA}" />
+				<Setter Property="FontSize" Value="16" />
+				<Setter Property="FontAttributes" Value="Bold" />
+				<Setter Property="TextTransform" Value="Uppercase" />
+			</Style>
+
+		</ResourceDictionary>
+	</Application.Resources>
 </Application>

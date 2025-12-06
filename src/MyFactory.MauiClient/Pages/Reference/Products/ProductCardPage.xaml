@@ -1,90 +1,129 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="MyFactory.MauiClient.Pages.Reference.Products.ProductCardPage"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Reference.Products"
-    x:DataType="view_model:ProductCardPageViewModel"
-    Title="{Binding Title}">
+	x:Class="MyFactory.MauiClient.Pages.Reference.Products.ProductCardPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Reference.Products"
+	Title="{Binding Title}"
+	x:DataType="view_model:ProductCardPageViewModel">
 
-    <ContentPage.Resources>
-        <Style TargetType="Border" x:Key="CardBorderStyle">
-            <Setter Property="Stroke" Value="{AppThemeBinding Light=#E5E7EB, Dark=#374151}" />
-            <Setter Property="Background" Value="{AppThemeBinding Light=#FFFFFF, Dark=#1F2937}" />
-            <Setter Property="StrokeThickness" Value="1" />
-            <Setter Property="Padding" Value="16" />
-            <Setter Property="Margin" Value="0,0,0,12" />
-            <Setter Property="StrokeShape">
-                <Setter.Value>
-                    <RoundRectangle CornerRadius="12" />
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </ContentPage.Resources>
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
 
-    <ScrollView>
-        <VerticalStackLayout Padding="16" Spacing="12">
-            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+			<Grid>
+				<Button
+					Command="{Binding BackCommand}"
+					HorizontalOptions="End"
+					Text="Назад" />
+			</Grid>
+			<Border>
+				<VerticalStackLayout Spacing="10">
+					<Label
+						FontAttributes="Bold"
+						FontSize="18"
+						Text="Основная информация" />
+					<Entry
+						IsReadOnly="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
+						Placeholder="SKU"
+						Text="{Binding Sku}" />
+					<Entry
+						IsReadOnly="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
+						Placeholder="Наименование"
+						Text="{Binding Name}" />
+					<Entry
+						IsReadOnly="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
+						Keyboard="Numeric"
+						Placeholder="План/час"
+						Text="{Binding PlanPerHourText}" />
+					<Editor
+						HeightRequest="120"
+						IsReadOnly="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
+						Placeholder="Описание"
+						Text="{Binding Description}" />
+				</VerticalStackLayout>
+			</Border>
 
-            <Border Style="{StaticResource CardBorderStyle}">
-                <VerticalStackLayout Spacing="10">
-                    <Label FontAttributes="Bold" FontSize="18" Text="Основная информация" />
-                    <Entry
-                        Placeholder="SKU"
-                        Text="{Binding Sku}"
-                        IsReadOnly="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}" />
-                    <Entry
-                        Placeholder="Наименование"
-                        Text="{Binding Name}"
-                        IsReadOnly="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}" />
-                    <Entry
-                        Placeholder="План/час"
-                        Keyboard="Numeric"
-                        Text="{Binding PlanPerHourText}"
-                        IsReadOnly="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}" />
-                    <Editor
-                        HeightRequest="120"
-                        Placeholder="Описание"
-                        Text="{Binding Description}"
-                        IsReadOnly="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}" />
-                </VerticalStackLayout>
-            </Border>
+			<Border>
+				<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+					<!--  Horizontal images list  -->
+					<CollectionView
+						Grid.Column="0"
+						HorizontalScrollBarVisibility="Always"
+						ItemsLayout="HorizontalList"
+						ItemsSource="{Binding Images}">
+						<CollectionView.ItemTemplate>
+							<DataTemplate>
+								<Border
+									Margin="4"
+									Padding="4"
+									Stroke="#DDD"
+									StrokeThickness="1">
+									<Image
+										Aspect="AspectFill"
+										HeightRequest="120"
+										Source="{Binding .}"
+										WidthRequest="120" />
+								</Border>
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
+						<CollectionView.EmptyView>
+							<Label Text="Нет изображений" TextColor="#888" />
+						</CollectionView.EmptyView>
+					</CollectionView>
 
-            <Border Style="{StaticResource CardBorderStyle}">
-                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto">
-                    <Label FontAttributes="Bold" Text="Кол-во картинок" />
-                    <Label Grid.Column="1" Text="{Binding ImageCount}" />
-                </Grid>
-            </Border>
+					<!--  Upload button (visible only when editing)  -->
+					<Border Grid.Column="1">
+						<ImageButton
+							Padding="8"
+							BackgroundColor="Transparent"
+							Command="{Binding UploadImageCommand}"
+							HeightRequest="120"
+							HorizontalOptions="End"
+							IsEnabled="{Binding IsEditing}"
+							IsVisible="{Binding IsEditing}"
+							Source="upload_image.png"
+							VerticalOptions="Start"
+							WidthRequest="120" />
+					</Border>
 
-            <Border Style="{StaticResource CardBorderStyle}">
-                <VerticalStackLayout Spacing="8">
-                    <Label FontAttributes="Bold" Text="Действия" />
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                        <Button
-                            Grid.Column="0"
-                            Text="Редактировать"
-                            Command="{Binding StartEditingCommand}"
-                            IsVisible="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}" />
-                        <Button
-                            Grid.Column="1"
-                            Text="Сохранить"
-                            Command="{Binding SaveCommand}"
-                            IsVisible="{Binding IsEditing}" />
-                    </Grid>
+				</Grid>
 
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                        <Button
-                            Grid.Column="0"
-                            Text="Материалы (BOM)"
-                            Command="{Binding OpenBomCommand}" />
-                        <Button
-                            Grid.Column="1"
-                            Text="Операции"
-                            Command="{Binding OpenOperationsCommand}" />
-                    </Grid>
-                </VerticalStackLayout>
-            </Border>
-        </VerticalStackLayout>
-    </ScrollView>
+			</Border>
+
+			<VerticalStackLayout Spacing="8">
+				<Border>
+					<Grid>
+						<Button
+							Command="{Binding StartEditingCommand}"
+							HorizontalOptions="Center"
+							IsEnabled="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
+							IsVisible="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
+							Text="Редактировать" />
+						<Button
+							Command="{Binding SaveCommand}"
+							HorizontalOptions="Center"
+							IsEnabled="{Binding IsEditing}"
+							IsVisible="{Binding IsEditing}"
+							Text="Сохранить" />
+					</Grid>
+				</Border>
+				<Border>
+					<Grid ColumnDefinitions="*,*" ColumnSpacing="40">
+						<Button
+							Grid.Column="0"
+							Command="{Binding OpenBomCommand}"
+							HorizontalOptions="End"
+							Text="Материалы (BOM)" />
+						<Button
+							Grid.Column="1"
+							Command="{Binding OpenOperationsCommand}"
+							HorizontalOptions="Start"
+							Text="Операции" />
+					</Grid>
+				</Border>
+			</VerticalStackLayout>
+		</VerticalStackLayout>
+	</ScrollView>
 </ContentPage>
