@@ -90,14 +90,20 @@ public sealed class TimesheetEntry : BaseEntity
     {
     }
 
-    public TimesheetEntry(Guid employeeId, DateOnly workDate, decimal hours, string status)
+    private TimesheetEntry(Guid employeeId, DateOnly workDate, decimal hoursWorked, Guid? productionOrderId)
     {
         Guard.AgainstEmptyGuid(employeeId, "Employee id is required.");
         Guard.AgainstDefaultDate(workDate, "Work date is required.");
+
         EmployeeId = employeeId;
         WorkDate = workDate;
-        UpdateHours(hours);
-        UpdateStatus(status);
+        UpdateHours(hoursWorked);
+        AssignProductionOrder(productionOrderId);
+    }
+
+    public static TimesheetEntry Create(Guid employeeId, DateOnly workDate, decimal hoursWorked, Guid? productionOrderId)
+    {
+        return new TimesheetEntry(employeeId, workDate, hoursWorked, productionOrderId);
     }
 
     public Guid EmployeeId { get; private set; }
@@ -106,20 +112,29 @@ public sealed class TimesheetEntry : BaseEntity
 
     public DateOnly WorkDate { get; private set; }
 
-    public decimal Hours { get; private set; }
+    public decimal HoursWorked { get; private set; }
 
-    public string Status { get; private set; } = string.Empty;
+    public Guid? ProductionOrderId { get; private set; }
 
-    public void UpdateHours(decimal hours)
+    public void UpdateHours(decimal hoursWorked)
     {
-        Guard.AgainstNegative(hours, "Hours cannot be negative.");
-        Hours = hours;
+        Guard.AgainstNegative(hoursWorked, "Hours worked cannot be negative.");
+        HoursWorked = hoursWorked;
     }
 
-    public void UpdateStatus(string status)
+    public void AssignProductionOrder(Guid? productionOrderId)
     {
-        Guard.AgainstNullOrWhiteSpace(status, "Status is required.");
-        Status = status.Trim();
+        ProductionOrderId = NormalizeProductionOrderId(productionOrderId);
+    }
+
+    private static Guid? NormalizeProductionOrderId(Guid? productionOrderId)
+    {
+        if (!productionOrderId.HasValue || productionOrderId == Guid.Empty)
+        {
+            return null;
+        }
+
+        return productionOrderId;
     }
 }
 
@@ -129,7 +144,7 @@ public sealed class PayrollEntry : BaseEntity
     {
     }
 
-    public PayrollEntry(Guid employeeId, DateOnly periodStart, DateOnly periodEnd, decimal accruedAmount)
+    private PayrollEntry(Guid employeeId, DateOnly periodStart, DateOnly periodEnd, decimal totalHours, decimal accruedAmount)
     {
         Guard.AgainstEmptyGuid(employeeId, "Employee id is required.");
         Guard.AgainstDefaultDate(periodStart, "Period start is required.");
@@ -142,7 +157,12 @@ public sealed class PayrollEntry : BaseEntity
         EmployeeId = employeeId;
         PeriodStart = periodStart;
         PeriodEnd = periodEnd;
-        UpdateAccruedAmount(accruedAmount);
+        UpdateTotals(totalHours, accruedAmount);
+    }
+
+    public static PayrollEntry Create(Guid employeeId, DateOnly periodStart, DateOnly periodEnd, decimal totalHours, decimal accruedAmount)
+    {
+        return new PayrollEntry(employeeId, periodStart, periodEnd, totalHours, accruedAmount);
     }
 
     public Guid EmployeeId { get; private set; }
@@ -153,21 +173,25 @@ public sealed class PayrollEntry : BaseEntity
 
     public DateOnly PeriodEnd { get; private set; }
 
+    public decimal TotalHours { get; private set; }
+
     public decimal AccruedAmount { get; private set; }
 
     public decimal PaidAmount { get; private set; }
 
     public decimal Outstanding { get; private set; }
 
-    public void UpdateAccruedAmount(decimal amount)
+    public void UpdateTotals(decimal totalHours, decimal accruedAmount)
     {
-        Guard.AgainstNegative(amount, "Accrued amount cannot be negative.");
-        if (amount < PaidAmount)
+        Guard.AgainstNegative(totalHours, "Total hours cannot be negative.");
+        Guard.AgainstNegative(accruedAmount, "Accrued amount cannot be negative.");
+        if (accruedAmount < PaidAmount)
         {
             throw new DomainException("Accrued amount cannot be less than already paid amount.");
         }
 
-        AccruedAmount = amount;
+        TotalHours = totalHours;
+        AccruedAmount = accruedAmount;
         RecalculateOutstanding();
     }
 

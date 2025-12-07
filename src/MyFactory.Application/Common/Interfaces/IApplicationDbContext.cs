@@ -65,5 +65,9 @@ public interface IApplicationDbContext
 
 	DbSet<ShiftResult> ShiftResults { get; }
 
+	DbSet<TimesheetEntry> TimesheetEntries { get; }
+
+	DbSet<PayrollEntry> PayrollEntries { get; }
+
 	Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

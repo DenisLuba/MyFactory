@@ -12,12 +12,13 @@ public class TimesheetEntryTests
     {
         var employeeId = Guid.NewGuid();
         var workDate = new DateOnly(2025, 3, 15);
-        var entry = new TimesheetEntry(employeeId, workDate, 8m, "Approved");
+        var productionOrderId = Guid.NewGuid();
+        var entry = TimesheetEntry.Create(employeeId, workDate, 8m, productionOrderId);
 
         Assert.Equal(employeeId, entry.EmployeeId);
         Assert.Equal(workDate, entry.WorkDate);
-        Assert.Equal(8m, entry.Hours);
-        Assert.Equal("Approved", entry.Status);
+        Assert.Equal(8m, entry.HoursWorked);
+        Assert.Equal(productionOrderId, entry.ProductionOrderId);
     }
 
     [Fact]
@@ -26,6 +27,6 @@ public class TimesheetEntryTests
         var employeeId = Guid.NewGuid();
         var workDate = new DateOnly(2025, 3, 15);
 
-        Assert.Throws<DomainException>(() => new TimesheetEntry(employeeId, workDate, -1m, "Draft"));
+        Assert.Throws<DomainException>(() => TimesheetEntry.Create(employeeId, workDate, -1m, null));
     }
 }

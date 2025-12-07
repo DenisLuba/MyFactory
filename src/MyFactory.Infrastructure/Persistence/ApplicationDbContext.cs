@@ -42,6 +42,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<WorkerAssignment> WorkerAssignments => Set<WorkerAssignment>();
     public DbSet<ShiftPlan> ShiftPlans => Set<ShiftPlan>();
     public DbSet<ShiftResult> ShiftResults => Set<ShiftResult>();
+    public DbSet<TimesheetEntry> TimesheetEntries => Set<TimesheetEntry>();
+    public DbSet<PayrollEntry> PayrollEntries => Set<PayrollEntry>();
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) => base.SaveChangesAsync(cancellationToken);
 }
 

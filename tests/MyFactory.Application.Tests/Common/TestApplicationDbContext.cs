@@ -68,4 +68,8 @@ internal sealed class TestApplicationDbContext : DbContext, IApplicationDbContex
     public DbSet<ShiftPlan> ShiftPlans => Set<ShiftPlan>();
 
     public DbSet<ShiftResult> ShiftResults => Set<ShiftResult>();
+
+    public DbSet<TimesheetEntry> TimesheetEntries => Set<TimesheetEntry>();
+
+    public DbSet<PayrollEntry> PayrollEntries => Set<PayrollEntry>();
 }

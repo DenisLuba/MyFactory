@@ -10,10 +10,11 @@ public class PayrollEntryTests
     [Fact]
     public void RecalculateOutstanding_Valid_Works()
     {
-        var entry = new PayrollEntry(
+        var entry = PayrollEntry.Create(
             Guid.NewGuid(),
             new DateOnly(2025, 1, 1),
             new DateOnly(2025, 1, 31),
+            160m,
             1_000m);
 
         entry.AddPayment(250m);
@@ -26,10 +27,11 @@ public class PayrollEntryTests
     [Fact]
     public void AddPayment_ExceedingAccrued_Throws()
     {
-        var entry = new PayrollEntry(
+        var entry = PayrollEntry.Create(
             Guid.NewGuid(),
             new DateOnly(2025, 2, 1),
             new DateOnly(2025, 2, 28),
+            120m,
             800m);
 
         entry.AddPayment(500m);
