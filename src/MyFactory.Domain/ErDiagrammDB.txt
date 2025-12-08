@@ -12,6 +12,8 @@
     ROLES {
         uuid id PK
         string name
+        string description
+        timestamp created_at
     }
 
     %% --------------------
@@ -38,6 +40,7 @@
         uuid employee_id FK
         date period_start
         date period_end
+        numeric total_hours
         numeric accrued_amount
         numeric paid_amount
         numeric outstanding
@@ -60,6 +63,7 @@
         uuid id PK
         string name
         string contact
+        bool is_active
     }
     MATERIALPRICEHISTORY {
         uuid id PK
@@ -77,6 +81,7 @@
         uuid id PK
         string name
         string type
+        bool is_active
     }
     WORKSHOPEXPENSEHISTORY {
         uuid id PK
@@ -105,6 +110,7 @@
         string status
         int version
         string description
+        timestamp created_at
     }
     SPECIFICATIONBOM {
         uuid id PK
@@ -112,6 +118,7 @@
         uuid material_id FK
         numeric qty_per_unit
         string unit
+        numeric unit_cost
     }
     SPECIFICATIONOPERATIONS {
         uuid id PK
@@ -190,7 +197,10 @@
         string stage_type
         numeric qty_in
         numeric qty_out
-        date recorded_at
+        timestamp recorded_at
+        timestamp started_at
+        timestamp completed_at
+        string status
     }
     WORKERASSIGNMENTS {
         uuid id PK
@@ -198,6 +208,8 @@
         uuid employee_id FK
         numeric qty_assigned
         numeric qty_completed
+        timestamp assigned_at
+        string status
     }
 
     %% --------------------
@@ -281,6 +293,8 @@
         numeric amount
         date issued_at
         string status
+        string description
+        date closed_at
     }
     ADVANCE_REPORTS {
         uuid id PK
@@ -288,6 +302,7 @@
         string description
         numeric amount
         uuid file_id FK
+        date reported_at
         date spent_at
     }
 
@@ -316,6 +331,7 @@
         numeric total_revenue
         bool is_paid
         date payment_date
+        uuid monthly_profit_id FK NULL
     }
     PRODUCTIONCOSTFACT {
         uuid id PK
