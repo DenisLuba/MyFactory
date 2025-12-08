@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MyFactory.Domain.Common;
+using MyFactory.Domain.Entities.Production;
 
 namespace MyFactory.Domain.Entities.Employees;
 
@@ -97,6 +98,7 @@ public sealed class TimesheetEntry : BaseEntity
 
         EmployeeId = employeeId;
         WorkDate = workDate;
+        Status = TimesheetEntryStatus.Draft;
         UpdateHours(hoursWorked);
         AssignProductionOrder(productionOrderId);
     }
@@ -116,15 +118,41 @@ public sealed class TimesheetEntry : BaseEntity
 
     public Guid? ProductionOrderId { get; private set; }
 
+    public ProductionOrder? ProductionOrder { get; private set; }
+
+    public TimesheetEntryStatus Status { get; private set; }
+
     public void UpdateHours(decimal hoursWorked)
     {
+        EnsureDraftState();
         Guard.AgainstNegative(hoursWorked, "Hours worked cannot be negative.");
         HoursWorked = hoursWorked;
     }
 
     public void AssignProductionOrder(Guid? productionOrderId)
     {
+        EnsureDraftState();
         ProductionOrderId = NormalizeProductionOrderId(productionOrderId);
+    }
+
+    public void Approve()
+    {
+        if (Status == TimesheetEntryStatus.Approved)
+        {
+            throw new DomainException("Timesheet entry is already approved.");
+        }
+
+        Status = TimesheetEntryStatus.Approved;
+    }
+
+    public void ReturnToDraft()
+    {
+        if (Status != TimesheetEntryStatus.Approved)
+        {
+            throw new DomainException("Only approved entries can be returned to draft.");
+        }
+
+        Status = TimesheetEntryStatus.Draft;
     }
 
     private static Guid? NormalizeProductionOrderId(Guid? productionOrderId)
@@ -135,6 +163,14 @@ public sealed class TimesheetEntry : BaseEntity
         }
 
         return productionOrderId;
+    }
+
+    private void EnsureDraftState()
+    {
+        if (Status != TimesheetEntryStatus.Draft)
+        {
+            throw new DomainException("Approved timesheet entries cannot be modified.");
+        }
     }
 }
 
@@ -215,4 +251,10 @@ public sealed class PayrollEntry : BaseEntity
             throw new DomainException("Outstanding amount cannot be negative.");
         }
     }
+}
+
+public enum TimesheetEntryStatus
+{
+    Draft = 1,
+    Approved = 2
 }

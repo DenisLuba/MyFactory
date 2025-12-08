@@ -66,26 +66,43 @@ public sealed class Shipment : BaseEntity
     public DateTime ShipmentDate { get; private set; }
     public ShipmentStatus Status { get; private set; }
     public IReadOnlyCollection<ShipmentItem> Items => _items.AsReadOnly();
-    public decimal TotalAmount => _items.Sum(i => i.LineTotal);
+    public decimal TotalAmount { get; private set; }
 
     public ShipmentItem AddItem(Guid specificationId, decimal quantity, decimal unitPrice)
     {
         EnsureDraft();
         Guard.AgainstEmptyGuid(specificationId, nameof(specificationId));
         Guard.AgainstNonPositive(quantity, nameof(quantity));
-        Guard.AgainstNonPositive(unitPrice, nameof(unitPrice));
+        Guard.AgainstNegative(unitPrice, nameof(unitPrice));
 
         var existing = _items.FirstOrDefault(i => i.SpecificationId == specificationId);
         if (existing is not null)
         {
             existing.IncreaseQuantity(quantity);
             existing.UpdateUnitPrice(unitPrice);
+            RecalculateTotals();
             return existing;
         }
 
         var item = new ShipmentItem(Id, specificationId, quantity, unitPrice);
         _items.Add(item);
+        RecalculateTotals();
         return item;
+    }
+
+    public void RemoveItem(Guid shipmentItemId)
+    {
+        EnsureDraft();
+        var item = _items.FirstOrDefault(i => i.Id == shipmentItemId)
+            ?? throw new DomainException("Shipment item not found.");
+
+        _items.Remove(item);
+        RecalculateTotals();
+    }
+
+    public void Post()
+    {
+        Submit();
     }
 
     public void Submit()
@@ -140,6 +157,11 @@ public sealed class Shipment : BaseEntity
             throw new DomainException("Shipment must contain at least one item.");
         }
     }
+
+    private void RecalculateTotals()
+    {
+        TotalAmount = _items.Sum(i => i.LineTotal);
+    }
 }
 
 /// <summary>
@@ -156,7 +178,7 @@ public sealed class ShipmentItem : BaseEntity
         Guard.AgainstEmptyGuid(shipmentId, nameof(shipmentId));
         Guard.AgainstEmptyGuid(specificationId, nameof(specificationId));
         Guard.AgainstNonPositive(quantity, nameof(quantity));
-        Guard.AgainstNonPositive(unitPrice, nameof(unitPrice));
+        Guard.AgainstNegative(unitPrice, nameof(unitPrice));
 
         ShipmentId = shipmentId;
         SpecificationId = specificationId;
@@ -180,7 +202,7 @@ public sealed class ShipmentItem : BaseEntity
 
     public void UpdateUnitPrice(decimal unitPrice)
     {
-        Guard.AgainstNonPositive(unitPrice, nameof(unitPrice));
+        Guard.AgainstNegative(unitPrice, nameof(unitPrice));
         UnitPrice = unitPrice;
     }
 }
@@ -235,6 +257,11 @@ public sealed class CustomerReturn : BaseEntity
         EnsurePending();
         EnsureHasItems();
         Status = ReturnStatus.Approved;
+    }
+
+    public void Complete()
+    {
+        Approve();
     }
 
     public void Reject(string rejectionReason)
@@ -296,7 +323,9 @@ public enum ShipmentStatus
 {
     Draft = 1,
     Submitted = 2,
+    Posted = Submitted,
     Shipped = 3,
+    Delivered = Shipped,
     Paid = 4,
     Cancelled = 5
 }
@@ -304,6 +333,8 @@ public enum ShipmentStatus
 public enum ReturnStatus
 {
     PendingReview = 1,
+    Draft = PendingReview,
     Approved = 2,
+    Completed = Approved,
     Rejected = 3
 }

@@ -13,7 +13,7 @@ public sealed class FileResource : BaseEntity
     {
     }
 
-    public FileResource(string fileName, string path, string contentType, long size, Guid uploadedBy, DateOnly uploadedAt)
+    public FileResource(string fileName, string path, string contentType, long size, Guid uploadedBy, DateTime uploadedAt)
     {
         Rename(fileName);
         MoveTo(path);
@@ -35,7 +35,7 @@ public sealed class FileResource : BaseEntity
 
     public User? UploadedByUser { get; private set; }
 
-    public DateOnly UploadedAt { get; private set; }
+    public DateTime UploadedAt { get; private set; }
 
     public void Rename(string newName)
     {
@@ -71,7 +71,7 @@ public sealed class FileResource : BaseEntity
         UploadedBy = uploadedBy;
     }
 
-    private void SetUploadedAt(DateOnly uploadedAt)
+    private void SetUploadedAt(DateTime uploadedAt)
     {
         Guard.AgainstDefaultDate(uploadedAt, "Upload date is required.");
         UploadedAt = uploadedAt;

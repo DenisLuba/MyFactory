@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Materials;
 using MyFactory.Domain.Entities.Operations;
 using MyFactory.Domain.Entities.Workshops;
+using MyFactory.Domain.ValueObjects;
 
 namespace MyFactory.Domain.Entities.Specifications;
 
@@ -17,7 +19,7 @@ public sealed class Specification : BaseEntity
     {
     }
 
-    public Specification(string sku, string name, decimal planPerHour, string status, DateTime createdAt, string? description = null)
+    public Specification(string sku, string name, decimal planPerHour, string status, DateTime createdAt, string? description = null, int version = 1)
     {
         UpdateSku(sku);
         Rename(name);
@@ -25,6 +27,7 @@ public sealed class Specification : BaseEntity
         ChangeStatus(status);
         UpdateDescription(description);
         CreatedAt = EnsureCreatedAt(createdAt);
+        SetVersion(version);
     }
 
     public string Sku { get; private set; } = string.Empty;
@@ -38,6 +41,8 @@ public sealed class Specification : BaseEntity
     public string Status { get; private set; } = string.Empty;
 
     public DateTime CreatedAt { get; private set; }
+
+    public int Version { get; private set; }
 
     public IReadOnlyCollection<SpecificationBomItem> BomItems => _bomItems.AsReadOnly();
 
@@ -70,6 +75,11 @@ public sealed class Specification : BaseEntity
     {
         Guard.AgainstNullOrWhiteSpace(status, "Specification status is required.");
         Status = status.Trim();
+    }
+
+    public void IncrementVersion()
+    {
+        Version += 1;
     }
 
     public SpecificationBomItem AddBomItem(Guid materialId, decimal quantity, string unit, decimal? unitCost = null)
@@ -110,10 +120,22 @@ public sealed class Specification : BaseEntity
         Guard.AgainstDefaultDate(createdAt, "Specification creation date is required.");
         return createdAt;
     }
+
+    private void SetVersion(int version)
+    {
+        if (version <= 0)
+        {
+            throw new DomainException("Specification version must be positive.");
+        }
+
+        Version = version;
+    }
 }
 
 public sealed class SpecificationBomItem : BaseEntity
 {
+    private Money? _unitCost;
+
     private SpecificationBomItem()
     {
     }
@@ -144,7 +166,8 @@ public sealed class SpecificationBomItem : BaseEntity
 
     public string Unit { get; private set; } = string.Empty;
 
-    public decimal? UnitCost { get; private set; }
+    [NotMapped]
+    public decimal? UnitCost => _unitCost?.Amount;
 
     public void UpdateQuantity(decimal quantity)
     {
@@ -154,12 +177,13 @@ public sealed class SpecificationBomItem : BaseEntity
 
     public void UpdateUnitCost(decimal? unitCost)
     {
-        if (unitCost.HasValue && unitCost.Value <= 0)
+        if (!unitCost.HasValue)
         {
-            throw new DomainException("Unit cost must be positive.");
+            _unitCost = null;
+            return;
         }
 
-        UnitCost = unitCost;
+        _unitCost = Money.From(unitCost.Value);
     }
 }
 

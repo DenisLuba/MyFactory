@@ -5,6 +5,7 @@ using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Employees;
 using MyFactory.Domain.Entities.Files;
 using MyFactory.Domain.Entities.Specifications;
+using MyFactory.Domain.ValueObjects;
 
 namespace MyFactory.Domain.Entities.Finance;
 
@@ -178,12 +179,12 @@ public sealed class OverheadMonthly : BaseEntity
 
     public OverheadMonthly(int periodMonth, int periodYear, Guid expenseTypeId, decimal amount, string? notes)
     {
-        EnsureValidPeriod(periodMonth, periodYear);
+        var period = Period.From(periodMonth, periodYear);
         Guard.AgainstEmptyGuid(expenseTypeId, "Expense type id is required.");
         Guard.AgainstNegative(amount, "Overhead amount cannot be negative.");
 
-        PeriodMonth = periodMonth;
-        PeriodYear = periodYear;
+        PeriodMonth = period.Month;
+        PeriodYear = period.Year;
         ExpenseTypeId = expenseTypeId;
         Amount = amount;
         Notes = notes?.Trim();
@@ -209,18 +210,6 @@ public sealed class OverheadMonthly : BaseEntity
 
     public void UpdateNotes(string? notes) => Notes = string.IsNullOrWhiteSpace(notes) ? null : notes.Trim();
 
-    private static void EnsureValidPeriod(int month, int year)
-    {
-        if (month is < 1 or > 12)
-        {
-            throw new DomainException("Period month must be between 1 and 12.");
-        }
-
-        if (year < 1)
-        {
-            throw new DomainException("Period year must be positive.");
-        }
-    }
 }
 
 public sealed class RevenueReport : BaseEntity
@@ -229,9 +218,9 @@ public sealed class RevenueReport : BaseEntity
     {
     }
 
-    public RevenueReport(int periodMonth, int periodYear, Guid specificationId, decimal quantity, decimal unitPrice, bool isPaid, DateOnly? paymentDate)
+    public RevenueReport(int periodMonth, int periodYear, Guid specificationId, decimal quantity, decimal unitPrice, bool isPaid, DateOnly? paymentDate, Guid? monthlyProfitId = null)
     {
-        EnsureValidPeriod(periodMonth, periodYear);
+        var period = Period.From(periodMonth, periodYear);
         Guard.AgainstEmptyGuid(specificationId, "Specification id is required.");
         Guard.AgainstNegative(quantity, "Quantity cannot be negative.");
         Guard.AgainstNegative(unitPrice, "Unit price cannot be negative.");
@@ -240,14 +229,18 @@ public sealed class RevenueReport : BaseEntity
             throw new DomainException("Payment date must be provided once the report is paid.");
         }
 
-        PeriodMonth = periodMonth;
-        PeriodYear = periodYear;
+        PeriodMonth = period.Month;
+        PeriodYear = period.Year;
         SpecificationId = specificationId;
         Quantity = quantity;
         UnitPrice = unitPrice;
         TotalRevenue = quantity * unitPrice;
         IsPaid = isPaid;
         PaymentDate = paymentDate;
+        if (monthlyProfitId.HasValue)
+        {
+            LinkMonthlyProfit(monthlyProfitId.Value);
+        }
     }
 
     public int PeriodMonth { get; private set; }
@@ -267,6 +260,10 @@ public sealed class RevenueReport : BaseEntity
     public bool IsPaid { get; private set; }
 
     public DateOnly? PaymentDate { get; private set; }
+
+    public Guid? MonthlyProfitId { get; private set; }
+
+    public MonthlyProfit? MonthlyProfit { get; private set; }
 
     public void UpdateSales(decimal quantity, decimal unitPrice)
     {
@@ -291,18 +288,12 @@ public sealed class RevenueReport : BaseEntity
         PaymentDate = null;
     }
 
-    private static void EnsureValidPeriod(int month, int year)
+    public void LinkMonthlyProfit(Guid monthlyProfitId)
     {
-        if (month is < 1 or > 12)
-        {
-            throw new DomainException("Period month must be between 1 and 12.");
-        }
-
-        if (year < 1)
-        {
-            throw new DomainException("Period year must be positive.");
-        }
+        Guard.AgainstEmptyGuid(monthlyProfitId, "Monthly profit id is required.");
+        MonthlyProfitId = monthlyProfitId;
     }
+
 }
 
 public sealed class ProductionCostFact : BaseEntity
@@ -313,15 +304,15 @@ public sealed class ProductionCostFact : BaseEntity
 
     public ProductionCostFact(int periodMonth, int periodYear, Guid specificationId, decimal quantityProduced, decimal materialCost, decimal laborCost, decimal overheadCost)
     {
-        EnsureValidPeriod(periodMonth, periodYear);
+        var period = Period.From(periodMonth, periodYear);
         Guard.AgainstEmptyGuid(specificationId, "Specification id is required.");
         Guard.AgainstNegative(quantityProduced, "Produced quantity cannot be negative.");
         Guard.AgainstNegative(materialCost, "Material cost cannot be negative.");
         Guard.AgainstNegative(laborCost, "Labor cost cannot be negative.");
         Guard.AgainstNegative(overheadCost, "Overhead cost cannot be negative.");
 
-        PeriodMonth = periodMonth;
-        PeriodYear = periodYear;
+        PeriodMonth = period.Month;
+        PeriodYear = period.Year;
         SpecificationId = specificationId;
         QuantityProduced = quantityProduced;
         MaterialCost = materialCost;
@@ -368,18 +359,6 @@ public sealed class ProductionCostFact : BaseEntity
 
     private void RecalculateTotalCost() => TotalCost = MaterialCost + LaborCost + OverheadCost;
 
-    private static void EnsureValidPeriod(int month, int year)
-    {
-        if (month is < 1 or > 12)
-        {
-            throw new DomainException("Period month must be between 1 and 12.");
-        }
-
-        if (year < 1)
-        {
-            throw new DomainException("Period year must be positive.");
-        }
-    }
 }
 
 public sealed class MonthlyProfit : BaseEntity
@@ -388,15 +367,17 @@ public sealed class MonthlyProfit : BaseEntity
     {
     }
 
+    private readonly List<RevenueReport> _revenueReports = new();
+
     public MonthlyProfit(int periodMonth, int periodYear, decimal revenue, decimal productionCost, decimal overhead)
     {
-        EnsureValidPeriod(periodMonth, periodYear);
+        var period = Period.From(periodMonth, periodYear);
         Guard.AgainstNegative(revenue, "Revenue cannot be negative.");
         Guard.AgainstNegative(productionCost, "Production cost cannot be negative.");
         Guard.AgainstNegative(overhead, "Overhead cannot be negative.");
 
-        PeriodMonth = periodMonth;
-        PeriodYear = periodYear;
+        PeriodMonth = period.Month;
+        PeriodYear = period.Year;
         Revenue = revenue;
         ProductionCost = productionCost;
         Overhead = overhead;
@@ -415,6 +396,8 @@ public sealed class MonthlyProfit : BaseEntity
 
     public decimal Profit { get; private set; }
 
+    public IReadOnlyCollection<RevenueReport> RevenueReports => _revenueReports.AsReadOnly();
+
     public void UpdateFigures(decimal revenue, decimal productionCost, decimal overhead)
     {
         Guard.AgainstNegative(revenue, "Revenue cannot be negative.");
@@ -427,18 +410,23 @@ public sealed class MonthlyProfit : BaseEntity
         RecalculateProfit();
     }
 
+    public void AttachRevenueReport(RevenueReport report)
+    {
+        Guard.AgainstNull(report, nameof(report));
+        if (report.PeriodMonth != PeriodMonth || report.PeriodYear != PeriodYear)
+        {
+            throw new DomainException("Revenue report period does not match monthly profit period.");
+        }
+
+        if (_revenueReports.Any(existing => existing.Id == report.Id))
+        {
+            return;
+        }
+
+        report.LinkMonthlyProfit(Id);
+        _revenueReports.Add(report);
+    }
+
     private void RecalculateProfit() => Profit = Revenue - (ProductionCost + Overhead);
 
-    private static void EnsureValidPeriod(int month, int year)
-    {
-        if (month is < 1 or > 12)
-        {
-            throw new DomainException("Period month must be between 1 and 12.");
-        }
-
-        if (year < 1)
-        {
-            throw new DomainException("Period year must be positive.");
-        }
-    }
 }

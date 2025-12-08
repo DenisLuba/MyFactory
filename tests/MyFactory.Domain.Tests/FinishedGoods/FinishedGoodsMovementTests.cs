@@ -19,6 +19,7 @@ public class FinishedGoodsMovementTests
 
         Assert.Equal(5, movement.Quantity);
         Assert.Equal(new DateTime(2025, 1, 5), movement.MovedAt);
+        Assert.Null(movement.FinishedGoodsInventoryId);
     }
 
     [Fact]
@@ -32,5 +33,34 @@ public class FinishedGoodsMovementTests
             warehouseId,
             1,
             new DateTime(2025, 1, 5)));
+    }
+    
+    [Fact]
+    public void AttachSourceInventory_ValidatesQuantity()
+    {
+        var movement = FinishedGoodsMovement.CreateTransfer(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            3,
+            DateTime.UtcNow);
+
+        movement.AttachSourceInventory(Guid.NewGuid(), 3);
+
+        Assert.NotNull(movement.FinishedGoodsInventoryId);
+        Assert.Throws<DomainException>(() => movement.AttachSourceInventory(Guid.NewGuid(), 3));
+    }
+
+    [Fact]
+    public void CreateTransfer_WithSourceQuantity_ThrowsWhenExceeding()
+    {
+        Assert.Throws<DomainException>(() => FinishedGoodsMovement.CreateTransfer(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            10,
+            DateTime.UtcNow,
+            Guid.NewGuid(),
+            5));
     }
 }

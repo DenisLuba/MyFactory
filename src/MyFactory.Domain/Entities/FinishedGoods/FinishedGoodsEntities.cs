@@ -1,6 +1,7 @@
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Specifications;
 using MyFactory.Domain.Entities.Warehousing;
+using QuantityValue = MyFactory.Domain.ValueObjects.Quantity;
 
 namespace MyFactory.Domain.Entities.FinishedGoods;
 
@@ -23,9 +24,9 @@ public sealed class FinishedGoodsInventory : BaseEntity
         UpdatedAt = DateTime.UtcNow;
     }
 
-    public Guid SpecificationId { get; }
+    public Guid SpecificationId { get; private set; }
     public Specification? Specification { get; private set; }
-    public Guid WarehouseId { get; }
+    public Guid WarehouseId { get; private set; }
     public Warehouse? Warehouse { get; private set; }
     public decimal Quantity { get; private set; }
     public decimal UnitCost { get; private set; }
@@ -34,12 +35,12 @@ public sealed class FinishedGoodsInventory : BaseEntity
     public void Receive(decimal quantity, decimal unitCost, DateTime receivedAt)
     {
         Guard.AgainstNonPositive(quantity, nameof(quantity));
-        Guard.AgainstNonPositive(unitCost, nameof(unitCost));
+        Guard.AgainstNegative(unitCost, nameof(unitCost));
         Guard.AgainstDefaultDate(receivedAt, nameof(receivedAt));
 
         var totalValue = (Quantity * UnitCost) + (quantity * unitCost);
         var newQuantity = Quantity + quantity;
-        UnitCost = totalValue / newQuantity;
+        UnitCost = newQuantity == 0 ? 0 : totalValue / newQuantity;
         Quantity = newQuantity;
         UpdatedAt = receivedAt;
     }
@@ -67,12 +68,19 @@ public sealed class FinishedGoodsMovement : BaseEntity
     {
     }
 
-    private FinishedGoodsMovement(Guid specificationId, Guid fromWarehouseId, Guid toWarehouseId, decimal quantity, DateTime movedAt)
+    private FinishedGoodsMovement(
+        Guid specificationId,
+        Guid fromWarehouseId,
+        Guid toWarehouseId,
+        decimal quantity,
+        DateTime movedAt,
+        Guid? finishedGoodsInventoryId,
+        decimal? sourceAvailableQuantity)
     {
         Guard.AgainstEmptyGuid(specificationId, nameof(specificationId));
         Guard.AgainstEmptyGuid(fromWarehouseId, nameof(fromWarehouseId));
         Guard.AgainstEmptyGuid(toWarehouseId, nameof(toWarehouseId));
-        Guard.AgainstNonPositive(quantity, nameof(quantity));
+        QuantityValue.From(quantity);
         Guard.AgainstDefaultDate(movedAt, nameof(movedAt));
 
         if (fromWarehouseId == toWarehouseId)
@@ -80,11 +88,21 @@ public sealed class FinishedGoodsMovement : BaseEntity
             throw new DomainException("Source and destination warehouses must differ.");
         }
 
+        if (sourceAvailableQuantity.HasValue && quantity > sourceAvailableQuantity.Value)
+        {
+            throw new DomainException("Movement quantity cannot exceed available source quantity.");
+        }
+
         SpecificationId = specificationId;
         FromWarehouseId = fromWarehouseId;
         ToWarehouseId = toWarehouseId;
         Quantity = quantity;
         MovedAt = movedAt;
+
+        if (finishedGoodsInventoryId.HasValue)
+        {
+            AttachSourceInventory(finishedGoodsInventoryId.Value, sourceAvailableQuantity ?? quantity);
+        }
     }
 
     public Guid SpecificationId { get; private set; }
@@ -95,7 +113,32 @@ public sealed class FinishedGoodsMovement : BaseEntity
     public Warehouse? ToWarehouse { get; private set; }
     public decimal Quantity { get; private set; }
     public DateTime MovedAt { get; private set; }
+    public Guid? FinishedGoodsInventoryId { get; private set; }
+    public FinishedGoodsInventory? FinishedGoodsInventory { get; private set; }
 
-    public static FinishedGoodsMovement CreateTransfer(Guid specificationId, Guid fromWarehouseId, Guid toWarehouseId, decimal quantity, DateTime movedAt)
-        => new(specificationId, fromWarehouseId, toWarehouseId, quantity, movedAt);
+    public static FinishedGoodsMovement CreateTransfer(
+        Guid specificationId,
+        Guid fromWarehouseId,
+        Guid toWarehouseId,
+        decimal quantity,
+        DateTime movedAt,
+        Guid? finishedGoodsInventoryId = null,
+        decimal? sourceAvailableQuantity = null)
+        => new(specificationId, fromWarehouseId, toWarehouseId, quantity, movedAt, finishedGoodsInventoryId, sourceAvailableQuantity);
+
+    public void AttachSourceInventory(Guid finishedGoodsInventoryId, decimal sourceAvailableQuantity)
+    {
+        if (FinishedGoodsInventoryId.HasValue && FinishedGoodsInventoryId.Value != finishedGoodsInventoryId)
+        {
+            throw new DomainException("Movement already linked to a different source inventory.");
+        }
+
+        Guard.AgainstEmptyGuid(finishedGoodsInventoryId, nameof(finishedGoodsInventoryId));
+        if (Quantity > sourceAvailableQuantity)
+        {
+            throw new DomainException("Movement quantity cannot exceed available source quantity.");
+        }
+
+        FinishedGoodsInventoryId = finishedGoodsInventoryId;
+    }
 }

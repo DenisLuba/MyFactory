@@ -1,10 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyFactory.Application.Common.Interfaces;
 using MyFactory.Domain.Entities.Employees;
+using MyFactory.Domain.Entities.Finance;
+using MyFactory.Domain.Entities.FinishedGoods;
 using MyFactory.Domain.Entities.Identity;
 using MyFactory.Domain.Entities.Materials;
 using MyFactory.Domain.Entities.Operations;
 using MyFactory.Domain.Entities.Production;
+using MyFactory.Domain.Entities.Sales;
 using MyFactory.Domain.Entities.Shifts;
 using MyFactory.Domain.Entities.Specifications;
 using MyFactory.Domain.Entities.Warehousing;
@@ -34,6 +37,13 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<InventoryItem> InventoryItems => Set<InventoryItem>();
     public DbSet<InventoryReceipt> InventoryReceipts => Set<InventoryReceipt>();
     public DbSet<InventoryReceiptItem> InventoryReceiptItems => Set<InventoryReceiptItem>();
+    public DbSet<FinishedGoodsInventory> FinishedGoodsInventories => Set<FinishedGoodsInventory>();
+    public DbSet<FinishedGoodsMovement> FinishedGoodsMovements => Set<FinishedGoodsMovement>();
+    public DbSet<Customer> Customers => Set<Customer>();
+    public DbSet<Shipment> Shipments => Set<Shipment>();
+    public DbSet<ShipmentItem> ShipmentItems => Set<ShipmentItem>();
+    public DbSet<CustomerReturn> CustomerReturns => Set<CustomerReturn>();
+    public DbSet<CustomerReturnItem> CustomerReturnItems => Set<CustomerReturnItem>();
     public DbSet<PurchaseRequest> PurchaseRequests => Set<PurchaseRequest>();
     public DbSet<PurchaseRequestItem> PurchaseRequestItems => Set<PurchaseRequestItem>();
     public DbSet<ProductionOrder> ProductionOrders => Set<ProductionOrder>();
@@ -44,6 +54,11 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<ShiftResult> ShiftResults => Set<ShiftResult>();
     public DbSet<TimesheetEntry> TimesheetEntries => Set<TimesheetEntry>();
     public DbSet<PayrollEntry> PayrollEntries => Set<PayrollEntry>();
+    public DbSet<ExpenseType> ExpenseTypes => Set<ExpenseType>();
+    public DbSet<OverheadMonthly> OverheadMonthlyEntries => Set<OverheadMonthly>();
+    public DbSet<RevenueReport> RevenueReports => Set<RevenueReport>();
+    public DbSet<ProductionCostFact> ProductionCostFacts => Set<ProductionCostFact>();
+    public DbSet<MonthlyProfit> MonthlyProfits => Set<MonthlyProfit>();
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) => base.SaveChangesAsync(cancellationToken);
 }
 

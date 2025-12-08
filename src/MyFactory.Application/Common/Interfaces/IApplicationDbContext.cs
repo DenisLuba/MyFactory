@@ -2,10 +2,13 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyFactory.Domain.Entities.Employees;
+using MyFactory.Domain.Entities.Finance;
+using MyFactory.Domain.Entities.FinishedGoods;
 using MyFactory.Domain.Entities.Identity;
 using MyFactory.Domain.Entities.Materials;
 using MyFactory.Domain.Entities.Operations;
 using MyFactory.Domain.Entities.Production;
+using MyFactory.Domain.Entities.Sales;
 using MyFactory.Domain.Entities.Shifts;
 using MyFactory.Domain.Entities.Specifications;
 using MyFactory.Domain.Entities.Warehousing;
@@ -49,6 +52,20 @@ public interface IApplicationDbContext
 
 	DbSet<InventoryReceiptItem> InventoryReceiptItems { get; }
 
+	DbSet<FinishedGoodsInventory> FinishedGoodsInventories { get; }
+
+	DbSet<FinishedGoodsMovement> FinishedGoodsMovements { get; }
+
+	DbSet<Customer> Customers { get; }
+
+	DbSet<Shipment> Shipments { get; }
+
+	DbSet<ShipmentItem> ShipmentItems { get; }
+
+	DbSet<CustomerReturn> CustomerReturns { get; }
+
+	DbSet<CustomerReturnItem> CustomerReturnItems { get; }
+
 	DbSet<PurchaseRequest> PurchaseRequests { get; }
 
 	DbSet<PurchaseRequestItem> PurchaseRequestItems { get; }
@@ -68,6 +85,16 @@ public interface IApplicationDbContext
 	DbSet<TimesheetEntry> TimesheetEntries { get; }
 
 	DbSet<PayrollEntry> PayrollEntries { get; }
+
+	DbSet<ExpenseType> ExpenseTypes { get; }
+
+	DbSet<OverheadMonthly> OverheadMonthlyEntries { get; }
+
+	DbSet<RevenueReport> RevenueReports { get; }
+
+	DbSet<ProductionCostFact> ProductionCostFacts { get; }
+
+	DbSet<MonthlyProfit> MonthlyProfits { get; }
 
 	Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

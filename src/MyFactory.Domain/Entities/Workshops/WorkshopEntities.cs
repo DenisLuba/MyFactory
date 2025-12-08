@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Specifications;
+using MyFactory.Domain.ValueObjects;
 
 namespace MyFactory.Domain.Entities.Workshops;
 
@@ -57,12 +58,9 @@ public sealed class Workshop : BaseEntity
         Guard.AgainstNonPositive(amountPerUnit, "Amount per unit must be positive.");
         Guard.AgainstDefaultDate(effectiveFrom, "Effective from date is required.");
 
-        if (effectiveTo.HasValue && effectiveTo.Value < effectiveFrom)
-        {
-            throw new DomainException("Effective to date cannot be earlier than effective from date.");
-        }
+        var range = DateRange.From(effectiveFrom, effectiveTo ?? DateTime.MaxValue);
 
-        var newEnd = effectiveTo ?? DateTime.MaxValue;
+        var newEnd = range.End ?? DateTime.MaxValue;
 
         var overlaps = _expenseHistory.Any(entry => entry.Overlaps(effectiveFrom, newEnd));
         if (overlaps)
@@ -87,17 +85,13 @@ public sealed class WorkshopExpenseHistory : BaseEntity
         Guard.AgainstEmptyGuid(workshopId, "Workshop id is required.");
         Guard.AgainstEmptyGuid(specificationId, "Specification id is required.");
         Guard.AgainstNonPositive(amountPerUnit, "Amount per unit must be positive.");
-        Guard.AgainstDefaultDate(effectiveFrom, "Effective from date is required.");
 
-        if (effectiveTo.HasValue && effectiveTo.Value < effectiveFrom)
-        {
-            throw new DomainException("Effective to date cannot be earlier than effective from date.");
-        }
+        var range = DateRange.From(effectiveFrom, effectiveTo ?? DateTime.MaxValue);
 
         WorkshopId = workshopId;
         SpecificationId = specificationId;
         AmountPerUnit = amountPerUnit;
-        EffectiveFrom = effectiveFrom;
+        EffectiveFrom = range.Start;
         EffectiveTo = effectiveTo;
     }
 
@@ -124,12 +118,7 @@ public sealed class WorkshopExpenseHistory : BaseEntity
     public void ClosePeriod(DateTime effectiveTo)
     {
         Guard.AgainstDefaultDate(effectiveTo, "Effective to date is required.");
-
-        if (effectiveTo < EffectiveFrom)
-        {
-            throw new DomainException("Effective to date cannot be earlier than effective from date.");
-        }
-
+        DateRange.From(EffectiveFrom, effectiveTo);
         EffectiveTo = effectiveTo;
     }
 

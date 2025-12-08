@@ -164,11 +164,11 @@ public sealed class InventoryReceipt : BaseEntity
     public InventoryReceiptStatus Status { get; private set; }
     public IReadOnlyCollection<InventoryReceiptItem> Items => _items.AsReadOnly();
 
-    public InventoryReceiptItem AddItem(Guid materialId, decimal quantity, decimal unitPrice)
+    public InventoryReceiptItem AddItem(Guid materialId, decimal quantity, decimal unitPrice, Guid? inventoryItemId = null)
     {
         EnsureDraft();
 
-        var item = new InventoryReceiptItem(Id, materialId, quantity, unitPrice);
+        var item = new InventoryReceiptItem(Id, materialId, quantity, unitPrice, inventoryItemId);
         _items.Add(item);
         TotalAmount += item.LineTotal;
         return item;
@@ -209,7 +209,7 @@ public sealed class InventoryReceiptItem : BaseEntity
     {
     }
 
-    public InventoryReceiptItem(Guid receiptId, Guid materialId, decimal quantity, decimal unitPrice)
+    public InventoryReceiptItem(Guid receiptId, Guid materialId, decimal quantity, decimal unitPrice, Guid? inventoryItemId = null)
     {
         Guard.AgainstEmptyGuid(receiptId, nameof(receiptId));
         Guard.AgainstEmptyGuid(materialId, nameof(materialId));
@@ -220,15 +220,28 @@ public sealed class InventoryReceiptItem : BaseEntity
         MaterialId = materialId;
         Quantity = quantity;
         UnitPrice = unitPrice;
+
+        if (inventoryItemId.HasValue)
+        {
+            AssignInventoryItem(inventoryItemId.Value);
+        }
     }
 
     public Guid InventoryReceiptId { get; private set; }
     public InventoryReceipt? InventoryReceipt { get; private set; }
     public Guid MaterialId { get; private set; }
     public Material? Material { get; private set; }
+    public Guid? InventoryItemId { get; private set; }
+    public InventoryItem? InventoryItem { get; private set; }
     public decimal Quantity { get; private set; }
     public decimal UnitPrice { get; private set; }
     public decimal LineTotal => Quantity * UnitPrice;
+
+    public void AssignInventoryItem(Guid inventoryItemId)
+    {
+        Guard.AgainstEmptyGuid(inventoryItemId, nameof(inventoryItemId));
+        InventoryItemId = inventoryItemId;
+    }
 }
 
 public enum InventoryReceiptStatus
