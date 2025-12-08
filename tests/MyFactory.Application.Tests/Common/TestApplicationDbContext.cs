@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MyFactory.Application.Common.Interfaces;
 using MyFactory.Domain.Entities.Employees;
 using MyFactory.Domain.Entities.Finance;
+using MyFactory.Domain.Entities.Files;
 using MyFactory.Domain.Entities.FinishedGoods;
 using MyFactory.Domain.Entities.Identity;
 using MyFactory.Domain.Entities.Materials;
@@ -99,4 +100,10 @@ internal sealed class TestApplicationDbContext : DbContext, IApplicationDbContex
     public DbSet<ProductionCostFact> ProductionCostFacts => Set<ProductionCostFact>();
 
     public DbSet<MonthlyProfit> MonthlyProfits => Set<MonthlyProfit>();
+
+    public DbSet<Advance> Advances => Set<Advance>();
+
+    public DbSet<AdvanceReport> AdvanceReports => Set<AdvanceReport>();
+
+    public DbSet<FileResource> FileResources => Set<FileResource>();
 }

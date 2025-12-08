@@ -16,6 +16,7 @@ internal static class ApplicationDbContextMockBuilder
         mock.SetupGet(db => db.MaterialTypes).Returns(context.MaterialTypes);
         mock.SetupGet(db => db.Suppliers).Returns(context.Suppliers);
         mock.SetupGet(db => db.MaterialPriceHistoryEntries).Returns(context.MaterialPriceHistoryEntries);
+        mock.SetupGet(db => db.FileResources).Returns(context.FileResources);
         mock.SetupGet(db => db.Warehouses).Returns(context.Warehouses);
         mock.SetupGet(db => db.InventoryItems).Returns(context.InventoryItems);
         mock.SetupGet(db => db.InventoryReceipts).Returns(context.InventoryReceipts);

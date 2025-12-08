@@ -29,7 +29,7 @@ public sealed class Advance : BaseEntity
         Status = AdvanceStatus.Draft;
     }
 
-    public Guid EmployeeId { get; }
+    public Guid EmployeeId { get; private set; }
 
     public Employee? Employee { get; private set; }
 
@@ -120,7 +120,7 @@ public sealed class AdvanceReport : BaseEntity
         SpentAt = spentAt;
     }
 
-    public Guid AdvanceId { get; }
+    public Guid AdvanceId { get; private set; }
 
     public Advance? Advance { get; private set; }
 

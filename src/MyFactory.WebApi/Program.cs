@@ -16,9 +16,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<LoginRequest>();
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AssemblyMarker).Assembly));
-builder.Services.AddAutoMapper(typeof(AssemblyMarker));
+
+//builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AssemblyMarker).Assembly));
+//builder.Services.AddAutoMapper(typeof(AssemblyMarker));
+
 builder.Services.AddSingleton<IEmployeeRepository, InMemoryEmployeeRepository>();
+
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //{
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

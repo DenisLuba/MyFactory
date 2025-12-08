@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyFactory.Domain.Entities.Employees;
 using MyFactory.Domain.Entities.Finance;
+using MyFactory.Domain.Entities.Files;
 using MyFactory.Domain.Entities.FinishedGoods;
 using MyFactory.Domain.Entities.Identity;
 using MyFactory.Domain.Entities.Materials;
@@ -95,6 +96,12 @@ public interface IApplicationDbContext
 	DbSet<ProductionCostFact> ProductionCostFacts { get; }
 
 	DbSet<MonthlyProfit> MonthlyProfits { get; }
+
+	DbSet<Advance> Advances { get; }
+
+	DbSet<AdvanceReport> AdvanceReports { get; }
+
+	DbSet<FileResource> FileResources { get; }
 
 	Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

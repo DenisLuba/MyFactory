@@ -2,6 +2,7 @@
 using MyFactory.Application.Common.Interfaces;
 using MyFactory.Domain.Entities.Employees;
 using MyFactory.Domain.Entities.Finance;
+using MyFactory.Domain.Entities.Files;
 using MyFactory.Domain.Entities.FinishedGoods;
 using MyFactory.Domain.Entities.Identity;
 using MyFactory.Domain.Entities.Materials;
@@ -59,6 +60,10 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<RevenueReport> RevenueReports => Set<RevenueReport>();
     public DbSet<ProductionCostFact> ProductionCostFacts => Set<ProductionCostFact>();
     public DbSet<MonthlyProfit> MonthlyProfits => Set<MonthlyProfit>();
-    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) => base.SaveChangesAsync(cancellationToken);
+    public DbSet<Advance> Advances => Set<Advance>();
+    public DbSet<AdvanceReport> AdvanceReports => Set<AdvanceReport>();
+    public DbSet<FileResource> FileResources => Set<FileResource>();
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        => base.SaveChangesAsync(cancellationToken);
 }
 

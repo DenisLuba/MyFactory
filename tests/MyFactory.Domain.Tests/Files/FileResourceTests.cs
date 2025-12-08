@@ -8,20 +8,27 @@ namespace MyFactory.Domain.Tests.Files;
 public class FileResourceTests
 {
     private static FileResource CreateSample()
-        => new("report.pdf", "/files/2025/01/report.pdf", "application/pdf", 12_345, Guid.NewGuid(), new DateTime(2025, 1, 5, 10, 30, 0, DateTimeKind.Utc));
+        => new(
+            "report.pdf",
+            "/files/2025/01/report.pdf",
+            "application/pdf",
+            12_345,
+            Guid.NewGuid(),
+            new DateTime(2025, 1, 5, 10, 30, 0, DateTimeKind.Utc),
+            "Quarterly advance report");
 
     [Fact]
     public void Constructor_WithValidData_CreatesEntity()
     {
         var uploader = Guid.NewGuid();
         var uploadedAt = new DateTime(2025, 2, 1, 12, 0, 0, DateTimeKind.Utc);
-        var file = new FileResource("photo.jpg", "/uploads/photo.jpg", "image/jpeg", 2_048, uploader, uploadedAt);
+        var file = new FileResource("photo.jpg", "/uploads/photo.jpg", "image/jpeg", 2_048, uploader, uploadedAt, "sample");
 
         Assert.Equal("photo.jpg", file.FileName);
-        Assert.Equal("/uploads/photo.jpg", file.Path);
+        Assert.Equal("/uploads/photo.jpg", file.StoragePath);
         Assert.Equal("image/jpeg", file.ContentType);
-        Assert.Equal(2_048, file.Size);
-        Assert.Equal(uploader, file.UploadedBy);
+        Assert.Equal(2_048, file.SizeBytes);
+        Assert.Equal(uploader, file.UploadedByUserId);
         Assert.Equal(uploadedAt, file.UploadedAt);
     }
 
@@ -55,7 +62,7 @@ public class FileResourceTests
         var file = CreateSample();
         file.MoveTo("/archive/report.pdf");
 
-        Assert.Equal("/archive/report.pdf", file.Path);
+        Assert.Equal("/archive/report.pdf", file.StoragePath);
     }
 
     [Fact]

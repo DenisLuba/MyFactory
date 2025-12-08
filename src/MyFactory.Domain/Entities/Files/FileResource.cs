@@ -9,33 +9,45 @@ namespace MyFactory.Domain.Entities.Files;
 /// </summary>
 public sealed class FileResource : BaseEntity
 {
+    public const int DescriptionMaxLength = 2000;
+
     private FileResource()
     {
     }
 
-    public FileResource(string fileName, string path, string contentType, long size, Guid uploadedBy, DateTime uploadedAt)
+    public FileResource(
+        string fileName,
+        string storagePath,
+        string contentType,
+        long sizeBytes,
+        Guid uploadedByUserId,
+        DateTime uploadedAt,
+        string? description = null)
     {
         Rename(fileName);
-        MoveTo(path);
+        MoveTo(storagePath);
         ChangeContentType(contentType);
-        UpdateSize(size);
-        SetUploadedBy(uploadedBy);
+        UpdateSize(sizeBytes);
+        SetUploadedBy(uploadedByUserId);
         SetUploadedAt(uploadedAt);
+        UpdateDescription(description);
     }
 
     public string FileName { get; private set; } = string.Empty;
 
-    public string Path { get; private set; } = string.Empty;
+    public string StoragePath { get; private set; } = string.Empty;
 
     public string ContentType { get; private set; } = string.Empty;
 
-    public long Size { get; private set; }
+    public long SizeBytes { get; private set; }
 
-    public Guid UploadedBy { get; private set; }
+    public Guid UploadedByUserId { get; private set; }
 
     public User? UploadedByUser { get; private set; }
 
     public DateTime UploadedAt { get; private set; }
+
+    public string? Description { get; private set; }
 
     public void Rename(string newName)
     {
@@ -43,10 +55,10 @@ public sealed class FileResource : BaseEntity
         FileName = newName.Trim();
     }
 
-    public void MoveTo(string newPath)
+    public void MoveTo(string newStoragePath)
     {
-        Guard.AgainstNullOrWhiteSpace(newPath, "File path is required.");
-        Path = newPath.Trim();
+        Guard.AgainstNullOrWhiteSpace(newStoragePath, "File path is required.");
+        StoragePath = newStoragePath.Trim();
     }
 
     public void ChangeContentType(string newType)
@@ -55,20 +67,37 @@ public sealed class FileResource : BaseEntity
         ContentType = newType.Trim();
     }
 
-    public void UpdateSize(long size)
+    public void UpdateSize(long sizeBytes)
     {
-        if (size < 0)
+        if (sizeBytes < 0)
         {
             throw new DomainException("File size cannot be negative.");
         }
 
-        Size = size;
+        SizeBytes = sizeBytes;
     }
 
-    private void SetUploadedBy(Guid uploadedBy)
+    public void UpdateDescription(string? description)
     {
-        Guard.AgainstEmptyGuid(uploadedBy, "Uploader id is required.");
-        UploadedBy = uploadedBy;
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            Description = null;
+            return;
+        }
+
+        var trimmed = description.Trim();
+        if (trimmed.Length > DescriptionMaxLength)
+        {
+            throw new DomainException($"Description cannot exceed {DescriptionMaxLength} characters.");
+        }
+
+        Description = trimmed;
+    }
+
+    private void SetUploadedBy(Guid uploadedByUserId)
+    {
+        Guard.AgainstEmptyGuid(uploadedByUserId, "Uploader id is required.");
+        UploadedByUserId = uploadedByUserId;
     }
 
     private void SetUploadedAt(DateTime uploadedAt)
