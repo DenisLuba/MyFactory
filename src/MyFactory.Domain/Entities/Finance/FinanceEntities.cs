@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Employees;
+using MyFactory.Domain.Entities.Files;
 using MyFactory.Domain.Entities.Specifications;
 using MyFactory.Domain.ValueObjects;
 
@@ -99,7 +100,7 @@ public sealed class Advance : BaseEntity
         ClosedAt = closedAt;
     }
 
-    public AdvanceReport AddReport(string description, decimal amount, DateOnly reportedAt)
+    public AdvanceReport AddReport(string description, decimal amount, DateOnly reportedAt, Guid fileId, DateOnly spentAt)
     {
         if (Status != AdvanceStatus.Approved)
         {
@@ -116,7 +117,14 @@ public sealed class Advance : BaseEntity
             throw new DomainException("Report amount exceeds remaining advance balance.");
         }
 
-        var report = new AdvanceReport(Id, description, amount, reportedAt);
+        Guard.AgainstEmptyGuid(fileId, "File id is required.");
+        Guard.AgainstDefaultDate(spentAt, "Spent date is required.");
+        if (spentAt > reportedAt)
+        {
+            throw new DomainException("Spent date cannot be later than reported date.");
+        }
+
+        var report = new AdvanceReport(Id, description, amount, reportedAt, fileId, spentAt);
         _reports.Add(report);
         return report;
     }
@@ -147,12 +155,18 @@ public sealed class AdvanceReport : BaseEntity
     {
     }
 
-    public AdvanceReport(Guid advanceId, string description, decimal amount, DateOnly reportedAt)
+    public AdvanceReport(Guid advanceId, string description, decimal amount, DateOnly reportedAt, Guid fileId, DateOnly spentAt)
     {
         Guard.AgainstEmptyGuid(advanceId, "Advance id is required.");
         Guard.AgainstNullOrWhiteSpace(description, "Description is required.");
         Guard.AgainstNonPositive(amount, "Amount must be greater than zero.");
         Guard.AgainstDefaultDate(reportedAt, "Reported date is required.");
+        Guard.AgainstEmptyGuid(fileId, "File id is required.");
+        Guard.AgainstDefaultDate(spentAt, "Spent date is required.");
+        if (spentAt > reportedAt)
+        {
+            throw new DomainException("Spent date cannot be later than reported date.");
+        }
 
         AdvanceId = advanceId;
         var trimmedDescription = description.Trim();
@@ -164,6 +178,8 @@ public sealed class AdvanceReport : BaseEntity
         Description = trimmedDescription;
         Amount = amount;
         ReportedAt = reportedAt;
+        FileId = fileId;
+        SpentAt = spentAt;
     }
 
     public Guid AdvanceId { get; private set; }
@@ -175,6 +191,12 @@ public sealed class AdvanceReport : BaseEntity
     public decimal Amount { get; private set; }
 
     public DateOnly ReportedAt { get; private set; }
+
+    public Guid FileId { get; private set; }
+
+    public FileResource? File { get; private set; }
+
+    public DateOnly SpentAt { get; private set; }
 }
 
 public enum AdvanceStatus

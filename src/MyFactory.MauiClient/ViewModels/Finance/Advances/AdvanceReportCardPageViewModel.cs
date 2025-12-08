@@ -59,6 +59,9 @@ public partial class AdvanceReportCardPageViewModel : ObservableObject
     private string newItemReceiptUri = string.Empty;
 
     [ObservableProperty]
+    private Guid newItemReceiptFileId;
+
+    [ObservableProperty]
     private AdvanceReportCategories newItemCategory = AdvanceReportCategories.Inventory;
 
     [ObservableProperty]
@@ -159,6 +162,7 @@ public partial class AdvanceReportCardPageViewModel : ObservableObject
             NewItemAmount,
             NewItemComment?.Trim() ?? string.Empty,
             NewItemCategory,
+            NewItemReceiptFileId,
             string.IsNullOrWhiteSpace(NewItemReceiptUri) ? null : NewItemReceiptUri.Trim());
         ReportItems.Add(item);
         HasDraft = true;
@@ -188,6 +192,7 @@ public partial class AdvanceReportCardPageViewModel : ObservableObject
         NewItemComment = string.Empty;
         NewItemCategory = AdvanceReportCategories.Inventory;
         NewItemReceiptUri = string.Empty;
+        NewItemReceiptFileId = Guid.Empty;
     }
 
     private DateTime GetDefaultExpenseDate()

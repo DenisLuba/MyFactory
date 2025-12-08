@@ -20,7 +20,7 @@ public sealed class GetAdvanceReportsQueryHandlerTests
         var advance = new Advance(employee.Id, 60m, new DateOnly(2025, 9, 1));
         advance.Approve();
         await context.Advances.AddAsync(advance);
-        var report = advance.AddReport("Fuel", 20m, new DateOnly(2025, 9, 2));
+        var report = advance.AddReport("Fuel", 20m, new DateOnly(2025, 9, 2), Guid.NewGuid(), new DateOnly(2025, 9, 2));
         await context.AdvanceReports.AddAsync(report);
         await context.SaveChangesAsync();
 

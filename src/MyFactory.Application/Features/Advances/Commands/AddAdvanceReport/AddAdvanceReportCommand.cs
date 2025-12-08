@@ -8,4 +8,6 @@ public sealed record AddAdvanceReportCommand(
     Guid AdvanceId,
     string Description,
     decimal Amount,
-    DateOnly ReportedAt) : IRequest<AdvanceDto>;
+    DateOnly ReportedAt,
+    Guid FileId,
+    DateOnly SpentAt) : IRequest<AdvanceDto>;

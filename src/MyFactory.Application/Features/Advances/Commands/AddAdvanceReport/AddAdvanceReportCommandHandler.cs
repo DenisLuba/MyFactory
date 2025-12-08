@@ -25,7 +25,7 @@ public sealed class AddAdvanceReportCommandHandler : IRequestHandler<AddAdvanceR
             .FirstOrDefaultAsync(entity => entity.Id == request.AdvanceId, cancellationToken)
             ?? throw new InvalidOperationException("Advance not found.");
 
-        var report = advance.AddReport(request.Description, request.Amount, request.ReportedAt);
+        var report = advance.AddReport(request.Description, request.Amount, request.ReportedAt, request.FileId, request.SpentAt);
         await _context.AdvanceReports.AddAsync(report, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 

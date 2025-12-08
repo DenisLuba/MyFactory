@@ -22,7 +22,7 @@ public sealed class CloseAdvanceCommandHandlerTests
         var advance = new Advance(employee.Id, 150m, new DateOnly(2025, 6, 1));
         advance.Approve();
         await context.Advances.AddAsync(advance);
-        var report = advance.AddReport("Taxi", 150m, new DateOnly(2025, 6, 2));
+        var report = advance.AddReport("Taxi", 150m, new DateOnly(2025, 6, 2), Guid.NewGuid(), new DateOnly(2025, 6, 2));
         await context.AdvanceReports.AddAsync(report);
         await context.SaveChangesAsync();
 

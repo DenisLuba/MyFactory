@@ -86,19 +86,20 @@
 						HeightRequest="150"
 						HorizontalScrollBarVisibility="Always"
 						ItemSizingStrategy="MeasureAllItems"
-						ItemsLayout="HorizontalList"
+						Style="{StaticResource HorizontalCollectionViewStyle}"
 						ItemsSource="{Binding Path=Images}"
 						VerticalOptions="Start">
 
 						<CollectionView.ItemTemplate>
+
 							<DataTemplate x:DataType="controls:ImageSource">
-								<Border>
+								<Border Padding="0">
 									<Image
-										Aspect="AspectFit"
-										HeightRequest="81"
+										Aspect="AspectFill"
+										HeightRequest="80"
 										HorizontalOptions="Center"
 										Source="{Binding .}"
-										VerticalOptions="Start"
+										VerticalOptions="Center"
 										WidthRequest="80" />
 								</Border>
 							</DataTemplate>

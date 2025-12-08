@@ -25,13 +25,17 @@ public sealed class AddAdvanceReportCommandHandlerTests
         await context.SaveChangesAsync();
 
         var handler = new AddAdvanceReportCommandHandler(context);
-        var command = new AddAdvanceReportCommand(advance.Id, "Hotel", 100m, new DateOnly(2025, 5, 2));
+        var fileId = Guid.NewGuid();
+        var spentAt = new DateOnly(2025, 5, 2);
+        var command = new AddAdvanceReportCommand(advance.Id, "Hotel", 100m, new DateOnly(2025, 5, 2), fileId, spentAt);
 
         var result = await handler.Handle(command, CancellationToken.None);
 
         Assert.Equal(200m, result.RemainingAmount);
         var reportedDto = Assert.Single(result.Reports);
         Assert.Equal(new DateOnly(2025, 5, 2), reportedDto.ReportedAt);
+        Assert.Equal(spentAt, reportedDto.SpentAt);
+        Assert.Equal(fileId, reportedDto.FileId);
 
         var storedAdvance = await context.Advances.Include(a => a.Reports).SingleAsync();
         Assert.Equal(200m, storedAdvance.RemainingAmount);
@@ -48,7 +52,7 @@ public sealed class AddAdvanceReportCommandHandlerTests
         await context.SaveChangesAsync();
 
         var handler = new AddAdvanceReportCommandHandler(context);
-        var command = new AddAdvanceReportCommand(advance.Id, "Hotel", 100m, new DateOnly(2025, 5, 2));
+        var command = new AddAdvanceReportCommand(advance.Id, "Hotel", 100m, new DateOnly(2025, 5, 2), Guid.NewGuid(), new DateOnly(2025, 5, 2));
 
         await Assert.ThrowsAsync<DomainException>(() => handler.Handle(command, CancellationToken.None));
     }
@@ -65,7 +69,7 @@ public sealed class AddAdvanceReportCommandHandlerTests
         await context.SaveChangesAsync();
 
         var handler = new AddAdvanceReportCommandHandler(context);
-        var command = new AddAdvanceReportCommand(advance.Id, "Hotel", 400m, new DateOnly(2025, 5, 2));
+        var command = new AddAdvanceReportCommand(advance.Id, "Hotel", 400m, new DateOnly(2025, 5, 2), Guid.NewGuid(), new DateOnly(2025, 5, 2));
 
         await Assert.ThrowsAsync<DomainException>(() => handler.Handle(command, CancellationToken.None));
     }

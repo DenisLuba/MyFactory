@@ -157,7 +157,7 @@ public sealed class InventoryReceipt : BaseEntity
     }
 
     public string ReceiptNumber { get; private set; } = string.Empty;
-    public Guid SupplierId { get; }
+    public Guid SupplierId { get; private set; }
     public Supplier? Supplier { get; private set; }
     public DateTime ReceiptDate { get; private set; }
     public decimal TotalAmount { get; private set; }

@@ -13,8 +13,8 @@ public class AdvanceTests
         var advance = new Advance(Guid.NewGuid(), 1_000m, new DateOnly(2025, 1, 10), "January travel");
 
         advance.Approve();
-        advance.AddReport("Raw materials", 600m, new DateOnly(2025, 1, 12));
-        advance.AddReport("Transport", 400m, new DateOnly(2025, 1, 13));
+        advance.AddReport("Raw materials", 600m, new DateOnly(2025, 1, 12), Guid.NewGuid(), new DateOnly(2025, 1, 11));
+        advance.AddReport("Transport", 400m, new DateOnly(2025, 1, 13), Guid.NewGuid(), new DateOnly(2025, 1, 12));
         advance.Close(new DateOnly(2025, 1, 15));
 
         Assert.Equal(AdvanceStatus.Closed, advance.Status);
@@ -30,9 +30,9 @@ public class AdvanceTests
     {
         var advance = new Advance(Guid.NewGuid(), 500m, new DateOnly(2025, 1, 5));
         advance.Approve();
-        advance.AddReport("Travel", 400m, new DateOnly(2025, 1, 6));
+        advance.AddReport("Travel", 400m, new DateOnly(2025, 1, 6), Guid.NewGuid(), new DateOnly(2025, 1, 5));
 
         Assert.Throws<DomainException>(() =>
-            advance.AddReport("More", 200m, new DateOnly(2025, 1, 7)));
+            advance.AddReport("More", 200m, new DateOnly(2025, 1, 7), Guid.NewGuid(), new DateOnly(2025, 1, 6)));
     }
 }

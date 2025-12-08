@@ -8,5 +8,6 @@ public record AdvanceReportItem(
     decimal Amount,
     string Comment,
     AdvanceReportCategories Category,
+    Guid ReceiptFileId,
     string? ReceiptUri = null);
 

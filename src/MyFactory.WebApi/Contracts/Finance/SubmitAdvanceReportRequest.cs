@@ -4,7 +4,6 @@ using System.Collections.Generic;
 namespace MyFactory.WebApi.Contracts.Finance;
 
 public record SubmitAdvanceReportRequest(
-    // TODO: Добавить свойства для отчета по авансу
     decimal TotalSpent,
     string ReportDescription,
     List<AdvanceReportItem> Items
@@ -16,6 +15,7 @@ public record AdvanceReportItem(
     decimal Amount,
     string Comment,
     AdvanceReportCategories Category,
+    Guid ReceiptFileId,
     string? ReceiptUri = null
 );
 
