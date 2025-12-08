@@ -9,7 +9,8 @@ public sealed record TimesheetEntryDto(
     string EmployeeName,
     DateOnly WorkDate,
     decimal HoursWorked,
-    Guid? ProductionOrderId)
+    Guid? ProductionOrderId,
+    TimesheetEntryStatus Status)
 {
     public static TimesheetEntryDto FromEntity(TimesheetEntry entry, string employeeName)
     {
@@ -19,6 +20,7 @@ public sealed record TimesheetEntryDto(
             employeeName,
             entry.WorkDate,
             entry.HoursWorked,
-            entry.ProductionOrderId);
+            entry.ProductionOrderId,
+            entry.Status);
     }
 }

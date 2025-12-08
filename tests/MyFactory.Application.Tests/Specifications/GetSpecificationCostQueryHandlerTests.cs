@@ -28,7 +28,8 @@ public class GetSpecificationCostQueryHandlerTests
         var bom1 = specification.AddBomItem(material1.Id, 2m, "m", 5m);
         var bom2 = specification.AddBomItem(material2.Id, 1m, "m", null);
 
-        var priceEntry = new MaterialPriceHistory(material2.Id, supplier.Id, 4m, new DateTime(2024, 1, 1), "DOC-1");
+        var priceEntryPrimary = new MaterialPriceHistory(material1.Id, supplier.Id, 5m, new DateTime(2024, 1, 1), "DOC-Primary");
+        var priceEntrySecondary = new MaterialPriceHistory(material2.Id, supplier.Id, 4m, new DateTime(2024, 1, 1), "DOC-1");
         var operation = new Operation("CUT", "Cutting", 5m, 10m, "Cut");
         var workshop = new Workshop("Main", "Sewing");
         var operationItem = specification.AddOperation(operation.Id, workshop.Id, 8m, 12m);
@@ -37,7 +38,7 @@ public class GetSpecificationCostQueryHandlerTests
         await context.MaterialTypes.AddAsync(materialType);
         await context.Suppliers.AddAsync(supplier);
         await context.Materials.AddRangeAsync(material1, material2);
-        await context.MaterialPriceHistoryEntries.AddAsync(priceEntry);
+        await context.MaterialPriceHistoryEntries.AddRangeAsync(priceEntryPrimary, priceEntrySecondary);
         await context.Specifications.AddAsync(specification);
         await context.SpecificationBomItems.AddRangeAsync(bom1, bom2);
         await context.Operations.AddAsync(operation);

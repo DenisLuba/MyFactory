@@ -10,8 +10,9 @@ public sealed record SpecificationDetailsDto(
     decimal PlanPerHour,
     string? Description,
     string Status,
+    int Version,
     int ImagesCount)
 {
     public static SpecificationDetailsDto FromEntity(Specification specification, int imagesCount = 0)
-        => new(specification.Id, specification.Sku, specification.Name, specification.PlanPerHour, specification.Description, specification.Status, imagesCount);
+        => new(specification.Id, specification.Sku, specification.Name, specification.PlanPerHour, specification.Description, specification.Status, specification.Version, imagesCount);
 }

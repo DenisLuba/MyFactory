@@ -11,6 +11,7 @@ public sealed record FinishedGoodsMovementDto(
     string FromWarehouseName,
     Guid ToWarehouseId,
     string ToWarehouseName,
+    Guid? FinishedGoodsInventoryId,
     decimal Quantity,
     DateTime MovedAt)
 {
@@ -28,6 +29,7 @@ public sealed record FinishedGoodsMovementDto(
             fromWarehouseName,
             movement.ToWarehouseId,
             toWarehouseName,
+            movement.FinishedGoodsInventoryId,
             movement.Quantity,
             movement.MovedAt);
     }

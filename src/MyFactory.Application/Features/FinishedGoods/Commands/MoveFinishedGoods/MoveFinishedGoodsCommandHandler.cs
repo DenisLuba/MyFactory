@@ -42,6 +42,7 @@ public sealed class MoveFinishedGoodsCommandHandler : IRequestHandler<MoveFinish
             ?? throw new InvalidOperationException("Source inventory not found.");
 
         var unitCost = fromInventory.UnitCost;
+        var sourceAvailableQuantity = fromInventory.Quantity;
         fromInventory.Issue(request.Quantity, request.MovedAt);
 
         var toInventory = await _context.FinishedGoodsInventories
@@ -62,7 +63,9 @@ public sealed class MoveFinishedGoodsCommandHandler : IRequestHandler<MoveFinish
             request.FromWarehouseId,
             request.ToWarehouseId,
             request.Quantity,
-            request.MovedAt);
+            request.MovedAt,
+            fromInventory.Id,
+            sourceAvailableQuantity);
 
         await _context.FinishedGoodsMovements.AddAsync(movement, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);

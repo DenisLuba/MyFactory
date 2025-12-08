@@ -9,8 +9,9 @@ public sealed record SpecificationListItemDto(
     string Name,
     decimal PlanPerHour,
     string Status,
+    int Version,
     int ImagesCount)
 {
     public static SpecificationListItemDto FromEntity(Specification specification, int imagesCount = 0)
-        => new(specification.Id, specification.Sku, specification.Name, specification.PlanPerHour, specification.Status, imagesCount);
+        => new(specification.Id, specification.Sku, specification.Name, specification.PlanPerHour, specification.Status, specification.Version, imagesCount);
 }
