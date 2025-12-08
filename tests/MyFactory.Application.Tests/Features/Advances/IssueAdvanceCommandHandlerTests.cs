@@ -21,16 +21,18 @@ public sealed class IssueAdvanceCommandHandlerTests
         await context.SaveChangesAsync();
 
         var handler = new IssueAdvanceCommandHandler(context);
-        var command = new IssueAdvanceCommand(employee.Id, 100m, new DateOnly(2025, 1, 1));
+        var command = new IssueAdvanceCommand(employee.Id, 100m, new DateOnly(2025, 1, 1), "Expo travel");
 
         var result = await handler.Handle(command, CancellationToken.None);
 
         Assert.Equal(employee.Id, result.EmployeeId);
         Assert.Equal(100m, result.Amount);
         Assert.Equal(AdvanceStatus.Draft, result.Status);
+        Assert.Equal("Expo travel", result.Description);
 
         var stored = await context.Advances.SingleAsync();
         Assert.Equal(AdvanceStatus.Draft, stored.Status);
+        Assert.Equal("Expo travel", stored.Description);
     }
 
     [Fact]
@@ -38,7 +40,7 @@ public sealed class IssueAdvanceCommandHandlerTests
     {
         using var context = TestApplicationDbContextFactory.Create();
         var handler = new IssueAdvanceCommandHandler(context);
-        var command = new IssueAdvanceCommand(Guid.NewGuid(), 50m, new DateOnly(2025, 2, 1));
+        var command = new IssueAdvanceCommand(Guid.NewGuid(), 50m, new DateOnly(2025, 2, 1), null);
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => handler.Handle(command, CancellationToken.None));
     }

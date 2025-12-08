@@ -7,5 +7,7 @@ public sealed class CloseAdvanceCommandValidator : AbstractValidator<CloseAdvanc
     public CloseAdvanceCommandValidator()
     {
         RuleFor(cmd => cmd.AdvanceId).NotEmpty();
+        RuleFor(cmd => cmd.ClosedAt).Must(date => date != default)
+            .WithMessage("Closed date is required.");
     }
 }

@@ -20,20 +20,23 @@ public sealed class CloseAdvanceCommandHandlerTests
         var employee = new Employee("Mary Lee", "Supervisor", 4, 25m, 8m);
         await context.Employees.AddAsync(employee);
         var advance = new Advance(employee.Id, 150m, new DateOnly(2025, 6, 1));
-        advance.Issue();
+        advance.Approve();
         await context.Advances.AddAsync(advance);
-        var report = advance.AddReport("Taxi", 150m, Guid.NewGuid(), new DateOnly(2025, 6, 2));
+        var report = advance.AddReport("Taxi", 150m, new DateOnly(2025, 6, 2));
         await context.AdvanceReports.AddAsync(report);
         await context.SaveChangesAsync();
 
         var handler = new CloseAdvanceCommandHandler(context);
-        var command = new CloseAdvanceCommand(advance.Id);
+        var closedAt = new DateOnly(2025, 6, 3);
+        var command = new CloseAdvanceCommand(advance.Id, closedAt);
 
         var result = await handler.Handle(command, CancellationToken.None);
 
         Assert.Equal(AdvanceStatus.Closed, result.Status);
+        Assert.Equal(closedAt, result.ClosedAt);
         var stored = await context.Advances.SingleAsync();
         Assert.Equal(AdvanceStatus.Closed, stored.Status);
+        Assert.Equal(closedAt, stored.ClosedAt);
     }
 
     [Fact]
@@ -43,12 +46,12 @@ public sealed class CloseAdvanceCommandHandlerTests
         var employee = new Employee("Mary Lee", "Supervisor", 4, 25m, 8m);
         await context.Employees.AddAsync(employee);
         var advance = new Advance(employee.Id, 150m, new DateOnly(2025, 6, 1));
-        advance.Issue();
+        advance.Approve();
         await context.Advances.AddAsync(advance);
         await context.SaveChangesAsync();
 
         var handler = new CloseAdvanceCommandHandler(context);
-        var command = new CloseAdvanceCommand(advance.Id);
+        var command = new CloseAdvanceCommand(advance.Id, new DateOnly(2025, 6, 5));
 
         await Assert.ThrowsAsync<DomainException>(() => handler.Handle(command, CancellationToken.None));
     }

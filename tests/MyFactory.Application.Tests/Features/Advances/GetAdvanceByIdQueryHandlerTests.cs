@@ -18,9 +18,9 @@ public sealed class GetAdvanceByIdQueryHandlerTests
         var employee = new Employee("Caleb Fry", "Engineer", 2, 18m, 5m);
         await context.Employees.AddAsync(employee);
         var advance = new Advance(employee.Id, 90m, new DateOnly(2025, 7, 1));
-        advance.Issue();
+        advance.Approve();
         await context.Advances.AddAsync(advance);
-        var report = advance.AddReport("Meal", 30m, Guid.NewGuid(), new DateOnly(2025, 7, 2));
+        var report = advance.AddReport("Meal", 30m, new DateOnly(2025, 7, 2));
         await context.AdvanceReports.AddAsync(report);
         await context.SaveChangesAsync();
 

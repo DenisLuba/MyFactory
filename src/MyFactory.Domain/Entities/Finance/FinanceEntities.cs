@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Employees;
-using MyFactory.Domain.Entities.Files;
 using MyFactory.Domain.Entities.Specifications;
 using MyFactory.Domain.ValueObjects;
 
@@ -12,12 +11,13 @@ namespace MyFactory.Domain.Entities.Finance;
 public sealed class Advance : BaseEntity
 {
     private readonly List<AdvanceReport> _reports = new();
+    public const int DescriptionMaxLength = 2000;
 
     private Advance()
     {
     }
 
-    public Advance(Guid employeeId, decimal amount, DateOnly issuedAt)
+    public Advance(Guid employeeId, decimal amount, DateOnly issuedAt, string? description = null)
     {
         Guard.AgainstEmptyGuid(employeeId, "Employee id is required.");
         Guard.AgainstNonPositive(amount, "Advance amount must be greater than zero.");
@@ -27,6 +27,7 @@ public sealed class Advance : BaseEntity
         Amount = amount;
         IssuedAt = issuedAt;
         Status = AdvanceStatus.Draft;
+        UpdateDescription(description);
     }
 
     public Guid EmployeeId { get; private set; }
@@ -36,6 +37,10 @@ public sealed class Advance : BaseEntity
     public decimal Amount { get; private set; }
 
     public DateOnly IssuedAt { get; private set; }
+
+    public string? Description { get; private set; }
+
+    public DateOnly? ClosedAt { get; private set; }
 
     public AdvanceStatus Status { get; private set; }
 
@@ -56,21 +61,31 @@ public sealed class Advance : BaseEntity
         Amount = amount;
     }
 
-    public void Issue()
+    public void Approve()
     {
         if (Status != AdvanceStatus.Draft)
         {
-            throw new DomainException("Only draft advances can be issued.");
+            throw new DomainException("Only draft advances can be approved.");
         }
 
-        Status = AdvanceStatus.Issued;
+        Status = AdvanceStatus.Approved;
     }
 
-    public void Close()
+    public void Reject()
     {
-        if (Status != AdvanceStatus.Issued)
+        if (Status != AdvanceStatus.Draft)
         {
-            throw new DomainException("Only issued advances can be closed.");
+            throw new DomainException("Only draft advances can be rejected.");
+        }
+
+        Status = AdvanceStatus.Rejected;
+    }
+
+    public void Close(DateOnly closedAt)
+    {
+        if (Status != AdvanceStatus.Approved)
+        {
+            throw new DomainException("Only approved advances can be closed.");
         }
 
         if (RemainingAmount > 0)
@@ -78,14 +93,22 @@ public sealed class Advance : BaseEntity
             throw new DomainException("Advance cannot be closed while balance remains.");
         }
 
+        Guard.AgainstDefaultDate(closedAt, "Closed date is required.");
+
         Status = AdvanceStatus.Closed;
+        ClosedAt = closedAt;
     }
 
-    public AdvanceReport AddReport(string description, decimal amount, Guid fileId, DateOnly spentAt)
+    public AdvanceReport AddReport(string description, decimal amount, DateOnly reportedAt)
     {
-        if (Status != AdvanceStatus.Issued)
+        if (Status != AdvanceStatus.Approved)
         {
-            throw new DomainException("Reports can be added only for issued advances.");
+            throw new DomainException("Reports can be added only for approved advances.");
+        }
+
+        if (ClosedAt.HasValue)
+        {
+            throw new DomainException("Reports cannot be added to closed advances.");
         }
 
         if (amount > RemainingAmount)
@@ -93,31 +116,54 @@ public sealed class Advance : BaseEntity
             throw new DomainException("Report amount exceeds remaining advance balance.");
         }
 
-        var report = new AdvanceReport(Id, description, amount, fileId, spentAt);
+        var report = new AdvanceReport(Id, description, amount, reportedAt);
         _reports.Add(report);
         return report;
+    }
+
+    public void UpdateDescription(string? description)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            Description = null;
+            return;
+        }
+
+        var trimmed = description.Trim();
+        if (trimmed.Length > DescriptionMaxLength)
+        {
+            throw new DomainException($"Description cannot exceed {DescriptionMaxLength} characters.");
+        }
+
+        Description = trimmed;
     }
 }
 
 public sealed class AdvanceReport : BaseEntity
 {
+    public const int DescriptionMaxLength = 512;
+
     private AdvanceReport()
     {
     }
 
-    public AdvanceReport(Guid advanceId, string description, decimal amount, Guid fileId, DateOnly spentAt)
+    public AdvanceReport(Guid advanceId, string description, decimal amount, DateOnly reportedAt)
     {
         Guard.AgainstEmptyGuid(advanceId, "Advance id is required.");
         Guard.AgainstNullOrWhiteSpace(description, "Description is required.");
-        Guard.AgainstNegative(amount, "Amount cannot be negative.");
-        Guard.AgainstEmptyGuid(fileId, "File id is required.");
-        Guard.AgainstDefaultDate(spentAt, "Spent date is required.");
+        Guard.AgainstNonPositive(amount, "Amount must be greater than zero.");
+        Guard.AgainstDefaultDate(reportedAt, "Reported date is required.");
 
         AdvanceId = advanceId;
-        Description = description.Trim();
+        var trimmedDescription = description.Trim();
+        if (trimmedDescription.Length > DescriptionMaxLength)
+        {
+            throw new DomainException($"Report description cannot exceed {DescriptionMaxLength} characters.");
+        }
+
+        Description = trimmedDescription;
         Amount = amount;
-        FileId = fileId;
-        SpentAt = spentAt;
+        ReportedAt = reportedAt;
     }
 
     public Guid AdvanceId { get; private set; }
@@ -128,18 +174,15 @@ public sealed class AdvanceReport : BaseEntity
 
     public decimal Amount { get; private set; }
 
-    public Guid FileId { get; private set; }
-
-    public FileResource? File { get; private set; }
-
-    public DateOnly SpentAt { get; private set; }
+    public DateOnly ReportedAt { get; private set; }
 }
 
 public enum AdvanceStatus
 {
     Draft = 1,
-    Issued = 2,
-    Closed = 3
+    Approved = 2,
+    Rejected = 3,
+    Closed = 4
 }
 
 public sealed class ExpenseType : BaseEntity

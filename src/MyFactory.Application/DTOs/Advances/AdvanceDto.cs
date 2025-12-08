@@ -13,7 +13,9 @@ public sealed record AdvanceDto(
     decimal ReportedAmount,
     decimal RemainingAmount,
     DateOnly IssuedAt,
+    DateOnly? ClosedAt,
     AdvanceStatus Status,
+    string? Description,
     IReadOnlyCollection<AdvanceReportDto> Reports)
 {
     public static AdvanceDto FromEntity(Advance advance, string employeeName)
@@ -28,7 +30,9 @@ public sealed record AdvanceDto(
             advance.ReportedAmount,
             advance.RemainingAmount,
             advance.IssuedAt,
+            advance.ClosedAt,
             advance.Status,
+            advance.Description,
             reports);
     }
 }

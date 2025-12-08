@@ -8,8 +8,7 @@ public sealed record AdvanceReportDto(
     Guid AdvanceId,
     string Description,
     decimal Amount,
-    Guid FileId,
-    DateOnly SpentAt)
+    DateOnly ReportedAt)
 {
     public static AdvanceReportDto FromEntity(AdvanceReport report)
     {
@@ -18,7 +17,6 @@ public sealed record AdvanceReportDto(
             report.AdvanceId,
             report.Description,
             report.Amount,
-            report.FileId,
-            report.SpentAt);
+            report.ReportedAt);
     }
 }

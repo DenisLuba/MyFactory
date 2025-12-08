@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Collections;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 using MyFactory.MauiClient.Models.Products;
@@ -261,6 +262,8 @@ public partial class ProductCardPageViewModel : ObservableObject
                 return; // пользователь отменил выбор
             }
 
+            var newImages = new ObservableCollection<ImageSource>();
+
             foreach (var fileResult in result)
             {
                 if (fileResult is null) continue;
@@ -269,9 +272,8 @@ public partial class ProductCardPageViewModel : ObservableObject
                 using var ms = new MemoryStream();
                 await stream.CopyToAsync(ms);
                 var bytes = ms.ToArray();
-				Trace.WriteLine($"Загружаем файл {fileResult.FileName}, размер {bytes.Length} байт.");
+                Trace.WriteLine($"Загружаем файл {fileResult.FileName}, размер {bytes.Length} байт.");
 
-                // Construct upload request. Adjust fields to the UploadFileRequest contract
                 var request = new Models.Files.UploadFileRequest(
                     FileBytes: bytes,
                     FileName: fileResult.FileName,
@@ -281,15 +283,17 @@ public partial class ProductCardPageViewModel : ObservableObject
                 var uploadResponse = await _filesService.UploadAsync(request);
                 if (uploadResponse is not null && !string.IsNullOrEmpty(uploadResponse.FileName))
                 {
-                    // Add to UI images collection for immediate feedback
-					await MainThread.InvokeOnMainThreadAsync(() =>
-					{
-						Images.Add(ImageSource.FromStream(() => new MemoryStream(bytes)));
-						ImageCount = Images.Count;
-					});
+                    newImages.Add(ImageSource.FromStream(() => new MemoryStream(bytes)));
                 }
             }
             Trace.WriteLine($"Загружено {result.Count()} изображений.");
+
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                // Use AddRange to raise a single Reset/Batch change which refreshes CollectionView reliably
+                Images = new ObservableCollection<ImageSource>(Images.Concat(newImages));
+                ImageCount = Images.Count;
+            });
         }
         catch (Exception ex)
         {

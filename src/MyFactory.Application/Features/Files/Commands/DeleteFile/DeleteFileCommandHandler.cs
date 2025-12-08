@@ -32,13 +32,11 @@ public sealed class DeleteFileCommandHandler : IRequestHandler<DeleteFileCommand
         return true;
     }
 
-    private async Task<bool> HasReferences(Guid fileId, CancellationToken cancellationToken)
+    private Task<bool> HasReferences(Guid fileId, CancellationToken cancellationToken)
     {
+        _ = fileId;
+        _ = cancellationToken;
         // Extend this check when other aggregates reference FileResource.
-        var advanceReportReference = await _context.AdvanceReports
-            .AsNoTracking()
-            .AnyAsync(report => report.FileId == fileId, cancellationToken);
-
-        return advanceReportReference;
+        return Task.FromResult(false);
     }
 }

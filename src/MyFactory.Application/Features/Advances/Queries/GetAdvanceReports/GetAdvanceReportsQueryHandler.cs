@@ -32,7 +32,7 @@ public sealed class GetAdvanceReportsQueryHandler : IRequestHandler<GetAdvanceRe
         var reports = await _context.AdvanceReports
             .AsNoTracking()
             .Where(report => report.AdvanceId == request.AdvanceId)
-            .OrderBy(report => report.SpentAt)
+            .OrderBy(report => report.ReportedAt)
             .ToListAsync(cancellationToken);
 
         return reports

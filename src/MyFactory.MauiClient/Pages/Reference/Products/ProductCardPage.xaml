@@ -3,38 +3,41 @@
 	x:Class="MyFactory.MauiClient.Pages.Reference.Products.ProductCardPage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:controls="clr-namespace:Microsoft.Maui.Controls;assembly=Microsoft.Maui.Controls"
 	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Reference.Products"
 	Title="{Binding Title}"
 	x:DataType="view_model:ProductCardPageViewModel">
 
 
-	<VerticalStackLayout Padding="16" Spacing="12">
-		<ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+	<ScrollView Padding="16">
+		<VerticalStackLayout Padding="16" Spacing="10">
 
-		<Grid ColumnDefinitions="Auto, Auto, *" RowDefinitions="Auto, Auto">
-			<Button
-				Command="{Binding StartEditingCommand}"
-				HorizontalOptions="Center"
-				IsEnabled="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
-				IsVisible="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
-				Text="Редактировать" />
-			<Button
-				Command="{Binding SaveCommand}"
-				HorizontalOptions="Center"
-				IsEnabled="{Binding IsEditing}"
-				IsVisible="{Binding IsEditing}"
-				Text="Сохранить" />
-			<Button
-				Grid.Column="2"
-				Command="{Binding BackCommand}"
-				HorizontalOptions="End"
-				Text="Назад" />
-		</Grid>
+			<ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
 
-		<Border>
-			<ScrollView HeightRequest="300">
+			<!--  The "Edit", "Save", and "Back" buttons are at the top  -->
+			<Grid ColumnDefinitions="Auto, Auto, *" RowDefinitions="Auto, Auto">
+				<Button
+					Command="{Binding StartEditingCommand}"
+					HorizontalOptions="Center"
+					IsEnabled="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
+					IsVisible="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
+					Text="Редактировать" />
+				<Button
+					Command="{Binding SaveCommand}"
+					HorizontalOptions="Center"
+					IsEnabled="{Binding IsEditing}"
+					IsVisible="{Binding IsEditing}"
+					Text="Сохранить" />
+				<Button
+					Grid.Column="2"
+					Command="{Binding BackCommand}"
+					HorizontalOptions="End"
+					Text="Назад" />
+			</Grid>
 
+			<!--  Main Info  -->
+			<Border>
 				<VerticalStackLayout Spacing="10">
 					<Label
 						FontAttributes="Bold"
@@ -59,76 +62,70 @@
 						Placeholder="Описание"
 						Text="{Binding Description}" />
 				</VerticalStackLayout>
-			</ScrollView>
-		</Border>
+			</Border>
 
-
-		<Grid ColumnDefinitions="*,*" ColumnSpacing="40">
-			<Button
-				Grid.Column="0"
-				Command="{Binding OpenBomCommand}"
-				HorizontalOptions="End"
-				Text="Материалы (BOM)" />
-			<Button
-				Grid.Column="1"
-				Command="{Binding OpenOperationsCommand}"
-				HorizontalOptions="Start"
-				Text="Операции" />
-		</Grid>
-
-		<Border>
-			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-				<!--  Horizontal images list  -->
-				<CollectionView
+			<!--  Buttons to open BOM and Operations pages  -->
+			<Grid ColumnDefinitions="*,*" ColumnSpacing="40">
+				<Button
 					Grid.Column="0"
-					HeightRequest="150"
-					HorizontalScrollBarVisibility="Always"
-					ItemsLayout="HorizontalList"
-					ItemsSource="{Binding Images}"
-					VerticalOptions="Start">
-					<CollectionView.ItemTemplate>
-						<DataTemplate>
-							<VerticalStackLayout>
-								<Label
-									FontSize="10"
-									FormattedText=""
-									HorizontalOptions="Center"
-									Text="{Binding ., StringFormat=' {0}'}" />
+					Command="{Binding OpenBomCommand}"
+					HorizontalOptions="End"
+					Text="Материалы (BOM)" />
+				<Button
+					Grid.Column="1"
+					Command="{Binding OpenOperationsCommand}"
+					HorizontalOptions="Start"
+					Text="Операции" />
+			</Grid>
+
+			<Border>
+				<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+					<!--  Horizontal images list  -->
+					<CollectionView
+						Grid.Column="0"
+						HeightRequest="150"
+						HorizontalScrollBarVisibility="Always"
+						ItemSizingStrategy="MeasureAllItems"
+						ItemsLayout="HorizontalList"
+						ItemsSource="{Binding Path=Images}"
+						VerticalOptions="Start">
+
+						<CollectionView.ItemTemplate>
+							<DataTemplate x:DataType="controls:ImageSource">
 								<Border>
 									<Image
 										Aspect="AspectFit"
 										HeightRequest="81"
 										HorizontalOptions="Center"
 										Source="{Binding .}"
-										VerticalOptions="Center"
+										VerticalOptions="Start"
 										WidthRequest="80" />
 								</Border>
-							</VerticalStackLayout>
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-					<CollectionView.EmptyView>
-						<Label Text="Нет изображений" TextColor="#888" />
-					</CollectionView.EmptyView>
-				</CollectionView>
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
 
-				<!--  Upload button (visible only when editing)  -->
-				<Border Grid.Column="1" IsVisible="{Binding IsEditing}">
-					<ImageButton
-						Padding="8"
-						BackgroundColor="Transparent"
-						Command="{Binding UploadImageCommand}"
-						HeightRequest="80"
-						HorizontalOptions="End"
-						IsEnabled="{Binding IsEditing}"
-						IsVisible="{Binding IsEditing}"
-						Source="upload_image.png"
-						VerticalOptions="Start"
-						WidthRequest="80" />
-				</Border>
-			</Grid>
-		</Border>
+						<CollectionView.EmptyView>
+							<Label Text="Нет изображений" TextColor="#888" />
+						</CollectionView.EmptyView>
 
+					</CollectionView>
 
-
-	</VerticalStackLayout>
+					<!--  Upload button (visible only when editing)  -->
+					<Border Grid.Column="1" IsVisible="{Binding IsEditing}">
+						<ImageButton
+							Padding="8"
+							BackgroundColor="Transparent"
+							Command="{Binding UploadImageCommand}"
+							HeightRequest="80"
+							HorizontalOptions="End"
+							IsEnabled="{Binding IsEditing}"
+							IsVisible="{Binding IsEditing}"
+							Source="upload_image.png"
+							VerticalOptions="Start"
+							WidthRequest="80" />
+					</Border>
+				</Grid>
+			</Border>
+		</VerticalStackLayout>
+	</ScrollView>
 </ContentPage>

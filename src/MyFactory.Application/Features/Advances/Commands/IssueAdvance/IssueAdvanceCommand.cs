@@ -7,4 +7,5 @@ namespace MyFactory.Application.Features.Advances.Commands.IssueAdvance;
 public sealed record IssueAdvanceCommand(
     Guid EmployeeId,
     decimal Amount,
-    DateOnly IssuedAt) : IRequest<AdvanceDto>;
+    DateOnly IssuedAt,
+    string? Description) : IRequest<AdvanceDto>;

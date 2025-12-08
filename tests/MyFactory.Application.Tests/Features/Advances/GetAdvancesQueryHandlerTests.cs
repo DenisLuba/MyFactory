@@ -19,16 +19,16 @@ public sealed class GetAdvancesQueryHandlerTests
         var employee = new Employee("Laura Hill", "Planner", 2, 16m, 4m);
         await context.Employees.AddAsync(employee);
         var draft = new Advance(employee.Id, 80m, new DateOnly(2025, 8, 1));
-        var issued = new Advance(employee.Id, 120m, new DateOnly(2025, 8, 2));
-        issued.Issue();
-        await context.Advances.AddRangeAsync(draft, issued);
+        var approved = new Advance(employee.Id, 120m, new DateOnly(2025, 8, 2));
+        approved.Approve();
+        await context.Advances.AddRangeAsync(draft, approved);
         await context.SaveChangesAsync();
 
         var handler = new GetAdvancesQueryHandler(context);
-        var result = await handler.Handle(new GetAdvancesQuery(AdvanceStatus.Issued, null), CancellationToken.None);
+        var result = await handler.Handle(new GetAdvancesQuery(AdvanceStatus.Approved, null), CancellationToken.None);
 
         Assert.Single(result);
-        Assert.Equal(AdvanceStatus.Issued, result.Single().Status);
+        Assert.Equal(AdvanceStatus.Approved, result.Single().Status);
     }
 
     [Fact]

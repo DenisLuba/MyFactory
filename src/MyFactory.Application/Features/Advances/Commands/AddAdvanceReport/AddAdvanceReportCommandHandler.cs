@@ -5,7 +5,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MyFactory.Application.Common.Interfaces;
 using MyFactory.Application.DTOs.Advances;
-using MyFactory.Domain.Entities.Finance;
 
 namespace MyFactory.Application.Features.Advances.Commands.AddAdvanceReport;
 
@@ -26,26 +25,7 @@ public sealed class AddAdvanceReportCommandHandler : IRequestHandler<AddAdvanceR
             .FirstOrDefaultAsync(entity => entity.Id == request.AdvanceId, cancellationToken)
             ?? throw new InvalidOperationException("Advance not found.");
 
-        if (advance.Status != AdvanceStatus.Issued)
-        {
-            throw new InvalidOperationException("Reports can only be added to issued advances.");
-        }
-
-        if (request.Amount > advance.RemainingAmount)
-        {
-            throw new InvalidOperationException("Report amount exceeds remaining balance.");
-        }
-
-        var fileExists = await _context.FileResources
-            .AsNoTracking()
-            .AnyAsync(file => file.Id == request.FileId, cancellationToken);
-
-        if (!fileExists)
-        {
-            throw new InvalidOperationException("Referenced file not found.");
-        }
-
-        var report = advance.AddReport(request.Description, request.Amount, request.FileId, request.SpentAt);
+        var report = advance.AddReport(request.Description, request.Amount, request.ReportedAt);
         await _context.AdvanceReports.AddAsync(report, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 

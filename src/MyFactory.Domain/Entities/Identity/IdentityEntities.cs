@@ -11,17 +11,24 @@ namespace MyFactory.Domain.Entities.Identity;
 public class Role : BaseEntity
 {
     private readonly List<User> _users = new();
+    public const int DescriptionMaxLength = 2_000;
 
     private Role()
     {
     }
 
-    public Role(string name)
+    public Role(string name, string? description = null, DateTime? createdAt = null)
     {
         Rename(name);
+        UpdateDescription(description);
+        SetCreatedAt(createdAt ?? DateTime.UtcNow);
     }
 
     public string Name { get; private set; } = string.Empty;
+
+    public string? Description { get; private set; }
+
+    public DateTime CreatedAt { get; private set; }
 
     public IReadOnlyCollection<User> Users => _users.AsReadOnly();
 
@@ -29,6 +36,29 @@ public class Role : BaseEntity
     {
         Guard.AgainstNullOrWhiteSpace(name, "Role name is required.");
         Name = name.Trim();
+    }
+
+    public void UpdateDescription(string? description)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            Description = null;
+            return;
+        }
+
+        var trimmed = description.Trim();
+        if (trimmed.Length > DescriptionMaxLength)
+        {
+            throw new DomainException($"Role description cannot exceed {DescriptionMaxLength} characters.");
+        }
+
+        Description = trimmed;
+    }
+
+    private void SetCreatedAt(DateTime createdAt)
+    {
+        Guard.AgainstDefaultDate(createdAt, "Created timestamp is required.");
+        CreatedAt = createdAt;
     }
 
     public void AttachUser(User user)

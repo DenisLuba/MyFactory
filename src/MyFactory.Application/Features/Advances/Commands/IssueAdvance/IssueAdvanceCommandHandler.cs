@@ -25,7 +25,7 @@ public sealed class IssueAdvanceCommandHandler : IRequestHandler<IssueAdvanceCom
             .FirstOrDefaultAsync(emp => emp.Id == request.EmployeeId, cancellationToken)
             ?? throw new InvalidOperationException("Employee not found.");
 
-        var advance = new Advance(request.EmployeeId, request.Amount, request.IssuedAt);
+        var advance = new Advance(request.EmployeeId, request.Amount, request.IssuedAt, request.Description);
         await _context.Advances.AddAsync(advance, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 

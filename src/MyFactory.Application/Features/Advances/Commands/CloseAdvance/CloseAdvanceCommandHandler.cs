@@ -25,7 +25,7 @@ public sealed class CloseAdvanceCommandHandler : IRequestHandler<CloseAdvanceCom
             .FirstOrDefaultAsync(entity => entity.Id == request.AdvanceId, cancellationToken)
             ?? throw new InvalidOperationException("Advance not found.");
 
-        advance.Close();
+        advance.Close(request.ClosedAt);
         await _context.SaveChangesAsync(cancellationToken);
 
         var employeeName = advance.Employee?.FullName ?? string.Empty;
