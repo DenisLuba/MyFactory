@@ -20,6 +20,7 @@ public sealed class AddSpecificationBomItemCommandValidator : AbstractValidator<
             .MaximumLength(64);
 
         RuleFor(command => command.UnitCost)
-            .GreaterThan(0);
+            .GreaterThan(0)
+            .When(command => command.UnitCost.HasValue);
     }
 }

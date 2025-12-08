@@ -9,4 +9,4 @@ public sealed record AddSpecificationBomItemCommand(
     Guid MaterialId,
     decimal Quantity,
     string Unit,
-    decimal UnitCost) : IRequest<SpecificationBomItemResultDto>;
+    decimal? UnitCost) : IRequest<SpecificationBomItemResultDto>;

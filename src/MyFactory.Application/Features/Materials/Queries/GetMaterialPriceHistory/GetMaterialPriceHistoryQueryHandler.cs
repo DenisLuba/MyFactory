@@ -49,7 +49,7 @@ public sealed class GetMaterialPriceHistoryQueryHandler : IRequestHandler<GetMat
             {
                 var supplierDto = entry.Supplier is not null
                     ? SupplierDto.FromEntity(entry.Supplier)
-                    : new SupplierDto(entry.SupplierId, string.Empty, string.Empty);
+                    : new SupplierDto(entry.SupplierId, string.Empty, string.Empty, false);
 
                 return MaterialPriceHistoryDto.FromEntity(entry, supplierDto);
             })

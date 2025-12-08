@@ -9,12 +9,13 @@ public sealed record SpecificationBomItemDto(
     string MaterialName,
     decimal Quantity,
     string Unit,
-    decimal UnitCost,
-    decimal Cost)
+    decimal? UnitCost,
+    decimal? Cost)
 {
     public static SpecificationBomItemDto FromEntity(SpecificationBomItem item, string materialName)
     {
-        var unitCost = item.UnitCost ?? 0m;
+        var unitCost = item.UnitCost;
+        decimal? cost = unitCost.HasValue ? item.Quantity * unitCost.Value : null;
         return new SpecificationBomItemDto(
             item.Id,
             item.MaterialId,
@@ -22,6 +23,6 @@ public sealed record SpecificationBomItemDto(
             item.Quantity,
             item.Unit,
             unitCost,
-            item.Quantity * unitCost);
+            cost);
     }
 }
