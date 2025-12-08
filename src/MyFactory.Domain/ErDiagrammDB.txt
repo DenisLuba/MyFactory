@@ -31,6 +31,7 @@
         date work_date
         numeric hours
         string status
+        uuid production_order_id FK NULL
     }
     PAYROLLENTRIES {
         uuid id PK
@@ -151,6 +152,7 @@
         uuid material_id FK
         numeric quantity
         numeric price
+        uuid inventory_item_id FK NULL
     }
     PURCHASEREQUESTS {
         uuid id PK
@@ -233,6 +235,7 @@
         uuid specification_id FK
         numeric qty
         date moved_at
+        uuid finished_goods_inventory_id FK NULL
     }
     CUSTOMERS {
         uuid id PK
@@ -344,7 +347,8 @@
         string content_type
         bigint size
         uuid uploaded_by FK
-        date uploaded_at
+        string description
+        timestamp uploaded_at
     }
 
     %% --------------------
@@ -366,6 +370,7 @@
     SPECIFICATIONS ||--o{ SPECIFICATIONOPERATIONS : has_ops
 
     INVENTORY ||--o{ INVENTORYRECEIPTITEMS : receipt_items_link
+    INVENTORY ||--o{ INVENTORYRECEIPTITEMS : updates
     INVENTORYRECEIPTS ||--o{ INVENTORYRECEIPTITEMS : contains
     WAREHOUSES ||--o{ INVENTORY : holds
     MATERIALS ||--o{ INVENTORY : stored_in
@@ -377,12 +382,14 @@
     PRODUCTIONORDERS ||--o{ PRODUCTIONSTAGES : stages
     PRODUCTIONSTAGES ||--o{ WORKERASSIGNMENTS : assigned
     WORKERASSIGNMENTS ||--o{ EMPLOYEES : performed_by
+    PRODUCTIONORDERS ||--o{ TIMESHEETENTRIES : recorded_against
 
     SHIFTPLANS ||--o{ SHIFTRESULTS : produces
     SHIFTPLANS }o--|| EMPLOYEES : planned_for
     SHIFTRESULTS }o--|| EMPLOYEES : result_of
 
     FINISHEDGOODSINVENTORY ||--o{ FINISHEDGOODSMOVEMENTS : moved
+    FINISHEDGOODSINVENTORY ||--o{ FINISHEDGOODSMOVEMENTS : source_inventory
     WAREHOUSES ||--o{ FINISHEDGOODSMOVEMENTS : from_or_to
 
     CUSTOMERS ||--o{ SHIPMENTS : orders
