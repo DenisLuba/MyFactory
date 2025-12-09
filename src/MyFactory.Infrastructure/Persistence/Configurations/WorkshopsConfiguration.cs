@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyFactory.Domain.Entities.Workshops;
+using MyFactory.Infrastructure.Persistence.Constants;
 
 namespace MyFactory.Infrastructure.Persistence.Configurations;
 
@@ -14,11 +15,11 @@ public class WorkshopConfiguration : IEntityTypeConfiguration<Workshop>
 
         builder.Property(workshop => workshop.Name)
             .IsRequired()
-            .HasMaxLength(256);
+            .HasMaxLength(FieldLengths.Name);
 
         builder.Property(workshop => workshop.Type)
             .IsRequired()
-            .HasMaxLength(64);
+            .HasMaxLength(FieldLengths.ShortText);
 
         builder.Property(workshop => workshop.IsActive)
             .HasDefaultValue(true);
@@ -37,7 +38,7 @@ public class WorkshopExpenseHistoryConfiguration : IEntityTypeConfiguration<Work
         builder.HasKey(history => history.Id);
 
         builder.Property(history => history.AmountPerUnit)
-            .HasColumnType("decimal(18,4)")
+            .HasColumnType(ColumnTypes.MonetaryHighPrecision)
             .IsRequired();
 
         builder.Property(history => history.EffectiveFrom)

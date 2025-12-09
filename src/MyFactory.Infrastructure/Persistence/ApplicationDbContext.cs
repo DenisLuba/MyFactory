@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using MyFactory.Application.Common.Interfaces;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Employees;
@@ -15,6 +17,7 @@ using MyFactory.Domain.Entities.Shifts;
 using MyFactory.Domain.Entities.Specifications;
 using MyFactory.Domain.Entities.Warehousing;
 using MyFactory.Domain.Entities.Workshops;
+using MyFactory.Infrastructure.Persistence.Auditing;
 
 namespace MyFactory.Infrastructure.Persistence;
 
@@ -65,10 +68,21 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Advance> Advances => Set<Advance>();
     public DbSet<AdvanceReport> AdvanceReports => Set<AdvanceReport>();
     public DbSet<FileResource> FileResources => Set<FileResource>();
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
         ApplyAuditInformation();
-        return base.SaveChangesAsync(cancellationToken);
+        return base.SaveChanges(acceptAllChangesOnSuccess);
+    }
+
+    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+    {
+        ApplyAuditInformation();
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return SaveChangesAsync(true, cancellationToken);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -76,6 +90,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
+        ApplySoftDeleteFilters(modelBuilder);
 
     }
 
@@ -87,15 +103,68 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.CreatedAt = utcNow;
-                entry.Entity.UpdatedAt = null;
+                if (AuditMetadata.ShouldSetCreatedAt(entry.Entity) && entry.Entity.CreatedAt == default)
+                {
+                    entry.Entity.CreatedAt = utcNow;
+                }
+
+                if (AuditMetadata.ShouldSetUpdatedAt(entry.Entity) && !entry.Property(nameof(BaseEntity.UpdatedAt)).IsModified)
+                {
+                    entry.Entity.UpdatedAt = entry.Entity.UpdatedAt ?? entry.Entity.CreatedAt;
+                }
+
+                entry.Entity.IsDeleted = false;
             }
 
             if (entry.State == EntityState.Modified)
             {
-                entry.Entity.UpdatedAt = utcNow;
+                ApplyUpdatedAt(entry, utcNow);
+            }
+
+            if (entry.State == EntityState.Deleted)
+            {
+                entry.State = EntityState.Modified;
+                entry.Entity.IsDeleted = true;
+                ApplyUpdatedAt(entry, utcNow);
             }
         }
+    }
+
+    private static void ApplyUpdatedAt(EntityEntry<BaseEntity> entry, DateTime utcNow)
+    {
+        var updatedAtProperty = entry.Property(nameof(BaseEntity.UpdatedAt));
+        if (updatedAtProperty.IsModified)
+        {
+            return;
+        }
+
+        if (AuditMetadata.ShouldSetUpdatedAt(entry.Entity))
+        {
+            entry.Entity.UpdatedAt = utcNow;
+        }
+    }
+
+    private static void ApplySoftDeleteFilters(ModelBuilder modelBuilder)
+    {
+        var methodInfo = typeof(ApplicationDbContext)
+            .GetMethod(nameof(ConfigureSoftDeleteFilter), BindingFlags.NonPublic | BindingFlags.Static);
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (!typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
+            {
+                continue;
+            }
+
+            var genericMethod = methodInfo!.MakeGenericMethod(entityType.ClrType);
+            genericMethod.Invoke(null, new object[] { modelBuilder });
+        }
+    }
+
+    private static void ConfigureSoftDeleteFilter<TEntity>(ModelBuilder modelBuilder)
+        where TEntity : BaseEntity
+    {
+        modelBuilder.Entity<TEntity>().HasQueryFilter(entity => !entity.IsDeleted);
     }
 }
 

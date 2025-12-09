@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyFactory.Domain.Entities.Warehousing;
+using MyFactory.Infrastructure.Persistence.Constants;
 
 namespace MyFactory.Infrastructure.Persistence.Configurations;
 
@@ -14,15 +15,15 @@ public class WarehouseConfiguration : IEntityTypeConfiguration<Warehouse>
 
         builder.Property(warehouse => warehouse.Name)
             .IsRequired()
-            .HasMaxLength(256);
+            .HasMaxLength(FieldLengths.Name);
 
         builder.Property(warehouse => warehouse.Type)
             .IsRequired()
-            .HasMaxLength(64);
+            .HasMaxLength(FieldLengths.ShortText);
 
         builder.Property(warehouse => warehouse.Location)
             .IsRequired()
-            .HasMaxLength(256);
+            .HasMaxLength(FieldLengths.Name);
 
         builder.Navigation(warehouse => warehouse.InventoryItems)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
@@ -41,15 +42,15 @@ public class InventoryItemConfiguration : IEntityTypeConfiguration<InventoryItem
         builder.HasKey(item => item.Id);
 
         builder.Property(item => item.Quantity)
-            .HasColumnType("decimal(18,3)")
+            .HasColumnType(ColumnTypes.Quantity)
             .IsRequired();
 
         builder.Property(item => item.AveragePrice)
-            .HasColumnType("decimal(18,4)")
+            .HasColumnType(ColumnTypes.MonetaryHighPrecision)
             .IsRequired();
 
         builder.Property(item => item.ReservedQuantity)
-            .HasColumnType("decimal(18,3)")
+            .HasColumnType(ColumnTypes.Quantity)
             .IsRequired();
 
         builder.HasOne(item => item.Warehouse)
@@ -77,13 +78,13 @@ public class InventoryReceiptConfiguration : IEntityTypeConfiguration<InventoryR
 
         builder.Property(receipt => receipt.ReceiptNumber)
             .IsRequired()
-            .HasMaxLength(64);
+            .HasMaxLength(FieldLengths.Code);
 
         builder.Property(receipt => receipt.ReceiptDate)
             .IsRequired();
 
         builder.Property(receipt => receipt.TotalAmount)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Property(receipt => receipt.Status)
@@ -112,11 +113,11 @@ public class InventoryReceiptItemConfiguration : IEntityTypeConfiguration<Invent
         builder.HasKey(item => item.Id);
 
         builder.Property(item => item.Quantity)
-            .HasColumnType("decimal(18,3)")
+            .HasColumnType(ColumnTypes.Quantity)
             .IsRequired();
 
         builder.Property(item => item.UnitPrice)
-            .HasColumnType("decimal(18,4)")
+            .HasColumnType(ColumnTypes.MonetaryHighPrecision)
             .IsRequired();
 
         builder.HasOne(item => item.InventoryReceipt)
@@ -146,7 +147,7 @@ public class PurchaseRequestConfiguration : IEntityTypeConfiguration<PurchaseReq
 
         builder.Property(request => request.PrNumber)
             .IsRequired()
-            .HasMaxLength(64);
+            .HasMaxLength(FieldLengths.Code);
 
         builder.Property(request => request.CreatedAt)
             .IsRequired();
@@ -172,7 +173,7 @@ public class PurchaseRequestItemConfiguration : IEntityTypeConfiguration<Purchas
         builder.HasKey(item => item.Id);
 
         builder.Property(item => item.Quantity)
-            .HasColumnType("decimal(18,3)")
+            .HasColumnType(ColumnTypes.Quantity)
             .IsRequired();
 
         builder.HasOne(item => item.PurchaseRequest)

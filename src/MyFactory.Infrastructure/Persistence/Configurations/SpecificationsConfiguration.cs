@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyFactory.Domain.Entities.Specifications;
 using MyFactory.Domain.ValueObjects;
+using MyFactory.Infrastructure.Persistence.Constants;
 
 namespace MyFactory.Infrastructure.Persistence.Configurations;
 
@@ -15,22 +16,22 @@ public class SpecificationConfiguration : IEntityTypeConfiguration<Specification
 
         builder.Property(specification => specification.Sku)
             .IsRequired()
-            .HasMaxLength(64);
+            .HasMaxLength(FieldLengths.Code);
 
         builder.Property(specification => specification.Name)
             .IsRequired()
-            .HasMaxLength(256);
+            .HasMaxLength(FieldLengths.Name);
 
         builder.Property(specification => specification.Description)
-            .HasMaxLength(2000);
+            .HasMaxLength(FieldLengths.Description);
 
         builder.Property(specification => specification.PlanPerHour)
-            .HasColumnType("decimal(18,3)")
+            .HasColumnType(ColumnTypes.Quantity)
             .IsRequired();
 
         builder.Property(specification => specification.Status)
             .IsRequired()
-            .HasMaxLength(64);
+            .HasMaxLength(FieldLengths.Status);
 
         builder.Property(specification => specification.Version)
             .IsRequired();
@@ -58,12 +59,12 @@ public class SpecificationBomItemConfiguration : IEntityTypeConfiguration<Specif
         builder.HasKey(item => item.Id);
 
         builder.Property(item => item.Quantity)
-            .HasColumnType("decimal(18,3)")
+            .HasColumnType(ColumnTypes.Quantity)
             .IsRequired();
 
         builder.Property(item => item.Unit)
             .IsRequired()
-            .HasMaxLength(32);
+            .HasMaxLength(FieldLengths.Unit);
 
         builder.HasOne(item => item.Specification)
             .WithMany(specification => specification.BomItems)
@@ -79,7 +80,7 @@ public class SpecificationBomItemConfiguration : IEntityTypeConfiguration<Specif
         {
             owned.Property(money => money.Amount)
                 .HasColumnName("UnitCost")
-                .HasColumnType("decimal(18,4)");
+                .HasColumnType(ColumnTypes.MonetaryHighPrecision);
         });
 
         builder.HasIndex(item => new { item.SpecificationId, item.MaterialId })
@@ -96,11 +97,11 @@ public class SpecificationOperationConfiguration : IEntityTypeConfiguration<Spec
         builder.HasKey(operation => operation.Id);
 
         builder.Property(operation => operation.TimeMinutes)
-            .HasColumnType("decimal(10,2)")
+            .HasColumnType(ColumnTypes.QuantitySmall)
             .IsRequired();
 
         builder.Property(operation => operation.OperationCost)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.HasOne(operation => operation.Specification)

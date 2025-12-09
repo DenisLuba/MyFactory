@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyFactory.Domain.Entities.Shifts;
+using MyFactory.Infrastructure.Persistence.Constants;
 
 namespace MyFactory.Infrastructure.Persistence.Configurations;
 
@@ -14,14 +15,14 @@ public class ShiftPlanConfiguration : IEntityTypeConfiguration<ShiftPlan>
 
         builder.Property(plan => plan.ShiftType)
             .IsRequired()
-            .HasMaxLength(64);
+            .HasMaxLength(FieldLengths.Code);
 
         builder.Property(plan => plan.ShiftDate)
             .HasColumnType("date")
             .IsRequired();
 
         builder.Property(plan => plan.PlannedQuantity)
-            .HasColumnType("decimal(18,3)")
+            .HasColumnType(ColumnTypes.Quantity)
             .IsRequired();
 
         builder.HasOne(plan => plan.Employee)
@@ -48,11 +49,11 @@ public class ShiftResultConfiguration : IEntityTypeConfiguration<ShiftResult>
         builder.HasKey(result => result.Id);
 
         builder.Property(result => result.ActualQuantity)
-            .HasColumnType("decimal(18,3)")
+            .HasColumnType(ColumnTypes.Quantity)
             .IsRequired();
 
         builder.Property(result => result.HoursWorked)
-            .HasColumnType("decimal(10,2)")
+            .HasColumnType(ColumnTypes.QuantitySmall)
             .IsRequired();
 
         builder.Property(result => result.RecordedAt)

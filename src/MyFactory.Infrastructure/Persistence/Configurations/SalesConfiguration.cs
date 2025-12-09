@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyFactory.Domain.Entities.Sales;
+using MyFactory.Infrastructure.Persistence.Constants;
 
 namespace MyFactory.Infrastructure.Persistence.Configurations;
 
@@ -14,11 +15,11 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 
         builder.Property(customer => customer.Name)
             .IsRequired()
-            .HasMaxLength(256);
+            .HasMaxLength(FieldLengths.Name);
 
         builder.Property(customer => customer.Contact)
             .IsRequired()
-            .HasMaxLength(256);
+            .HasMaxLength(FieldLengths.Contact);
 
         builder.HasIndex(customer => customer.Name)
             .IsUnique();
@@ -35,7 +36,7 @@ public class ShipmentConfiguration : IEntityTypeConfiguration<Shipment>
 
         builder.Property(shipment => shipment.ShipmentNumber)
             .IsRequired()
-            .HasMaxLength(64);
+            .HasMaxLength(FieldLengths.Code);
 
         builder.Property(shipment => shipment.ShipmentDate)
             .IsRequired();
@@ -45,7 +46,7 @@ public class ShipmentConfiguration : IEntityTypeConfiguration<Shipment>
             .IsRequired();
 
         builder.Property(shipment => shipment.TotalAmount)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.HasOne(shipment => shipment.Customer)
@@ -70,11 +71,11 @@ public class ShipmentItemConfiguration : IEntityTypeConfiguration<ShipmentItem>
         builder.HasKey(item => item.Id);
 
         builder.Property(item => item.Quantity)
-            .HasColumnType("decimal(18,3)")
+            .HasColumnType(ColumnTypes.Quantity)
             .IsRequired();
 
         builder.Property(item => item.UnitPrice)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.HasOne(item => item.Shipment)
@@ -99,14 +100,14 @@ public class CustomerReturnConfiguration : IEntityTypeConfiguration<CustomerRetu
 
         builder.Property(returnEntity => returnEntity.ReturnNumber)
             .IsRequired()
-            .HasMaxLength(64);
+            .HasMaxLength(FieldLengths.Code);
 
         builder.Property(returnEntity => returnEntity.ReturnDate)
             .IsRequired();
 
         builder.Property(returnEntity => returnEntity.Reason)
             .IsRequired()
-            .HasMaxLength(512);
+            .HasMaxLength(FieldLengths.Notes);
 
         builder.Property(returnEntity => returnEntity.Status)
             .HasConversion<int>()
@@ -134,12 +135,12 @@ public class CustomerReturnItemConfiguration : IEntityTypeConfiguration<Customer
         builder.HasKey(item => item.Id);
 
         builder.Property(item => item.Quantity)
-            .HasColumnType("decimal(18,3)")
+            .HasColumnType(ColumnTypes.Quantity)
             .IsRequired();
 
         builder.Property(item => item.Disposition)
             .IsRequired()
-            .HasMaxLength(256);
+            .HasMaxLength(FieldLengths.Name);
 
         builder.HasOne(item => item.CustomerReturn)
             .WithMany(returnEntity => returnEntity.Items)

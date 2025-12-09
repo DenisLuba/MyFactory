@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyFactory.Domain.Entities.Finance;
+using MyFactory.Infrastructure.Persistence.Constants;
 
 namespace MyFactory.Infrastructure.Persistence.Configurations;
 
@@ -13,7 +14,7 @@ public class AdvanceConfiguration : IEntityTypeConfiguration<Advance>
         builder.HasKey(advance => advance.Id);
 
         builder.Property(advance => advance.Amount)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Property(advance => advance.IssuedAt)
@@ -53,7 +54,7 @@ public class AdvanceReportConfiguration : IEntityTypeConfiguration<AdvanceReport
             .HasMaxLength(AdvanceReport.DescriptionMaxLength);
 
         builder.Property(report => report.Amount)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Property(report => report.ReportedAt)
@@ -86,11 +87,11 @@ public class ExpenseTypeConfiguration : IEntityTypeConfiguration<ExpenseType>
 
         builder.Property(expenseType => expenseType.Name)
             .IsRequired()
-            .HasMaxLength(128);
+            .HasMaxLength(FieldLengths.ShortText);
 
         builder.Property(expenseType => expenseType.Category)
             .IsRequired()
-            .HasMaxLength(128);
+            .HasMaxLength(FieldLengths.ShortText);
 
         builder.HasIndex(expenseType => expenseType.Name)
             .IsUnique();
@@ -112,11 +113,11 @@ public class OverheadMonthlyConfiguration : IEntityTypeConfiguration<OverheadMon
             .IsRequired();
 
         builder.Property(overhead => overhead.Amount)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Property(overhead => overhead.Notes)
-            .HasMaxLength(512);
+            .HasMaxLength(FieldLengths.Notes);
 
         builder.HasOne(overhead => overhead.ExpenseType)
             .WithMany()
@@ -143,15 +144,15 @@ public class RevenueReportConfiguration : IEntityTypeConfiguration<RevenueReport
             .IsRequired();
 
         builder.Property(report => report.Quantity)
-            .HasColumnType("decimal(18,3)")
+            .HasColumnType(ColumnTypes.Quantity)
             .IsRequired();
 
         builder.Property(report => report.UnitPrice)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Property(report => report.TotalRevenue)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Property(report => report.IsPaid)
@@ -187,23 +188,23 @@ public class ProductionCostFactConfiguration : IEntityTypeConfiguration<Producti
             .IsRequired();
 
         builder.Property(fact => fact.QuantityProduced)
-            .HasColumnType("decimal(18,3)")
+            .HasColumnType(ColumnTypes.Quantity)
             .IsRequired();
 
         builder.Property(fact => fact.MaterialCost)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Property(fact => fact.LaborCost)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Property(fact => fact.OverheadCost)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Property(fact => fact.TotalCost)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.HasOne(fact => fact.Specification)
@@ -228,19 +229,19 @@ public class MonthlyProfitConfiguration : IEntityTypeConfiguration<MonthlyProfit
             .IsRequired();
 
         builder.Property(profit => profit.Revenue)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Property(profit => profit.ProductionCost)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Property(profit => profit.Overhead)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Property(profit => profit.Profit)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Navigation(profit => profit.RevenueReports)

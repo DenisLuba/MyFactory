@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyFactory.Domain.Entities.Production;
+using MyFactory.Infrastructure.Persistence.Constants;
 
 namespace MyFactory.Infrastructure.Persistence.Configurations;
 
@@ -14,10 +15,10 @@ public class ProductionOrderConfiguration : IEntityTypeConfiguration<ProductionO
 
         builder.Property(order => order.OrderNumber)
             .IsRequired()
-            .HasMaxLength(64);
+            .HasMaxLength(FieldLengths.Code);
 
         builder.Property(order => order.QuantityOrdered)
-            .HasColumnType("decimal(18,3)")
+            .HasColumnType(ColumnTypes.Quantity)
             .IsRequired();
 
         builder.Property(order => order.Status)
@@ -52,7 +53,7 @@ public class ProductionOrderAllocationConfiguration : IEntityTypeConfiguration<P
         builder.HasKey(allocation => allocation.Id);
 
         builder.Property(allocation => allocation.QuantityAllocated)
-            .HasColumnType("decimal(18,3)")
+            .HasColumnType(ColumnTypes.Quantity)
             .IsRequired();
 
         builder.HasOne(allocation => allocation.ProductionOrder)
@@ -77,13 +78,13 @@ public class ProductionStageConfiguration : IEntityTypeConfiguration<ProductionS
 
         builder.Property(stage => stage.StageType)
             .IsRequired()
-            .HasMaxLength(128);
+            .HasMaxLength(FieldLengths.ShortText);
 
         builder.Property(stage => stage.QuantityIn)
-            .HasColumnType("decimal(18,3)");
+            .HasColumnType(ColumnTypes.Quantity);
 
         builder.Property(stage => stage.QuantityOut)
-            .HasColumnType("decimal(18,3)");
+            .HasColumnType(ColumnTypes.Quantity);
 
         builder.Property(stage => stage.Status)
             .HasConversion<int>()
@@ -117,11 +118,11 @@ public class WorkerAssignmentConfiguration : IEntityTypeConfiguration<WorkerAssi
         builder.HasKey(assignment => assignment.Id);
 
         builder.Property(assignment => assignment.QuantityAssigned)
-            .HasColumnType("decimal(18,3)")
+            .HasColumnType(ColumnTypes.Quantity)
             .IsRequired();
 
         builder.Property(assignment => assignment.QuantityCompleted)
-            .HasColumnType("decimal(18,3)");
+            .HasColumnType(ColumnTypes.Quantity);
 
         builder.Property(assignment => assignment.AssignedAt)
             .IsRequired();

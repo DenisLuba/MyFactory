@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyFactory.Domain.Entities.Materials;
+using MyFactory.Infrastructure.Persistence.Constants;
 
 namespace MyFactory.Infrastructure.Persistence.Configurations;
 
@@ -14,11 +15,11 @@ public class MaterialConfiguration : IEntityTypeConfiguration<Material>
 
         builder.Property(material => material.Name)
             .IsRequired()
-            .HasMaxLength(256);
+            .HasMaxLength(FieldLengths.Name);
 
         builder.Property(material => material.Unit)
             .IsRequired()
-            .HasMaxLength(32);
+            .HasMaxLength(FieldLengths.Unit);
 
         builder.Property(material => material.IsActive)
             .HasDefaultValue(true);
@@ -56,8 +57,6 @@ public class MaterialConfiguration : IEntityTypeConfiguration<Material>
         builder.Navigation(material => material.PurchaseRequestItems)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 
-        builder.HasQueryFilter(material => !material.IsDeleted);
-
         builder.HasIndex(material => material.Name)
             .IsUnique();
     }
@@ -72,12 +71,12 @@ public class MaterialPriceHistoryConfiguration : IEntityTypeConfiguration<Materi
         builder.HasKey(history => history.Id);
 
         builder.Property(history => history.Price)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Property(history => history.DocRef)
             .IsRequired()
-            .HasMaxLength(128);
+            .HasMaxLength(FieldLengths.DocumentReference);
 
         builder.Property(history => history.EffectiveFrom)
             .IsRequired();
@@ -109,7 +108,7 @@ public class MaterialTypeConfiguration : IEntityTypeConfiguration<MaterialType>
 
         builder.Property(type => type.Name)
             .IsRequired()
-            .HasMaxLength(128);
+            .HasMaxLength(FieldLengths.ShortText);
 
         builder.Property(type => type.CreatedAt)
             .IsRequired();
@@ -134,11 +133,11 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
 
         builder.Property(supplier => supplier.Name)
             .IsRequired()
-            .HasMaxLength(256);
+            .HasMaxLength(FieldLengths.Name);
 
         builder.Property(supplier => supplier.Contact)
             .IsRequired()
-            .HasMaxLength(256);
+            .HasMaxLength(FieldLengths.Contact);
 
         builder.Property(supplier => supplier.IsActive)
             .HasDefaultValue(true);

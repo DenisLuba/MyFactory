@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyFactory.Domain.Entities.Operations;
+using MyFactory.Infrastructure.Persistence.Constants;
 
 namespace MyFactory.Infrastructure.Persistence.Configurations;
 
@@ -14,23 +15,23 @@ public class OperationConfiguration : IEntityTypeConfiguration<Operation>
 
         builder.Property(operation => operation.Code)
             .IsRequired()
-            .HasMaxLength(64);
+            .HasMaxLength(FieldLengths.Code);
 
         builder.Property(operation => operation.Name)
             .IsRequired()
-            .HasMaxLength(256);
+            .HasMaxLength(FieldLengths.Name);
 
         builder.Property(operation => operation.DefaultTimeMinutes)
-            .HasColumnType("decimal(10,2)")
+            .HasColumnType(ColumnTypes.QuantitySmall)
             .IsRequired();
 
         builder.Property(operation => operation.DefaultCost)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Property(operation => operation.Type)
             .IsRequired()
-            .HasMaxLength(128);
+            .HasMaxLength(FieldLengths.ShortText);
 
         builder.HasIndex(operation => operation.Code)
             .IsUnique();

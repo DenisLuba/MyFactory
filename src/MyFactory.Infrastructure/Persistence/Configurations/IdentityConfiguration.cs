@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyFactory.Domain.Entities.Identity;
+using MyFactory.Infrastructure.Persistence.Constants;
 
 namespace MyFactory.Infrastructure.Persistence.Configurations;
 
@@ -14,7 +15,7 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
 
         builder.Property(role => role.Name)
             .IsRequired()
-            .HasMaxLength(256);
+            .HasMaxLength(FieldLengths.Name);
 
         builder.Property(role => role.Description)
             .HasMaxLength(Role.DescriptionMaxLength);
@@ -40,11 +41,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(user => user.Username)
             .IsRequired()
-            .HasMaxLength(256);
+            .HasMaxLength(FieldLengths.Name);
 
         builder.Property(user => user.Email)
             .IsRequired()
-            .HasMaxLength(320);
+            .HasMaxLength(FieldLengths.Email);
 
         builder.Property(user => user.PasswordHash)
             .IsRequired();

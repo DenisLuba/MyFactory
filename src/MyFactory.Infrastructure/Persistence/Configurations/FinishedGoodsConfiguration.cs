@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyFactory.Domain.Entities.FinishedGoods;
+using MyFactory.Infrastructure.Persistence.Constants;
 
 namespace MyFactory.Infrastructure.Persistence.Configurations;
 
@@ -13,11 +14,11 @@ public class FinishedGoodsInventoryConfiguration : IEntityTypeConfiguration<Fini
         builder.HasKey(inventory => inventory.Id);
 
         builder.Property(inventory => inventory.Quantity)
-            .HasColumnType("decimal(18,3)")
+            .HasColumnType(ColumnTypes.Quantity)
             .IsRequired();
 
         builder.Property(inventory => inventory.UnitCost)
-            .HasColumnType("decimal(18,4)")
+            .HasColumnType(ColumnTypes.MonetaryHighPrecision)
             .IsRequired();
 
         builder.Property(inventory => inventory.UpdatedAt)
@@ -47,7 +48,7 @@ public class FinishedGoodsMovementConfiguration : IEntityTypeConfiguration<Finis
         builder.HasKey(movement => movement.Id);
 
         builder.Property(movement => movement.Quantity)
-            .HasColumnType("decimal(18,3)")
+            .HasColumnType(ColumnTypes.Quantity)
             .IsRequired();
 
         builder.Property(movement => movement.MovedAt)

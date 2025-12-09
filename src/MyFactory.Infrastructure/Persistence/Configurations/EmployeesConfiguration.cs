@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyFactory.Domain.Entities.Employees;
 using MyFactory.Domain.Entities.Production;
+using MyFactory.Infrastructure.Persistence.Constants;
 
 namespace MyFactory.Infrastructure.Persistence.Configurations;
 
@@ -15,21 +16,21 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
 
         builder.Property(employee => employee.FullName)
             .IsRequired()
-            .HasMaxLength(256);
+            .HasMaxLength(FieldLengths.Name);
 
         builder.Property(employee => employee.Position)
             .IsRequired()
-            .HasMaxLength(128);
+            .HasMaxLength(FieldLengths.ShortText);
 
         builder.Property(employee => employee.Grade)
             .IsRequired();
 
         builder.Property(employee => employee.RatePerNormHour)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Property(employee => employee.PremiumPercent)
-            .HasColumnType("decimal(5,2)")
+            .HasColumnType(ColumnTypes.Percentage)
             .IsRequired();
 
         builder.Property(employee => employee.IsActive)
@@ -59,7 +60,7 @@ public class TimesheetEntryConfiguration : IEntityTypeConfiguration<TimesheetEnt
             .IsRequired();
 
         builder.Property(entry => entry.HoursWorked)
-            .HasColumnType("decimal(10,2)")
+            .HasColumnType(ColumnTypes.QuantitySmall)
             .IsRequired();
 
         builder.Property(entry => entry.Status)
@@ -95,19 +96,19 @@ public class PayrollEntryConfiguration : IEntityTypeConfiguration<PayrollEntry>
             .IsRequired();
 
         builder.Property(entry => entry.TotalHours)
-            .HasColumnType("decimal(10,2)")
+            .HasColumnType(ColumnTypes.QuantitySmall)
             .IsRequired();
 
         builder.Property(entry => entry.AccruedAmount)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Property(entry => entry.PaidAmount)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.Property(entry => entry.Outstanding)
-            .HasColumnType("decimal(18,2)")
+            .HasColumnType(ColumnTypes.Monetary)
             .IsRequired();
 
         builder.HasOne(entry => entry.Employee)

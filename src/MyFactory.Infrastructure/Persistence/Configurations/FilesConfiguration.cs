@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyFactory.Domain.Entities.Files;
+using MyFactory.Infrastructure.Persistence.Constants;
 
 namespace MyFactory.Infrastructure.Persistence.Configurations;
 
@@ -14,15 +15,15 @@ public class FileResourceConfiguration : IEntityTypeConfiguration<FileResource>
 
         builder.Property(file => file.FileName)
             .IsRequired()
-            .HasMaxLength(256);
+            .HasMaxLength(FieldLengths.Name);
 
         builder.Property(file => file.StoragePath)
             .IsRequired()
-            .HasMaxLength(1024);
+            .HasMaxLength(FieldLengths.Path);
 
         builder.Property(file => file.ContentType)
             .IsRequired()
-            .HasMaxLength(256);
+            .HasMaxLength(FieldLengths.ContentType);
 
         builder.Property(file => file.SizeBytes)
             .IsRequired();
