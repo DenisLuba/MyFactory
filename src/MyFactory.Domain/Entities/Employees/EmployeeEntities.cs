@@ -98,7 +98,7 @@ public sealed class TimesheetEntry : BaseEntity
 
         EmployeeId = employeeId;
         WorkDate = workDate;
-        Status = TimesheetEntryStatus.Draft;
+        Status = TimesheetEntryStatuses.Draft;
         UpdateHours(hoursWorked);
         AssignProductionOrder(productionOrderId);
     }
@@ -120,7 +120,7 @@ public sealed class TimesheetEntry : BaseEntity
 
     public ProductionOrder? ProductionOrder { get; private set; }
 
-    public TimesheetEntryStatus Status { get; private set; }
+    public string Status { get; private set; } = TimesheetEntryStatuses.Draft;
 
     public void UpdateHours(decimal hoursWorked)
     {
@@ -137,22 +137,22 @@ public sealed class TimesheetEntry : BaseEntity
 
     public void Approve()
     {
-        if (Status == TimesheetEntryStatus.Approved)
+        if (Status == TimesheetEntryStatuses.Approved)
         {
             throw new DomainException("Timesheet entry is already approved.");
         }
 
-        Status = TimesheetEntryStatus.Approved;
+        Status = TimesheetEntryStatuses.Approved;
     }
 
     public void ReturnToDraft()
     {
-        if (Status != TimesheetEntryStatus.Approved)
+        if (Status != TimesheetEntryStatuses.Approved)
         {
             throw new DomainException("Only approved entries can be returned to draft.");
         }
 
-        Status = TimesheetEntryStatus.Draft;
+        Status = TimesheetEntryStatuses.Draft;
     }
 
     private static Guid? NormalizeProductionOrderId(Guid? productionOrderId)
@@ -167,7 +167,7 @@ public sealed class TimesheetEntry : BaseEntity
 
     private void EnsureDraftState()
     {
-        if (Status != TimesheetEntryStatus.Draft)
+        if (Status != TimesheetEntryStatuses.Draft)
         {
             throw new DomainException("Approved timesheet entries cannot be modified.");
         }
@@ -253,8 +253,8 @@ public sealed class PayrollEntry : BaseEntity
     }
 }
 
-public enum TimesheetEntryStatus
+public static class TimesheetEntryStatuses
 {
-    Draft = 1,
-    Approved = 2
+    public const string Draft = "Draft";
+    public const string Approved = "Approved";
 }

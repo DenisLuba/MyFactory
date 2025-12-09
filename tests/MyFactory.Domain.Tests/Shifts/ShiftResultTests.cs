@@ -16,7 +16,7 @@ public class ShiftResultTests
         var shiftPlan = new ShiftPlan(employeeId, specificationId, shiftDate, "Day", 120);
         var recordedAt = new DateTime(2025, 2, 10, 18, 30, 0, DateTimeKind.Utc);
 
-        var result = new ShiftResult(shiftPlan.Id, 95, 7.5m, recordedAt);
+        var result = new ShiftResult(shiftPlan, employeeId, 95, 7.5m, recordedAt);
 
         Assert.Equal(shiftPlan.Id, result.ShiftPlanId);
         Assert.Equal(95, result.ActualQuantity);
@@ -29,6 +29,16 @@ public class ShiftResultTests
     {
         var shiftPlan = new ShiftPlan(Guid.NewGuid(), Guid.NewGuid(), new DateOnly(2025, 2, 10), "Night", 150);
 
-        Assert.Throws<DomainException>(() => new ShiftResult(shiftPlan.Id, -5, 4, DateTime.UtcNow));
+        Assert.Throws<DomainException>(() => new ShiftResult(shiftPlan, shiftPlan.EmployeeId, -5, 4, DateTime.UtcNow));
+
+    }
+
+    [Fact]
+    public void Constructor_WithMismatchedEmployee_Throws()
+    {
+        var shiftPlan = new ShiftPlan(Guid.NewGuid(), Guid.NewGuid(), new DateOnly(2025, 2, 10), "Night", 150);
+
+        Assert.Throws<DomainException>(() =>
+            new ShiftResult(shiftPlan, Guid.NewGuid(), 10, 5, DateTime.UtcNow));
     }
 }

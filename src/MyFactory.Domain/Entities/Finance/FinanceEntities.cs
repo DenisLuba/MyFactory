@@ -27,7 +27,7 @@ public sealed class Advance : BaseEntity
         EmployeeId = employeeId;
         Amount = amount;
         IssuedAt = issuedAt;
-        Status = AdvanceStatus.Draft;
+        Status = AdvanceStatuses.Draft;
         UpdateDescription(description);
     }
 
@@ -43,7 +43,7 @@ public sealed class Advance : BaseEntity
 
     public DateOnly? ClosedAt { get; private set; }
 
-    public AdvanceStatus Status { get; private set; }
+    public string Status { get; private set; } = AdvanceStatuses.Draft;
 
     public IReadOnlyCollection<AdvanceReport> Reports => _reports.AsReadOnly();
 
@@ -64,27 +64,27 @@ public sealed class Advance : BaseEntity
 
     public void Approve()
     {
-        if (Status != AdvanceStatus.Draft)
+        if (Status != AdvanceStatuses.Draft)
         {
             throw new DomainException("Only draft advances can be approved.");
         }
 
-        Status = AdvanceStatus.Approved;
+        Status = AdvanceStatuses.Approved;
     }
 
     public void Reject()
     {
-        if (Status != AdvanceStatus.Draft)
+        if (Status != AdvanceStatuses.Draft)
         {
             throw new DomainException("Only draft advances can be rejected.");
         }
 
-        Status = AdvanceStatus.Rejected;
+        Status = AdvanceStatuses.Rejected;
     }
 
     public void Close(DateOnly closedAt)
     {
-        if (Status != AdvanceStatus.Approved)
+        if (Status != AdvanceStatuses.Approved)
         {
             throw new DomainException("Only approved advances can be closed.");
         }
@@ -96,13 +96,13 @@ public sealed class Advance : BaseEntity
 
         Guard.AgainstDefaultDate(closedAt, "Closed date is required.");
 
-        Status = AdvanceStatus.Closed;
+        Status = AdvanceStatuses.Closed;
         ClosedAt = closedAt;
     }
 
     public AdvanceReport AddReport(string description, decimal amount, DateOnly reportedAt, Guid fileId, DateOnly spentAt)
     {
-        if (Status != AdvanceStatus.Approved)
+        if (Status != AdvanceStatuses.Approved)
         {
             throw new DomainException("Reports can be added only for approved advances.");
         }
@@ -199,12 +199,12 @@ public sealed class AdvanceReport : BaseEntity
     public DateOnly SpentAt { get; private set; }
 }
 
-public enum AdvanceStatus
+public static class AdvanceStatuses
 {
-    Draft = 1,
-    Approved = 2,
-    Rejected = 3,
-    Closed = 4
+    public const string Draft = "Draft";
+    public const string Approved = "Approved";
+    public const string Rejected = "Rejected";
+    public const string Closed = "Closed";
 }
 
 public sealed class ExpenseType : BaseEntity

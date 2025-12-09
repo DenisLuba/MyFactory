@@ -17,7 +17,7 @@ public sealed class FileResource : BaseEntity
 
     public FileResource(
         string fileName,
-        string storagePath,
+        string filePath,
         string contentType,
         long sizeBytes,
         Guid uploadedByUserId,
@@ -25,7 +25,7 @@ public sealed class FileResource : BaseEntity
         string? description = null)
     {
         Rename(fileName);
-        MoveTo(storagePath);
+        MoveTo(filePath);
         ChangeContentType(contentType);
         UpdateSize(sizeBytes);
         SetUploadedBy(uploadedByUserId);
@@ -35,7 +35,7 @@ public sealed class FileResource : BaseEntity
 
     public string FileName { get; private set; } = string.Empty;
 
-    public string StoragePath { get; private set; } = string.Empty;
+    public string FilePath { get; private set; } = string.Empty;
 
     public string ContentType { get; private set; } = string.Empty;
 
@@ -55,10 +55,10 @@ public sealed class FileResource : BaseEntity
         FileName = newName.Trim();
     }
 
-    public void MoveTo(string newStoragePath)
+    public void MoveTo(string newFilePath)
     {
-        Guard.AgainstNullOrWhiteSpace(newStoragePath, "File path is required.");
-        StoragePath = newStoragePath.Trim();
+        Guard.AgainstNullOrWhiteSpace(newFilePath, "File path is required.");
+        FilePath = newFilePath.Trim();
     }
 
     public void ChangeContentType(string newType)

@@ -10,8 +10,8 @@ public class WorkshopExpenseHistoryTests
     [Fact]
     public void ClosePeriod_WithValidDate_SetsEffectiveTo()
     {
-        var entry = new WorkshopExpenseHistory(Guid.NewGuid(), Guid.NewGuid(), 3.25m, new DateTime(2025, 2, 1));
-        var effectiveTo = new DateTime(2025, 2, 28);
+        var entry = new WorkshopExpenseHistory(Guid.NewGuid(), Guid.NewGuid(), 3.25m, new DateOnly(2025, 2, 1));
+        var effectiveTo = new DateOnly(2025, 2, 28);
 
         entry.ClosePeriod(effectiveTo);
 
@@ -21,8 +21,8 @@ public class WorkshopExpenseHistoryTests
     [Fact]
     public void ClosePeriod_WithEarlierDate_Throws()
     {
-        var entry = new WorkshopExpenseHistory(Guid.NewGuid(), Guid.NewGuid(), 3.25m, new DateTime(2025, 2, 10));
+        var entry = new WorkshopExpenseHistory(Guid.NewGuid(), Guid.NewGuid(), 3.25m, new DateOnly(2025, 2, 10));
 
-        Assert.Throws<DomainException>(() => entry.ClosePeriod(new DateTime(2025, 2, 5)));
+        Assert.Throws<DomainException>(() => entry.ClosePeriod(new DateOnly(2025, 2, 5)));
     }
 }

@@ -144,7 +144,7 @@ public sealed class InventoryReceipt : BaseEntity
     {
     }
 
-    public InventoryReceipt(string receiptNumber, Guid supplierId, DateTime receiptDate)
+    public InventoryReceipt(string receiptNumber, Guid supplierId, DateOnly receiptDate)
     {
         Guard.AgainstNullOrWhiteSpace(receiptNumber, nameof(receiptNumber));
         Guard.AgainstEmptyGuid(supplierId, nameof(supplierId));
@@ -153,20 +153,25 @@ public sealed class InventoryReceipt : BaseEntity
         ReceiptNumber = receiptNumber.Trim();
         SupplierId = supplierId;
         ReceiptDate = receiptDate;
-        Status = InventoryReceiptStatus.Draft;
+        Status = InventoryReceiptStatuses.Draft;
     }
 
     public string ReceiptNumber { get; private set; } = string.Empty;
     public Guid SupplierId { get; private set; }
     public Supplier? Supplier { get; private set; }
-    public DateTime ReceiptDate { get; private set; }
+    public DateOnly ReceiptDate { get; private set; }
     public decimal TotalAmount { get; private set; }
-    public InventoryReceiptStatus Status { get; private set; }
+    public string Status { get; private set; } = InventoryReceiptStatuses.Draft;
     public IReadOnlyCollection<InventoryReceiptItem> Items => _items.AsReadOnly();
 
     public InventoryReceiptItem AddItem(Guid materialId, decimal quantity, decimal unitPrice, Guid? inventoryItemId = null)
     {
         EnsureDraft();
+
+        if (_items.Any(entry => entry.MaterialId == materialId))
+        {
+            throw new DomainException("Material already exists within this receipt.");
+        }
 
         var item = new InventoryReceiptItem(Id, materialId, quantity, unitPrice, inventoryItemId);
         _items.Add(item);
@@ -182,18 +187,18 @@ public sealed class InventoryReceipt : BaseEntity
             throw new DomainException("Cannot mark receipt without items as received.");
         }
 
-        Status = InventoryReceiptStatus.Received;
+        Status = InventoryReceiptStatuses.Received;
     }
 
     public void Cancel()
     {
         EnsureDraft();
-        Status = InventoryReceiptStatus.Cancelled;
+        Status = InventoryReceiptStatuses.Cancelled;
     }
 
     private void EnsureDraft()
     {
-        if (Status != InventoryReceiptStatus.Draft)
+        if (Status != InventoryReceiptStatuses.Draft)
         {
             throw new DomainException("Only draft receipts can be modified.");
         }
@@ -244,11 +249,11 @@ public sealed class InventoryReceiptItem : BaseEntity
     }
 }
 
-public enum InventoryReceiptStatus
+public static class InventoryReceiptStatuses
 {
-    Draft = 1,
-    Received = 2,
-    Cancelled = 3
+    public const string Draft = "Draft";
+    public const string Received = "Received";
+    public const string Cancelled = "Cancelled";
 }
 
 /// <summary>
@@ -269,12 +274,12 @@ public sealed class PurchaseRequest : BaseEntity
 
         PrNumber = prNumber.Trim();
         CreatedAt = createdAt;
-        Status = PurchaseRequestStatus.Draft;
+        Status = PurchaseRequestStatuses.Draft;
     }
 
     public string PrNumber { get; private set; } = string.Empty;
     public DateTime CreatedAt { get; private set; }
-    public PurchaseRequestStatus Status { get; private set; }
+    public string Status { get; private set; } = PurchaseRequestStatuses.Draft;
     public IReadOnlyCollection<PurchaseRequestItem> Items => _items.AsReadOnly();
 
     public PurchaseRequestItem AddItem(Guid materialId, decimal quantity)
@@ -333,42 +338,42 @@ public sealed class PurchaseRequest : BaseEntity
             throw new DomainException("Cannot submit a purchase request without items.");
         }
 
-        Status = PurchaseRequestStatus.Submitted;
+        Status = PurchaseRequestStatuses.Submitted;
     }
 
     public void Approve()
     {
-        if (Status != PurchaseRequestStatus.Submitted)
+        if (Status != PurchaseRequestStatuses.Submitted)
         {
             throw new DomainException("Only submitted purchase requests can be approved.");
         }
 
-        Status = PurchaseRequestStatus.Approved;
+        Status = PurchaseRequestStatuses.Approved;
     }
 
     public void Reject()
     {
-        if (Status != PurchaseRequestStatus.Submitted)
+        if (Status != PurchaseRequestStatuses.Submitted)
         {
             throw new DomainException("Only submitted purchase requests can be rejected.");
         }
 
-        Status = PurchaseRequestStatus.Rejected;
+        Status = PurchaseRequestStatuses.Rejected;
     }
 
     public void Cancel()
     {
-        if (Status != PurchaseRequestStatus.Draft && Status != PurchaseRequestStatus.Submitted)
+        if (Status != PurchaseRequestStatuses.Draft && Status != PurchaseRequestStatuses.Submitted)
         {
             throw new DomainException("Only draft or submitted purchase requests can be cancelled.");
         }
 
-        Status = PurchaseRequestStatus.Cancelled;
+        Status = PurchaseRequestStatuses.Cancelled;
     }
 
     private void EnsureDraft()
     {
-        if (Status != PurchaseRequestStatus.Draft)
+        if (Status != PurchaseRequestStatuses.Draft)
         {
             throw new DomainException("Only draft purchase requests can be modified.");
         }
@@ -417,11 +422,11 @@ public sealed class PurchaseRequestItem : BaseEntity
     }
 }
 
-public enum PurchaseRequestStatus
+public static class PurchaseRequestStatuses
 {
-    Draft = 1,
-    Submitted = 2,
-    Approved = 3,
-    Rejected = 4,
-    Cancelled = 5
+    public const string Draft = "Draft";
+    public const string Submitted = "Submitted";
+    public const string Approved = "Approved";
+    public const string Rejected = "Rejected";
+    public const string Cancelled = "Cancelled";
 }

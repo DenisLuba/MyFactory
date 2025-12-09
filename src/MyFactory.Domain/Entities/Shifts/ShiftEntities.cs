@@ -67,14 +67,21 @@ public sealed class ShiftResult : BaseEntity
 	{
 	}
 
-	public ShiftResult(Guid shiftPlanId, decimal actualQuantity, decimal hoursWorked, DateTime recordedAt)
+	public ShiftResult(ShiftPlan shiftPlan, Guid employeeId, decimal actualQuantity, decimal hoursWorked, DateTime recordedAt)
 	{
-		Guard.AgainstEmptyGuid(shiftPlanId, nameof(shiftPlanId));
+		Guard.AgainstNull(shiftPlan, "Shift plan is required.");
+		Guard.AgainstEmptyGuid(employeeId, nameof(employeeId));
 		Guard.AgainstNegative(actualQuantity, nameof(actualQuantity));
 		Guard.AgainstNegative(hoursWorked, nameof(hoursWorked));
 		Guard.AgainstDefaultDate(recordedAt, nameof(recordedAt));
 
-		ShiftPlanId = shiftPlanId;
+		if (shiftPlan.EmployeeId != employeeId)
+		{
+			throw new DomainException("Shift result employee must match the shift plan employee.");
+		}
+
+		ShiftPlanId = shiftPlan.Id;
+		EmployeeId = employeeId;
 		ActualQuantity = actualQuantity;
 		HoursWorked = hoursWorked;
 		RecordedAt = recordedAt;
@@ -82,6 +89,8 @@ public sealed class ShiftResult : BaseEntity
 
 	public Guid ShiftPlanId { get; private set; }
 	public ShiftPlan? ShiftPlan { get; private set; }
+	public Guid EmployeeId { get; private set; }
+	public Employee? Employee { get; private set; }
 	public decimal ActualQuantity { get; private set; }
 	public decimal HoursWorked { get; private set; }
 	public DateTime RecordedAt { get; private set; }

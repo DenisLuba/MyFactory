@@ -98,7 +98,7 @@ public class Material : BaseEntity
         IsActive = false;
     }
 
-    public MaterialPriceHistory AddPrice(Guid supplierId, decimal price, DateTime effectiveFrom, string docRef)
+    public MaterialPriceHistory AddPrice(Guid supplierId, decimal price, DateOnly effectiveFrom, string docRef)
     {
         Guard.AgainstEmptyGuid(supplierId, "Supplier id is required.");
         Guard.AgainstNonPositive(price, "Price must be positive.");
@@ -166,7 +166,7 @@ public class MaterialPriceHistory : BaseEntity
     {
     }
 
-    public MaterialPriceHistory(Guid materialId, Guid supplierId, decimal price, DateTime effectiveFrom, string docRef)
+    public MaterialPriceHistory(Guid materialId, Guid supplierId, decimal price, DateOnly effectiveFrom, string docRef)
     {
         Guard.AgainstEmptyGuid(materialId, "Material id is required.");
         Guard.AgainstEmptyGuid(supplierId, "Supplier id is required.");
@@ -191,9 +191,9 @@ public class MaterialPriceHistory : BaseEntity
 
     public decimal Price { get; private set; }
 
-    public DateTime EffectiveFrom { get; private set; }
+    public DateOnly EffectiveFrom { get; private set; }
 
-    public DateTime? EffectiveTo { get; private set; }
+    public DateOnly? EffectiveTo { get; private set; }
 
     public string DocRef { get; private set; } = string.Empty;
 
@@ -203,7 +203,7 @@ public class MaterialPriceHistory : BaseEntity
         Price = price;
     }
 
-    public void SetEffectiveTo(DateTime effectiveTo)
+    public void SetEffectiveTo(DateOnly effectiveTo)
     {
         if (effectiveTo < EffectiveFrom)
         {

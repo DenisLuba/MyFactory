@@ -14,7 +14,7 @@ public class MaterialTests
         var materialTypeId = Guid.NewGuid();
         var material = new Material("Cotton Fabric", materialTypeId, "kg");
         var supplierId = Guid.NewGuid();
-        var effectiveFrom = new DateTime(2025, 1, 1);
+        var effectiveFrom = new DateOnly(2025, 1, 1);
 
         var entry = material.AddPrice(supplierId, 12.5m, effectiveFrom, "DOC-001");
 
@@ -31,6 +31,6 @@ public class MaterialTests
         var material = new Material("Buttons", Guid.NewGuid(), "pcs");
 
         Assert.Throws<DomainException>(() =>
-            material.AddPrice(Guid.NewGuid(), 0m, DateTime.UtcNow, "DOC-ERROR"));
+            material.AddPrice(Guid.NewGuid(), 0m, new DateOnly(2025, 1, 1), "DOC-ERROR"));
     }
 }

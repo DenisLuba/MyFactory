@@ -10,7 +10,7 @@ public class MaterialPriceHistoryTests
     [Fact]
     public void SetEffectiveTo_WithValidDate_AssignsValue()
     {
-        var effectiveFrom = new DateTime(2025, 1, 1);
+        var effectiveFrom = new DateOnly(2025, 1, 1);
         var entry = new MaterialPriceHistory(Guid.NewGuid(), Guid.NewGuid(), 9.99m, effectiveFrom, "DOC-123");
         var effectiveTo = effectiveFrom.AddDays(10);
 
@@ -22,7 +22,7 @@ public class MaterialPriceHistoryTests
     [Fact]
     public void SetEffectiveTo_BeforeEffectiveFrom_Throws()
     {
-        var effectiveFrom = new DateTime(2025, 1, 1);
+        var effectiveFrom = new DateOnly(2025, 1, 1);
         var entry = new MaterialPriceHistory(Guid.NewGuid(), Guid.NewGuid(), 9.99m, effectiveFrom, "DOC-123");
 
         Assert.Throws<DomainException>(() => entry.SetEffectiveTo(effectiveFrom.AddDays(-1)));

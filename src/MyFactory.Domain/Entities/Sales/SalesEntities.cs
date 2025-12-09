@@ -48,7 +48,7 @@ public sealed class Shipment : BaseEntity
     {
     }
 
-    public Shipment(string shipmentNumber, Guid customerId, DateTime shipmentDate)
+    public Shipment(string shipmentNumber, Guid customerId, DateOnly shipmentDate)
     {
         Guard.AgainstNullOrWhiteSpace(shipmentNumber, nameof(shipmentNumber));
         Guard.AgainstEmptyGuid(customerId, nameof(customerId));
@@ -57,14 +57,14 @@ public sealed class Shipment : BaseEntity
         ShipmentNumber = shipmentNumber.Trim();
         CustomerId = customerId;
         ShipmentDate = shipmentDate;
-        Status = ShipmentStatus.Draft;
+        Status = ShipmentStatuses.Draft;
     }
 
     public string ShipmentNumber { get; private set; } = string.Empty;
     public Guid CustomerId { get; }
     public Customer? Customer { get; private set; }
-    public DateTime ShipmentDate { get; private set; }
-    public ShipmentStatus Status { get; private set; }
+    public DateOnly ShipmentDate { get; private set; }
+    public string Status { get; private set; } = ShipmentStatuses.Draft;
     public IReadOnlyCollection<ShipmentItem> Items => _items.AsReadOnly();
     public decimal TotalAmount { get; private set; }
 
@@ -109,42 +109,42 @@ public sealed class Shipment : BaseEntity
     {
         EnsureDraft();
         EnsureHasItems();
-        Status = ShipmentStatus.Submitted;
+        Status = ShipmentStatuses.Submitted;
     }
 
     public void MarkAsShipped()
     {
-        if (Status != ShipmentStatus.Submitted)
+        if (Status != ShipmentStatuses.Submitted)
         {
             throw new DomainException("Only submitted shipments can be marked as shipped.");
         }
 
-        Status = ShipmentStatus.Shipped;
+        Status = ShipmentStatuses.Shipped;
     }
 
     public void MarkAsPaid()
     {
-        if (Status != ShipmentStatus.Shipped)
+        if (Status != ShipmentStatuses.Shipped)
         {
             throw new DomainException("Only shipped shipments can be marked as paid.");
         }
 
-        Status = ShipmentStatus.Paid;
+        Status = ShipmentStatuses.Paid;
     }
 
     public void Cancel()
     {
-        if (Status == ShipmentStatus.Paid)
+        if (Status == ShipmentStatuses.Paid)
         {
             throw new DomainException("Paid shipments cannot be cancelled.");
         }
 
-        Status = ShipmentStatus.Cancelled;
+        Status = ShipmentStatuses.Cancelled;
     }
 
     private void EnsureDraft()
     {
-        if (Status != ShipmentStatus.Draft)
+        if (Status != ShipmentStatuses.Draft)
         {
             throw new DomainException("Only draft shipments can be modified.");
         }
@@ -218,7 +218,7 @@ public sealed class CustomerReturn : BaseEntity
     {
     }
 
-    public CustomerReturn(string returnNumber, Guid customerId, DateTime returnDate, string reason)
+    public CustomerReturn(string returnNumber, Guid customerId, DateOnly returnDate, string reason)
     {
         Guard.AgainstNullOrWhiteSpace(returnNumber, nameof(returnNumber));
         Guard.AgainstEmptyGuid(customerId, nameof(customerId));
@@ -229,15 +229,15 @@ public sealed class CustomerReturn : BaseEntity
         CustomerId = customerId;
         ReturnDate = returnDate;
         Reason = reason.Trim();
-        Status = ReturnStatus.PendingReview;
+        Status = ReturnStatuses.PendingReview;
     }
 
     public string ReturnNumber { get; private set; } = string.Empty;
     public Guid CustomerId { get; }
     public Customer? Customer { get; private set; }
-    public DateTime ReturnDate { get; private set; }
+    public DateOnly ReturnDate { get; private set; }
     public string Reason { get; private set; } = string.Empty;
-    public ReturnStatus Status { get; private set; }
+    public string Status { get; private set; } = ReturnStatuses.PendingReview;
     public IReadOnlyCollection<CustomerReturnItem> Items => _items.AsReadOnly();
 
     public CustomerReturnItem AddItem(Guid specificationId, decimal quantity, string disposition)
@@ -246,6 +246,11 @@ public sealed class CustomerReturn : BaseEntity
         Guard.AgainstEmptyGuid(specificationId, nameof(specificationId));
         Guard.AgainstNonPositive(quantity, nameof(quantity));
         Guard.AgainstNullOrWhiteSpace(disposition, nameof(disposition));
+
+        if (_items.Any(item => item.SpecificationId == specificationId))
+        {
+            throw new DomainException("Specification already exists within this return.");
+        }
 
         var item = new CustomerReturnItem(Id, specificationId, quantity, disposition.Trim());
         _items.Add(item);
@@ -256,12 +261,17 @@ public sealed class CustomerReturn : BaseEntity
     {
         EnsurePending();
         EnsureHasItems();
-        Status = ReturnStatus.Approved;
+        Status = ReturnStatuses.Approved;
     }
 
     public void Complete()
     {
-        Approve();
+        if (Status != ReturnStatuses.Approved)
+        {
+            throw new DomainException("Only approved returns can be completed.");
+        }
+
+        Status = ReturnStatuses.Completed;
     }
 
     public void Reject(string rejectionReason)
@@ -269,12 +279,12 @@ public sealed class CustomerReturn : BaseEntity
         EnsurePending();
         Guard.AgainstNullOrWhiteSpace(rejectionReason, nameof(rejectionReason));
         Reason = $"{Reason} | Reject: {rejectionReason.Trim()}";
-        Status = ReturnStatus.Rejected;
+        Status = ReturnStatuses.Rejected;
     }
 
     private void EnsurePending()
     {
-        if (Status != ReturnStatus.PendingReview)
+        if (Status != ReturnStatuses.PendingReview)
         {
             throw new DomainException("Return is already processed.");
         }
@@ -319,22 +329,19 @@ public sealed class CustomerReturnItem : BaseEntity
     public string Disposition { get; private set; } = string.Empty;
 }
 
-public enum ShipmentStatus
+public static class ShipmentStatuses
 {
-    Draft = 1,
-    Submitted = 2,
-    Posted = Submitted,
-    Shipped = 3,
-    Delivered = Shipped,
-    Paid = 4,
-    Cancelled = 5
+    public const string Draft = "Draft";
+    public const string Submitted = "Submitted";
+    public const string Shipped = "Shipped";
+    public const string Paid = "Paid";
+    public const string Cancelled = "Cancelled";
 }
 
-public enum ReturnStatus
+public static class ReturnStatuses
 {
-    PendingReview = 1,
-    Draft = PendingReview,
-    Approved = 2,
-    Completed = Approved,
-    Rejected = 3
+    public const string PendingReview = "PendingReview";
+    public const string Approved = "Approved";
+    public const string Completed = "Completed";
+    public const string Rejected = "Rejected";
 }

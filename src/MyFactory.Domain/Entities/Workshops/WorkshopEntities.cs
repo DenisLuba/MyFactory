@@ -52,15 +52,15 @@ public sealed class Workshop : BaseEntity
         IsActive = false;
     }
 
-    public WorkshopExpenseHistory AddExpense(Guid specificationId, decimal amountPerUnit, DateTime effectiveFrom, DateTime? effectiveTo = null)
+    public WorkshopExpenseHistory AddExpense(Guid specificationId, decimal amountPerUnit, DateOnly effectiveFrom, DateOnly? effectiveTo = null)
     {
         Guard.AgainstEmptyGuid(specificationId, "Specification id is required.");
         Guard.AgainstNonPositive(amountPerUnit, "Amount per unit must be positive.");
         Guard.AgainstDefaultDate(effectiveFrom, "Effective from date is required.");
 
-        var range = DateRange.From(effectiveFrom, effectiveTo ?? DateTime.MaxValue);
+        var range = DateRange.From(effectiveFrom, effectiveTo);
 
-        var newEnd = range.End ?? DateTime.MaxValue;
+        var newEnd = range.End ?? DateOnly.MaxValue;
 
         var overlaps = _expenseHistory.Any(entry => entry.Overlaps(effectiveFrom, newEnd));
         if (overlaps)
@@ -80,13 +80,13 @@ public sealed class WorkshopExpenseHistory : BaseEntity
     {
     }
 
-    public WorkshopExpenseHistory(Guid workshopId, Guid specificationId, decimal amountPerUnit, DateTime effectiveFrom, DateTime? effectiveTo = null)
+    public WorkshopExpenseHistory(Guid workshopId, Guid specificationId, decimal amountPerUnit, DateOnly effectiveFrom, DateOnly? effectiveTo = null)
     {
         Guard.AgainstEmptyGuid(workshopId, "Workshop id is required.");
         Guard.AgainstEmptyGuid(specificationId, "Specification id is required.");
         Guard.AgainstNonPositive(amountPerUnit, "Amount per unit must be positive.");
 
-        var range = DateRange.From(effectiveFrom, effectiveTo ?? DateTime.MaxValue);
+        var range = DateRange.From(effectiveFrom, effectiveTo);
 
         WorkshopId = workshopId;
         SpecificationId = specificationId;
@@ -105,9 +105,9 @@ public sealed class WorkshopExpenseHistory : BaseEntity
 
     public decimal AmountPerUnit { get; private set; }
 
-    public DateTime EffectiveFrom { get; private set; }
+    public DateOnly EffectiveFrom { get; private set; }
 
-    public DateTime? EffectiveTo { get; private set; }
+    public DateOnly? EffectiveTo { get; private set; }
 
     public void UpdateAmount(decimal amountPerUnit)
     {
@@ -115,17 +115,17 @@ public sealed class WorkshopExpenseHistory : BaseEntity
         AmountPerUnit = amountPerUnit;
     }
 
-    public void ClosePeriod(DateTime effectiveTo)
+    public void ClosePeriod(DateOnly effectiveTo)
     {
         Guard.AgainstDefaultDate(effectiveTo, "Effective to date is required.");
         DateRange.From(EffectiveFrom, effectiveTo);
         EffectiveTo = effectiveTo;
     }
 
-    internal bool Overlaps(DateTime start, DateTime end)
+    internal bool Overlaps(DateOnly start, DateOnly end)
     {
         var currentStart = EffectiveFrom;
-        var currentEnd = EffectiveTo ?? DateTime.MaxValue;
+        var currentEnd = EffectiveTo ?? DateOnly.MaxValue;
         return start <= currentEnd && currentStart <= end;
     }
 }

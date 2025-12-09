@@ -30,7 +30,7 @@ public sealed class ProductionOrder : BaseEntity
         SpecificationId = specificationId;
         QuantityOrdered = quantityOrdered;
         CreatedAt = createdAt;
-        Status = ProductionOrderStatus.Planned;
+        Status = ProductionOrderStatuses.Planned;
     }
 
     public static ProductionOrder Create(string orderNumber, Guid specificationId, decimal quantityOrdered, DateTime createdAt)
@@ -42,7 +42,7 @@ public sealed class ProductionOrder : BaseEntity
     public Guid SpecificationId { get; private set; }
     public Specification? Specification { get; private set; }
     public decimal QuantityOrdered { get; private set; }
-    public ProductionOrderStatus Status { get; private set; }
+    public string Status { get; private set; } = ProductionOrderStatuses.Planned;
     public DateTime CreatedAt { get; private set; }
     public IReadOnlyCollection<ProductionOrderAllocation> Allocations => _allocations.AsReadOnly();
     public IReadOnlyCollection<ProductionStage> Stages => _stages.AsReadOnly();
@@ -68,7 +68,7 @@ public sealed class ProductionOrder : BaseEntity
     {
         Guard.AgainstEmptyGuid(workshopId, nameof(workshopId));
         Guard.AgainstNullOrWhiteSpace(stageType, nameof(stageType));
-        if (Status == ProductionOrderStatus.Completed)
+        if (Status == ProductionOrderStatuses.Completed)
         {
             throw new DomainException("Cannot modify a completed production order.");
         }
@@ -80,7 +80,7 @@ public sealed class ProductionOrder : BaseEntity
 
     public void Start()
     {
-        if (Status != ProductionOrderStatus.Planned)
+        if (Status != ProductionOrderStatuses.Planned)
         {
             throw new DomainException("Only planned orders can be started.");
         }
@@ -90,17 +90,17 @@ public sealed class ProductionOrder : BaseEntity
             throw new DomainException("Cannot start production order without scheduled stages.");
         }
 
-        Status = ProductionOrderStatus.InProgress;
+        Status = ProductionOrderStatuses.InProgress;
     }
 
     public void Complete()
     {
-        if (Status != ProductionOrderStatus.InProgress)
+        if (Status != ProductionOrderStatuses.InProgress)
         {
             throw new DomainException("Only in-progress orders can be completed.");
         }
 
-        if (_stages.Count == 0 || _stages.Any(stage => stage.Status != ProductionStageStatus.Completed))
+        if (_stages.Count == 0 || _stages.Any(stage => stage.Status != ProductionStageStatuses.Completed))
         {
             throw new DomainException("All stages must be completed before closing the order.");
         }
@@ -111,12 +111,12 @@ public sealed class ProductionOrder : BaseEntity
             throw new DomainException("Produced quantity is less than ordered quantity.");
         }
 
-        Status = ProductionOrderStatus.Completed;
+        Status = ProductionOrderStatuses.Completed;
     }
 
     private void EnsureAllocationAllowed()
     {
-        if (Status != ProductionOrderStatus.Planned && Status != ProductionOrderStatus.InProgress)
+        if (Status != ProductionOrderStatuses.Planned && Status != ProductionOrderStatuses.InProgress)
         {
             throw new DomainException("Allocations are allowed only for planned or in-progress orders.");
         }
@@ -170,7 +170,7 @@ public sealed class ProductionStage : BaseEntity
         ProductionOrderId = productionOrderId;
         WorkshopId = workshopId;
         StageType = stageType.Trim();
-        Status = ProductionStageStatus.Scheduled;
+        Status = ProductionStageStatuses.Scheduled;
     }
 
     public static ProductionStage Create(Guid productionOrderId, Guid workshopId, string stageType)
@@ -188,12 +188,12 @@ public sealed class ProductionStage : BaseEntity
     public DateTime? StartedAt { get; private set; }
     public DateTime? CompletedAt { get; private set; }
     public DateTime? RecordedAt { get; private set; }
-    public ProductionStageStatus Status { get; private set; }
+    public string Status { get; private set; } = ProductionStageStatuses.Scheduled;
     public IReadOnlyCollection<WorkerAssignment> Assignments => _assignments.AsReadOnly();
 
     public void Start(decimal quantityIn, DateTime startedAt)
     {
-        if (Status != ProductionStageStatus.Scheduled)
+        if (Status != ProductionStageStatuses.Scheduled)
         {
             throw new DomainException("Stage can only be started once.");
         }
@@ -204,12 +204,12 @@ public sealed class ProductionStage : BaseEntity
         QuantityIn = quantityIn;
         StartedAt = startedAt;
         RecordedAt = startedAt;
-        Status = ProductionStageStatus.InProgress;
+        Status = ProductionStageStatuses.InProgress;
     }
 
     public void Complete(decimal quantityOut, DateTime completedAt)
     {
-        if (Status != ProductionStageStatus.InProgress)
+        if (Status != ProductionStageStatuses.InProgress)
         {
             throw new DomainException("Stage must be in progress to complete.");
         }
@@ -224,12 +224,12 @@ public sealed class ProductionStage : BaseEntity
         QuantityOut = quantityOut;
         CompletedAt = completedAt;
         RecordedAt = completedAt;
-        Status = ProductionStageStatus.Completed;
+        Status = ProductionStageStatuses.Completed;
     }
 
     public WorkerAssignment AssignWorker(Guid employeeId, decimal quantityAssigned, DateTime assignedAt)
     {
-        if (Status != ProductionStageStatus.InProgress)
+        if (Status != ProductionStageStatuses.InProgress)
         {
             throw new DomainException("Workers can only be assigned to in-progress stages.");
         }
@@ -276,7 +276,7 @@ public sealed class WorkerAssignment : BaseEntity
         EmployeeId = employeeId;
         QuantityAssigned = quantityAssigned;
         AssignedAt = assignedAt;
-        Status = WorkerAssignmentStatus.Assigned;
+        Status = WorkerAssignmentStatuses.Assigned;
     }
 
     internal static WorkerAssignment Create(Guid productionStageId, Guid employeeId, decimal quantityAssigned, DateTime assignedAt)
@@ -291,7 +291,7 @@ public sealed class WorkerAssignment : BaseEntity
     public decimal QuantityAssigned { get; private set; }
     public decimal? QuantityCompleted { get; private set; }
     public DateTime AssignedAt { get; private set; }
-    public WorkerAssignmentStatus Status { get; private set; }
+    public string Status { get; private set; } = WorkerAssignmentStatuses.Assigned;
 
     public void UpdateAssignedQuantity(decimal quantityAssigned)
     {
@@ -306,17 +306,17 @@ public sealed class WorkerAssignment : BaseEntity
 
     public void StartWork()
     {
-        if (Status != WorkerAssignmentStatus.Assigned)
+        if (Status != WorkerAssignmentStatuses.Assigned)
         {
             throw new DomainException("Assignment already started or finished.");
         }
 
-        Status = WorkerAssignmentStatus.InProgress;
+        Status = WorkerAssignmentStatuses.InProgress;
     }
 
     public void CompleteWork(decimal quantityCompleted)
     {
-        if (Status != WorkerAssignmentStatus.InProgress)
+        if (Status != WorkerAssignmentStatuses.InProgress)
         {
             throw new DomainException("Assignment must be in progress to complete.");
         }
@@ -328,27 +328,27 @@ public sealed class WorkerAssignment : BaseEntity
         }
 
         QuantityCompleted = quantityCompleted;
-        Status = WorkerAssignmentStatus.Completed;
+        Status = WorkerAssignmentStatuses.Completed;
     }
 }
 
-public enum ProductionOrderStatus
+public static class ProductionOrderStatuses
 {
-    Planned = 1,
-    InProgress = 2,
-    Completed = 3
+    public const string Planned = "Planned";
+    public const string InProgress = "InProgress";
+    public const string Completed = "Completed";
 }
 
-public enum ProductionStageStatus
+public static class ProductionStageStatuses
 {
-    Scheduled = 1,
-    InProgress = 2,
-    Completed = 3
+    public const string Scheduled = "Scheduled";
+    public const string InProgress = "InProgress";
+    public const string Completed = "Completed";
 }
 
-public enum WorkerAssignmentStatus
+public static class WorkerAssignmentStatuses
 {
-    Assigned = 1,
-    InProgress = 2,
-    Completed = 3
+    public const string Assigned = "Assigned";
+    public const string InProgress = "InProgress";
+    public const string Completed = "Completed";
 }

@@ -6,7 +6,7 @@ namespace MyFactory.Domain.ValueObjects;
 
 public sealed class DateRange : ValueObject
 {
-    private DateRange(DateTime start, DateTime? end)
+    private DateRange(DateOnly start, DateOnly? end)
     {
         Guard.AgainstDefaultDate(start, "Start date is required.");
         if (end.HasValue && end.Value < start)
@@ -18,11 +18,11 @@ public sealed class DateRange : ValueObject
         End = end;
     }
 
-    public DateTime Start { get; }
+    public DateOnly Start { get; }
 
-    public DateTime? End { get; }
+    public DateOnly? End { get; }
 
-    public static DateRange From(DateTime start, DateTime? end) => new(start, end);
+    public static DateRange From(DateOnly start, DateOnly? end) => new(start, end);
 
     protected override IEnumerable<object?> GetEqualityComponents()
     {

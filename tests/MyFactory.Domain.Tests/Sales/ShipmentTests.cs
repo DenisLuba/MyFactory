@@ -10,7 +10,7 @@ public class ShipmentTests
     [Fact]
     public void SubmitAndShip_Succeeds()
     {
-        var shipment = new Shipment("SH-001", Guid.NewGuid(), new DateTime(2025, 2, 1));
+        var shipment = new Shipment("SH-001", Guid.NewGuid(), new DateOnly(2025, 2, 1));
         shipment.AddItem(Guid.NewGuid(), 5, 100);
 
         shipment.Submit();
@@ -23,7 +23,7 @@ public class ShipmentTests
     [Fact]
     public void SubmitWithoutItems_Throws()
     {
-        var shipment = new Shipment("SH-002", Guid.NewGuid(), new DateTime(2025, 2, 1));
+        var shipment = new Shipment("SH-002", Guid.NewGuid(), new DateOnly(2025, 2, 1));
 
         Assert.Throws<DomainException>(() => shipment.Submit());
     }

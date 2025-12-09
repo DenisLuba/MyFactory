@@ -25,7 +25,7 @@ public class FileResourceTests
         var file = new FileResource("photo.jpg", "/uploads/photo.jpg", "image/jpeg", 2_048, uploader, uploadedAt, "sample");
 
         Assert.Equal("photo.jpg", file.FileName);
-        Assert.Equal("/uploads/photo.jpg", file.StoragePath);
+        Assert.Equal("/uploads/photo.jpg", file.FilePath);
         Assert.Equal("image/jpeg", file.ContentType);
         Assert.Equal(2_048, file.SizeBytes);
         Assert.Equal(uploader, file.UploadedByUserId);
@@ -62,7 +62,7 @@ public class FileResourceTests
         var file = CreateSample();
         file.MoveTo("/archive/report.pdf");
 
-        Assert.Equal("/archive/report.pdf", file.StoragePath);
+        Assert.Equal("/archive/report.pdf", file.FilePath);
     }
 
     [Fact]
