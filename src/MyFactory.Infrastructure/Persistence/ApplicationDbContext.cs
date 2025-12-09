@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using MyFactory.Application.Common.Interfaces;
+using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Employees;
 using MyFactory.Domain.Entities.Finance;
 using MyFactory.Domain.Entities.Files;
@@ -64,11 +66,16 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<AdvanceReport> AdvanceReports => Set<AdvanceReport>();
     public DbSet<FileResource> FileResources => Set<FileResource>();
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        => base.SaveChangesAsync(cancellationToken);
+    {
+        ApplyAuditInformation();
+        return base.SaveChangesAsync(cancellationToken);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
         modelBuilder.Entity<Role>(builder =>
         {
@@ -101,6 +108,25 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
                 .HasForeignKey(user => user.RoleId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
+    }
+
+    private void ApplyAuditInformation()
+    {
+        var utcNow = DateTime.UtcNow;
+
+        foreach (var entry in ChangeTracker.Entries<BaseEntity>())
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedAt = utcNow;
+                entry.Entity.UpdatedAt = null;
+            }
+
+            if (entry.State == EntityState.Modified)
+            {
+                entry.Entity.UpdatedAt = utcNow;
+            }
+        }
     }
 }
 
