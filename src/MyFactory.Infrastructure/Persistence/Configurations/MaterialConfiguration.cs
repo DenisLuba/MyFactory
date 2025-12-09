@@ -44,6 +44,18 @@ public class MaterialConfiguration : IEntityTypeConfiguration<Material>
         builder.Navigation(material => material.PriceHistory)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 
+        builder.Navigation(material => material.InventoryItems)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+        builder.Navigation(material => material.BomItems)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+        builder.Navigation(material => material.ReceiptItems)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+        builder.Navigation(material => material.PurchaseRequestItems)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
+
         builder.HasQueryFilter(material => !material.IsDeleted);
 
         builder.HasIndex(material => material.Name)
@@ -84,5 +96,70 @@ public class MaterialPriceHistoryConfiguration : IEntityTypeConfiguration<Materi
             .WithMany(supplier => supplier.PriceEntries)
             .HasForeignKey(history => history.SupplierId)
             .OnDelete(DeleteBehavior.Restrict);
+    }
+}
+
+public class MaterialTypeConfiguration : IEntityTypeConfiguration<MaterialType>
+{
+    public void Configure(EntityTypeBuilder<MaterialType> builder)
+    {
+        builder.ToTable("MaterialTypes");
+
+        builder.HasKey(type => type.Id);
+
+        builder.Property(type => type.Name)
+            .IsRequired()
+            .HasMaxLength(128);
+
+        builder.Property(type => type.CreatedAt)
+            .IsRequired();
+
+        builder.HasMany(type => type.Materials)
+            .WithOne(material => material.MaterialType)
+            .HasForeignKey(material => material.MaterialTypeId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(type => type.Name)
+            .IsUnique();
+    }
+}
+
+public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
+{
+    public void Configure(EntityTypeBuilder<Supplier> builder)
+    {
+        builder.ToTable("Suppliers");
+
+        builder.HasKey(supplier => supplier.Id);
+
+        builder.Property(supplier => supplier.Name)
+            .IsRequired()
+            .HasMaxLength(256);
+
+        builder.Property(supplier => supplier.Contact)
+            .IsRequired()
+            .HasMaxLength(256);
+
+        builder.Property(supplier => supplier.IsActive)
+            .HasDefaultValue(true);
+
+        builder.Property(supplier => supplier.CreatedAt)
+            .IsRequired();
+
+        builder.HasMany(supplier => supplier.PriceEntries)
+            .WithOne(history => history.Supplier)
+            .HasForeignKey(history => history.SupplierId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasMany(supplier => supplier.Receipts)
+            .WithOne(receipt => receipt.Supplier)
+            .HasForeignKey(receipt => receipt.SupplierId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Navigation(supplier => supplier.PriceEntries)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+        builder.Navigation(supplier => supplier.Receipts)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

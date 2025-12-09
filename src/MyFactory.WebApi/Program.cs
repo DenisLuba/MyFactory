@@ -1,14 +1,12 @@
-using MyFactory.Application;
+using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using MyFactory.Infrastructure.Extensions;
+using MyFactory.Infrastructure.Persistence.Seeds;
 using MyFactory.WebApi.Contracts.Auth;
 using MyFactory.WebApi.Services.Employees;
 using Swashbuckle.AspNetCore.Filters;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer;
-using MyFactory.Infrastructure.Persistence;
-using MyFactory.Application.Common.Interfaces;
-using MyFactory.Infrastructure.Common;
-using Microsoft.AspNetCore.Identity;
-using MyFactory.Application.Interfaces.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,25 +15,38 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<LoginRequest>();
 
+builder.Services.AddInfrastructureServices(builder.Configuration);
+
 //builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AssemblyMarker).Assembly));
 //builder.Services.AddAutoMapper(typeof(AssemblyMarker));
 
 builder.Services.AddSingleton<IEmployeeRepository, InMemoryEmployeeRepository>();
 
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//{
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-//});
-//builder.Services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
-//builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
-//builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
-//builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
-
 var app = builder.Build();
+
+await SeedDatabaseAsync(app);
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseHttpsRedirection();
+
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
+
+static async Task SeedDatabaseAsync(WebApplication app)
+{
+	using var scope = app.Services.CreateScope();
+	var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("Seeder");
+	try
+	{
+		var seeder = scope.ServiceProvider.GetRequiredService<InitialDataSeeder>();
+		await seeder.SeedAsync();
+	}
+	catch (Exception exception)
+	{
+		logger.LogError(exception, "An error occurred while seeding the database");
+		throw;
+	}
+}

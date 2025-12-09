@@ -77,37 +77,6 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
-        modelBuilder.Entity<Role>(builder =>
-        {
-            builder.ToTable("Roles");
-            builder.Property(role => role.Name)
-                .IsRequired()
-                .HasMaxLength(256);
-            builder.Property(role => role.Description)
-                .HasMaxLength(Role.DescriptionMaxLength);
-            builder.Property(role => role.CreatedAt)
-                .IsRequired();
-            builder.HasIndex(role => role.Name)
-                .IsUnique();
-        });
-
-        modelBuilder.Entity<User>(builder =>
-        {
-            builder.ToTable("Users");
-            builder.Property(user => user.Username)
-                .IsRequired()
-                .HasMaxLength(256);
-            builder.Property(user => user.Email)
-                .IsRequired()
-                .HasMaxLength(320);
-            builder.Property(user => user.PasswordHash)
-                .IsRequired();
-
-            builder.HasOne(user => user.Role)
-                .WithMany(role => role.Users)
-                .HasForeignKey(user => user.RoleId)
-                .OnDelete(DeleteBehavior.Restrict);
-        });
     }
 
     private void ApplyAuditInformation()
