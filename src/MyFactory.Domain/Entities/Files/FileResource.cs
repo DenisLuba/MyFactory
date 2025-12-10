@@ -1,6 +1,7 @@
 using System;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Identity;
+using DescriptionValue = MyFactory.Domain.ValueObjects.Description;
 
 namespace MyFactory.Domain.Entities.Files;
 
@@ -79,19 +80,7 @@ public sealed class FileResource : BaseEntity
 
     public void UpdateDescription(string? description)
     {
-        if (string.IsNullOrWhiteSpace(description))
-        {
-            Description = null;
-            return;
-        }
-
-        var trimmed = description.Trim();
-        if (trimmed.Length > DescriptionMaxLength)
-        {
-            throw new DomainException($"Description cannot exceed {DescriptionMaxLength} characters.");
-        }
-
-        Description = trimmed;
+        Description = DescriptionValue.From(description).Value;
     }
 
     private void SetUploadedBy(Guid uploadedByUserId)

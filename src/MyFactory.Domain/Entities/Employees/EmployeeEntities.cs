@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Production;
+using MyFactory.Domain.Entities.Shifts;
+using MyFactory.Domain.Enums;
 
 namespace MyFactory.Domain.Entities.Employees;
 
@@ -9,6 +11,8 @@ public sealed class Employee : BaseEntity
 {
     private readonly List<TimesheetEntry> _timesheetEntries = new();
     private readonly List<PayrollEntry> _payrollEntries = new();
+    private readonly List<ShiftPlan> _shiftPlans = new();
+    private readonly List<WorkerAssignment> _workerAssignments = new();
 
     private Employee()
     {
@@ -39,6 +43,10 @@ public sealed class Employee : BaseEntity
     public IReadOnlyCollection<TimesheetEntry> TimesheetEntries => _timesheetEntries.AsReadOnly();
 
     public IReadOnlyCollection<PayrollEntry> PayrollEntries => _payrollEntries.AsReadOnly();
+
+    public IReadOnlyCollection<ShiftPlan> ShiftPlans => _shiftPlans.AsReadOnly();
+
+    public IReadOnlyCollection<WorkerAssignment> WorkerAssignments => _workerAssignments.AsReadOnly();
 
     public void UpdateName(string name)
     {
@@ -95,10 +103,15 @@ public sealed class TimesheetEntry : BaseEntity
     {
         Guard.AgainstEmptyGuid(employeeId, "Employee id is required.");
         Guard.AgainstDefaultDate(workDate, "Work date is required.");
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        if (workDate > today)
+        {
+            throw new DomainException("Work date cannot be in the future.");
+        }
 
         EmployeeId = employeeId;
         WorkDate = workDate;
-        Status = TimesheetEntryStatuses.Draft;
+        Status = TimesheetStatus.Draft;
         UpdateHours(hoursWorked);
         AssignProductionOrder(productionOrderId);
     }
@@ -120,7 +133,7 @@ public sealed class TimesheetEntry : BaseEntity
 
     public ProductionOrder? ProductionOrder { get; private set; }
 
-    public string Status { get; private set; } = TimesheetEntryStatuses.Draft;
+    public TimesheetStatus Status { get; private set; } = TimesheetStatus.Draft;
 
     public void UpdateHours(decimal hoursWorked)
     {
@@ -155,22 +168,37 @@ public sealed class TimesheetEntry : BaseEntity
 
     public void Approve()
     {
-        if (Status == TimesheetEntryStatuses.Approved)
+        if (Status == TimesheetStatus.Approved)
         {
             throw new DomainException("Timesheet entry is already approved.");
         }
 
-        Status = TimesheetEntryStatuses.Approved;
+        Status = TimesheetStatus.Approved;
+    }
+
+    public void Reject()
+    {
+        if (Status == TimesheetStatus.Rejected)
+        {
+            throw new DomainException("Timesheet entry already rejected.");
+        }
+
+        if (Status == TimesheetStatus.Draft)
+        {
+            throw new DomainException("Draft entries cannot be rejected without submission.");
+        }
+
+        Status = TimesheetStatus.Rejected;
     }
 
     public void ReturnToDraft()
     {
-        if (Status != TimesheetEntryStatuses.Approved)
+        if (Status == TimesheetStatus.Draft)
         {
-            throw new DomainException("Only approved entries can be returned to draft.");
+            throw new DomainException("Entry already in draft state.");
         }
 
-        Status = TimesheetEntryStatuses.Draft;
+        Status = TimesheetStatus.Draft;
     }
 
     private static Guid? NormalizeProductionOrderId(Guid? productionOrderId)
@@ -185,7 +213,7 @@ public sealed class TimesheetEntry : BaseEntity
 
     private void EnsureDraftState()
     {
-        if (Status != TimesheetEntryStatuses.Draft)
+        if (Status != TimesheetStatus.Draft)
         {
             throw new DomainException("Approved timesheet entries cannot be modified.");
         }
@@ -271,8 +299,3 @@ public sealed class PayrollEntry : BaseEntity
     }
 }
 
-public static class TimesheetEntryStatuses
-{
-    public const string Draft = "Draft";
-    public const string Approved = "Approved";
-}

@@ -5,14 +5,15 @@ using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Employees;
 using MyFactory.Domain.Entities.Files;
 using MyFactory.Domain.Entities.Specifications;
+using MyFactory.Domain.Enums;
 using MyFactory.Domain.ValueObjects;
+using DescriptionValue = MyFactory.Domain.ValueObjects.Description;
 
 namespace MyFactory.Domain.Entities.Finance;
 
 public sealed class Advance : BaseEntity
 {
     private readonly List<AdvanceReport> _reports = new();
-    public const int DescriptionMaxLength = 2000;
 
     private Advance()
     {
@@ -27,7 +28,7 @@ public sealed class Advance : BaseEntity
         EmployeeId = employeeId;
         Amount = amount;
         IssuedAt = issuedAt;
-        Status = AdvanceStatuses.Draft;
+        Status = AdvanceStatus.Open;
         UpdateDescription(description);
     }
 
@@ -43,7 +44,7 @@ public sealed class Advance : BaseEntity
 
     public DateOnly? ClosedAt { get; private set; }
 
-    public string Status { get; private set; } = AdvanceStatuses.Draft;
+    public AdvanceStatus Status { get; private set; } = AdvanceStatus.Open;
 
     public IReadOnlyCollection<AdvanceReport> Reports => _reports.AsReadOnly();
 
@@ -62,31 +63,11 @@ public sealed class Advance : BaseEntity
         Amount = amount;
     }
 
-    public void Approve()
-    {
-        if (Status != AdvanceStatuses.Draft)
-        {
-            throw new DomainException("Only draft advances can be approved.");
-        }
-
-        Status = AdvanceStatuses.Approved;
-    }
-
-    public void Reject()
-    {
-        if (Status != AdvanceStatuses.Draft)
-        {
-            throw new DomainException("Only draft advances can be rejected.");
-        }
-
-        Status = AdvanceStatuses.Rejected;
-    }
-
     public void Close(DateOnly closedAt)
     {
-        if (Status != AdvanceStatuses.Approved)
+        if (Status != AdvanceStatus.Open)
         {
-            throw new DomainException("Only approved advances can be closed.");
+            throw new DomainException("Only open advances can be closed.");
         }
 
         if (RemainingAmount > 0)
@@ -96,8 +77,18 @@ public sealed class Advance : BaseEntity
 
         Guard.AgainstDefaultDate(closedAt, "Closed date is required.");
 
-        Status = AdvanceStatuses.Closed;
+        Status = AdvanceStatus.Closed;
         ClosedAt = closedAt;
+    }
+
+    public void MarkReimbursed()
+    {
+        if (Status != AdvanceStatus.Closed)
+        {
+            throw new DomainException("Advance must be closed before reimbursement.");
+        }
+
+        Status = AdvanceStatus.Reimbursed;
     }
 
     public AdvanceReport AddReport(string description, decimal amount, DateOnly reportedAt, Guid fileId, DateOnly spentAt)
@@ -131,19 +122,7 @@ public sealed class Advance : BaseEntity
 
     public void UpdateDescription(string? description)
     {
-        if (string.IsNullOrWhiteSpace(description))
-        {
-            Description = null;
-            return;
-        }
-
-        var trimmed = description.Trim();
-        if (trimmed.Length > DescriptionMaxLength)
-        {
-            throw new DomainException($"Description cannot exceed {DescriptionMaxLength} characters.");
-        }
-
-        Description = trimmed;
+        Description = DescriptionValue.From(description).Value;
     }
 }
 
