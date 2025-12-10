@@ -11,6 +11,10 @@ namespace MyFactory.Domain.Entities.Warehousing;
 /// </summary>
 public sealed class Warehouse : BaseEntity
 {
+    public const int NameMaxLength = 150;
+    public const int TypeMaxLength = 100;
+    public const int LocationMaxLength = 200;
+
     private readonly List<InventoryItem> _inventoryItems = new();
 
     private Warehouse()
@@ -32,19 +36,37 @@ public sealed class Warehouse : BaseEntity
     public void Rename(string name)
     {
         Guard.AgainstNullOrWhiteSpace(name, nameof(name));
-        Name = name.Trim();
+        var trimmed = name.Trim();
+        if (trimmed.Length > NameMaxLength)
+        {
+            throw new DomainException($"Warehouse name cannot exceed {NameMaxLength} characters.");
+        }
+
+        Name = trimmed;
     }
 
     public void ChangeType(string type)
     {
         Guard.AgainstNullOrWhiteSpace(type, nameof(type));
-        Type = type.Trim();
+        var trimmed = type.Trim();
+        if (trimmed.Length > TypeMaxLength)
+        {
+            throw new DomainException($"Warehouse type cannot exceed {TypeMaxLength} characters.");
+        }
+
+        Type = trimmed;
     }
 
     public void ChangeLocation(string location)
     {
         Guard.AgainstNullOrWhiteSpace(location, nameof(location));
-        Location = location.Trim();
+        var trimmed = location.Trim();
+        if (trimmed.Length > LocationMaxLength)
+        {
+            throw new DomainException($"Warehouse location cannot exceed {LocationMaxLength} characters.");
+        }
+
+        Location = trimmed;
     }
 
     public InventoryItem AddInventory(Guid materialId)
@@ -55,7 +77,7 @@ public sealed class Warehouse : BaseEntity
             throw new DomainException("Inventory already exists for the specified material.");
         }
 
-        var inventoryItem = new InventoryItem(Id, materialId);
+        var inventoryItem = InventoryItem.Create(Id, materialId);
         _inventoryItems.Add(inventoryItem);
         return inventoryItem;
     }
@@ -70,7 +92,7 @@ public sealed class InventoryItem : BaseEntity
     {
     }
 
-    public InventoryItem(Guid warehouseId, Guid materialId)
+    private InventoryItem(Guid warehouseId, Guid materialId)
     {
         Guard.AgainstEmptyGuid(warehouseId, nameof(warehouseId));
         Guard.AgainstEmptyGuid(materialId, nameof(materialId));
@@ -78,6 +100,8 @@ public sealed class InventoryItem : BaseEntity
         WarehouseId = warehouseId;
         MaterialId = materialId;
     }
+
+    public static InventoryItem Create(Guid warehouseId, Guid materialId) => new(warehouseId, materialId);
 
     public Guid WarehouseId { get; private set; }
     public Warehouse? Warehouse { get; private set; }
@@ -167,13 +191,16 @@ public sealed class InventoryReceipt : BaseEntity
     public InventoryReceiptItem AddItem(Guid materialId, decimal quantity, decimal unitPrice, Guid? inventoryItemId = null)
     {
         EnsureDraft();
+        Guard.AgainstEmptyGuid(materialId, nameof(materialId));
+        Guard.AgainstNonPositive(quantity, nameof(quantity));
+        Guard.AgainstNonPositive(unitPrice, nameof(unitPrice));
 
         if (_items.Any(entry => entry.MaterialId == materialId))
         {
             throw new DomainException("Material already exists within this receipt.");
         }
 
-        var item = new InventoryReceiptItem(Id, materialId, quantity, unitPrice, inventoryItemId);
+        var item = InventoryReceiptItem.Create(Id, materialId, quantity, unitPrice, inventoryItemId);
         _items.Add(item);
         TotalAmount += item.LineTotal;
         return item;
@@ -214,7 +241,7 @@ public sealed class InventoryReceiptItem : BaseEntity
     {
     }
 
-    public InventoryReceiptItem(Guid receiptId, Guid materialId, decimal quantity, decimal unitPrice, Guid? inventoryItemId = null)
+    private InventoryReceiptItem(Guid receiptId, Guid materialId, decimal quantity, decimal unitPrice, Guid? inventoryItemId)
     {
         Guard.AgainstEmptyGuid(receiptId, nameof(receiptId));
         Guard.AgainstEmptyGuid(materialId, nameof(materialId));
@@ -225,12 +252,14 @@ public sealed class InventoryReceiptItem : BaseEntity
         MaterialId = materialId;
         Quantity = quantity;
         UnitPrice = unitPrice;
-
         if (inventoryItemId.HasValue)
         {
             AssignInventoryItem(inventoryItemId.Value);
         }
     }
+
+    public static InventoryReceiptItem Create(Guid receiptId, Guid materialId, decimal quantity, decimal unitPrice, Guid? inventoryItemId)
+        => new(receiptId, materialId, quantity, unitPrice, inventoryItemId);
 
     public Guid InventoryReceiptId { get; private set; }
     public InventoryReceipt? InventoryReceipt { get; private set; }
@@ -295,7 +324,7 @@ public sealed class PurchaseRequest : BaseEntity
             return existing;
         }
 
-        var item = new PurchaseRequestItem(Id, materialId, quantity);
+        var item = PurchaseRequestItem.Create(Id, materialId, quantity);
         _items.Add(item);
         return item;
     }
@@ -389,7 +418,7 @@ public sealed class PurchaseRequestItem : BaseEntity
     {
     }
 
-    public PurchaseRequestItem(Guid purchaseRequestId, Guid materialId, decimal quantity)
+    private PurchaseRequestItem(Guid purchaseRequestId, Guid materialId, decimal quantity)
     {
         Guard.AgainstEmptyGuid(purchaseRequestId, nameof(purchaseRequestId));
         Guard.AgainstEmptyGuid(materialId, nameof(materialId));
@@ -400,7 +429,10 @@ public sealed class PurchaseRequestItem : BaseEntity
         Quantity = quantity;
     }
 
-    public Guid PurchaseRequestId { get; }
+    public static PurchaseRequestItem Create(Guid purchaseRequestId, Guid materialId, decimal quantity)
+        => new(purchaseRequestId, materialId, quantity);
+
+    public Guid PurchaseRequestId { get; private set; }
     public PurchaseRequest? PurchaseRequest { get; private set; }
     public Guid MaterialId { get; private set; }
     public Material? Material { get; private set; }
