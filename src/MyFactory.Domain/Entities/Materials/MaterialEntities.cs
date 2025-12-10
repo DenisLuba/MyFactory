@@ -1,24 +1,25 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MyFactory.Domain.Common;
-using MyFactory.Domain.Entities.Specifications;
-using MyFactory.Domain.Entities.Warehousing;
-using MyFactory.Domain.ValueObjects;
 
 namespace MyFactory.Domain.Entities.Materials;
 
 public class MaterialType : BaseEntity
 {
+    public const int NameMaxLength = 100;
     private readonly List<Material> _materials = new();
 
     private MaterialType()
     {
     }
 
-    public MaterialType(string name)
+    private MaterialType(string name)
     {
         Rename(name);
     }
+
+    public static MaterialType Create(string name) => new MaterialType(name);
 
     public string Name { get; private set; } = string.Empty;
 
@@ -27,29 +28,33 @@ public class MaterialType : BaseEntity
     public void Rename(string name)
     {
         Guard.AgainstNullOrWhiteSpace(name, "Material type name is required.");
-        Name = name.Trim();
+        var trimmed = name.Trim();
+        if (trimmed.Length > NameMaxLength)
+        {
+            throw new DomainException($"Material type name cannot exceed {NameMaxLength} characters.");
+        }
+        Name = trimmed;
     }
 }
 
 public class Material : BaseEntity
 {
+    public const int NameMaxLength = 100;
     private readonly List<MaterialPriceHistory> _priceHistory = new();
-    private readonly List<InventoryItem> _inventoryItems = new();
-    private readonly List<SpecificationBomItem> _bomItems = new();
-    private readonly List<InventoryReceiptItem> _receiptItems = new();
-    private readonly List<PurchaseRequestItem> _purchaseRequestItems = new();
 
     private Material()
     {
     }
 
-    public Material(string name, Guid materialTypeId, string unit)
+    private Material(string name, Guid materialTypeId, string unit)
     {
         UpdateName(name);
         ChangeUnit(unit);
         ChangeType(materialTypeId);
         IsActive = true;
     }
+
+    public static Material Create(string name, Guid materialTypeId, string unit) => new Material(name, materialTypeId, unit);
 
     public string Name { get; private set; } = string.Empty;
 
@@ -63,24 +68,21 @@ public class Material : BaseEntity
 
     public IReadOnlyCollection<MaterialPriceHistory> PriceHistory => _priceHistory.AsReadOnly();
 
-    public IReadOnlyCollection<InventoryItem> InventoryItems => _inventoryItems.AsReadOnly();
-
-    public IReadOnlyCollection<SpecificationBomItem> BomItems => _bomItems.AsReadOnly();
-
-    public IReadOnlyCollection<InventoryReceiptItem> ReceiptItems => _receiptItems.AsReadOnly();
-
-    public IReadOnlyCollection<PurchaseRequestItem> PurchaseRequestItems => _purchaseRequestItems.AsReadOnly();
-
     public void UpdateName(string name)
     {
         Guard.AgainstNullOrWhiteSpace(name, "Material name is required.");
-        Name = name.Trim();
+        var trimmed = name.Trim();
+        if (trimmed.Length > NameMaxLength)
+        {
+            throw new DomainException($"Material name cannot exceed {NameMaxLength} characters.");
+        }
+        Name = trimmed;
     }
 
     public void ChangeUnit(string unit)
     {
         Guard.AgainstNullOrWhiteSpace(unit, "Material unit is required.");
-        Unit = unit.Trim();
+        Unit = unit.Trim().ToLowerInvariant();
     }
 
     public void ChangeType(Guid materialTypeId)
@@ -99,13 +101,44 @@ public class Material : BaseEntity
         IsActive = false;
     }
 
+    public void Activate()
+    {
+        if (IsActive)
+        {
+            throw new DomainException("Material already active.");
+        }
+        IsActive = true;
+    }
+
     public MaterialPriceHistory AddPrice(Guid supplierId, decimal price, DateOnly effectiveFrom, string docRef)
     {
         Guard.AgainstEmptyGuid(supplierId, "Supplier id is required.");
         Guard.AgainstNonPositive(price, "Price must be positive.");
         Guard.AgainstDefaultDate(effectiveFrom, "Effective from date is required.");
+        Guard.AgainstNullOrWhiteSpace(docRef, "Document reference is required.");
 
-        var entry = new MaterialPriceHistory(Id, supplierId, price, effectiveFrom, DocumentNumber.From(docRef));
+        // Validate overlap for the same supplier
+        var overlappingClosed = _priceHistory.Any(e => e.SupplierId == supplierId && e.EffectiveFrom <= effectiveFrom && (e.EffectiveTo != null && e.EffectiveTo >= effectiveFrom));
+        if (overlappingClosed)
+        {
+            throw new DomainException("Price period overlaps with an existing closed price entry.");
+        }
+
+        // Close previous open price if exists
+        var openEntry = _priceHistory
+            .Where(e => e.SupplierId == supplierId && e.EffectiveTo == null)
+            .OrderByDescending(e => e.EffectiveFrom)
+            .FirstOrDefault();
+        if (openEntry != null)
+        {
+            if (effectiveFrom <= openEntry.EffectiveFrom)
+            {
+                throw new DomainException("New price effective_from must be after the previous open period start.");
+            }
+            openEntry.SetEffectiveTo(effectiveFrom.AddDays(-1));
+        }
+
+        var entry = MaterialPriceHistory.Create(Id, supplierId, price, effectiveFrom, docRef);
         _priceHistory.Add(entry);
         return entry;
     }
@@ -114,28 +147,27 @@ public class Material : BaseEntity
 public class Supplier : BaseEntity
 {
     private readonly List<MaterialPriceHistory> _priceEntries = new();
-    private readonly List<InventoryReceipt> _receipts = new();
 
     private Supplier()
     {
     }
 
-    public Supplier(string name, string contact)
+    private Supplier(string name, string contact)
     {
         UpdateName(name);
         UpdateContact(contact);
         IsActive = true;
     }
 
+    public static Supplier Create(string name, string contact) => new Supplier(name, contact);
+
     public string Name { get; private set; } = string.Empty;
 
-    public ContactInfo Contact { get; private set; } = null!;
+    public string Contact { get; private set; } = string.Empty;
 
     public bool IsActive { get; private set; }
 
     public IReadOnlyCollection<MaterialPriceHistory> PriceEntries => _priceEntries.AsReadOnly();
-
-    public IReadOnlyCollection<InventoryReceipt> Receipts => _receipts.AsReadOnly();
 
     public void UpdateName(string name)
     {
@@ -145,7 +177,8 @@ public class Supplier : BaseEntity
 
     public void UpdateContact(string contact)
     {
-        Contact = ContactInfo.From(contact);
+        Guard.AgainstNullOrWhiteSpace(contact, "Supplier contact is required.");
+        Contact = contact.Trim();
     }
 
     public void Deactivate()
@@ -157,6 +190,15 @@ public class Supplier : BaseEntity
 
         IsActive = false;
     }
+
+    public void Activate()
+    {
+        if (IsActive)
+        {
+            throw new DomainException("Supplier already active.");
+        }
+        IsActive = true;
+    }
 }
 
 public class MaterialPriceHistory : BaseEntity
@@ -165,19 +207,23 @@ public class MaterialPriceHistory : BaseEntity
     {
     }
 
-    public MaterialPriceHistory(Guid materialId, Guid supplierId, decimal price, DateOnly effectiveFrom, DocumentNumber docRef)
+    private MaterialPriceHistory(Guid materialId, Guid supplierId, decimal price, DateOnly effectiveFrom, string docRef)
     {
         Guard.AgainstEmptyGuid(materialId, "Material id is required.");
         Guard.AgainstEmptyGuid(supplierId, "Supplier id is required.");
         Guard.AgainstNonPositive(price, "Price must be positive.");
         Guard.AgainstDefaultDate(effectiveFrom, "Effective from date is required.");
+        Guard.AgainstNullOrWhiteSpace(docRef, "Document reference is required.");
 
         MaterialId = materialId;
         SupplierId = supplierId;
         Price = price;
         EffectiveFrom = effectiveFrom;
-        DocRef = docRef;
+        DocRef = docRef.Trim();
     }
+
+    public static MaterialPriceHistory Create(Guid materialId, Guid supplierId, decimal price, DateOnly effectiveFrom, string docRef)
+        => new MaterialPriceHistory(materialId, supplierId, price, effectiveFrom, docRef);
 
     public Guid MaterialId { get; private set; }
 
@@ -193,7 +239,7 @@ public class MaterialPriceHistory : BaseEntity
 
     public DateOnly? EffectiveTo { get; private set; }
 
-    public DocumentNumber DocRef { get; private set; } = null!;
+    public string DocRef { get; private set; } = string.Empty;
 
     public void UpdatePrice(decimal price)
     {
