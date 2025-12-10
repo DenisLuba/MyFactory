@@ -7,5 +7,5 @@ using MyFactory.Domain.Entities.Finance;
 namespace MyFactory.Application.Features.Advances.Queries.GetAdvances;
 
 public sealed record GetAdvancesQuery(
-    AdvanceStatus? Status,
+    string? Status,
     Guid? EmployeeId) : IRequest<IReadOnlyCollection<AdvanceDto>>;

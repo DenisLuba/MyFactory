@@ -49,7 +49,7 @@ public sealed class AssignWorkerCommandHandler : IRequestHandler<AssignWorkerCom
 
         if (request.QtyCompleted > 0)
         {
-            if (assignment.Status == WorkerAssignmentStatus.Completed)
+            if (assignment.Status == WorkerAssignmentStatuses.Completed)
             {
                 if (assignment.QuantityCompleted != request.QtyCompleted)
                 {
@@ -58,7 +58,7 @@ public sealed class AssignWorkerCommandHandler : IRequestHandler<AssignWorkerCom
             }
             else
             {
-                if (assignment.Status == WorkerAssignmentStatus.Assigned)
+                if (assignment.Status == WorkerAssignmentStatuses.Assigned)
                 {
                     assignment.StartWork();
                 }

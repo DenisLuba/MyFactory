@@ -26,12 +26,12 @@ public sealed class ConfirmShipmentPaymentCommandHandler : IRequestHandler<Confi
             .FirstOrDefaultAsync(entity => entity.Id == request.ShipmentId, cancellationToken)
             ?? throw new InvalidOperationException("Shipment not found.");
 
-        if (shipment.Status == ShipmentStatus.Paid)
+        if (shipment.Status == ShipmentStatuses.Paid)
         {
             return await ShipmentDtoFactory.CreateAsync(_context, shipment, cancellationToken);
         }
 
-        if (shipment.Status != ShipmentStatus.Shipped)
+        if (shipment.Status != ShipmentStatuses.Shipped)
         {
             throw new InvalidOperationException("Only shipped shipments can be marked as paid.");
         }

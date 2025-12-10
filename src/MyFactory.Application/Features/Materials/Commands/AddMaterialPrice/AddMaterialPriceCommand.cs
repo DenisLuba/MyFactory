@@ -8,6 +8,6 @@ public sealed record AddMaterialPriceCommand(
     Guid MaterialId,
     Guid SupplierId,
     decimal Price,
-    DateTime EffectiveFrom,
-    DateTime? EffectiveTo,
+    DateOnly EffectiveFrom,
+    DateOnly? EffectiveTo,
     string DocRef) : IRequest<MaterialPriceHistoryDto>;

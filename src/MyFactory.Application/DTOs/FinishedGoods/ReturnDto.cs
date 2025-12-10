@@ -9,9 +9,9 @@ public sealed record ReturnDto(
     string ReturnNumber,
     Guid CustomerId,
     CustomerDto Customer,
-    DateTime ReturnDate,
+    DateOnly ReturnDate,
     string Reason,
-    ReturnStatus Status,
+    string Status,
     IReadOnlyCollection<ReturnItemDto> Items)
 {
     public static ReturnDto FromEntity(

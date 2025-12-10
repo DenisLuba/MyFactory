@@ -32,7 +32,7 @@ public class PurchaseRequestQueryHandlerTests
         await using var dbContext = context;
         var handler = new GetPurchaseRequestsQueryHandler(dbContext);
 
-        var result = await handler.Handle(new GetPurchaseRequestsQuery(PurchaseRequestStatus.Approved), default);
+        var result = await handler.Handle(new GetPurchaseRequestsQuery(PurchaseRequestStatuses.Approved), default);
 
         result.Should().ContainSingle(pr => pr.Id == approvedRequest.Id);
     }

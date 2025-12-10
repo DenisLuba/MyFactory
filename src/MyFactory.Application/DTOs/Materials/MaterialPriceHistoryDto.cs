@@ -7,8 +7,8 @@ public sealed record MaterialPriceHistoryDto(
     Guid Id,
     Guid MaterialId,
     decimal Price,
-    DateTime EffectiveFrom,
-    DateTime? EffectiveTo,
+    DateOnly EffectiveFrom,
+    DateOnly? EffectiveTo,
     string DocRef,
     SupplierDto Supplier)
 {

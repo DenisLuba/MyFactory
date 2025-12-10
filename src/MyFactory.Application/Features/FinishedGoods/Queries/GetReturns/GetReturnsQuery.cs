@@ -5,4 +5,4 @@ using MyFactory.Domain.Entities.Sales;
 
 namespace MyFactory.Application.Features.FinishedGoods.Queries.GetReturns;
 
-public sealed record GetReturnsQuery(ReturnStatus? Status) : IRequest<IReadOnlyCollection<ReturnDto>>;
+public sealed record GetReturnsQuery(string? Status) : IRequest<IReadOnlyCollection<ReturnDto>>;

@@ -8,7 +8,7 @@ namespace MyFactory.Application.Features.FinishedGoods.Commands.CreateShipment;
 public sealed record CreateShipmentCommand(
     string ShipmentNumber,
     Guid CustomerId,
-    DateTime ShipmentDate,
+    DateOnly ShipmentDate,
     IReadOnlyCollection<CreateShipmentItemDto> Items) : IRequest<ShipmentDto>;
 
 public sealed record CreateShipmentItemDto(Guid SpecificationId, decimal Quantity, decimal UnitPrice);

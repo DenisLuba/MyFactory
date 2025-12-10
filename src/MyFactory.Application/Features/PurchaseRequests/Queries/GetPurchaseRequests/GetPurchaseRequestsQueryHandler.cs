@@ -26,9 +26,10 @@ public sealed class GetPurchaseRequestsQueryHandler : IRequestHandler<GetPurchas
             .Include(pr => pr.Items)
             .AsQueryable();
 
-        if (request.Status.HasValue)
+        if (!string.IsNullOrWhiteSpace(request.Status))
         {
-            query = query.Where(pr => pr.Status == request.Status.Value);
+            var status = request.Status.Trim();
+            query = query.Where(pr => pr.Status == status);
         }
 
         var purchaseRequests = await query

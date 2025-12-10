@@ -110,14 +110,14 @@ public class PurchaseRequestCommandHandlerTests
     }
 
     [Theory]
-    [InlineData(PurchaseRequestStatus.Draft)]
-    [InlineData(PurchaseRequestStatus.Submitted)]
-    public async Task CancelPurchaseRequestCommandHandler_Cancels_For_Allowed_Statuses(PurchaseRequestStatus status)
+    [InlineData(PurchaseRequestStatuses.Draft)]
+    [InlineData(PurchaseRequestStatuses.Submitted)]
+    public async Task CancelPurchaseRequestCommandHandler_Cancels_For_Allowed_Statuses(string status)
     {
         var (context, purchaseRequest, _, _) = await CreatePurchaseRequestAggregateAsync();
         await using var dbContext = context;
 
-        if (status == PurchaseRequestStatus.Submitted)
+        if (status == PurchaseRequestStatuses.Submitted)
         {
             purchaseRequest.Submit();
         }
@@ -127,7 +127,7 @@ public class PurchaseRequestCommandHandlerTests
         var handler = new CancelPurchaseRequestCommandHandler(dbContext);
         var result = await handler.Handle(new CancelPurchaseRequestCommand(purchaseRequest.Id), default);
 
-        result.Status.Should().Be(PurchaseRequestStatus.Cancelled);
+        result.Status.Should().Be(PurchaseRequestStatuses.Cancelled);
     }
 
     [Fact]

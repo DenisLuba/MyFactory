@@ -5,4 +5,4 @@ using MyFactory.Domain.Entities.Warehousing;
 
 namespace MyFactory.Application.Features.PurchaseRequests.Queries.GetPurchaseRequests;
 
-public sealed record GetPurchaseRequestsQuery(PurchaseRequestStatus? Status) : IRequest<IReadOnlyCollection<PurchaseRequestDto>>;
+public sealed record GetPurchaseRequestsQuery(string? Status) : IRequest<IReadOnlyCollection<PurchaseRequestDto>>;

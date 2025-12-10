@@ -5,4 +5,4 @@ using MyFactory.Domain.Entities.Sales;
 
 namespace MyFactory.Application.Features.FinishedGoods.Queries.GetShipments;
 
-public sealed record GetShipmentsQuery(ShipmentStatus? Status) : IRequest<IReadOnlyCollection<ShipmentDto>>;
+public sealed record GetShipmentsQuery(string? Status) : IRequest<IReadOnlyCollection<ShipmentDto>>;

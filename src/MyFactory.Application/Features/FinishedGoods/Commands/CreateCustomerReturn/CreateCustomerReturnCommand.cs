@@ -8,7 +8,7 @@ namespace MyFactory.Application.Features.FinishedGoods.Commands.CreateCustomerRe
 public sealed record CreateCustomerReturnCommand(
     string ReturnNumber,
     Guid CustomerId,
-    DateTime ReturnDate,
+    DateOnly ReturnDate,
     string Reason,
     IReadOnlyCollection<CreateCustomerReturnItemDto> Items) : IRequest<ReturnDto>;
 

@@ -82,7 +82,7 @@ public sealed class Specification : BaseEntity
         Version += 1;
     }
 
-    public SpecificationBomItem AddBomItem(Guid materialId, decimal quantity, string unit, decimal? unitCost = null)
+    public SpecificationBomItem AddBomItem(Guid materialId, decimal quantity, string unit, decimal unitCost)
     {
         Guard.AgainstEmptyGuid(materialId, "Material id is required.");
         Guard.AgainstNonPositive(quantity, "Quantity must be positive.");
@@ -134,13 +134,13 @@ public sealed class Specification : BaseEntity
 
 public sealed class SpecificationBomItem : BaseEntity
 {
-    private Money? _unitCost;
+    private Money _unitCost = Money.From(0m);
 
     private SpecificationBomItem()
     {
     }
 
-    public SpecificationBomItem(Guid specificationId, Guid materialId, decimal quantity, string unit, decimal? unitCost = null)
+    public SpecificationBomItem(Guid specificationId, Guid materialId, decimal quantity, string unit, decimal unitCost)
     {
         Guard.AgainstEmptyGuid(specificationId, "Specification id is required.");
         Guard.AgainstEmptyGuid(materialId, "Material id is required.");
@@ -167,7 +167,7 @@ public sealed class SpecificationBomItem : BaseEntity
     public string Unit { get; private set; } = string.Empty;
 
     [NotMapped]
-    public decimal? UnitCost => _unitCost?.Amount;
+    public decimal UnitCost => _unitCost.Amount;
 
     public void UpdateQuantity(decimal quantity)
     {
@@ -175,15 +175,9 @@ public sealed class SpecificationBomItem : BaseEntity
         Quantity = quantity;
     }
 
-    public void UpdateUnitCost(decimal? unitCost)
+    public void UpdateUnitCost(decimal unitCost)
     {
-        if (!unitCost.HasValue)
-        {
-            _unitCost = null;
-            return;
-        }
-
-        _unitCost = Money.From(unitCost.Value);
+        _unitCost = Money.From(unitCost);
     }
 }
 

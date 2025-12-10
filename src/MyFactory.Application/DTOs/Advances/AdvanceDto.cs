@@ -14,7 +14,7 @@ public sealed record AdvanceDto(
     decimal RemainingAmount,
     DateOnly IssuedAt,
     DateOnly? ClosedAt,
-    AdvanceStatus Status,
+    string Status,
     string? Description,
     IReadOnlyCollection<AdvanceReportDto> Reports)
 {

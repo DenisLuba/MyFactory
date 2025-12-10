@@ -28,7 +28,7 @@ public sealed class AddPurchaseRequestItemCommandHandler : IRequestHandler<AddPu
             .FirstOrDefaultAsync(pr => pr.Id == request.PurchaseRequestId, cancellationToken)
             ?? throw new InvalidOperationException("Purchase request not found.");
 
-        if (purchaseRequest.Status != PurchaseRequestStatus.Draft)
+        if (purchaseRequest.Status != PurchaseRequestStatuses.Draft)
         {
             throw new InvalidOperationException("Only draft purchase requests can be modified.");
         }

@@ -12,7 +12,7 @@ public sealed record WorkerAssignmentDto(
     string EmployeeName,
     decimal QuantityAssigned,
     decimal? QuantityCompleted,
-    WorkerAssignmentStatus Status,
+    string Status,
     DateTime AssignedAt)
 {
     public static WorkerAssignmentDto FromEntity(

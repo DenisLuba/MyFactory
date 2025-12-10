@@ -14,7 +14,7 @@ public sealed record ProductionOrderDto(
     Guid SpecificationId,
     string SpecificationName,
     decimal QuantityOrdered,
-    ProductionOrderStatus Status,
+    string Status,
     DateTime CreatedAt,
     IReadOnlyCollection<ProductionOrderAllocationDto> Allocations,
     IReadOnlyCollection<ProductionStageDto> Stages)

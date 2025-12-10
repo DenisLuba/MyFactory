@@ -27,11 +27,11 @@ public sealed class IssueAdvanceCommandHandlerTests
 
         Assert.Equal(employee.Id, result.EmployeeId);
         Assert.Equal(100m, result.Amount);
-        Assert.Equal(AdvanceStatus.Draft, result.Status);
+        Assert.Equal(AdvanceStatuses.Draft, result.Status);
         Assert.Equal("Expo travel", result.Description);
 
         var stored = await context.Advances.SingleAsync();
-        Assert.Equal(AdvanceStatus.Draft, stored.Status);
+        Assert.Equal(AdvanceStatuses.Draft, stored.Status);
         Assert.Equal("Expo travel", stored.Description);
     }
 

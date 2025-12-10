@@ -15,7 +15,7 @@ public sealed record ProductionStageDto(
     string StageType,
     decimal QuantityIn,
     decimal QuantityOut,
-    ProductionStageStatus Status,
+    string Status,
     DateTime? StartedAt,
     DateTime? CompletedAt,
     DateTime? RecordedAt,

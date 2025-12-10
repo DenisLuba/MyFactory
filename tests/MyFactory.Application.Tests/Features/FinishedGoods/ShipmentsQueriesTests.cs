@@ -28,9 +28,9 @@ public class ShipmentsQueriesTests
 
         var handler = new GetShipmentsQueryHandler(context);
 
-        var result = await handler.Handle(new GetShipmentsQuery(ShipmentStatus.Shipped), default);
+        var result = await handler.Handle(new GetShipmentsQuery(ShipmentStatuses.Shipped), default);
 
-        result.Should().ContainSingle(dto => dto.Status == ShipmentStatus.Shipped);
+        result.Should().ContainSingle(dto => dto.Status == ShipmentStatuses.Shipped);
     }
 
     [Fact]

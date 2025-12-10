@@ -67,7 +67,7 @@ public sealed class ShiftResult : BaseEntity
 	{
 	}
 
-	public ShiftResult(ShiftPlan shiftPlan, Guid employeeId, decimal actualQuantity, decimal hoursWorked, DateTime recordedAt)
+	public ShiftResult(ShiftPlan shiftPlan, Guid employeeId, decimal actualQuantity, decimal hoursWorked, DateOnly recordedAt)
 	{
 		Guard.AgainstNull(shiftPlan, "Shift plan is required.");
 		Guard.AgainstEmptyGuid(employeeId, nameof(employeeId));
@@ -93,7 +93,7 @@ public sealed class ShiftResult : BaseEntity
 	public Employee? Employee { get; private set; }
 	public decimal ActualQuantity { get; private set; }
 	public decimal HoursWorked { get; private set; }
-	public DateTime RecordedAt { get; private set; }
+	public DateOnly RecordedAt { get; private set; }
 
 	public void UpdateActualQuantity(decimal quantity)
 	{
@@ -107,7 +107,7 @@ public sealed class ShiftResult : BaseEntity
 		HoursWorked = hours;
 	}
 
-	public void UpdateRecordedAt(DateTime recordedAt)
+	public void UpdateRecordedAt(DateOnly recordedAt)
 	{
 		Guard.AgainstDefaultDate(recordedAt, nameof(recordedAt));
 		RecordedAt = recordedAt;

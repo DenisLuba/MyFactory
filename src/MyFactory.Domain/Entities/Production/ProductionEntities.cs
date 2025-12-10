@@ -19,7 +19,7 @@ public sealed class ProductionOrder : BaseEntity
     {
     }
 
-    private ProductionOrder(string orderNumber, Guid specificationId, decimal quantityOrdered, DateTime createdAt)
+    private ProductionOrder(string orderNumber, Guid specificationId, decimal quantityOrdered, DateOnly createdAt)
     {
         Guard.AgainstNullOrWhiteSpace(orderNumber, nameof(orderNumber));
         Guard.AgainstEmptyGuid(specificationId, nameof(specificationId));
@@ -33,7 +33,7 @@ public sealed class ProductionOrder : BaseEntity
         Status = ProductionOrderStatuses.Planned;
     }
 
-    public static ProductionOrder Create(string orderNumber, Guid specificationId, decimal quantityOrdered, DateTime createdAt)
+    public static ProductionOrder Create(string orderNumber, Guid specificationId, decimal quantityOrdered, DateOnly createdAt)
     {
         return new ProductionOrder(orderNumber, specificationId, quantityOrdered, createdAt);
     }
@@ -43,7 +43,7 @@ public sealed class ProductionOrder : BaseEntity
     public Specification? Specification { get; private set; }
     public decimal QuantityOrdered { get; private set; }
     public string Status { get; private set; } = ProductionOrderStatuses.Planned;
-    public DateTime CreatedAt { get; private set; }
+    public DateOnly CreatedAt { get; private set; }
     public IReadOnlyCollection<ProductionOrderAllocation> Allocations => _allocations.AsReadOnly();
     public IReadOnlyCollection<ProductionStage> Stages => _stages.AsReadOnly();
 

@@ -29,7 +29,7 @@ public sealed class GetSpecificationCostQueryHandler : IRequestHandler<GetSpecif
             .FirstOrDefaultAsync(spec => spec.Id == request.SpecificationId, cancellationToken)
             ?? throw new InvalidOperationException("Specification not found.");
 
-        var asOfDate = request.AsOfDate ?? DateTime.UtcNow;
+        var asOfDate = request.AsOfDate ?? DateOnly.FromDateTime(DateTime.UtcNow);
 
         var materialsCost = await CalculateMaterialsCostAsync(specification, asOfDate, cancellationToken);
         var operationsCost = specification.Operations.Sum(operation => operation.OperationCost);
@@ -52,7 +52,7 @@ public sealed class GetSpecificationCostQueryHandler : IRequestHandler<GetSpecif
             total);
     }
 
-    private async Task<decimal> CalculateMaterialsCostAsync(Specification specification, DateTime asOfDate, CancellationToken cancellationToken)
+    private async Task<decimal> CalculateMaterialsCostAsync(Specification specification, DateOnly asOfDate, CancellationToken cancellationToken)
     {
         if (specification.BomItems.Count == 0)
         {
@@ -79,7 +79,7 @@ public sealed class GetSpecificationCostQueryHandler : IRequestHandler<GetSpecif
 
     private async Task<Dictionary<Guid, decimal>> LoadLatestMaterialPricesAsync(
         IReadOnlyCollection<Guid> materialIds,
-        DateTime asOfDate,
+        DateOnly asOfDate,
         CancellationToken cancellationToken)
     {
         if (materialIds.Count == 0)

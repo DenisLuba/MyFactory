@@ -26,9 +26,10 @@ public sealed class GetProductionOrdersQueryHandler : IRequestHandler<GetProduct
             .AsNoTracking()
             .AsQueryable();
 
-        if (request.Status.HasValue)
+        if (!string.IsNullOrWhiteSpace(request.Status))
         {
-            query = query.Where(order => order.Status == request.Status.Value);
+            var status = request.Status.Trim();
+            query = query.Where(order => order.Status == status);
         }
 
         if (request.SpecificationId.HasValue)

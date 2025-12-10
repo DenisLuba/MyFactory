@@ -33,9 +33,10 @@ public sealed class GetInventoryReceiptsQueryHandler : IRequestHandler<GetInvent
             query = query.Where(receipt => receipt.SupplierId == request.SupplierId.Value);
         }
 
-        if (request.Status.HasValue)
+        if (!string.IsNullOrWhiteSpace(request.Status))
         {
-            query = query.Where(receipt => receipt.Status == request.Status.Value);
+            var status = request.Status.Trim();
+            query = query.Where(receipt => receipt.Status == status);
         }
 
         var receipts = await query

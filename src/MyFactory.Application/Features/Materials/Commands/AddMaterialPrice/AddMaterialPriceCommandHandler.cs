@@ -40,13 +40,13 @@ public sealed class AddMaterialPriceCommandHandler : IRequestHandler<AddMaterial
             throw new InvalidOperationException("Supplier not found.");
         }
 
-        var newRangeEnd = request.EffectiveTo ?? DateTime.MaxValue;
+        var newRangeEnd = request.EffectiveTo ?? DateOnly.MaxValue;
         var overlaps = await _context.MaterialPriceHistoryEntries
             .AsNoTracking()
             .AnyAsync(entry => entry.MaterialId == request.MaterialId
                 && entry.SupplierId == request.SupplierId
                 && entry.EffectiveFrom <= newRangeEnd
-                && (entry.EffectiveTo ?? DateTime.MaxValue) >= request.EffectiveFrom, cancellationToken);
+            && (entry.EffectiveTo ?? DateOnly.MaxValue) >= request.EffectiveFrom, cancellationToken);
 
         if (overlaps)
         {

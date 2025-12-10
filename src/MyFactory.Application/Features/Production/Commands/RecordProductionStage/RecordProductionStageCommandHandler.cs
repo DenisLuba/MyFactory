@@ -39,7 +39,7 @@ public sealed class RecordProductionStageCommandHandler : IRequestHandler<Record
         _context.ProductionStages.Add(stage);
         stage.Start(request.QtyIn, request.RecordedAt);
 
-        if (order.Status == ProductionOrderStatus.Planned)
+        if (order.Status == ProductionOrderStatuses.Planned)
         {
             order.Start();
         }

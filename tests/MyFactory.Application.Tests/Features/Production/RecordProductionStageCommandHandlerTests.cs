@@ -22,7 +22,7 @@ public class RecordProductionStageCommandHandlerTests
 
         var result = await handler.Handle(new RecordProductionStageCommand(order.Id, workshop.Id, "Cutting", 20m, 15m, recordedAt), default);
 
-        result.Status.Should().Be(ProductionOrderStatus.InProgress);
+        result.Status.Should().Be(ProductionOrderStatuses.InProgress);
         result.Stages.Should().ContainSingle(stage => stage.StageType == "Cutting" && stage.QuantityIn == 20m && stage.QuantityOut == 15m);
     }
 

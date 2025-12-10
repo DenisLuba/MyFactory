@@ -39,7 +39,7 @@ public class CreateCustomerReturnCommandHandlerTests
 
         result.ReturnNumber.Should().Be("RET-1001");
         result.Items.Should().HaveCount(1);
-        result.Status.Should().Be(ReturnStatus.PendingReview);
+        result.Status.Should().Be(ReturnStatuses.PendingReview);
 
         var stored = await context.CustomerReturns.Include(r => r.Items).SingleAsync();
         stored.Items.Should().HaveCount(1);

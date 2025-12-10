@@ -56,7 +56,7 @@ public class ProductionQueriesTests
         await context.SaveChangesAsync();
 
         var handler = new GetProductionOrdersQueryHandler(context);
-        var result = await handler.Handle(new GetProductionOrdersQuery(ProductionOrderStatus.Completed, completedSpec.Id), default);
+        var result = await handler.Handle(new GetProductionOrdersQuery(ProductionOrderStatuses.Completed, completedSpec.Id), default);
 
         result.Should().ContainSingle(order => order.Id == completedOrder.Id);
     }

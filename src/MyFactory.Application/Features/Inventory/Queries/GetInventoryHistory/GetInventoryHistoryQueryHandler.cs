@@ -91,7 +91,7 @@ public sealed class GetInventoryHistoryQueryHandler : IRequestHandler<GetInvento
                 row.receiptItem.Quantity,
                 row.receiptItem.UnitPrice,
                 row.receiptItem.Quantity * row.receiptItem.UnitPrice,
-                row.receipt.Status.ToString()))
+                row.receipt.Status))
             .ToArray();
     }
 }

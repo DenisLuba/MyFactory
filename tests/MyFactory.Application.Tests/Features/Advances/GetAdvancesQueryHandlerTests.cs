@@ -25,10 +25,10 @@ public sealed class GetAdvancesQueryHandlerTests
         await context.SaveChangesAsync();
 
         var handler = new GetAdvancesQueryHandler(context);
-        var result = await handler.Handle(new GetAdvancesQuery(AdvanceStatus.Approved, null), CancellationToken.None);
+        var result = await handler.Handle(new GetAdvancesQuery(AdvanceStatuses.Approved, null), CancellationToken.None);
 
         Assert.Single(result);
-        Assert.Equal(AdvanceStatus.Approved, result.Single().Status);
+        Assert.Equal(AdvanceStatuses.Approved, result.Single().Status);
     }
 
     [Fact]

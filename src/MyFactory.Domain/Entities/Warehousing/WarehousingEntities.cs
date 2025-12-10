@@ -267,7 +267,7 @@ public sealed class PurchaseRequest : BaseEntity
     {
     }
 
-    public PurchaseRequest(string prNumber, DateTime createdAt)
+    public PurchaseRequest(string prNumber, DateOnly createdAt)
     {
         Guard.AgainstNullOrWhiteSpace(prNumber, nameof(prNumber));
         Guard.AgainstDefaultDate(createdAt, nameof(createdAt));
@@ -278,7 +278,7 @@ public sealed class PurchaseRequest : BaseEntity
     }
 
     public string PrNumber { get; private set; } = string.Empty;
-    public DateTime CreatedAt { get; private set; }
+    public DateOnly CreatedAt { get; private set; }
     public string Status { get; private set; } = PurchaseRequestStatuses.Draft;
     public IReadOnlyCollection<PurchaseRequestItem> Items => _items.AsReadOnly();
 

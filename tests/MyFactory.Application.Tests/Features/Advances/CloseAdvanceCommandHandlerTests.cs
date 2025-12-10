@@ -32,10 +32,10 @@ public sealed class CloseAdvanceCommandHandlerTests
 
         var result = await handler.Handle(command, CancellationToken.None);
 
-        Assert.Equal(AdvanceStatus.Closed, result.Status);
+        Assert.Equal(AdvanceStatuses.Closed, result.Status);
         Assert.Equal(closedAt, result.ClosedAt);
         var stored = await context.Advances.SingleAsync();
-        Assert.Equal(AdvanceStatus.Closed, stored.Status);
+        Assert.Equal(AdvanceStatuses.Closed, stored.Status);
         Assert.Equal(closedAt, stored.ClosedAt);
     }
 

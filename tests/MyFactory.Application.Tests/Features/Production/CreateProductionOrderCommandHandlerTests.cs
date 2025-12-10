@@ -24,7 +24,7 @@ public class CreateProductionOrderCommandHandlerTests
         var result = await handler.Handle(new CreateProductionOrderCommand("PO-100", specification.Id, 25m), default);
 
         result.OrderNumber.Should().Be("PO-100");
-        result.Status.Should().Be(ProductionOrderStatus.Planned);
+        result.Status.Should().Be(ProductionOrderStatuses.Planned);
     }
 
     [Fact]

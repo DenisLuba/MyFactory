@@ -26,7 +26,7 @@ public sealed class CancelInventoryReceiptCommandHandler : IRequestHandler<Cance
             .FirstOrDefaultAsync(r => r.Id == request.ReceiptId, cancellationToken)
             ?? throw new InvalidOperationException("Inventory receipt not found.");
 
-        if (receipt.Status != InventoryReceiptStatus.Draft)
+        if (receipt.Status != InventoryReceiptStatuses.Draft)
         {
             throw new InvalidOperationException("Only draft receipts can be cancelled.");
         }

@@ -31,9 +31,9 @@ public class ReturnsQueriesTests
 
         var handler = new GetReturnsQueryHandler(context);
 
-        var result = await handler.Handle(new GetReturnsQuery(ReturnStatus.Approved), default);
+        var result = await handler.Handle(new GetReturnsQuery(ReturnStatuses.Approved), default);
 
-        result.Should().ContainSingle(dto => dto.Status == ReturnStatus.Approved);
+        result.Should().ContainSingle(dto => dto.Status == ReturnStatuses.Approved);
     }
 
     [Fact]

@@ -26,9 +26,10 @@ public sealed class GetAdvancesQueryHandler : IRequestHandler<GetAdvancesQuery, 
             .Include(entity => entity.Reports)
             .AsQueryable();
 
-        if (request.Status.HasValue)
+        if (!string.IsNullOrWhiteSpace(request.Status))
         {
-            query = query.Where(entity => entity.Status == request.Status);
+            var status = request.Status.Trim();
+            query = query.Where(entity => entity.Status == status);
         }
 
         if (request.EmployeeId.HasValue)

@@ -7,5 +7,5 @@ using MyFactory.Domain.Entities.Production;
 namespace MyFactory.Application.Features.Production.Queries.GetProductionOrders;
 
 public sealed record GetProductionOrdersQuery(
-    ProductionOrderStatus? Status,
+    string? Status,
     Guid? SpecificationId) : IRequest<IReadOnlyCollection<ProductionOrderDto>>;

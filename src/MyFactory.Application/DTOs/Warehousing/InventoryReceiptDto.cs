@@ -12,9 +12,9 @@ public sealed record InventoryReceiptDto(
     string ReceiptNumber,
     Guid SupplierId,
     SupplierDto Supplier,
-    DateTime ReceiptDate,
+    DateOnly ReceiptDate,
     decimal TotalAmount,
-    InventoryReceiptStatus Status,
+    string Status,
     IReadOnlyCollection<InventoryReceiptItemDto> Items)
 {
     public static InventoryReceiptDto FromEntity(InventoryReceipt receipt, Supplier supplier, IReadOnlyCollection<InventoryReceiptItemDto> items)

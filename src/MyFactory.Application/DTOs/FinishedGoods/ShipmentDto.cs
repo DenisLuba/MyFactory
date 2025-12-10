@@ -9,8 +9,8 @@ public sealed record ShipmentDto(
     string ShipmentNumber,
     Guid CustomerId,
     CustomerDto Customer,
-    DateTime ShipmentDate,
-    ShipmentStatus Status,
+    DateOnly ShipmentDate,
+    string Status,
     decimal TotalAmount,
     IReadOnlyCollection<ShipmentItemDto> Items)
 {

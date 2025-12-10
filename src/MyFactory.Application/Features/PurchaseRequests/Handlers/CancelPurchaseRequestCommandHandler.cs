@@ -27,7 +27,7 @@ public sealed class CancelPurchaseRequestCommandHandler : IRequestHandler<Cancel
             .FirstOrDefaultAsync(pr => pr.Id == request.PurchaseRequestId, cancellationToken)
             ?? throw new InvalidOperationException("Purchase request not found.");
 
-        if (purchaseRequest.Status != PurchaseRequestStatus.Draft && purchaseRequest.Status != PurchaseRequestStatus.Submitted)
+        if (purchaseRequest.Status != PurchaseRequestStatuses.Draft && purchaseRequest.Status != PurchaseRequestStatuses.Submitted)
         {
             throw new InvalidOperationException("Only draft or submitted purchase requests can be cancelled.");
         }

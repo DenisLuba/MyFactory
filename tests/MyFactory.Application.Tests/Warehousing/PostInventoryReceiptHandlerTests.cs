@@ -22,7 +22,7 @@ public sealed class PostInventoryReceiptHandlerTests
 
         var result = await handler.Handle(new PostInventoryReceiptCommand(setup.Receipt.Id, setup.Warehouse.Id), CancellationToken.None);
 
-        result.Status.Should().Be(InventoryReceiptStatus.Received);
+        result.Status.Should().Be(InventoryReceiptStatuses.Received);
         var inventoryItem = await context.InventoryItems.AsNoTracking().SingleAsync();
         inventoryItem.Quantity.Should().Be(20m);
         inventoryItem.AveragePrice.Should().Be(5m);

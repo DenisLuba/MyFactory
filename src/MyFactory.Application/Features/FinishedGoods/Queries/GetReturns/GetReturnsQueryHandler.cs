@@ -26,9 +26,10 @@ public sealed class GetReturnsQueryHandler : IRequestHandler<GetReturnsQuery, IR
             .Include(entity => entity.Items)
             .AsQueryable();
 
-        if (request.Status.HasValue)
+        if (!string.IsNullOrWhiteSpace(request.Status))
         {
-            query = query.Where(entity => entity.Status == request.Status.Value);
+            var status = request.Status.Trim();
+            query = query.Where(entity => entity.Status == status);
         }
 
         var returns = await query

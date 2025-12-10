@@ -10,7 +10,7 @@ public sealed record PurchaseRequestDto(
     Guid Id,
     string PrNumber,
     DateTime CreatedAt,
-    PurchaseRequestStatus Status,
+    string Status,
     IReadOnlyCollection<PurchaseRequestItemDto> Items)
 {
     public static PurchaseRequestDto FromEntity(PurchaseRequest request, IReadOnlyCollection<PurchaseRequestItemDto> items)

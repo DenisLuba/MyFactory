@@ -26,9 +26,10 @@ public sealed class GetShipmentsQueryHandler : IRequestHandler<GetShipmentsQuery
             .Include(shipment => shipment.Items)
             .AsQueryable();
 
-        if (request.Status.HasValue)
+        if (!string.IsNullOrWhiteSpace(request.Status))
         {
-            query = query.Where(shipment => shipment.Status == request.Status.Value);
+            var status = request.Status.Trim();
+            query = query.Where(shipment => shipment.Status == status);
         }
 
         var shipments = await query

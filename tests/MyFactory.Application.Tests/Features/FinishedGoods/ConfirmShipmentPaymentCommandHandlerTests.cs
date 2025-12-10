@@ -31,10 +31,10 @@ public class ConfirmShipmentPaymentCommandHandlerTests
 
         var result = await handler.Handle(new ConfirmShipmentPaymentCommand(shipment.Id), default);
 
-        result.Status.Should().Be(ShipmentStatus.Paid);
+        result.Status.Should().Be(ShipmentStatuses.Paid);
 
         var updated = await context.Shipments.SingleAsync();
-        updated.Status.Should().Be(ShipmentStatus.Paid);
+        updated.Status.Should().Be(ShipmentStatuses.Paid);
     }
 
     [Fact]

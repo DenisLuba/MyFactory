@@ -28,9 +28,9 @@ public sealed class ApproveAdvanceCommandHandlerTests
 
         var result = await handler.Handle(command, CancellationToken.None);
 
-        Assert.Equal(AdvanceStatus.Approved, result.Status);
+        Assert.Equal(AdvanceStatuses.Approved, result.Status);
         var stored = await context.Advances.SingleAsync();
-        Assert.Equal(AdvanceStatus.Approved, stored.Status);
+        Assert.Equal(AdvanceStatuses.Approved, stored.Status);
     }
 
     [Fact]

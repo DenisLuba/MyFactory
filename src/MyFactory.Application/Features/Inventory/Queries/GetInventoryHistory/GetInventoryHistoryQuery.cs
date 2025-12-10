@@ -8,5 +8,5 @@ namespace MyFactory.Application.Features.Inventory.Queries.GetInventoryHistory;
 public sealed record GetInventoryHistoryQuery(
     Guid MaterialId,
     Guid? WarehouseId,
-    DateTime? FromDate,
-    DateTime? ToDate) : IRequest<IReadOnlyCollection<InventoryHistoryEntryDto>>;
+    DateOnly? FromDate,
+    DateOnly? ToDate) : IRequest<IReadOnlyCollection<InventoryHistoryEntryDto>>;

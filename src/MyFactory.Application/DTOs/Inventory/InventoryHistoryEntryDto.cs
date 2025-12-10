@@ -5,7 +5,7 @@ namespace MyFactory.Application.DTOs.Inventory;
 public sealed record InventoryHistoryEntryDto(
     Guid ReceiptId,
     string ReceiptNumber,
-    DateTime ReceiptDate,
+    DateOnly ReceiptDate,
     Guid SupplierId,
     string SupplierName,
     Guid MaterialId,

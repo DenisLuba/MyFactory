@@ -21,7 +21,7 @@ public sealed class FinishedGoodsInventory : BaseEntity
 
         SpecificationId = specificationId;
         WarehouseId = warehouseId;
-        UpdatedAt = DateTime.UtcNow;
+        UpdatedAt = DateOnly.FromDateTime(DateTime.UtcNow);
     }
 
     public Guid SpecificationId { get; private set; }
@@ -30,9 +30,9 @@ public sealed class FinishedGoodsInventory : BaseEntity
     public Warehouse? Warehouse { get; private set; }
     public decimal Quantity { get; private set; }
     public decimal UnitCost { get; private set; }
-    public DateTime UpdatedAt { get; private set; }
+    public DateOnly UpdatedAt { get; private set; }
 
-    public void Receive(decimal quantity, decimal unitCost, DateTime receivedAt)
+    public void Receive(decimal quantity, decimal unitCost, DateOnly receivedAt)
     {
         Guard.AgainstNonPositive(quantity, nameof(quantity));
         Guard.AgainstNegative(unitCost, nameof(unitCost));
@@ -45,7 +45,7 @@ public sealed class FinishedGoodsInventory : BaseEntity
         UpdatedAt = receivedAt;
     }
 
-    public void Issue(decimal quantity, DateTime issuedAt)
+    public void Issue(decimal quantity, DateOnly issuedAt)
     {
         Guard.AgainstNonPositive(quantity, nameof(quantity));
         Guard.AgainstDefaultDate(issuedAt, nameof(issuedAt));
@@ -73,7 +73,7 @@ public sealed class FinishedGoodsMovement : BaseEntity
         Guid fromWarehouseId,
         Guid toWarehouseId,
         decimal quantity,
-        DateTime movedAt,
+        DateOnly movedAt,
         Guid? finishedGoodsInventoryId,
         decimal? sourceAvailableQuantity)
     {
@@ -112,7 +112,7 @@ public sealed class FinishedGoodsMovement : BaseEntity
     public Guid ToWarehouseId { get; private set; }
     public Warehouse? ToWarehouse { get; private set; }
     public decimal Quantity { get; private set; }
-    public DateTime MovedAt { get; private set; }
+    public DateOnly MovedAt { get; private set; }
     public Guid? FinishedGoodsInventoryId { get; private set; }
     public FinishedGoodsInventory? FinishedGoodsInventory { get; private set; }
 
@@ -121,7 +121,7 @@ public sealed class FinishedGoodsMovement : BaseEntity
         Guid fromWarehouseId,
         Guid toWarehouseId,
         decimal quantity,
-        DateTime movedAt,
+        DateOnly movedAt,
         Guid? finishedGoodsInventoryId = null,
         decimal? sourceAvailableQuantity = null)
         => new(specificationId, fromWarehouseId, toWarehouseId, quantity, movedAt, finishedGoodsInventoryId, sourceAvailableQuantity);
