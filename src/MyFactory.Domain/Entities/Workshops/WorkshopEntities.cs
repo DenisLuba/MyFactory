@@ -3,24 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Specifications;
-using MyFactory.Domain.ValueObjects;
 
 namespace MyFactory.Domain.Entities.Workshops;
 
 public sealed class Workshop : BaseEntity
 {
+    public const int NameMaxLength = 100;
+    public const int TypeMaxLength = 100;
+
     private readonly List<WorkshopExpenseHistory> _expenseHistory = new();
 
     private Workshop()
     {
     }
 
-    public Workshop(string name, string type)
+    private Workshop(string name, string type)
     {
         Rename(name);
         ChangeType(type);
         IsActive = true;
     }
+
+    public static Workshop Create(string name, string type) => new(name, type);
 
     public string Name { get; private set; } = string.Empty;
 
@@ -33,13 +37,25 @@ public sealed class Workshop : BaseEntity
     public void Rename(string name)
     {
         Guard.AgainstNullOrWhiteSpace(name, "Workshop name is required.");
-        Name = name.Trim();
+        var trimmed = name.Trim();
+        if (trimmed.Length > NameMaxLength)
+        {
+            throw new DomainException($"Workshop name cannot exceed {NameMaxLength} characters.");
+        }
+
+        Name = trimmed;
     }
 
     public void ChangeType(string type)
     {
         Guard.AgainstNullOrWhiteSpace(type, "Workshop type is required.");
-        Type = type.Trim();
+        var trimmed = type.Trim();
+        if (trimmed.Length > TypeMaxLength)
+        {
+            throw new DomainException($"Workshop type cannot exceed {TypeMaxLength} characters.");
+        }
+
+        Type = trimmed;
     }
 
     public void Deactivate()
@@ -52,25 +68,51 @@ public sealed class Workshop : BaseEntity
         IsActive = false;
     }
 
+    public void Activate()
+    {
+        if (IsActive)
+        {
+            throw new DomainException("Workshop already active.");
+        }
+
+        IsActive = true;
+    }
+
     public WorkshopExpenseHistory AddExpense(Guid specificationId, decimal amountPerUnit, DateOnly effectiveFrom, DateOnly? effectiveTo = null)
     {
         Guard.AgainstEmptyGuid(specificationId, "Specification id is required.");
         Guard.AgainstNonPositive(amountPerUnit, "Amount per unit must be positive.");
         Guard.AgainstDefaultDate(effectiveFrom, "Effective from date is required.");
+        if (effectiveTo != null && effectiveTo.Value < effectiveFrom)
+        {
+            throw new DomainException("Effective to date cannot be earlier than effective from date.");
+        }
 
-        var range = DateRange.From(effectiveFrom, effectiveTo);
+        var normalizedNewEnd = effectiveTo ?? DateOnly.MaxValue;
 
-        var newEnd = range.End ?? DateOnly.MaxValue;
-
-        var overlaps = _expenseHistory.Any(entry => entry.Overlaps(effectiveFrom, newEnd));
-        if (overlaps)
+        var overlappingEntry = _expenseHistory.Any(entry => entry.SpecificationId == specificationId && entry.Overlaps(effectiveFrom, normalizedNewEnd));
+        if (overlappingEntry)
         {
             throw new DomainException("Expense period overlaps with an existing record.");
         }
 
-        var entry = new WorkshopExpenseHistory(Id, specificationId, amountPerUnit, effectiveFrom, effectiveTo);
-        _expenseHistory.Add(entry);
-        return entry;
+        var openEntry = _expenseHistory
+            .Where(entry => entry.SpecificationId == specificationId && entry.EffectiveTo == null)
+            .OrderByDescending(entry => entry.EffectiveFrom)
+            .FirstOrDefault();
+        if (openEntry != null)
+        {
+            if (effectiveFrom <= openEntry.EffectiveFrom)
+            {
+                throw new DomainException("New expense effective_from must be after the previous open period start.");
+            }
+
+            openEntry.ClosePeriod(effectiveFrom.AddDays(-1));
+        }
+
+        var expense = WorkshopExpenseHistory.Create(Id, specificationId, amountPerUnit, effectiveFrom, effectiveTo);
+        _expenseHistory.Add(expense);
+        return expense;
     }
 }
 
@@ -80,20 +122,26 @@ public sealed class WorkshopExpenseHistory : BaseEntity
     {
     }
 
-    public WorkshopExpenseHistory(Guid workshopId, Guid specificationId, decimal amountPerUnit, DateOnly effectiveFrom, DateOnly? effectiveTo = null)
+    private WorkshopExpenseHistory(Guid workshopId, Guid specificationId, decimal amountPerUnit, DateOnly effectiveFrom, DateOnly? effectiveTo)
     {
         Guard.AgainstEmptyGuid(workshopId, "Workshop id is required.");
         Guard.AgainstEmptyGuid(specificationId, "Specification id is required.");
         Guard.AgainstNonPositive(amountPerUnit, "Amount per unit must be positive.");
-
-        var range = DateRange.From(effectiveFrom, effectiveTo);
+        Guard.AgainstDefaultDate(effectiveFrom, "Effective from date is required.");
+        if (effectiveTo != null && effectiveTo.Value < effectiveFrom)
+        {
+            throw new DomainException("Effective to date cannot be earlier than effective from date.");
+        }
 
         WorkshopId = workshopId;
         SpecificationId = specificationId;
         AmountPerUnit = amountPerUnit;
-        EffectiveFrom = range.Start;
+        EffectiveFrom = effectiveFrom;
         EffectiveTo = effectiveTo;
     }
+
+    public static WorkshopExpenseHistory Create(Guid workshopId, Guid specificationId, decimal amountPerUnit, DateOnly effectiveFrom, DateOnly? effectiveTo)
+        => new(workshopId, specificationId, amountPerUnit, effectiveFrom, effectiveTo);
 
     public Guid WorkshopId { get; private set; }
 
@@ -118,15 +166,19 @@ public sealed class WorkshopExpenseHistory : BaseEntity
     public void ClosePeriod(DateOnly effectiveTo)
     {
         Guard.AgainstDefaultDate(effectiveTo, "Effective to date is required.");
-        DateRange.From(EffectiveFrom, effectiveTo);
+        if (effectiveTo < EffectiveFrom)
+        {
+            throw new DomainException("Effective to date cannot be earlier than effective from date.");
+        }
+
         EffectiveTo = effectiveTo;
     }
 
-    internal bool Overlaps(DateOnly start, DateOnly end)
+    internal bool Overlaps(DateOnly periodStart, DateOnly periodEnd)
     {
         var currentStart = EffectiveFrom;
         var currentEnd = EffectiveTo ?? DateOnly.MaxValue;
-        return start <= currentEnd && currentStart <= end;
+        return periodStart <= currentEnd && currentStart <= periodEnd;
     }
 }
 
