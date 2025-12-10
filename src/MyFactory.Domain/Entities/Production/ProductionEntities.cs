@@ -14,6 +14,7 @@ public sealed class ProductionOrder : BaseEntity
 {
     private readonly List<ProductionOrderAllocation> _allocations = new();
     private readonly List<ProductionStage> _stages = new();
+    private readonly List<TimesheetEntry> _timesheetEntries = new();
 
     private ProductionOrder()
     {
@@ -46,6 +47,37 @@ public sealed class ProductionOrder : BaseEntity
     public DateOnly CreatedAt { get; private set; }
     public IReadOnlyCollection<ProductionOrderAllocation> Allocations => _allocations.AsReadOnly();
     public IReadOnlyCollection<ProductionStage> Stages => _stages.AsReadOnly();
+    public IReadOnlyCollection<TimesheetEntry> TimesheetEntries => _timesheetEntries.AsReadOnly();
+
+    public void AttachTimesheetEntry(TimesheetEntry entry)
+    {
+        Guard.AgainstNull(entry, nameof(entry));
+
+        if (entry.ProductionOrderId.HasValue && entry.ProductionOrderId.Value != Id)
+        {
+            throw new DomainException("Timesheet entry already linked to another production order.");
+        }
+
+        if (_timesheetEntries.Any(existing => existing.Id == entry.Id))
+        {
+            return;
+        }
+
+        entry.LinkToProductionOrder(this);
+        _timesheetEntries.Add(entry);
+    }
+
+    public void DetachTimesheetEntry(Guid timesheetEntryId)
+    {
+        var entry = _timesheetEntries.FirstOrDefault(t => t.Id == timesheetEntryId);
+        if (entry is null)
+        {
+            return;
+        }
+
+        entry.LinkToProductionOrder(null);
+        _timesheetEntries.Remove(entry);
+    }
 
     public ProductionOrderAllocation AllocateWorkshop(Guid workshopId, decimal quantity)
     {

@@ -66,6 +66,8 @@ public sealed class Warehouse : BaseEntity
 /// </summary>
 public sealed class InventoryItem : BaseEntity
 {
+    private readonly List<InventoryReceiptItem> _receiptItems = new();
+
     private InventoryItem()
     {
     }
@@ -87,6 +89,7 @@ public sealed class InventoryItem : BaseEntity
     public decimal AveragePrice { get; private set; }
     public decimal ReservedQuantity { get; private set; }
     public decimal AvailableQuantity => Quantity - ReservedQuantity;
+    public IReadOnlyCollection<InventoryReceiptItem> ReceiptItems => _receiptItems.AsReadOnly();
 
     public void Receive(decimal quantity, decimal unitPrice)
     {
@@ -130,6 +133,23 @@ public sealed class InventoryItem : BaseEntity
         }
 
         ReservedQuantity -= quantity;
+    }
+
+    internal void RegisterReceiptItem(InventoryReceiptItem item)
+    {
+        Guard.AgainstNull(item, nameof(item));
+        if (item.MaterialId != MaterialId)
+        {
+            throw new DomainException("Receipt item material mismatch.");
+        }
+
+        if (_receiptItems.Any(existing => existing.Id == item.Id))
+        {
+            return;
+        }
+
+        Receive(item.Quantity, item.UnitPrice);
+        _receiptItems.Add(item);
     }
 }
 
@@ -179,6 +199,19 @@ public sealed class InventoryReceipt : BaseEntity
         return item;
     }
 
+    public InventoryReceiptItem AddItem(Guid materialId, decimal quantity, decimal unitPrice, InventoryItem inventoryItem)
+    {
+        Guard.AgainstNull(inventoryItem, nameof(inventoryItem));
+        if (inventoryItem.MaterialId != materialId)
+        {
+            throw new DomainException("Inventory item material mismatch.");
+        }
+
+        var item = AddItem(materialId, quantity, unitPrice, inventoryItem.Id);
+        item.AssignInventoryItem(inventoryItem);
+        return item;
+    }
+
     public void MarkAsReceived()
     {
         EnsureDraft();
@@ -202,6 +235,17 @@ public sealed class InventoryReceipt : BaseEntity
         {
             throw new DomainException("Only draft receipts can be modified.");
         }
+    }
+
+    internal void LinkSupplier(Supplier supplier)
+    {
+        Guard.AgainstNull(supplier, nameof(supplier));
+        if (supplier.Id != SupplierId)
+        {
+            throw new DomainException("Supplier reference mismatch for inventory receipt.");
+        }
+
+        Supplier = supplier;
     }
 }
 
@@ -246,6 +290,20 @@ public sealed class InventoryReceiptItem : BaseEntity
     {
         Guard.AgainstEmptyGuid(inventoryItemId, nameof(inventoryItemId));
         InventoryItemId = inventoryItemId;
+        InventoryItem = null;
+    }
+
+    public void AssignInventoryItem(InventoryItem inventoryItem)
+    {
+        Guard.AgainstNull(inventoryItem, nameof(inventoryItem));
+        if (inventoryItem.MaterialId != MaterialId)
+        {
+            throw new DomainException("Inventory item material mismatch.");
+        }
+
+        InventoryItemId = inventoryItem.Id;
+        InventoryItem = inventoryItem;
+        inventoryItem.RegisterReceiptItem(this);
     }
 }
 

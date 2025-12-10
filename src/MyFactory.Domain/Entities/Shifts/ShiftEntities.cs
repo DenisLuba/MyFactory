@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Employees;
 using MyFactory.Domain.Entities.Specifications;
@@ -10,6 +11,8 @@ namespace MyFactory.Domain.Entities.Shifts;
 /// </summary>
 public sealed class ShiftPlan : BaseEntity
 {
+	private readonly List<ShiftResult> _results = new();
+
 	private ShiftPlan()
 	{
 	}
@@ -36,6 +39,14 @@ public sealed class ShiftPlan : BaseEntity
 	public DateOnly ShiftDate { get; private set; }
 	public string ShiftType { get; private set; } = string.Empty;
 	public decimal PlannedQuantity { get; private set; }
+    public IReadOnlyCollection<ShiftResult> Results => _results.AsReadOnly();
+
+	public ShiftResult RecordResult(decimal actualQuantity, decimal hoursWorked, DateOnly recordedAt)
+	{
+		var result = ShiftResult.Create(this, actualQuantity, hoursWorked, recordedAt);
+		_results.Add(result);
+		return result;
+	}
 
 	public void UpdatePlannedQuantity(decimal quantity)
 	{
@@ -67,24 +78,36 @@ public sealed class ShiftResult : BaseEntity
 	{
 	}
 
-	public ShiftResult(ShiftPlan shiftPlan, Guid employeeId, decimal actualQuantity, decimal hoursWorked, DateOnly recordedAt)
+	private ShiftResult(Guid shiftPlanId, Guid employeeId, decimal actualQuantity, decimal hoursWorked, DateOnly recordedAt)
 	{
-		Guard.AgainstNull(shiftPlan, "Shift plan is required.");
+		Guard.AgainstEmptyGuid(shiftPlanId, nameof(shiftPlanId));
 		Guard.AgainstEmptyGuid(employeeId, nameof(employeeId));
 		Guard.AgainstNegative(actualQuantity, nameof(actualQuantity));
 		Guard.AgainstNegative(hoursWorked, nameof(hoursWorked));
 		Guard.AgainstDefaultDate(recordedAt, nameof(recordedAt));
 
-		if (shiftPlan.EmployeeId != employeeId)
-		{
-			throw new DomainException("Shift result employee must match the shift plan employee.");
-		}
-
-		ShiftPlanId = shiftPlan.Id;
+		ShiftPlanId = shiftPlanId;
 		EmployeeId = employeeId;
 		ActualQuantity = actualQuantity;
 		HoursWorked = hoursWorked;
 		RecordedAt = recordedAt;
+	}
+
+	internal static ShiftResult Create(ShiftPlan shiftPlan, decimal actualQuantity, decimal hoursWorked, DateOnly recordedAt)
+	{
+		Guard.AgainstNull(shiftPlan, nameof(shiftPlan));
+		var employeeId = shiftPlan.EmployeeId;
+		if (employeeId == Guid.Empty)
+		{
+			throw new DomainException("Shift plan must reference an employee.");
+		}
+
+		var result = new ShiftResult(shiftPlan.Id, employeeId, actualQuantity, hoursWorked, recordedAt)
+		{
+			ShiftPlan = shiftPlan,
+			Employee = shiftPlan.Employee
+		};
+		return result;
 	}
 
 	public Guid ShiftPlanId { get; private set; }

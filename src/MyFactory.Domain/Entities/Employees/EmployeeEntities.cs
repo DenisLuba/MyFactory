@@ -133,6 +133,24 @@ public sealed class TimesheetEntry : BaseEntity
     {
         EnsureDraftState();
         ProductionOrderId = NormalizeProductionOrderId(productionOrderId);
+        if (!ProductionOrderId.HasValue)
+        {
+            ProductionOrder = null;
+        }
+    }
+
+    internal void LinkToProductionOrder(ProductionOrder? productionOrder)
+    {
+        EnsureDraftState();
+        if (productionOrder is null)
+        {
+            ProductionOrderId = null;
+            ProductionOrder = null;
+            return;
+        }
+
+        ProductionOrderId = productionOrder.Id;
+        ProductionOrder = productionOrder;
     }
 
     public void Approve()

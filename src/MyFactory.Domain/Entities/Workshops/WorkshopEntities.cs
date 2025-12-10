@@ -72,6 +72,19 @@ public sealed class Workshop : BaseEntity
         _expenseHistory.Add(entry);
         return entry;
     }
+
+    public WorkshopExpenseHistory AddExpense(Specification specification, decimal amountPerUnit, DateOnly effectiveFrom, DateOnly? effectiveTo = null)
+    {
+        Guard.AgainstNull(specification, nameof(specification));
+        if (specification.Id == Guid.Empty)
+        {
+            throw new DomainException("Specification id is required.");
+        }
+
+        var entry = AddExpense(specification.Id, amountPerUnit, effectiveFrom, effectiveTo);
+        specification.AttachWorkshopExpense(entry);
+        return entry;
+    }
 }
 
 public sealed class WorkshopExpenseHistory : BaseEntity
@@ -127,6 +140,17 @@ public sealed class WorkshopExpenseHistory : BaseEntity
         var currentStart = EffectiveFrom;
         var currentEnd = EffectiveTo ?? DateOnly.MaxValue;
         return start <= currentEnd && currentStart <= end;
+    }
+
+    internal void LinkSpecification(Specification specification)
+    {
+        Guard.AgainstNull(specification, nameof(specification));
+        if (specification.Id != SpecificationId)
+        {
+            throw new DomainException("Specification reference mismatch for expense history entry.");
+        }
+
+        Specification = specification;
     }
 }
 

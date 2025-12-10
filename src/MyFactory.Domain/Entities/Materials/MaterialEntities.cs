@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Specifications;
 using MyFactory.Domain.Entities.Warehousing;
@@ -109,6 +110,19 @@ public class Material : BaseEntity
         _priceHistory.Add(entry);
         return entry;
     }
+
+    public MaterialPriceHistory AddPrice(Supplier supplier, decimal price, DateOnly effectiveFrom, string docRef)
+    {
+        Guard.AgainstNull(supplier, nameof(supplier));
+        if (supplier.Id == Guid.Empty)
+        {
+            throw new DomainException("Supplier id is required.");
+        }
+
+        var entry = AddPrice(supplier.Id, price, effectiveFrom, docRef);
+        supplier.AttachPriceEntry(entry);
+        return entry;
+    }
 }
 
 public class Supplier : BaseEntity
@@ -157,6 +171,50 @@ public class Supplier : BaseEntity
         }
 
         IsActive = false;
+    }
+
+    public InventoryReceipt CreateReceipt(string receiptNumber, DateOnly receiptDate)
+    {
+        Guard.AgainstNullOrWhiteSpace(receiptNumber, nameof(receiptNumber));
+        Guard.AgainstDefaultDate(receiptDate, nameof(receiptDate));
+
+        var receipt = new InventoryReceipt(receiptNumber, Id, receiptDate);
+        AttachReceipt(receipt);
+        return receipt;
+    }
+
+    internal void AttachPriceEntry(MaterialPriceHistory entry)
+    {
+        Guard.AgainstNull(entry, nameof(entry));
+        if (entry.SupplierId != Id)
+        {
+            throw new DomainException("Price history entry supplier mismatch.");
+        }
+
+        if (_priceEntries.Any(existing => existing.Id == entry.Id))
+        {
+            return;
+        }
+
+        entry.LinkSupplier(this);
+        _priceEntries.Add(entry);
+    }
+
+    internal void AttachReceipt(InventoryReceipt receipt)
+    {
+        Guard.AgainstNull(receipt, nameof(receipt));
+        if (receipt.SupplierId != Id)
+        {
+            throw new DomainException("Inventory receipt supplier mismatch.");
+        }
+
+        if (_receipts.Any(existing => existing.Id == receipt.Id))
+        {
+            return;
+        }
+
+        receipt.LinkSupplier(this);
+        _receipts.Add(receipt);
     }
 }
 
@@ -211,5 +269,16 @@ public class MaterialPriceHistory : BaseEntity
         }
 
         EffectiveTo = effectiveTo;
+    }
+
+    internal void LinkSupplier(Supplier supplier)
+    {
+        Guard.AgainstNull(supplier, nameof(supplier));
+        if (supplier.Id != SupplierId)
+        {
+            throw new DomainException("Supplier reference mismatch for material price history entry.");
+        }
+
+        Supplier = supplier;
     }
 }

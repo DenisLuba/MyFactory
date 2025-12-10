@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Specifications;
 using MyFactory.Domain.Entities.Warehousing;
@@ -10,6 +12,8 @@ namespace MyFactory.Domain.Entities.FinishedGoods;
 /// </summary>
 public sealed class FinishedGoodsInventory : BaseEntity
 {
+    private readonly List<FinishedGoodsMovement> _movements = new();
+
     private FinishedGoodsInventory()
     {
     }
@@ -31,6 +35,7 @@ public sealed class FinishedGoodsInventory : BaseEntity
     public decimal Quantity { get; private set; }
     public decimal UnitCost { get; private set; }
     public DateOnly UpdatedAt { get; private set; }
+    public IReadOnlyCollection<FinishedGoodsMovement> Movements => _movements.AsReadOnly();
 
     public void Receive(decimal quantity, decimal unitCost, DateOnly receivedAt)
     {
@@ -56,6 +61,48 @@ public sealed class FinishedGoodsInventory : BaseEntity
 
         Quantity -= quantity;
         UpdatedAt = issuedAt;
+    }
+
+    public FinishedGoodsMovement MoveToWarehouse(Guid toWarehouseId, decimal quantity, DateOnly movedAt)
+    {
+        Guard.AgainstEmptyGuid(toWarehouseId, nameof(toWarehouseId));
+        Guard.AgainstNonPositive(quantity, nameof(quantity));
+        Guard.AgainstDefaultDate(movedAt, nameof(movedAt));
+        if (toWarehouseId == WarehouseId)
+        {
+            throw new DomainException("Destination warehouse must differ from the source warehouse.");
+        }
+
+        var availableBeforeMove = Quantity;
+        Issue(quantity, movedAt);
+
+        var movement = FinishedGoodsMovement.CreateTransfer(
+            SpecificationId,
+            WarehouseId,
+            toWarehouseId,
+            quantity,
+            movedAt,
+            Id,
+            availableBeforeMove);
+
+        movement.AttachSourceInventory(this, availableBeforeMove);
+        return movement;
+    }
+
+    internal void RegisterMovement(FinishedGoodsMovement movement)
+    {
+        Guard.AgainstNull(movement, nameof(movement));
+        if (movement.FinishedGoodsInventoryId.HasValue && movement.FinishedGoodsInventoryId.Value != Id)
+        {
+            throw new DomainException("Movement reference mismatch for finished goods inventory.");
+        }
+
+        if (_movements.Any(existing => existing.Id == movement.Id))
+        {
+            return;
+        }
+
+        _movements.Add(movement);
     }
 }
 
@@ -128,17 +175,30 @@ public sealed class FinishedGoodsMovement : BaseEntity
 
     public void AttachSourceInventory(Guid finishedGoodsInventoryId, decimal sourceAvailableQuantity)
     {
+        Guard.AgainstEmptyGuid(finishedGoodsInventoryId, nameof(finishedGoodsInventoryId));
+        AttachSourceInventoryInternal(finishedGoodsInventoryId, null, sourceAvailableQuantity);
+    }
+
+    public void AttachSourceInventory(FinishedGoodsInventory inventory, decimal sourceAvailableQuantity)
+    {
+        Guard.AgainstNull(inventory, nameof(inventory));
+        AttachSourceInventoryInternal(inventory.Id, inventory, sourceAvailableQuantity);
+    }
+
+    private void AttachSourceInventoryInternal(Guid finishedGoodsInventoryId, FinishedGoodsInventory? inventory, decimal sourceAvailableQuantity)
+    {
         if (FinishedGoodsInventoryId.HasValue && FinishedGoodsInventoryId.Value != finishedGoodsInventoryId)
         {
             throw new DomainException("Movement already linked to a different source inventory.");
         }
 
-        Guard.AgainstEmptyGuid(finishedGoodsInventoryId, nameof(finishedGoodsInventoryId));
         if (Quantity > sourceAvailableQuantity)
         {
             throw new DomainException("Movement quantity cannot exceed available source quantity.");
         }
 
         FinishedGoodsInventoryId = finishedGoodsInventoryId;
+        FinishedGoodsInventory = inventory ?? FinishedGoodsInventory;
+        inventory?.RegisterMovement(this);
     }
 }

@@ -14,6 +14,7 @@ public sealed class Specification : BaseEntity
 {
     private readonly List<SpecificationBomItem> _bomItems = new();
     private readonly List<SpecificationOperation> _operations = new();
+    private readonly List<WorkshopExpenseHistory> _workshopExpenses = new();
 
     private Specification()
     {
@@ -47,6 +48,8 @@ public sealed class Specification : BaseEntity
     public IReadOnlyCollection<SpecificationBomItem> BomItems => _bomItems.AsReadOnly();
 
     public IReadOnlyCollection<SpecificationOperation> Operations => _operations.AsReadOnly();
+
+    public IReadOnlyCollection<WorkshopExpenseHistory> WorkshopExpenses => _workshopExpenses.AsReadOnly();
 
     public void UpdateSku(string sku)
     {
@@ -113,6 +116,23 @@ public sealed class Specification : BaseEntity
         var operation = new SpecificationOperation(Id, operationId, workshopId, timeMinutes, operationCost);
         _operations.Add(operation);
         return operation;
+    }
+
+    internal void AttachWorkshopExpense(WorkshopExpenseHistory expense)
+    {
+        Guard.AgainstNull(expense, nameof(expense));
+        if (expense.SpecificationId != Id)
+        {
+            throw new DomainException("Workshop expense history does not belong to this specification.");
+        }
+
+        if (_workshopExpenses.Any(existing => existing.Id == expense.Id))
+        {
+            return;
+        }
+
+        expense.LinkSpecification(this);
+        _workshopExpenses.Add(expense);
     }
 
     private static DateTime EnsureCreatedAt(DateTime createdAt)
