@@ -21,12 +21,12 @@ public sealed record ReturnDto(
     {
         return new ReturnDto(
             customerReturn.Id,
-            customerReturn.ReturnNumber,
+            customerReturn.ReturnNumber.ToString(),
             customerReturn.CustomerId,
             customer,
             customerReturn.ReturnDate,
             customerReturn.Reason,
-            customerReturn.Status,
+            customerReturn.Status.ToString(),
             items);
     }
 }

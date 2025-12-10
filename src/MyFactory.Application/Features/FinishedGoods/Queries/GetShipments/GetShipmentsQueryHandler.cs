@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using MyFactory.Application.Common.Interfaces;
 using MyFactory.Application.DTOs.FinishedGoods;
 using MyFactory.Application.Features.FinishedGoods.Common;
+using MyFactory.Domain.Enums;
 
 namespace MyFactory.Application.Features.FinishedGoods.Queries.GetShipments;
 
@@ -26,10 +28,9 @@ public sealed class GetShipmentsQueryHandler : IRequestHandler<GetShipmentsQuery
             .Include(shipment => shipment.Items)
             .AsQueryable();
 
-        if (!string.IsNullOrWhiteSpace(request.Status))
+        if (!string.IsNullOrWhiteSpace(request.Status) && Enum.TryParse<ShipmentStatus>(request.Status.Trim(), true, out var parsedStatus))
         {
-            var status = request.Status.Trim();
-            query = query.Where(shipment => shipment.Status == status);
+            query = query.Where(shipment => shipment.Status == parsedStatus);
         }
 
         var shipments = await query

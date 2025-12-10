@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Specifications;
 using MyFactory.Domain.Entities.Warehousing;
+using MyFactory.Domain.ValueObjects;
 
 namespace MyFactory.Domain.Entities.Materials;
 
@@ -103,9 +104,8 @@ public class Material : BaseEntity
         Guard.AgainstEmptyGuid(supplierId, "Supplier id is required.");
         Guard.AgainstNonPositive(price, "Price must be positive.");
         Guard.AgainstDefaultDate(effectiveFrom, "Effective from date is required.");
-        Guard.AgainstNullOrWhiteSpace(docRef, "Document reference is required.");
 
-        var entry = new MaterialPriceHistory(Id, supplierId, price, effectiveFrom, docRef);
+        var entry = new MaterialPriceHistory(Id, supplierId, price, effectiveFrom, DocumentNumber.From(docRef));
         _priceHistory.Add(entry);
         return entry;
     }
@@ -129,7 +129,7 @@ public class Supplier : BaseEntity
 
     public string Name { get; private set; } = string.Empty;
 
-    public string Contact { get; private set; } = string.Empty;
+    public ContactInfo Contact { get; private set; } = null!;
 
     public bool IsActive { get; private set; }
 
@@ -145,8 +145,7 @@ public class Supplier : BaseEntity
 
     public void UpdateContact(string contact)
     {
-        Guard.AgainstNullOrWhiteSpace(contact, "Contact info is required.");
-        Contact = contact.Trim();
+        Contact = ContactInfo.From(contact);
     }
 
     public void Deactivate()
@@ -166,19 +165,18 @@ public class MaterialPriceHistory : BaseEntity
     {
     }
 
-    public MaterialPriceHistory(Guid materialId, Guid supplierId, decimal price, DateOnly effectiveFrom, string docRef)
+    public MaterialPriceHistory(Guid materialId, Guid supplierId, decimal price, DateOnly effectiveFrom, DocumentNumber docRef)
     {
         Guard.AgainstEmptyGuid(materialId, "Material id is required.");
         Guard.AgainstEmptyGuid(supplierId, "Supplier id is required.");
         Guard.AgainstNonPositive(price, "Price must be positive.");
         Guard.AgainstDefaultDate(effectiveFrom, "Effective from date is required.");
-        Guard.AgainstNullOrWhiteSpace(docRef, "Document reference is required.");
 
         MaterialId = materialId;
         SupplierId = supplierId;
         Price = price;
         EffectiveFrom = effectiveFrom;
-        DocRef = docRef.Trim();
+        DocRef = docRef;
     }
 
     public Guid MaterialId { get; private set; }
@@ -195,7 +193,7 @@ public class MaterialPriceHistory : BaseEntity
 
     public DateOnly? EffectiveTo { get; private set; }
 
-    public string DocRef { get; private set; } = string.Empty;
+    public DocumentNumber DocRef { get; private set; } = null!;
 
     public void UpdatePrice(decimal price)
     {

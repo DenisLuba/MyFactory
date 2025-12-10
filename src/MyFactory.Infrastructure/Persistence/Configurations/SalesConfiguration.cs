@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MyFactory.Domain.Entities.Sales;
+using MyFactory.Domain.Enums;
+using MyFactory.Domain.ValueObjects;
 using MyFactory.Infrastructure.Persistence.Constants;
 
 namespace MyFactory.Infrastructure.Persistence.Configurations;
@@ -18,6 +20,7 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .HasMaxLength(FieldLengths.Name);
 
         builder.Property(customer => customer.Contact)
+            .HasConversion(info => info.Value, value => ContactInfo.From(value))
             .IsRequired()
             .HasMaxLength(FieldLengths.Contact);
 
@@ -35,6 +38,7 @@ public class ShipmentConfiguration : IEntityTypeConfiguration<Shipment>
         builder.HasKey(shipment => shipment.Id);
 
         builder.Property(shipment => shipment.ShipmentNumber)
+            .HasConversion(number => number.Value, value => DocumentNumber.From(value))
             .IsRequired()
             .HasMaxLength(FieldLengths.Code);
 
@@ -42,7 +46,8 @@ public class ShipmentConfiguration : IEntityTypeConfiguration<Shipment>
             .IsRequired();
 
         builder.Property(shipment => shipment.Status)
-            .HasConversion<int>()
+            .HasConversion(status => status.ToString(), value => Enum.Parse<ShipmentStatus>(value))
+            .HasMaxLength(FieldLengths.Status)
             .IsRequired();
 
         builder.Property(shipment => shipment.TotalAmount)
@@ -99,6 +104,7 @@ public class CustomerReturnConfiguration : IEntityTypeConfiguration<CustomerRetu
         builder.HasKey(returnEntity => returnEntity.Id);
 
         builder.Property(returnEntity => returnEntity.ReturnNumber)
+            .HasConversion(number => number.Value, value => DocumentNumber.From(value))
             .IsRequired()
             .HasMaxLength(FieldLengths.Code);
 
@@ -110,7 +116,8 @@ public class CustomerReturnConfiguration : IEntityTypeConfiguration<CustomerRetu
             .HasMaxLength(FieldLengths.Notes);
 
         builder.Property(returnEntity => returnEntity.Status)
-            .HasConversion<int>()
+            .HasConversion(status => status.ToString(), value => Enum.Parse<ReturnStatus>(value))
+            .HasMaxLength(FieldLengths.Status)
             .IsRequired();
 
         builder.HasOne(returnEntity => returnEntity.Customer)

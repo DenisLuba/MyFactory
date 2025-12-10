@@ -28,13 +28,13 @@ internal static class FinishedGoodsTestHelper
         var inventory = new FinishedGoodsInventory(specification.Id, warehouse.Id);
         if (quantity > 0)
         {
-            inventory.Receive(quantity, unitCost, DateTime.UtcNow);
+            inventory.Receive(quantity, unitCost, DateOnly.FromDateTime(DateTime.UtcNow));
         }
 
         return inventory;
     }
 
-    public static Shipment CreateShippedOrder(Customer customer, DateTime shipmentDate, params (Guid SpecificationId, decimal Quantity, decimal UnitPrice)[] items)
+    public static Shipment CreateShippedOrder(Customer customer, DateOnly shipmentDate, params (Guid SpecificationId, decimal Quantity, decimal UnitPrice)[] items)
     {
         var shipment = new Shipment($"SH-{Guid.NewGuid():N}"[..8], customer.Id, shipmentDate);
 
@@ -43,8 +43,7 @@ internal static class FinishedGoodsTestHelper
             shipment.AddItem(specificationId, quantity, unitPrice);
         }
 
-        shipment.Submit();
-        shipment.MarkAsShipped();
+        shipment.Ship();
 
         return shipment;
     }

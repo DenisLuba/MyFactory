@@ -21,11 +21,11 @@ public sealed record ShipmentDto(
     {
         return new ShipmentDto(
             shipment.Id,
-            shipment.ShipmentNumber,
+            shipment.ShipmentNumber.ToString(),
             shipment.CustomerId,
             customer,
             shipment.ShipmentDate,
-            shipment.Status,
+            shipment.Status.ToString(),
             shipment.TotalAmount,
             items);
     }

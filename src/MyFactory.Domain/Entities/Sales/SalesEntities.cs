@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Specifications;
+using MyFactory.Domain.Enums;
+using MyFactory.Domain.ValueObjects;
 
 namespace MyFactory.Domain.Entities.Sales;
 
@@ -22,7 +24,7 @@ public sealed class Customer : BaseEntity
     }
 
     public string Name { get; private set; } = string.Empty;
-    public string Contact { get; private set; } = string.Empty;
+    public ContactInfo Contact { get; private set; } = null!;
 
     public void UpdateName(string name)
     {
@@ -32,8 +34,7 @@ public sealed class Customer : BaseEntity
 
     public void UpdateContact(string contact)
     {
-        Guard.AgainstNullOrWhiteSpace(contact, nameof(contact));
-        Contact = contact.Trim();
+        Contact = ContactInfo.From(contact);
     }
 }
 
@@ -50,21 +51,20 @@ public sealed class Shipment : BaseEntity
 
     public Shipment(string shipmentNumber, Guid customerId, DateOnly shipmentDate)
     {
-        Guard.AgainstNullOrWhiteSpace(shipmentNumber, nameof(shipmentNumber));
         Guard.AgainstEmptyGuid(customerId, nameof(customerId));
         Guard.AgainstDefaultDate(shipmentDate, nameof(shipmentDate));
 
-        ShipmentNumber = shipmentNumber.Trim();
+        ShipmentNumber = DocumentNumber.From(shipmentNumber);
         CustomerId = customerId;
         ShipmentDate = shipmentDate;
-        Status = ShipmentStatuses.Draft;
+        Status = ShipmentStatus.Draft;
     }
 
-    public string ShipmentNumber { get; private set; } = string.Empty;
+    public DocumentNumber ShipmentNumber { get; private set; } = null!;
     public Guid CustomerId { get; }
     public Customer? Customer { get; private set; }
     public DateOnly ShipmentDate { get; private set; }
-    public string Status { get; private set; } = ShipmentStatuses.Draft;
+    public ShipmentStatus Status { get; private set; } = ShipmentStatus.Draft;
     public IReadOnlyCollection<ShipmentItem> Items => _items.AsReadOnly();
     public decimal TotalAmount { get; private set; }
 
@@ -100,51 +100,36 @@ public sealed class Shipment : BaseEntity
         RecalculateTotals();
     }
 
-    public void Post()
-    {
-        Submit();
-    }
-
-    public void Submit()
+    public void Ship()
     {
         EnsureDraft();
         EnsureHasItems();
-        Status = ShipmentStatuses.Submitted;
+        Status = ShipmentStatus.Shipped;
     }
 
-    public void MarkAsShipped()
+    public void MarkAsDelivered()
     {
-        if (Status != ShipmentStatuses.Submitted)
+        if (Status != ShipmentStatus.Shipped)
         {
-            throw new DomainException("Only submitted shipments can be marked as shipped.");
+            throw new DomainException("Only shipped shipments can be marked as delivered.");
         }
 
-        Status = ShipmentStatuses.Shipped;
-    }
-
-    public void MarkAsPaid()
-    {
-        if (Status != ShipmentStatuses.Shipped)
-        {
-            throw new DomainException("Only shipped shipments can be marked as paid.");
-        }
-
-        Status = ShipmentStatuses.Paid;
+        Status = ShipmentStatus.Delivered;
     }
 
     public void Cancel()
     {
-        if (Status == ShipmentStatuses.Paid)
+        if (Status == ShipmentStatus.Delivered)
         {
-            throw new DomainException("Paid shipments cannot be cancelled.");
+            throw new DomainException("Delivered shipments cannot be cancelled.");
         }
 
-        Status = ShipmentStatuses.Cancelled;
+        Status = ShipmentStatus.Cancelled;
     }
 
     private void EnsureDraft()
     {
-        if (Status != ShipmentStatuses.Draft)
+        if (Status != ShipmentStatus.Draft)
         {
             throw new DomainException("Only draft shipments can be modified.");
         }
@@ -220,29 +205,28 @@ public sealed class CustomerReturn : BaseEntity
 
     public CustomerReturn(string returnNumber, Guid customerId, DateOnly returnDate, string reason)
     {
-        Guard.AgainstNullOrWhiteSpace(returnNumber, nameof(returnNumber));
         Guard.AgainstEmptyGuid(customerId, nameof(customerId));
         Guard.AgainstDefaultDate(returnDate, nameof(returnDate));
         Guard.AgainstNullOrWhiteSpace(reason, nameof(reason));
 
-        ReturnNumber = returnNumber.Trim();
+        ReturnNumber = DocumentNumber.From(returnNumber);
         CustomerId = customerId;
         ReturnDate = returnDate;
         Reason = reason.Trim();
-        Status = ReturnStatuses.PendingReview;
+        Status = ReturnStatus.Draft;
     }
 
-    public string ReturnNumber { get; private set; } = string.Empty;
+    public DocumentNumber ReturnNumber { get; private set; } = null!;
     public Guid CustomerId { get; }
     public Customer? Customer { get; private set; }
     public DateOnly ReturnDate { get; private set; }
     public string Reason { get; private set; } = string.Empty;
-    public string Status { get; private set; } = ReturnStatuses.PendingReview;
+    public ReturnStatus Status { get; private set; } = ReturnStatus.Draft;
     public IReadOnlyCollection<CustomerReturnItem> Items => _items.AsReadOnly();
 
     public CustomerReturnItem AddItem(Guid specificationId, decimal quantity, string disposition)
     {
-        EnsurePending();
+        EnsureDraft();
         Guard.AgainstEmptyGuid(specificationId, nameof(specificationId));
         Guard.AgainstNonPositive(quantity, nameof(quantity));
         Guard.AgainstNullOrWhiteSpace(disposition, nameof(disposition));
@@ -257,34 +241,38 @@ public sealed class CustomerReturn : BaseEntity
         return item;
     }
 
-    public void Approve()
+    public void MarkAsReceived()
     {
-        EnsurePending();
+        EnsureDraft();
         EnsureHasItems();
-        Status = ReturnStatuses.Approved;
+        Status = ReturnStatus.Received;
     }
 
-    public void Complete()
+    public void ProcessReturn()
     {
-        if (Status != ReturnStatuses.Approved)
+        if (Status != ReturnStatus.Received)
         {
-            throw new DomainException("Only approved returns can be completed.");
+            throw new DomainException("Only received returns can be processed.");
         }
 
-        Status = ReturnStatuses.Completed;
+        Status = ReturnStatus.Processed;
     }
 
-    public void Reject(string rejectionReason)
+    public void Cancel(string cancellationReason)
     {
-        EnsurePending();
-        Guard.AgainstNullOrWhiteSpace(rejectionReason, nameof(rejectionReason));
-        Reason = $"{Reason} | Reject: {rejectionReason.Trim()}";
-        Status = ReturnStatuses.Rejected;
+        if (Status == ReturnStatus.Processed)
+        {
+            throw new DomainException("Processed returns cannot be cancelled.");
+        }
+
+        Guard.AgainstNullOrWhiteSpace(cancellationReason, nameof(cancellationReason));
+        Reason = $"{Reason} | Cancel: {cancellationReason.Trim()}";
+        Status = ReturnStatus.Cancelled;
     }
 
-    private void EnsurePending()
+    private void EnsureDraft()
     {
-        if (Status != ReturnStatuses.PendingReview)
+        if (Status != ReturnStatus.Draft)
         {
             throw new DomainException("Return is already processed.");
         }
@@ -327,21 +315,4 @@ public sealed class CustomerReturnItem : BaseEntity
     public Specification? Specification { get; private set; }
     public decimal Quantity { get; private set; }
     public string Disposition { get; private set; } = string.Empty;
-}
-
-public static class ShipmentStatuses
-{
-    public const string Draft = "Draft";
-    public const string Submitted = "Submitted";
-    public const string Shipped = "Shipped";
-    public const string Paid = "Paid";
-    public const string Cancelled = "Cancelled";
-}
-
-public static class ReturnStatuses
-{
-    public const string PendingReview = "PendingReview";
-    public const string Approved = "Approved";
-    public const string Completed = "Completed";
-    public const string Rejected = "Rejected";
 }

@@ -5,6 +5,7 @@ using MyFactory.Application.Features.FinishedGoods.Queries.GetReturnById;
 using MyFactory.Application.Features.FinishedGoods.Queries.GetReturns;
 using MyFactory.Application.Tests.Common;
 using MyFactory.Domain.Entities.Sales;
+using MyFactory.Domain.Enums;
 using Xunit;
 
 namespace MyFactory.Application.Tests.Features.FinishedGoods;
@@ -17,11 +18,11 @@ public class ReturnsQueriesTests
         await using var context = TestApplicationDbContextFactory.Create();
         var specification = FinishedGoodsTestHelper.CreateSpecification("SPEC-RET-QUERY");
         var customer = FinishedGoodsTestHelper.CreateCustomer("Return Query");
-        var approved = new CustomerReturn("RET-APP", customer.Id, new DateTime(2025, 10, 1), "Reason");
+        var approved = new CustomerReturn("RET-APP", customer.Id, new DateOnly(2025, 10, 1), "Reason");
         approved.AddItem(specification.Id, 1m, "Scrap");
-        approved.Approve();
+        approved.MarkAsReceived();
 
-        var pending = new CustomerReturn("RET-PEN", customer.Id, new DateTime(2025, 10, 2), "Reason");
+        var pending = new CustomerReturn("RET-PEN", customer.Id, new DateOnly(2025, 10, 2), "Reason");
         pending.AddItem(specification.Id, 1m, "Scrap");
 
         context.Specifications.Add(specification);
@@ -31,9 +32,9 @@ public class ReturnsQueriesTests
 
         var handler = new GetReturnsQueryHandler(context);
 
-        var result = await handler.Handle(new GetReturnsQuery(ReturnStatuses.Approved), default);
+        var result = await handler.Handle(new GetReturnsQuery(ReturnStatus.Received.ToString()), default);
 
-        result.Should().ContainSingle(dto => dto.Status == ReturnStatuses.Approved);
+        result.Should().ContainSingle(dto => dto.Status == ReturnStatus.Received.ToString());
     }
 
     [Fact]
@@ -42,7 +43,7 @@ public class ReturnsQueriesTests
         await using var context = TestApplicationDbContextFactory.Create();
         var specification = FinishedGoodsTestHelper.CreateSpecification("SPEC-RET-CARD");
         var customer = FinishedGoodsTestHelper.CreateCustomer("Return Card");
-        var customerReturn = new CustomerReturn("RET-CARD", customer.Id, new DateTime(2025, 11, 1), "Reason");
+        var customerReturn = new CustomerReturn("RET-CARD", customer.Id, new DateOnly(2025, 11, 1), "Reason");
         customerReturn.AddItem(specification.Id, 2m, "Repair");
 
         context.Specifications.Add(specification);

@@ -15,10 +15,10 @@ public class FinishedGoodsMovementTests
             Guid.NewGuid(),
             Guid.NewGuid(),
             5,
-            new DateTime(2025, 1, 5));
+            new DateOnly(2025, 1, 5));
 
         Assert.Equal(5, movement.Quantity);
-        Assert.Equal(new DateTime(2025, 1, 5), movement.MovedAt);
+        Assert.Equal(new DateOnly(2025, 1, 5), movement.MovedAt);
         Assert.Null(movement.FinishedGoodsInventoryId);
     }
 
@@ -32,18 +32,19 @@ public class FinishedGoodsMovementTests
             warehouseId,
             warehouseId,
             1,
-            new DateTime(2025, 1, 5)));
+            new DateOnly(2025, 1, 5)));
     }
     
     [Fact]
     public void AttachSourceInventory_ValidatesQuantity()
     {
+        var movedAt = DateOnly.FromDateTime(DateTime.UtcNow);
         var movement = FinishedGoodsMovement.CreateTransfer(
             Guid.NewGuid(),
             Guid.NewGuid(),
             Guid.NewGuid(),
             3,
-            DateTime.UtcNow);
+            movedAt);
 
         movement.AttachSourceInventory(Guid.NewGuid(), 3);
 
@@ -59,7 +60,7 @@ public class FinishedGoodsMovementTests
             Guid.NewGuid(),
             Guid.NewGuid(),
             10,
-            DateTime.UtcNow,
+            DateOnly.FromDateTime(DateTime.UtcNow),
             Guid.NewGuid(),
             5));
     }

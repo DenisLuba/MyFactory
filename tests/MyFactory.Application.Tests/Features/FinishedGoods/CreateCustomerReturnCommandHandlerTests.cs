@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using MyFactory.Application.Features.FinishedGoods.Commands.CreateCustomerReturn;
 using MyFactory.Application.Tests.Common;
 using MyFactory.Domain.Entities.Sales;
+using MyFactory.Domain.Enums;
 using Xunit;
 
 namespace MyFactory.Application.Tests.Features.FinishedGoods;
@@ -28,7 +29,7 @@ public class CreateCustomerReturnCommandHandlerTests
         var command = new CreateCustomerReturnCommand(
             "RET-1001",
             customer.Id,
-            new DateTime(2025, 7, 1),
+            new DateOnly(2025, 7, 1),
             "Damaged",
             new List<CreateCustomerReturnItemDto>
             {
@@ -39,7 +40,7 @@ public class CreateCustomerReturnCommandHandlerTests
 
         result.ReturnNumber.Should().Be("RET-1001");
         result.Items.Should().HaveCount(1);
-        result.Status.Should().Be(ReturnStatuses.PendingReview);
+        result.Status.Should().Be(ReturnStatus.Draft.ToString());
 
         var stored = await context.CustomerReturns.Include(r => r.Items).SingleAsync();
         stored.Items.Should().HaveCount(1);
@@ -52,7 +53,7 @@ public class CreateCustomerReturnCommandHandlerTests
         await using var context = TestApplicationDbContextFactory.Create();
         var specification = FinishedGoodsTestHelper.CreateSpecification("SPEC-RET-DUP");
         var customer = FinishedGoodsTestHelper.CreateCustomer("Return Dup");
-        var existing = new MyFactory.Domain.Entities.Sales.CustomerReturn("RET-2001", customer.Id, DateTime.UtcNow, "Reason");
+        var existing = new MyFactory.Domain.Entities.Sales.CustomerReturn("RET-2001", customer.Id, DateOnly.FromDateTime(DateTime.UtcNow), "Reason");
         existing.AddItem(specification.Id, 1m, "Scrap");
 
         context.Specifications.Add(specification);
@@ -65,7 +66,7 @@ public class CreateCustomerReturnCommandHandlerTests
         var command = new CreateCustomerReturnCommand(
             "RET-2001",
             customer.Id,
-            DateTime.UtcNow,
+            DateOnly.FromDateTime(DateTime.UtcNow),
             "Duplicate",
             new List<CreateCustomerReturnItemDto>
             {

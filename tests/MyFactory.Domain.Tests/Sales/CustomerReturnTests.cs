@@ -1,6 +1,7 @@
 using System;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Sales;
+using MyFactory.Domain.Enums;
 using Xunit;
 
 namespace MyFactory.Domain.Tests.Sales;
@@ -8,43 +9,43 @@ namespace MyFactory.Domain.Tests.Sales;
 public class CustomerReturnTests
 {
     [Fact]
-    public void AddItemAndApprove_Succeeds()
+    public void AddItemAndReceive_Succeeds()
     {
         var customerReturn = new CustomerReturn("RT-001", Guid.NewGuid(), new DateOnly(2025, 3, 1), "Damaged");
         customerReturn.AddItem(Guid.NewGuid(), 2, "Scrap");
 
-        customerReturn.Approve();
+        customerReturn.MarkAsReceived();
 
-        Assert.Equal(ReturnStatuses.Approved, customerReturn.Status);
+        Assert.Equal(ReturnStatus.Received, customerReturn.Status);
     }
 
     [Fact]
-    public void ApproveWithoutItems_Throws()
+    public void ReceiveWithoutItems_Throws()
     {
         var customerReturn = new CustomerReturn("RT-002", Guid.NewGuid(), new DateOnly(2025, 3, 1), "Damaged");
 
-        Assert.Throws<DomainException>(() => customerReturn.Approve());
+        Assert.Throws<DomainException>(() => customerReturn.MarkAsReceived());
     }
 
     [Fact]
-    public void Complete_AfterApprove_SetsCompleted()
+    public void Process_AfterReceived_SetsProcessed()
     {
         var customerReturn = new CustomerReturn("RT-003", Guid.NewGuid(), new DateOnly(2025, 3, 1), "Damaged");
         customerReturn.AddItem(Guid.NewGuid(), 1, "Scrap");
-        customerReturn.Approve();
+        customerReturn.MarkAsReceived();
 
-        customerReturn.Complete();
+        customerReturn.ProcessReturn();
 
-        Assert.Equal(ReturnStatuses.Completed, customerReturn.Status);
+        Assert.Equal(ReturnStatus.Processed, customerReturn.Status);
     }
 
     [Fact]
-    public void Complete_BeforeApprove_Throws()
+    public void Process_BeforeReceived_Throws()
     {
         var customerReturn = new CustomerReturn("RT-004", Guid.NewGuid(), new DateOnly(2025, 3, 1), "Damaged");
         customerReturn.AddItem(Guid.NewGuid(), 1, "Scrap");
 
-        Assert.Throws<DomainException>(() => customerReturn.Complete());
+        Assert.Throws<DomainException>(() => customerReturn.ProcessReturn());
     }
 
     [Fact]

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using MyFactory.Application.Features.FinishedGoods.Commands.ConfirmShipmentPayment;
 using MyFactory.Application.Tests.Common;
 using MyFactory.Domain.Entities.Sales;
+using MyFactory.Domain.Enums;
 using Xunit;
 
 namespace MyFactory.Application.Tests.Features.FinishedGoods;
@@ -19,7 +20,7 @@ public class ConfirmShipmentPaymentCommandHandlerTests
         var customer = FinishedGoodsTestHelper.CreateCustomer("Pay Customer");
         var shipment = FinishedGoodsTestHelper.CreateShippedOrder(
             customer,
-            new DateTime(2025, 6, 1),
+            new DateOnly(2025, 6, 1),
             (specification.Id, 5m, 100m));
 
         context.Specifications.Add(specification);
@@ -31,10 +32,10 @@ public class ConfirmShipmentPaymentCommandHandlerTests
 
         var result = await handler.Handle(new ConfirmShipmentPaymentCommand(shipment.Id), default);
 
-        result.Status.Should().Be(ShipmentStatuses.Paid);
+        result.Status.Should().Be(ShipmentStatus.Delivered.ToString());
 
         var updated = await context.Shipments.SingleAsync();
-        updated.Status.Should().Be(ShipmentStatuses.Paid);
+        updated.Status.Should().Be(ShipmentStatus.Delivered);
     }
 
     [Fact]
@@ -43,7 +44,7 @@ public class ConfirmShipmentPaymentCommandHandlerTests
         await using var context = TestApplicationDbContextFactory.Create();
         var specification = FinishedGoodsTestHelper.CreateSpecification("SPEC-SHIP-NOT-SHIPPED");
         var customer = FinishedGoodsTestHelper.CreateCustomer("Unshipped");
-        var shipment = new Shipment("SHIP-NOT-SHIPPED", customer.Id, DateTime.UtcNow);
+        var shipment = new Shipment("SHIP-NOT-SHIPPED", customer.Id, DateOnly.FromDateTime(DateTime.UtcNow));
         shipment.AddItem(specification.Id, 1m, 50m);
 
         context.Specifications.Add(specification);

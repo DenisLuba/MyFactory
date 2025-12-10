@@ -7,6 +7,7 @@ using MyFactory.Application.Common.Interfaces;
 using MyFactory.Application.DTOs.FinishedGoods;
 using MyFactory.Application.Features.FinishedGoods.Common;
 using MyFactory.Domain.Entities.Sales;
+using MyFactory.Domain.Enums;
 
 namespace MyFactory.Application.Features.FinishedGoods.Commands.ConfirmShipmentPayment;
 
@@ -26,17 +27,17 @@ public sealed class ConfirmShipmentPaymentCommandHandler : IRequestHandler<Confi
             .FirstOrDefaultAsync(entity => entity.Id == request.ShipmentId, cancellationToken)
             ?? throw new InvalidOperationException("Shipment not found.");
 
-        if (shipment.Status == ShipmentStatuses.Paid)
+        if (shipment.Status == ShipmentStatus.Delivered)
         {
             return await ShipmentDtoFactory.CreateAsync(_context, shipment, cancellationToken);
         }
 
-        if (shipment.Status != ShipmentStatuses.Shipped)
+        if (shipment.Status != ShipmentStatus.Shipped)
         {
-            throw new InvalidOperationException("Only shipped shipments can be marked as paid.");
+            throw new InvalidOperationException("Only shipped shipments can be marked as delivered.");
         }
 
-        shipment.MarkAsPaid();
+        shipment.MarkAsDelivered();
 
         await _context.SaveChangesAsync(cancellationToken);
 

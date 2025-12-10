@@ -23,6 +23,7 @@ public class MaterialTests
         Assert.Equal(supplierId, entry.SupplierId);
         Assert.Equal(12.5m, entry.Price);
         Assert.Equal(effectiveFrom, entry.EffectiveFrom);
+        Assert.Equal("DOC-001", entry.DocRef.Value);
     }
 
     [Fact]

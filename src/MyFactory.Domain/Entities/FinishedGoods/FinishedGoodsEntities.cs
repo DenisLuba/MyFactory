@@ -57,6 +57,16 @@ public sealed class FinishedGoodsInventory : BaseEntity
         Quantity -= quantity;
         UpdatedAt = issuedAt;
     }
+
+    public void ApplyShipment(decimal quantity, DateOnly shippedAt)
+    {
+        Issue(quantity, shippedAt);
+    }
+
+    public void ApplyCustomerReturn(decimal quantity, decimal unitCost, DateOnly receivedAt)
+    {
+        Receive(quantity, unitCost, receivedAt);
+    }
 }
 
 /// <summary>

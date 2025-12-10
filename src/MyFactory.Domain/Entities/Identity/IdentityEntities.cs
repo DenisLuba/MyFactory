@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text.RegularExpressions;
 using MyFactory.Domain.Common;
 
 namespace MyFactory.Domain.Entities.Identity;
@@ -10,32 +10,37 @@ namespace MyFactory.Domain.Entities.Identity;
 /// </summary>
 public class Role : BaseEntity
 {
+    public const int NameMaxLength = 100;
     private readonly List<User> _users = new();
-    public const int DescriptionMaxLength = 2_000;
 
-    private Role()
-    {
-    }
+    private Role() { }
 
-    public Role(string name, string? description = null, DateTime? createdAt = null)
+    private Role(string name, string? description)
     {
         Rename(name);
         UpdateDescription(description);
-        SetCreatedAt(createdAt ?? DateTime.UtcNow);
     }
 
     public string Name { get; private set; } = string.Empty;
 
     public string? Description { get; private set; }
 
-    public DateTime CreatedAt { get; private set; }
-
     public IReadOnlyCollection<User> Users => _users.AsReadOnly();
+
+    public static Role Create(string name, string? description)
+    {
+        return new Role(name, description);
+    }
 
     public void Rename(string name)
     {
         Guard.AgainstNullOrWhiteSpace(name, "Role name is required.");
-        Name = name.Trim();
+        var trimmed = name.Trim();
+        if (trimmed.Length > NameMaxLength)
+        {
+            throw new DomainException($"Role name cannot exceed {NameMaxLength} characters.");
+        }
+        Name = trimmed;
     }
 
     public void UpdateDescription(string? description)
@@ -46,19 +51,7 @@ public class Role : BaseEntity
             return;
         }
 
-        var trimmed = description.Trim();
-        if (trimmed.Length > DescriptionMaxLength)
-        {
-            throw new DomainException($"Role description cannot exceed {DescriptionMaxLength} characters.");
-        }
-
-        Description = trimmed;
-    }
-
-    private void SetCreatedAt(DateTime createdAt)
-    {
-        Guard.AgainstDefaultDate(createdAt, "Created timestamp is required.");
-        CreatedAt = createdAt;
+        Description = description.Trim();
     }
 
     public void AttachUser(User user)
@@ -66,15 +59,30 @@ public class Role : BaseEntity
         Guard.AgainstNull(user, nameof(user));
         if (user.RoleId != Id)
         {
-            throw new DomainException("User role does not match this role.");
+            throw new DomainException("User RoleId mismatch.");
+        }
+        if (user.Role != null && user.Role.Id != Id)
+        {
+            throw new DomainException("User.Role navigation mismatch.");
         }
 
-        if (_users.Any(existing => existing.Id == user.Id))
+        if (_users.Exists(u => u.Id == user.Id))
         {
             return;
         }
 
         _users.Add(user);
+    }
+
+    public void DetachUser(User user)
+    {
+        Guard.AgainstNull(user, nameof(user));
+        var index = _users.FindIndex(u => u.Id == user.Id);
+        if (index == -1)
+        {
+            return;
+        }
+        _users.RemoveAt(index);
     }
 }
 
@@ -83,22 +91,20 @@ public class Role : BaseEntity
 /// </summary>
 public class User : BaseEntity
 {
-    private User()
-    {
-    }
+    public const int UsernameMaxLength = 100;
 
-    public User(string username, string email, string passwordHash, Guid roleId)
-        : this(username, email, passwordHash, roleId, DateTime.UtcNow)
-    {
-    }
+    private static readonly Regex EmailRegex = new(
+        pattern: "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
+        options: RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-    public User(string username, string email, string passwordHash, Guid roleId, DateTime createdAt)
+    private User() { }
+
+    private User(string username, string email, string passwordHash, Guid roleId)
     {
         UpdateUsername(username);
         UpdateEmail(email);
         SetPasswordHash(passwordHash);
         ChangeRole(roleId);
-        SetCreatedAt(createdAt);
         IsActive = true;
     }
 
@@ -114,24 +120,42 @@ public class User : BaseEntity
 
     public bool IsActive { get; private set; }
 
-    public DateTime CreatedAt { get; private set; }
+    public static User Create(string username, string email, string passwordHash, Guid roleId)
+    {
+        return new User(username, email, passwordHash, roleId);
+    }
 
     public void UpdateUsername(string username)
     {
         Guard.AgainstNullOrWhiteSpace(username, "Username is required.");
-        Username = username.Trim();
+        var trimmed = username.Trim();
+        if (trimmed.Length > UsernameMaxLength)
+        {
+            throw new DomainException($"Username cannot exceed {UsernameMaxLength} characters.");
+        }
+        Username = trimmed;
     }
 
     public void UpdateEmail(string email)
     {
         Guard.AgainstNullOrWhiteSpace(email, "Email is required.");
-        Email = email.Trim();
+        var normalized = email.Trim().ToLowerInvariant();
+        if (!EmailRegex.IsMatch(normalized))
+        {
+            throw new DomainException("Email format is invalid.");
+        }
+        Email = normalized;
     }
 
     public void SetPasswordHash(string passwordHash)
     {
         Guard.AgainstNullOrWhiteSpace(passwordHash, "Password hash is required.");
-        PasswordHash = passwordHash;
+        var trimmed = passwordHash.Trim();
+        if (trimmed.Length < 32)
+        {
+            throw new DomainException("Password hash must be at least 32 characters.");
+        }
+        PasswordHash = trimmed;
     }
 
     public void ChangeRole(Guid roleId)
@@ -140,10 +164,13 @@ public class User : BaseEntity
         RoleId = roleId;
     }
 
-    private void SetCreatedAt(DateTime createdAt)
+    public void Deactivate()
     {
-        Guard.AgainstDefaultDate(createdAt, "Created timestamp is required.");
-        CreatedAt = createdAt;
+        if (!IsActive)
+        {
+            throw new DomainException("User is already inactive.");
+        }
+        IsActive = false;
     }
 
     public void Activate()
@@ -152,17 +179,6 @@ public class User : BaseEntity
         {
             throw new DomainException("User is already active.");
         }
-
         IsActive = true;
-    }
-
-    public void Deactivate()
-    {
-        if (!IsActive)
-        {
-            throw new DomainException("User is already inactive.");
-        }
-
-        IsActive = false;
     }
 }

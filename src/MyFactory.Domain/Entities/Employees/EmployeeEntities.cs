@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Production;
+using MyFactory.Domain.Enums;
 
 namespace MyFactory.Domain.Entities.Employees;
 
@@ -54,10 +55,7 @@ public sealed class Employee : BaseEntity
 
     public void UpdateGrade(int grade)
     {
-        if (grade <= 0)
-        {
-            throw new DomainException("Grade must be positive.");
-        }
+        Guard.AgainstNegative(grade, "Grade cannot be negative.");
 
         Grade = grade;
     }
@@ -72,6 +70,66 @@ public sealed class Employee : BaseEntity
     {
         Guard.AgainstNegative(percent, "Premium percent cannot be negative.");
         PremiumPercent = percent;
+    }
+
+    public void AddTimesheetEntry(TimesheetEntry entry)
+    {
+        Guard.AgainstNull(entry, "Timesheet entry is required.");
+
+        if (entry.EmployeeId != Id)
+        {
+            throw new DomainException("Timesheet entry belongs to a different employee.");
+        }
+
+        if (_timesheetEntries.Contains(entry))
+        {
+            throw new DomainException("Timesheet entry already tracked for this employee.");
+        }
+
+        _timesheetEntries.Add(entry);
+    }
+
+    public void RemoveTimesheetEntry(Guid entryId)
+    {
+        Guard.AgainstEmptyGuid(entryId, "Timesheet entry id is required.");
+
+        var entry = _timesheetEntries.Find(e => e.Id == entryId);
+        if (entry == null)
+        {
+            throw new DomainException("Timesheet entry not found for this employee.");
+        }
+
+        _timesheetEntries.Remove(entry);
+    }
+
+    public void AddPayrollEntry(PayrollEntry entry)
+    {
+        Guard.AgainstNull(entry, "Payroll entry is required.");
+
+        if (entry.EmployeeId != Id)
+        {
+            throw new DomainException("Payroll entry belongs to a different employee.");
+        }
+
+        if (_payrollEntries.Contains(entry))
+        {
+            throw new DomainException("Payroll entry already tracked for this employee.");
+        }
+
+        _payrollEntries.Add(entry);
+    }
+
+    public void RemovePayrollEntry(Guid entryId)
+    {
+        Guard.AgainstEmptyGuid(entryId, "Payroll entry id is required.");
+
+        var entry = _payrollEntries.Find(e => e.Id == entryId);
+        if (entry == null)
+        {
+            throw new DomainException("Payroll entry not found for this employee.");
+        }
+
+        _payrollEntries.Remove(entry);
     }
 
     public void Deactivate()
@@ -91,21 +149,21 @@ public sealed class TimesheetEntry : BaseEntity
     {
     }
 
-    private TimesheetEntry(Guid employeeId, DateOnly workDate, decimal hoursWorked, Guid? productionOrderId)
+    private TimesheetEntry(Guid employeeId, DateOnly workDate, decimal hours, Guid? productionOrderId)
     {
         Guard.AgainstEmptyGuid(employeeId, "Employee id is required.");
         Guard.AgainstDefaultDate(workDate, "Work date is required.");
 
         EmployeeId = employeeId;
         WorkDate = workDate;
-        Status = TimesheetEntryStatuses.Draft;
-        UpdateHours(hoursWorked);
+        Status = TimesheetEntriesStatus.Draft;
+        UpdateHours(hours);
         AssignProductionOrder(productionOrderId);
     }
 
-    public static TimesheetEntry Create(Guid employeeId, DateOnly workDate, decimal hoursWorked, Guid? productionOrderId)
+    public static TimesheetEntry Create(Guid employeeId, DateOnly workDate, decimal hours, Guid? productionOrderId)
     {
-        return new TimesheetEntry(employeeId, workDate, hoursWorked, productionOrderId);
+        return new TimesheetEntry(employeeId, workDate, hours, productionOrderId);
     }
 
     public Guid EmployeeId { get; private set; }
@@ -114,19 +172,26 @@ public sealed class TimesheetEntry : BaseEntity
 
     public DateOnly WorkDate { get; private set; }
 
-    public decimal HoursWorked { get; private set; }
+    public decimal Hours { get; private set; }
 
     public Guid? ProductionOrderId { get; private set; }
 
     public ProductionOrder? ProductionOrder { get; private set; }
 
-    public string Status { get; private set; } = TimesheetEntryStatuses.Draft;
+    public TimesheetEntriesStatus Status { get; private set; } = TimesheetEntriesStatus.Draft;
 
-    public void UpdateHours(decimal hoursWorked)
+    public void UpdateHours(decimal hours)
     {
         EnsureDraftState();
-        Guard.AgainstNegative(hoursWorked, "Hours worked cannot be negative.");
-        HoursWorked = hoursWorked;
+        Guard.AgainstNegative(hours, "Hours worked cannot be negative.");
+        Hours = hours;
+    }
+
+    public void ChangeWorkDate(DateOnly newWorkDate)
+    {
+        EnsureDraftState();
+        Guard.AgainstDefaultDate(newWorkDate, "Work date is required.");
+        WorkDate = newWorkDate;
     }
 
     public void AssignProductionOrder(Guid? productionOrderId)
@@ -137,22 +202,28 @@ public sealed class TimesheetEntry : BaseEntity
 
     public void Approve()
     {
-        if (Status == TimesheetEntryStatuses.Approved)
+        if (Status == TimesheetEntriesStatus.Approved)
         {
             throw new DomainException("Timesheet entry is already approved.");
         }
 
-        Status = TimesheetEntryStatuses.Approved;
+        Status = TimesheetEntriesStatus.Approved;
     }
 
     public void ReturnToDraft()
     {
-        if (Status != TimesheetEntryStatuses.Approved)
+        if (Status != TimesheetEntriesStatus.Approved)
         {
             throw new DomainException("Only approved entries can be returned to draft.");
         }
 
-        Status = TimesheetEntryStatuses.Draft;
+        Status = TimesheetEntriesStatus.Draft;
+    }
+
+    public void Reject()
+    {
+        EnsureDraftState();
+        Status = TimesheetEntriesStatus.Rejected;
     }
 
     private static Guid? NormalizeProductionOrderId(Guid? productionOrderId)
@@ -167,7 +238,7 @@ public sealed class TimesheetEntry : BaseEntity
 
     private void EnsureDraftState()
     {
-        if (Status != TimesheetEntryStatuses.Draft)
+        if (Status != TimesheetEntriesStatus.Draft)
         {
             throw new DomainException("Approved timesheet entries cannot be modified.");
         }
@@ -253,8 +324,3 @@ public sealed class PayrollEntry : BaseEntity
     }
 }
 
-public static class TimesheetEntryStatuses
-{
-    public const string Draft = "Draft";
-    public const string Approved = "Approved";
-}

@@ -17,6 +17,7 @@ public class MaterialPriceHistoryTests
         entry.SetEffectiveTo(effectiveTo);
 
         Assert.Equal(effectiveTo, entry.EffectiveTo);
+        Assert.Equal("DOC-123", entry.DocRef.Value);
     }
 
     [Fact]

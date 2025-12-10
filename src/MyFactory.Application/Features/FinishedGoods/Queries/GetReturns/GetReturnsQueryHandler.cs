@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using MyFactory.Application.Common.Interfaces;
 using MyFactory.Application.DTOs.FinishedGoods;
 using MyFactory.Application.Features.FinishedGoods.Common;
+using MyFactory.Domain.Enums;
 
 namespace MyFactory.Application.Features.FinishedGoods.Queries.GetReturns;
 
@@ -26,10 +28,9 @@ public sealed class GetReturnsQueryHandler : IRequestHandler<GetReturnsQuery, IR
             .Include(entity => entity.Items)
             .AsQueryable();
 
-        if (!string.IsNullOrWhiteSpace(request.Status))
+        if (!string.IsNullOrWhiteSpace(request.Status) && Enum.TryParse<ReturnStatus>(request.Status.Trim(), true, out var parsedStatus))
         {
-            var status = request.Status.Trim();
-            query = query.Where(entity => entity.Status == status);
+            query = query.Where(entity => entity.Status == parsedStatus);
         }
 
         var returns = await query
