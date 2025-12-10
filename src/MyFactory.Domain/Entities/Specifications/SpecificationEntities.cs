@@ -1,17 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Materials;
 using MyFactory.Domain.Entities.Operations;
-using MyFactory.Domain.Entities.Workshops;
-using MyFactory.Domain.ValueObjects;
 
 namespace MyFactory.Domain.Entities.Specifications;
 
 public sealed class Specification : BaseEntity
 {
+    public const int SkuMaxLength = 100;
+    public const int NameMaxLength = 200;
+    public const int StatusMaxLength = 50;
+    public const int DescriptionMaxLength = 2_000;
+
     private readonly List<SpecificationBomItem> _bomItems = new();
     private readonly List<SpecificationOperation> _operations = new();
 
@@ -19,16 +21,19 @@ public sealed class Specification : BaseEntity
     {
     }
 
-    public Specification(string sku, string name, decimal planPerHour, string status, DateTime createdAt, string? description = null, int version = 1)
+    private Specification(string sku, string name, decimal planPerHour, string status, DateTime createdAt, string? description, int version)
     {
         UpdateSku(sku);
         Rename(name);
         UpdatePlanPerHour(planPerHour);
         ChangeStatus(status);
         UpdateDescription(description);
-        CreatedAt = EnsureCreatedAt(createdAt);
         SetVersion(version);
+        CreatedAt = EnsureCreatedAt(createdAt);
     }
+
+    public static Specification Create(string sku, string name, decimal planPerHour, string status, DateTime createdAt, string? description = null, int version = 1)
+        => new(sku, name, planPerHour, status, createdAt, description, version);
 
     public string Sku { get; private set; } = string.Empty;
 
@@ -51,18 +56,42 @@ public sealed class Specification : BaseEntity
     public void UpdateSku(string sku)
     {
         Guard.AgainstNullOrWhiteSpace(sku, "Specification SKU is required.");
-        Sku = sku.Trim();
+        var trimmed = sku.Trim();
+        if (trimmed.Length > SkuMaxLength)
+        {
+            throw new DomainException($"Specification SKU cannot exceed {SkuMaxLength} characters.");
+        }
+
+        Sku = trimmed;
     }
 
     public void Rename(string name)
     {
         Guard.AgainstNullOrWhiteSpace(name, "Specification name is required.");
-        Name = name.Trim();
+        var trimmed = name.Trim();
+        if (trimmed.Length > NameMaxLength)
+        {
+            throw new DomainException($"Specification name cannot exceed {NameMaxLength} characters.");
+        }
+
+        Name = trimmed;
     }
 
     public void UpdateDescription(string? description)
     {
-        Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            Description = null;
+            return;
+        }
+
+        var trimmed = description.Trim();
+        if (trimmed.Length > DescriptionMaxLength)
+        {
+            throw new DomainException($"Specification description cannot exceed {DescriptionMaxLength} characters.");
+        }
+
+        Description = trimmed;
     }
 
     public void UpdatePlanPerHour(decimal planPerHour)
@@ -74,28 +103,52 @@ public sealed class Specification : BaseEntity
     public void ChangeStatus(string status)
     {
         Guard.AgainstNullOrWhiteSpace(status, "Specification status is required.");
-        Status = status.Trim();
+        var trimmed = status.Trim();
+        if (trimmed.Length > StatusMaxLength)
+        {
+            throw new DomainException($"Specification status cannot exceed {StatusMaxLength} characters.");
+        }
+
+        Status = trimmed;
     }
 
-    public void IncrementVersion()
+    public void SetVersion(int version)
     {
-        Version += 1;
+        if (version <= 0)
+        {
+            throw new DomainException("Specification version must be positive.");
+        }
+
+        Version = version;
     }
 
-    public SpecificationBomItem AddBomItem(Guid materialId, decimal quantity, string unit, decimal unitCost)
+    public SpecificationBomItem AddBomItem(Guid materialId, decimal qtyPerUnit, string unit, decimal unitCost)
     {
         Guard.AgainstEmptyGuid(materialId, "Material id is required.");
-        Guard.AgainstNonPositive(quantity, "Quantity must be positive.");
+        Guard.AgainstNonPositive(qtyPerUnit, "Quantity per unit must be positive.");
         Guard.AgainstNullOrWhiteSpace(unit, "Unit is required.");
+        Guard.AgainstNegative(unitCost, "Unit cost cannot be negative.");
 
         if (_bomItems.Any(item => item.MaterialId == materialId))
         {
             throw new DomainException("Material already exists in BOM.");
         }
 
-        var bomItem = new SpecificationBomItem(Id, materialId, quantity, unit, unitCost);
+        var bomItem = SpecificationBomItem.Create(Id, materialId, qtyPerUnit, unit, unitCost);
         _bomItems.Add(bomItem);
         return bomItem;
+    }
+
+    public void RemoveBomItem(Guid bomItemId)
+    {
+        Guard.AgainstEmptyGuid(bomItemId, "BOM item id is required.");
+        var item = _bomItems.Find(b => b.Id == bomItemId);
+        if (item == null)
+        {
+            throw new DomainException("BOM item not found in specification.");
+        }
+
+        _bomItems.Remove(item);
     }
 
     public SpecificationOperation AddOperation(Guid operationId, Guid workshopId, decimal timeMinutes, decimal operationCost)
@@ -110,9 +163,53 @@ public sealed class Specification : BaseEntity
             throw new DomainException("Operation already assigned for this workshop.");
         }
 
-        var operation = new SpecificationOperation(Id, operationId, workshopId, timeMinutes, operationCost);
+        var operation = SpecificationOperation.Create(Id, operationId, workshopId, timeMinutes, operationCost);
         _operations.Add(operation);
         return operation;
+    }
+
+    public void RemoveOperation(Guid specificationOperationId)
+    {
+        Guard.AgainstEmptyGuid(specificationOperationId, "Specification operation id is required.");
+        var operation = _operations.Find(op => op.Id == specificationOperationId);
+        if (operation == null)
+        {
+            throw new DomainException("Specification operation not found.");
+        }
+
+        _operations.Remove(operation);
+    }
+
+    internal void AttachBomItem(SpecificationBomItem bomItem)
+    {
+        Guard.AgainstNull(bomItem, nameof(bomItem));
+        if (bomItem.SpecificationId != Id)
+        {
+            throw new DomainException("BOM item's specification id does not match this specification.");
+        }
+
+        if (_bomItems.Any(item => item.Id == bomItem.Id))
+        {
+            return;
+        }
+
+        _bomItems.Add(bomItem);
+    }
+
+    internal void AttachSpecificationOperation(SpecificationOperation operation)
+    {
+        Guard.AgainstNull(operation, nameof(operation));
+        if (operation.SpecificationId != Id)
+        {
+            throw new DomainException("SpecificationOperation belongs to another specification.");
+        }
+
+        if (_operations.Any(item => item.Id == operation.Id))
+        {
+            return;
+        }
+
+        _operations.Add(operation);
     }
 
     private static DateTime EnsureCreatedAt(DateTime createdAt)
@@ -120,39 +217,29 @@ public sealed class Specification : BaseEntity
         Guard.AgainstDefaultDate(createdAt, "Specification creation date is required.");
         return createdAt;
     }
-
-    private void SetVersion(int version)
-    {
-        if (version <= 0)
-        {
-            throw new DomainException("Specification version must be positive.");
-        }
-
-        Version = version;
-    }
 }
 
 public sealed class SpecificationBomItem : BaseEntity
 {
-    private Money _unitCost = Money.From(0m);
+    public const int UnitMaxLength = 50;
 
     private SpecificationBomItem()
     {
     }
 
-    public SpecificationBomItem(Guid specificationId, Guid materialId, decimal quantity, string unit, decimal unitCost)
+    private SpecificationBomItem(Guid specificationId, Guid materialId, decimal qtyPerUnit, string unit, decimal unitCost)
     {
         Guard.AgainstEmptyGuid(specificationId, "Specification id is required.");
         Guard.AgainstEmptyGuid(materialId, "Material id is required.");
-        Guard.AgainstNonPositive(quantity, "Quantity must be positive.");
-        Guard.AgainstNullOrWhiteSpace(unit, "Unit is required.");
-
+        UpdateQtyPerUnit(qtyPerUnit);
+        UpdateUnit(unit);
+        UpdateUnitCost(unitCost);
         SpecificationId = specificationId;
         MaterialId = materialId;
-        Quantity = quantity;
-        Unit = unit.Trim();
-        UpdateUnitCost(unitCost);
     }
+
+    public static SpecificationBomItem Create(Guid specificationId, Guid materialId, decimal qtyPerUnit, string unit, decimal unitCost)
+        => new(specificationId, materialId, qtyPerUnit, unit, unitCost);
 
     public Guid SpecificationId { get; private set; }
 
@@ -162,73 +249,33 @@ public sealed class SpecificationBomItem : BaseEntity
 
     public Material? Material { get; private set; }
 
-    public decimal Quantity { get; private set; }
+    public decimal QtyPerUnit { get; private set; }
 
     public string Unit { get; private set; } = string.Empty;
 
-    [NotMapped]
-    public decimal UnitCost => _unitCost.Amount;
+    public decimal UnitCost { get; private set; }
 
-    public void UpdateQuantity(decimal quantity)
+    public void UpdateQtyPerUnit(decimal qtyPerUnit)
     {
-        Guard.AgainstNonPositive(quantity, "Quantity must be positive.");
-        Quantity = quantity;
+        Guard.AgainstNonPositive(qtyPerUnit, "Quantity per unit must be positive.");
+        QtyPerUnit = qtyPerUnit;
+    }
+
+    public void UpdateUnit(string unit)
+    {
+        Guard.AgainstNullOrWhiteSpace(unit, "Unit is required.");
+        var trimmed = unit.Trim();
+        if (trimmed.Length > UnitMaxLength)
+        {
+            throw new DomainException($"Unit cannot exceed {UnitMaxLength} characters.");
+        }
+
+        Unit = trimmed;
     }
 
     public void UpdateUnitCost(decimal unitCost)
     {
-        _unitCost = Money.From(unitCost);
+        Guard.AgainstNegative(unitCost, "Unit cost cannot be negative.");
+        UnitCost = unitCost;
     }
-}
-
-public sealed class SpecificationOperation : BaseEntity
-{
-    private SpecificationOperation()
-    {
-    }
-
-    public SpecificationOperation(Guid specificationId, Guid operationId, Guid workshopId, decimal timeMinutes, decimal operationCost)
-    {
-        Guard.AgainstEmptyGuid(specificationId, "Specification id is required.");
-        Guard.AgainstEmptyGuid(operationId, "Operation id is required.");
-        Guard.AgainstEmptyGuid(workshopId, "Workshop id is required.");
-        Guard.AgainstNonPositive(timeMinutes, "Time minutes must be positive.");
-        Guard.AgainstNonPositive(operationCost, "Operation cost must be positive.");
-
-        SpecificationId = specificationId;
-        OperationId = operationId;
-        WorkshopId = workshopId;
-        TimeMinutes = timeMinutes;
-        OperationCost = operationCost;
-    }
-
-    public Guid SpecificationId { get; private set; }
-
-    public Specification? Specification { get; private set; }
-
-    public Guid OperationId { get; private set; }
-
-    public Operation? Operation { get; private set; }
-
-    public Guid WorkshopId { get; private set; }
-
-    public Workshop? Workshop { get; private set; }
-
-    public decimal TimeMinutes { get; private set; }
-
-    public decimal OperationCost { get; private set; }
-
-    public void UpdateTime(decimal timeMinutes)
-    {
-        Guard.AgainstNonPositive(timeMinutes, "Time minutes must be positive.");
-        TimeMinutes = timeMinutes;
-    }
-
-    public void UpdateCost(decimal operationCost)
-    {
-        Guard.AgainstNonPositive(operationCost, "Operation cost must be positive.");
-        OperationCost = operationCost;
-    }
-
-    internal bool Matches(Guid operationId, Guid workshopId) => OperationId == operationId && WorkshopId == workshopId;
 }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Production;
-using MyFactory.Domain.Enums;
 
 namespace MyFactory.Domain.Entities.Employees;
 
@@ -145,6 +144,10 @@ public sealed class Employee : BaseEntity
 
 public sealed class TimesheetEntry : BaseEntity
 {
+    private const string StatusDraft = "Draft";
+    private const string StatusApproved = "Approved";
+    private const string StatusRejected = "Rejected";
+
     private TimesheetEntry()
     {
     }
@@ -156,7 +159,7 @@ public sealed class TimesheetEntry : BaseEntity
 
         EmployeeId = employeeId;
         WorkDate = workDate;
-        Status = TimesheetEntriesStatus.Draft;
+        Status = StatusDraft;
         UpdateHours(hours);
         AssignProductionOrder(productionOrderId);
     }
@@ -178,7 +181,7 @@ public sealed class TimesheetEntry : BaseEntity
 
     public ProductionOrder? ProductionOrder { get; private set; }
 
-    public TimesheetEntriesStatus Status { get; private set; } = TimesheetEntriesStatus.Draft;
+    public string Status { get; private set; } = StatusDraft;
 
     public void UpdateHours(decimal hours)
     {
@@ -202,28 +205,28 @@ public sealed class TimesheetEntry : BaseEntity
 
     public void Approve()
     {
-        if (Status == TimesheetEntriesStatus.Approved)
+        if (Status == StatusApproved)
         {
             throw new DomainException("Timesheet entry is already approved.");
         }
 
-        Status = TimesheetEntriesStatus.Approved;
+        Status = StatusApproved;
     }
 
     public void ReturnToDraft()
     {
-        if (Status != TimesheetEntriesStatus.Approved)
+        if (Status != StatusApproved)
         {
             throw new DomainException("Only approved entries can be returned to draft.");
         }
 
-        Status = TimesheetEntriesStatus.Draft;
+        Status = StatusDraft;
     }
 
     public void Reject()
     {
         EnsureDraftState();
-        Status = TimesheetEntriesStatus.Rejected;
+        Status = StatusRejected;
     }
 
     private static Guid? NormalizeProductionOrderId(Guid? productionOrderId)
@@ -238,7 +241,7 @@ public sealed class TimesheetEntry : BaseEntity
 
     private void EnsureDraftState()
     {
-        if (Status != TimesheetEntriesStatus.Draft)
+        if (Status != StatusDraft)
         {
             throw new DomainException("Approved timesheet entries cannot be modified.");
         }

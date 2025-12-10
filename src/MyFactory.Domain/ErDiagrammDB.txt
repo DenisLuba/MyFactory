@@ -98,7 +98,7 @@
         uuid id PK
         string code
         string name
-        numeric default_time_min
+        numeric default_time_minutes
         numeric default_cost
         string type
     }
