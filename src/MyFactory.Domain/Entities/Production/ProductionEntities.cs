@@ -329,7 +329,7 @@ public sealed class ProductionOrderAllocation : BaseEntity
     public Guid ProductionOrderId { get; private set; }
     public ProductionOrder? ProductionOrder { get; internal set; }
     public Guid WorkshopId { get; private set; }
-    public Workshop? Workshop { get; private set; }
+    public Workshop? Workshop { get; internal set; }
     public decimal QuantityAllocated { get; private set; }
 
     internal void UpdateQuantity(decimal quantity)
@@ -375,7 +375,7 @@ public sealed class ProductionStage : BaseEntity
     public Guid ProductionOrderId { get; private set; }
     public ProductionOrder? ProductionOrder { get; internal set; }
     public Guid WorkshopId { get; private set; }
-    public Workshop? Workshop { get; private set; }
+    public Workshop? Workshop { get; internal set; }
     public string StageType { get; private set; } = string.Empty;
     public decimal QuantityIn { get; private set; }
     public decimal QuantityOut { get; private set; }
@@ -515,7 +515,7 @@ public sealed class WorkerAssignment : BaseEntity
     public Guid ProductionStageId { get; private set; }
     public ProductionStage? ProductionStage { get; internal set; }
     public Guid EmployeeId { get; private set; }
-    public Employee? Employee { get; private set; }
+    public Employee? Employee { get; internal set; }
     public decimal QuantityAssigned { get; private set; }
     public decimal? QuantityCompleted { get; private set; }
     public DateTime AssignedAt { get; private set; }

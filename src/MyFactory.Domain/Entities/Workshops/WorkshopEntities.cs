@@ -112,6 +112,7 @@ public sealed class Workshop : BaseEntity
 
         var expense = WorkshopExpenseHistory.Create(Id, specificationId, amountPerUnit, effectiveFrom, effectiveTo);
         _expenseHistory.Add(expense);
+        expense.Workshop = this;
         return expense;
     }
 }
@@ -141,15 +142,15 @@ public sealed class WorkshopExpenseHistory : BaseEntity
     }
 
     public static WorkshopExpenseHistory Create(Guid workshopId, Guid specificationId, decimal amountPerUnit, DateOnly effectiveFrom, DateOnly? effectiveTo)
-        => new(workshopId, specificationId, amountPerUnit, effectiveFrom, effectiveTo);
+        => new WorkshopExpenseHistory(workshopId, specificationId, amountPerUnit, effectiveFrom, effectiveTo);
 
     public Guid WorkshopId { get; private set; }
 
-    public Workshop? Workshop { get; private set; }
+    public Workshop? Workshop { get; internal set; }
 
     public Guid SpecificationId { get; private set; }
 
-    public Specification? Specification { get; private set; }
+    public Specification? Specification { get; internal set; }
 
     public decimal AmountPerUnit { get; private set; }
 

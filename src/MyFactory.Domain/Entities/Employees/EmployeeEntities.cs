@@ -86,6 +86,7 @@ public sealed class Employee : BaseEntity
         }
 
         _timesheetEntries.Add(entry);
+        entry.Employee = this;
     }
 
     public void RemoveTimesheetEntry(Guid entryId)
@@ -99,6 +100,7 @@ public sealed class Employee : BaseEntity
         }
 
         _timesheetEntries.Remove(entry);
+        entry.Employee = null;
     }
 
     public void AddPayrollEntry(PayrollEntry entry)
@@ -116,6 +118,7 @@ public sealed class Employee : BaseEntity
         }
 
         _payrollEntries.Add(entry);
+        entry.Employee = this;
     }
 
     public void RemovePayrollEntry(Guid entryId)
@@ -129,6 +132,7 @@ public sealed class Employee : BaseEntity
         }
 
         _payrollEntries.Remove(entry);
+        entry.Employee = null;
     }
 
     public void Deactivate()
@@ -171,7 +175,7 @@ public sealed class TimesheetEntry : BaseEntity
 
     public Guid EmployeeId { get; private set; }
 
-    public Employee? Employee { get; private set; }
+    public Employee? Employee { get; internal set; }
 
     public DateOnly WorkDate { get; private set; }
 
@@ -277,7 +281,7 @@ public sealed class PayrollEntry : BaseEntity
 
     public Guid EmployeeId { get; private set; }
 
-    public Employee? Employee { get; private set; }
+    public Employee? Employee { get; internal set; }
 
     public DateOnly PeriodStart { get; private set; }
 

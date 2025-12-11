@@ -79,6 +79,7 @@ public sealed class Warehouse : BaseEntity
 
         var inventoryItem = InventoryItem.Create(Id, materialId);
         _inventoryItems.Add(inventoryItem);
+        inventoryItem.Warehouse = this;
         return inventoryItem;
     }
 }
@@ -104,9 +105,9 @@ public sealed class InventoryItem : BaseEntity
     public static InventoryItem Create(Guid warehouseId, Guid materialId) => new(warehouseId, materialId);
 
     public Guid WarehouseId { get; private set; }
-    public Warehouse? Warehouse { get; private set; }
+    public Warehouse? Warehouse { get; internal set; }
     public Guid MaterialId { get; private set; }
-    public Material? Material { get; private set; }
+    public Material? Material { get; internal set; }
     public decimal Quantity { get; private set; }
     public decimal AveragePrice { get; private set; }
     public decimal ReservedQuantity { get; private set; }
@@ -182,7 +183,7 @@ public sealed class InventoryReceipt : BaseEntity
 
     public string ReceiptNumber { get; private set; } = string.Empty;
     public Guid SupplierId { get; private set; }
-    public Supplier? Supplier { get; private set; }
+    public Supplier? Supplier { get; internal set; }
     public DateOnly ReceiptDate { get; private set; }
     public decimal TotalAmount { get; private set; }
     public string Status { get; private set; } = InventoryReceiptStatuses.Draft;
@@ -202,6 +203,7 @@ public sealed class InventoryReceipt : BaseEntity
 
         var item = InventoryReceiptItem.Create(Id, materialId, quantity, unitPrice, inventoryItemId);
         _items.Add(item);
+        item.InventoryReceipt = this;
         TotalAmount += item.LineTotal;
         return item;
     }
@@ -259,14 +261,14 @@ public sealed class InventoryReceiptItem : BaseEntity
     }
 
     public static InventoryReceiptItem Create(Guid receiptId, Guid materialId, decimal quantity, decimal unitPrice, Guid? inventoryItemId)
-        => new(receiptId, materialId, quantity, unitPrice, inventoryItemId);
+        => new InventoryReceiptItem(receiptId, materialId, quantity, unitPrice, inventoryItemId);
 
     public Guid InventoryReceiptId { get; private set; }
-    public InventoryReceipt? InventoryReceipt { get; private set; }
+    public InventoryReceipt? InventoryReceipt { get; internal set; }
     public Guid MaterialId { get; private set; }
-    public Material? Material { get; private set; }
+    public Material? Material { get; internal set; }
     public Guid? InventoryItemId { get; private set; }
-    public InventoryItem? InventoryItem { get; private set; }
+    public InventoryItem? InventoryItem { get; internal set; }
     public decimal Quantity { get; private set; }
     public decimal UnitPrice { get; private set; }
     public decimal LineTotal => Quantity * UnitPrice;
@@ -275,6 +277,7 @@ public sealed class InventoryReceiptItem : BaseEntity
     {
         Guard.AgainstEmptyGuid(inventoryItemId, nameof(inventoryItemId));
         InventoryItemId = inventoryItemId;
+        // Navigation will be set by ORM or repository when InventoryItem is loaded; do not attempt to set here.
     }
 }
 
@@ -326,6 +329,7 @@ public sealed class PurchaseRequest : BaseEntity
 
         var item = PurchaseRequestItem.Create(Id, materialId, quantity);
         _items.Add(item);
+        item.PurchaseRequest = this;
         return item;
     }
 
@@ -357,6 +361,7 @@ public sealed class PurchaseRequest : BaseEntity
             ?? throw new DomainException("Purchase request item not found.");
 
         _items.Remove(item);
+        item.PurchaseRequest = null;
     }
 
     public void Submit()
@@ -433,7 +438,7 @@ public sealed class PurchaseRequestItem : BaseEntity
         => new(purchaseRequestId, materialId, quantity);
 
     public Guid PurchaseRequestId { get; private set; }
-    public PurchaseRequest? PurchaseRequest { get; private set; }
+    public PurchaseRequest? PurchaseRequest { get; internal set; }
     public Guid MaterialId { get; private set; }
     public Material? Material { get; private set; }
     public decimal Quantity { get; private set; }

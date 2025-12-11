@@ -60,7 +60,7 @@ public class Material : BaseEntity
 
     public Guid MaterialTypeId { get; private set; }
 
-    public MaterialType? MaterialType { get; private set; }
+    public MaterialType? MaterialType { get; internal set; }
 
     public string Unit { get; private set; } = string.Empty;
 
@@ -140,6 +140,7 @@ public class Material : BaseEntity
 
         var entry = MaterialPriceHistory.Create(Id, supplierId, price, effectiveFrom, docRef);
         _priceHistory.Add(entry);
+        entry.Material = this;
         return entry;
     }
 }
@@ -227,11 +228,11 @@ public class MaterialPriceHistory : BaseEntity
 
     public Guid MaterialId { get; private set; }
 
-    public Material? Material { get; private set; }
+    public Material? Material { get; internal set; }
 
     public Guid SupplierId { get; private set; }
 
-    public Supplier? Supplier { get; private set; }
+    public Supplier? Supplier { get; internal set; }
 
     public decimal Price { get; private set; }
 
