@@ -133,8 +133,8 @@ public sealed class FinishedGoodsInventory : BaseEntity
         if (idx == -1) return;
         _movements.RemoveAt(idx);
         // Keep movement's FinishedGoodsInventory navigation cleared for in-memory consistency.
-        movement.FinishedGoodsInventory = null;
-        // Note: FinishedGoodsInventoryId is left as-is; clearing FK is the repository responsibility if required.
+        // Clear both navigation and FK to fully detach the relationship in-memory.
+        movement.DetachSourceInventory();
     }
 }
 
@@ -207,6 +207,16 @@ public sealed class FinishedGoodsMovement : BaseEntity
         }
 
         FinishedGoodsInventoryId = finishedGoodsInventoryId;
+    }
+
+    /// <summary>
+    /// Unlink any attached source inventory (clears FK and navigation).
+    /// This only affects in-memory state; repository should persist changes.
+    /// </summary>
+    internal void DetachSourceInventory()
+    {
+        FinishedGoodsInventoryId = null;
+        FinishedGoodsInventory = null;
     }
 
     // NOTE: movement does not change inventories directly. Application layer or domain service must perform source.Issue and dest.Receive in a single transaction.

@@ -305,6 +305,17 @@
         date reported_at
         date spent_at
     }
+    PRODUCTIONCOSTFACT {
+        uuid id PK
+        int period_month
+        int period_year
+        uuid specification_id FK
+        numeric qty_produced
+        numeric material_cost
+        numeric labor_cost
+        numeric overhead_cost
+        numeric total_cost
+    }
 
     %% --------------------
     %% Expenses & Finance & Reports
@@ -332,17 +343,6 @@
         bool is_paid
         date payment_date
         uuid monthly_profit_id FK NULL
-    }
-    PRODUCTIONCOSTFACT {
-        uuid id PK
-        int period_month
-        int period_year
-        uuid specification_id FK
-        numeric qty_produced
-        numeric material_cost
-        numeric labor_cost
-        numeric overhead_cost
-        numeric total_cost
     }
     MONTHLYPROFIT {
         uuid id PK
@@ -414,8 +414,8 @@
 
     ADVANCES ||--o{ ADVANCE_REPORTS : reports_for
     FILES ||--o{ ADVANCE_REPORTS : attach
+    SPECIFICATIONS ||--o{ PRODUCTIONCOSTFACT : cost_fact
 
     EXPENSETYPES ||--o{ OVERHEADMONTHLY : expense_type
     SPECIFICATIONS ||--o{ REVENUEREPORT : sold
-    SPECIFICATIONS ||--o{ PRODUCTIONCOSTFACT : cost_fact
     MONTHLYPROFIT ||--o{ REVENUEREPORT : driven_by

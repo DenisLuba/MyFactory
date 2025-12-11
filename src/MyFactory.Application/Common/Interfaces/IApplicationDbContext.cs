@@ -14,6 +14,7 @@ using MyFactory.Domain.Entities.Shifts;
 using MyFactory.Domain.Entities.Specifications;
 using MyFactory.Domain.Entities.Warehousing;
 using MyFactory.Domain.Entities.Workshops;
+using MyFactory.Domain.Entities.Reports;
 
 namespace MyFactory.Application.Common.Interfaces;
 

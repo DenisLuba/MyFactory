@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MyFactory.Domain.Entities.Finance;
+using MyFactory.Domain.Entities.Reports;
 
 namespace MyFactory.Application.DTOs.Finance;
 

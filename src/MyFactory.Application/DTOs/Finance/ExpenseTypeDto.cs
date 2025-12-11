@@ -1,5 +1,5 @@
 using System;
-using MyFactory.Domain.Entities.Finance;
+using MyFactory.Domain.Entities.Reports;
 
 namespace MyFactory.Application.DTOs.Finance;
 

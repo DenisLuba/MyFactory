@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MyFactory.Application.Common.Interfaces;
 using MyFactory.Application.DTOs.Finance;
-using MonthlyProfitAggregate = MyFactory.Domain.Entities.Finance.MonthlyProfit;
+using MonthlyProfitAggregate = MyFactory.Domain.Entities.Reports.MonthlyProfit;
 
 namespace MyFactory.Application.Features.Finance.Commands.MonthlyProfit;
 

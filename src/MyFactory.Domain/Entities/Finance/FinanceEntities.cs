@@ -5,9 +5,58 @@ using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Employees;
 using MyFactory.Domain.Entities.Files;
 using MyFactory.Domain.Entities.Specifications;
-using MyFactory.Domain.ValueObjects;
 
 namespace MyFactory.Domain.Entities.Finance;
+
+//
+// Domain events
+//
+public sealed class AdvanceClosed
+{
+    public Guid AdvanceId { get; }
+    public DateTime ClosedAt { get; }
+
+    public AdvanceClosed(Guid advanceId, DateTime closedAt)
+    {
+        AdvanceId = advanceId;
+        ClosedAt = closedAt;
+    }
+}
+
+public sealed class AdvanceReportAdded
+{
+    public Guid AdvanceId { get; }
+    public Guid ReportId { get; }
+    public DateTime AddedAt { get; }
+
+    public AdvanceReportAdded(Guid advanceId, Guid reportId, DateTime addedAt)
+    {
+        AdvanceId = advanceId;
+        ReportId = reportId;
+        AddedAt = addedAt;
+    }
+}
+
+public sealed class ProductionCostFactCreated
+{
+    public Guid FactId { get; }
+    public DateTime CreatedAt { get; }
+
+    public ProductionCostFactCreated(Guid factId, DateTime createdAt)
+    {
+        FactId = factId;
+        CreatedAt = createdAt;
+    }
+}
+
+public static class AdvanceStatuses
+{
+    public const string Issued = "Issued";
+    public const string Approved = "Approved";
+    public const string Rejected = "Rejected";
+    public const string Closed = "Closed";
+    public const string Cancelled = "Cancelled";
+}
 
 public sealed class Advance : BaseEntity
 {
@@ -18,32 +67,34 @@ public sealed class Advance : BaseEntity
     {
     }
 
-    public Advance(Guid employeeId, decimal amount, DateOnly issuedAt, string? description = null)
+    private Advance(Guid employeeId, decimal amount, DateOnly issuedAt, string? description = null)
     {
-        Guard.AgainstEmptyGuid(employeeId, "Employee id is required.");
-        Guard.AgainstNonPositive(amount, "Advance amount must be greater than zero.");
-        Guard.AgainstDefaultDate(issuedAt, "Issued date is required.");
+        Guard.AgainstEmptyGuid(employeeId, nameof(employeeId));
+        Guard.AgainstNonPositive(amount, nameof(amount));
+        Guard.AgainstDefaultDate(issuedAt, nameof(issuedAt));
 
         EmployeeId = employeeId;
         Amount = amount;
         IssuedAt = issuedAt;
-        Status = AdvanceStatuses.Draft;
+        Status = AdvanceStatuses.Issued;
         UpdateDescription(description);
     }
 
-    public Guid EmployeeId { get; private set; }
+    public static Advance Create(Guid employeeId, decimal amount, DateOnly issuedAt, string? description = null)
+        => new Advance(employeeId, amount, issuedAt, description);
 
-    public Employee? Employee { get; private set; }
+    public Guid EmployeeId { get; private set; }
+    public Employee? Employee { get; internal set; }
 
     public decimal Amount { get; private set; }
 
     public DateOnly IssuedAt { get; private set; }
 
+    public string Status { get; private set; } = AdvanceStatuses.Issued;
+
     public string? Description { get; private set; }
 
     public DateOnly? ClosedAt { get; private set; }
-
-    public string Status { get; private set; } = AdvanceStatuses.Draft;
 
     public IReadOnlyCollection<AdvanceReport> Reports => _reports.AsReadOnly();
 
@@ -51,82 +102,92 @@ public sealed class Advance : BaseEntity
 
     public decimal RemainingAmount => Amount - ReportedAmount;
 
+    // TODO: add optimistic concurrency token in persistence layer (RowVersion) if needed.
+
+    internal void EnsureOpen()
+    {
+        if (Status == AdvanceStatuses.Closed || Status == AdvanceStatuses.Cancelled)
+            throw new DomainException("Operation not allowed on a closed or cancelled advance.");
+    }
+
     public void UpdateAmount(decimal amount)
     {
-        Guard.AgainstNonPositive(amount, "Advance amount must be greater than zero.");
+        Guard.AgainstNonPositive(amount, nameof(amount));
         if (amount < ReportedAmount)
-        {
             throw new DomainException("Advance amount cannot be less than the reported amount.");
-        }
 
         Amount = amount;
     }
 
-    public void Approve()
-    {
-        if (Status != AdvanceStatuses.Draft)
-        {
-            throw new DomainException("Only draft advances can be approved.");
-        }
-
-        Status = AdvanceStatuses.Approved;
-    }
-
-    public void Reject()
-    {
-        if (Status != AdvanceStatuses.Draft)
-        {
-            throw new DomainException("Only draft advances can be rejected.");
-        }
-
-        Status = AdvanceStatuses.Rejected;
-    }
-
     public void Close(DateOnly closedAt)
     {
-        if (Status != AdvanceStatuses.Approved)
-        {
-            throw new DomainException("Only approved advances can be closed.");
-        }
+        if (Status == AdvanceStatuses.Closed)
+            throw new DomainException("Advance already closed.");
+
+        Guard.AgainstDefaultDate(closedAt, nameof(closedAt));
+        if (closedAt < IssuedAt)
+            throw new DomainException("Closed date cannot be earlier than issued date.");
 
         if (RemainingAmount > 0)
-        {
             throw new DomainException("Advance cannot be closed while balance remains.");
-        }
-
-        Guard.AgainstDefaultDate(closedAt, "Closed date is required.");
 
         Status = AdvanceStatuses.Closed;
         ClosedAt = closedAt;
+        AddDomainEvent(new AdvanceClosed(Id, DateTime.UtcNow));
     }
 
-    public AdvanceReport AddReport(string description, decimal amount, DateOnly reportedAt, Guid fileId, DateOnly spentAt)
+    public void Cancel()
     {
-        if (Status != AdvanceStatuses.Approved)
-        {
-            throw new DomainException("Reports can be added only for approved advances.");
-        }
+        if (Status == AdvanceStatuses.Closed)
+            throw new DomainException("Cannot cancel a closed advance.");
 
-        if (ClosedAt.HasValue)
-        {
-            throw new DomainException("Reports cannot be added to closed advances.");
-        }
+        Status = AdvanceStatuses.Cancelled;
+    }
 
+    public AdvanceReport CreateReport(Guid fileId, string description, decimal amount, DateOnly reportedAt, DateOnly spentAt)
+    {
+        EnsureOpen();
         if (amount > RemainingAmount)
-        {
             throw new DomainException("Report amount exceeds remaining advance balance.");
-        }
 
-        Guard.AgainstEmptyGuid(fileId, "File id is required.");
-        Guard.AgainstDefaultDate(spentAt, "Spent date is required.");
-        if (spentAt > reportedAt)
-        {
-            throw new DomainException("Spent date cannot be later than reported date.");
-        }
-
-        var report = new AdvanceReport(Id, description, amount, reportedAt, fileId, spentAt);
-        _reports.Add(report);
+        var report = AdvanceReport.Create(Id, description, amount, fileId, reportedAt, spentAt);
+        AttachReport(report);
+        AddDomainEvent(new AdvanceReportAdded(Id, report.Id, DateTime.UtcNow));
         return report;
+    }
+
+    public void AddReport(AdvanceReport report)
+    {
+        Guard.AgainstNull(report, nameof(report));
+        EnsureOpen();
+        if (report.AdvanceId != Id)
+            throw new DomainException("Report does not belong to this advance.");
+        if (report.Amount > RemainingAmount)
+            throw new DomainException("Report amount exceeds remaining advance balance.");
+
+        AttachReport(report);
+        AddDomainEvent(new AdvanceReportAdded(Id, report.Id, DateTime.UtcNow));
+    }
+
+    internal void AttachReport(AdvanceReport report)
+    {
+        Guard.AgainstNull(report, nameof(report));
+        if (report.AdvanceId != Id)
+            throw new DomainException("Report does not belong to this advance.");
+
+        if (_reports.Any(r => r.Id == report.Id)) return;
+
+        report.Advance = this;
+        _reports.Add(report);
+    }
+
+    internal void DetachReport(AdvanceReport report)
+    {
+        Guard.AgainstNull(report, nameof(report));
+        var idx = _reports.FindIndex(r => r.Id == report.Id);
+        if (idx == -1) return;
+        _reports.RemoveAt(idx);
+        report.Advance = null;
     }
 
     public void UpdateDescription(string? description)
@@ -139,9 +200,7 @@ public sealed class Advance : BaseEntity
 
         var trimmed = description.Trim();
         if (trimmed.Length > DescriptionMaxLength)
-        {
             throw new DomainException($"Description cannot exceed {DescriptionMaxLength} characters.");
-        }
 
         Description = trimmed;
     }
@@ -155,210 +214,71 @@ public sealed class AdvanceReport : BaseEntity
     {
     }
 
-    public AdvanceReport(Guid advanceId, string description, decimal amount, DateOnly reportedAt, Guid fileId, DateOnly spentAt)
+    private AdvanceReport(Guid advanceId, string description, decimal amount, Guid fileId, DateOnly reportedAt, DateOnly spentAt)
     {
-        Guard.AgainstEmptyGuid(advanceId, "Advance id is required.");
-        Guard.AgainstNullOrWhiteSpace(description, "Description is required.");
-        Guard.AgainstNonPositive(amount, "Amount must be greater than zero.");
-        Guard.AgainstDefaultDate(reportedAt, "Reported date is required.");
-        Guard.AgainstEmptyGuid(fileId, "File id is required.");
-        Guard.AgainstDefaultDate(spentAt, "Spent date is required.");
-        if (spentAt > reportedAt)
-        {
-            throw new DomainException("Spent date cannot be later than reported date.");
-        }
+        Guard.AgainstEmptyGuid(advanceId, nameof(advanceId));
+        Guard.AgainstNullOrWhiteSpace(description, nameof(description));
+        Guard.AgainstNonPositive(amount, nameof(amount));
+        Guard.AgainstEmptyGuid(fileId, nameof(fileId));
+        Guard.AgainstDefaultDate(reportedAt, nameof(reportedAt));
+        Guard.AgainstDefaultDate(spentAt, nameof(spentAt));
+        if (spentAt < reportedAt)
+            throw new DomainException("Spent date cannot be earlier than reported date.");
 
         AdvanceId = advanceId;
-        var trimmedDescription = description.Trim();
-        if (trimmedDescription.Length > DescriptionMaxLength)
-        {
-            throw new DomainException($"Report description cannot exceed {DescriptionMaxLength} characters.");
-        }
-
-        Description = trimmedDescription;
+        var trimmed = description.Trim();
+        if (trimmed.Length > DescriptionMaxLength) throw new DomainException($"Report description cannot exceed {DescriptionMaxLength} characters.");
+        Description = trimmed;
         Amount = amount;
-        ReportedAt = reportedAt;
         FileId = fileId;
+        ReportedAt = reportedAt;
         SpentAt = spentAt;
     }
 
+    public static AdvanceReport Create(Guid advanceId, string description, decimal amount, Guid fileId, DateOnly reportedAt, DateOnly spentAt)
+        => new AdvanceReport(advanceId, description, amount, fileId, reportedAt, spentAt);
+
     public Guid AdvanceId { get; private set; }
 
-    public Advance? Advance { get; private set; }
+    public Advance? Advance { get; internal set; }
 
     public string Description { get; private set; } = string.Empty;
 
     public decimal Amount { get; private set; }
 
-    public DateOnly ReportedAt { get; private set; }
-
     public Guid FileId { get; private set; }
 
-    public FileResource? File { get; private set; }
+    public FileResource? File { get; internal set; }
+
+    public DateOnly ReportedAt { get; private set; }
 
     public DateOnly SpentAt { get; private set; }
-}
-
-public static class AdvanceStatuses
-{
-    public const string Draft = "Draft";
-    public const string Approved = "Approved";
-    public const string Rejected = "Rejected";
-    public const string Closed = "Closed";
-}
-
-public sealed class ExpenseType : BaseEntity
-{
-    private ExpenseType()
-    {
-    }
-
-    public ExpenseType(string name, string category)
-    {
-        UpdateName(name);
-        UpdateCategory(category);
-    }
-
-    public string Name { get; private set; } = string.Empty;
-
-    public string Category { get; private set; } = string.Empty;
-
-    public void UpdateName(string name)
-    {
-        Guard.AgainstNullOrWhiteSpace(name, "Expense type name is required.");
-        Name = name.Trim();
-    }
-
-    public void UpdateCategory(string category)
-    {
-        Guard.AgainstNullOrWhiteSpace(category, "Expense category is required.");
-        Category = category.Trim();
-    }
-}
-
-public sealed class OverheadMonthly : BaseEntity
-{
-    private OverheadMonthly()
-    {
-    }
-
-    public OverheadMonthly(int periodMonth, int periodYear, Guid expenseTypeId, decimal amount, string? notes)
-    {
-        var period = Period.From(periodMonth, periodYear);
-        Guard.AgainstEmptyGuid(expenseTypeId, "Expense type id is required.");
-        Guard.AgainstNegative(amount, "Overhead amount cannot be negative.");
-
-        PeriodMonth = period.Month;
-        PeriodYear = period.Year;
-        ExpenseTypeId = expenseTypeId;
-        Amount = amount;
-        Notes = notes?.Trim();
-    }
-
-    public int PeriodMonth { get; private set; }
-
-    public int PeriodYear { get; private set; }
-
-    public Guid ExpenseTypeId { get; private set; }
-
-    public ExpenseType? ExpenseType { get; private set; }
-
-    public decimal Amount { get; private set; }
-
-    public string? Notes { get; private set; }
 
     public void UpdateAmount(decimal amount)
     {
-        Guard.AgainstNegative(amount, "Overhead amount cannot be negative.");
+        Guard.AgainstNonPositive(amount, nameof(amount));
+        if (Advance != null)
+        {
+            Advance.EnsureOpen();
+            if (amount > Advance.RemainingAmount + Amount) // allow adjusting within remaining budget
+                throw new DomainException("Updated amount exceeds remaining advance balance.");
+        }
+
         Amount = amount;
     }
 
-    public void UpdateNotes(string? notes) => Notes = string.IsNullOrWhiteSpace(notes) ? null : notes.Trim();
-
-}
-
-public sealed class RevenueReport : BaseEntity
-{
-    private RevenueReport()
+    public void UpdateDates(DateOnly reportedAt, DateOnly spentAt)
     {
+        Guard.AgainstDefaultDate(reportedAt, nameof(reportedAt));
+        Guard.AgainstDefaultDate(spentAt, nameof(spentAt));
+        if (spentAt < reportedAt)
+            throw new DomainException("Spent date cannot be earlier than reported date.");
+
+        if (Advance != null) Advance.EnsureOpen();
+
+        ReportedAt = reportedAt;
+        SpentAt = spentAt;
     }
-
-    public RevenueReport(int periodMonth, int periodYear, Guid specificationId, decimal quantity, decimal unitPrice, bool isPaid, DateOnly? paymentDate, Guid? monthlyProfitId = null)
-    {
-        var period = Period.From(periodMonth, periodYear);
-        Guard.AgainstEmptyGuid(specificationId, "Specification id is required.");
-        Guard.AgainstNegative(quantity, "Quantity cannot be negative.");
-        Guard.AgainstNegative(unitPrice, "Unit price cannot be negative.");
-        if (isPaid && paymentDate is null)
-        {
-            throw new DomainException("Payment date must be provided once the report is paid.");
-        }
-
-        PeriodMonth = period.Month;
-        PeriodYear = period.Year;
-        SpecificationId = specificationId;
-        Quantity = quantity;
-        UnitPrice = unitPrice;
-        TotalRevenue = quantity * unitPrice;
-        IsPaid = isPaid;
-        PaymentDate = paymentDate;
-        if (monthlyProfitId.HasValue)
-        {
-            LinkMonthlyProfit(monthlyProfitId.Value);
-        }
-    }
-
-    public int PeriodMonth { get; private set; }
-
-    public int PeriodYear { get; private set; }
-
-    public Guid SpecificationId { get; private set; }
-
-    public Specification? Specification { get; private set; }
-
-    public decimal Quantity { get; private set; }
-
-    public decimal UnitPrice { get; private set; }
-
-    public decimal TotalRevenue { get; private set; }
-
-    public bool IsPaid { get; private set; }
-
-    public DateOnly? PaymentDate { get; private set; }
-
-    public Guid? MonthlyProfitId { get; private set; }
-
-    public MonthlyProfit? MonthlyProfit { get; private set; }
-
-    public void UpdateSales(decimal quantity, decimal unitPrice)
-    {
-        Guard.AgainstNegative(quantity, "Quantity cannot be negative.");
-        Guard.AgainstNegative(unitPrice, "Unit price cannot be negative.");
-
-        Quantity = quantity;
-        UnitPrice = unitPrice;
-        TotalRevenue = quantity * unitPrice;
-    }
-
-    public void MarkPaid(DateOnly paymentDate)
-    {
-        Guard.AgainstDefaultDate(paymentDate, "Payment date is required.");
-        IsPaid = true;
-        PaymentDate = paymentDate;
-    }
-
-    public void MarkUnpaid()
-    {
-        IsPaid = false;
-        PaymentDate = null;
-    }
-
-    public void LinkMonthlyProfit(Guid monthlyProfitId)
-    {
-        Guard.AgainstEmptyGuid(monthlyProfitId, "Monthly profit id is required.");
-        MonthlyProfitId = monthlyProfitId;
-    }
-
 }
 
 public sealed class ProductionCostFact : BaseEntity
@@ -367,23 +287,31 @@ public sealed class ProductionCostFact : BaseEntity
     {
     }
 
-    public ProductionCostFact(int periodMonth, int periodYear, Guid specificationId, decimal quantityProduced, decimal materialCost, decimal laborCost, decimal overheadCost)
+    private ProductionCostFact(int periodMonth, int periodYear, Guid specificationId, decimal qtyProduced, decimal materialCost, decimal laborCost, decimal overheadCost)
     {
-        var period = Period.From(periodMonth, periodYear);
-        Guard.AgainstEmptyGuid(specificationId, "Specification id is required.");
-        Guard.AgainstNegative(quantityProduced, "Produced quantity cannot be negative.");
-        Guard.AgainstNegative(materialCost, "Material cost cannot be negative.");
-        Guard.AgainstNegative(laborCost, "Labor cost cannot be negative.");
-        Guard.AgainstNegative(overheadCost, "Overhead cost cannot be negative.");
+        if (periodMonth < 1 || periodMonth > 12) throw new DomainException("Period month must be between 1 and 12.");
+        if (periodYear < 1900) throw new DomainException("Period year is invalid.");
+        Guard.AgainstEmptyGuid(specificationId, nameof(specificationId));
+        Guard.AgainstNegative(qtyProduced, nameof(qtyProduced));
+        Guard.AgainstNegative(materialCost, nameof(materialCost));
+        Guard.AgainstNegative(laborCost, nameof(laborCost));
+        Guard.AgainstNegative(overheadCost, nameof(overheadCost));
 
-        PeriodMonth = period.Month;
-        PeriodYear = period.Year;
+        PeriodMonth = periodMonth;
+        PeriodYear = periodYear;
         SpecificationId = specificationId;
-        QuantityProduced = quantityProduced;
+        QuantityProduced = qtyProduced;
         MaterialCost = materialCost;
         LaborCost = laborCost;
         OverheadCost = overheadCost;
         RecalculateTotalCost();
+    }
+
+    public static ProductionCostFact Create(int periodMonth, int periodYear, Guid specificationId, decimal qtyProduced, decimal materialCost, decimal laborCost, decimal overheadCost)
+    {
+        var fact = new ProductionCostFact(periodMonth, periodYear, specificationId, qtyProduced, materialCost, laborCost, overheadCost);
+        fact.AddDomainEvent(new ProductionCostFactCreated(fact.Id, DateTime.UtcNow));
+        return fact;
     }
 
     public int PeriodMonth { get; private set; }
@@ -392,7 +320,7 @@ public sealed class ProductionCostFact : BaseEntity
 
     public Guid SpecificationId { get; private set; }
 
-    public Specification? Specification { get; private set; }
+    public Specification? Specification { get; internal set; }
 
     public decimal QuantityProduced { get; private set; }
 
@@ -406,9 +334,9 @@ public sealed class ProductionCostFact : BaseEntity
 
     public void UpdateCosts(decimal materialCost, decimal laborCost, decimal overheadCost)
     {
-        Guard.AgainstNegative(materialCost, "Material cost cannot be negative.");
-        Guard.AgainstNegative(laborCost, "Labor cost cannot be negative.");
-        Guard.AgainstNegative(overheadCost, "Overhead cost cannot be negative.");
+        Guard.AgainstNegative(materialCost, nameof(materialCost));
+        Guard.AgainstNegative(laborCost, nameof(laborCost));
+        Guard.AgainstNegative(overheadCost, nameof(overheadCost));
 
         MaterialCost = materialCost;
         LaborCost = laborCost;
@@ -418,80 +346,14 @@ public sealed class ProductionCostFact : BaseEntity
 
     public void UpdateQuantity(decimal quantityProduced)
     {
-        Guard.AgainstNegative(quantityProduced, "Produced quantity cannot be negative.");
+        Guard.AgainstNegative(quantityProduced, nameof(quantityProduced));
         QuantityProduced = quantityProduced;
     }
 
     private void RecalculateTotalCost() => TotalCost = MaterialCost + LaborCost + OverheadCost;
-
 }
 
-public sealed class MonthlyProfit : BaseEntity
-{
-    private MonthlyProfit()
-    {
-    }
-
-    private readonly List<RevenueReport> _revenueReports = new();
-
-    public MonthlyProfit(int periodMonth, int periodYear, decimal revenue, decimal productionCost, decimal overhead)
-    {
-        var period = Period.From(periodMonth, periodYear);
-        Guard.AgainstNegative(revenue, "Revenue cannot be negative.");
-        Guard.AgainstNegative(productionCost, "Production cost cannot be negative.");
-        Guard.AgainstNegative(overhead, "Overhead cannot be negative.");
-
-        PeriodMonth = period.Month;
-        PeriodYear = period.Year;
-        Revenue = revenue;
-        ProductionCost = productionCost;
-        Overhead = overhead;
-        RecalculateProfit();
-    }
-
-    public int PeriodMonth { get; private set; }
-
-    public int PeriodYear { get; private set; }
-
-    public decimal Revenue { get; private set; }
-
-    public decimal ProductionCost { get; private set; }
-
-    public decimal Overhead { get; private set; }
-
-    public decimal Profit { get; private set; }
-
-    public IReadOnlyCollection<RevenueReport> RevenueReports => _revenueReports.AsReadOnly();
-
-    public void UpdateFigures(decimal revenue, decimal productionCost, decimal overhead)
-    {
-        Guard.AgainstNegative(revenue, "Revenue cannot be negative.");
-        Guard.AgainstNegative(productionCost, "Production cost cannot be negative.");
-        Guard.AgainstNegative(overhead, "Overhead cannot be negative.");
-
-        Revenue = revenue;
-        ProductionCost = productionCost;
-        Overhead = overhead;
-        RecalculateProfit();
-    }
-
-    public void AttachRevenueReport(RevenueReport report)
-    {
-        Guard.AgainstNull(report, nameof(report));
-        if (report.PeriodMonth != PeriodMonth || report.PeriodYear != PeriodYear)
-        {
-            throw new DomainException("Revenue report period does not match monthly profit period.");
-        }
-
-        if (_revenueReports.Any(existing => existing.Id == report.Id))
-        {
-            return;
-        }
-
-        report.LinkMonthlyProfit(Id);
-        _revenueReports.Add(report);
-    }
-
-    private void RecalculateProfit() => Profit = Revenue - (ProductionCost + Overhead);
-
-}
+// TODO: Configure decimal precision/scale (e.g. decimal(18,4)) in Infrastructure mapping for financial fields.
+// TODO: Ensure DateOnly mapping is configured in ORM provider.
+// TODO: Enforce uniqueness of ProductionCostFact by (PeriodMonth, PeriodYear, SpecificationId) at repository/db level.
+// TODO: Repository/UnitOfWork should dispatch domain events collected in BaseEntity after successful commit.

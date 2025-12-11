@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MyFactory.Application.Common.Interfaces;
 using MyFactory.Application.DTOs.Finance;
-using OverheadEntry = MyFactory.Domain.Entities.Finance.OverheadMonthly;
+using OverheadEntry = MyFactory.Domain.Entities.Reports.OverheadMonthly;
 
 namespace MyFactory.Application.Features.Finance.Commands.OverheadMonthly;
 
