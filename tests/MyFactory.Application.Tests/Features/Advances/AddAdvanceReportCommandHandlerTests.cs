@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyFactory.Application.Features.Advances.Commands.AddAdvanceReport;
 using MyFactory.Application.Tests.Common;
-using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Employees;
 using MyFactory.Domain.Entities.Finance;
+using MyFactory.Domain.Exceptions;
 using Xunit;
 
 namespace MyFactory.Application.Tests.Features.Advances;

@@ -4,7 +4,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using MyFactory.Application.Features.FinishedGoods.Commands.MoveFinishedGoods;
 using MyFactory.Application.Tests.Common;
-using MyFactory.Domain.Common;
+using MyFactory.Domain.Exceptions;
 using Xunit;
 
 namespace MyFactory.Application.Tests.Features.FinishedGoods;

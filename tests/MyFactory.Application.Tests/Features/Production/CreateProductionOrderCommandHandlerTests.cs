@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using MyFactory.Application.Features.Production.Commands.CreateProductionOrder;
 using MyFactory.Application.Tests.Common;
-using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Production;
+using MyFactory.Domain.Exceptions;
 using Xunit;
 
 namespace MyFactory.Application.Tests.Features.Production;

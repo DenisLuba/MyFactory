@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MyFactory.Domain.Common;
+using MyFactory.Domain.Exceptions;
 
 namespace MyFactory.Domain.ValueObjects;
 

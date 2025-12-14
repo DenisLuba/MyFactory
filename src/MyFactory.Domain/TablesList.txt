@@ -1,0 +1,63 @@
+Orders:
+	1. SALES_ORDERS                         OrdersEntities.SalesOrderEntity
+	2. SALES_ORDER_ITEMS                    OrdersEntities.SalesOrderItemEntity
+	3. SHIPMENTS                            OrdersEntities.ShipmentEntity
+	4. SHIPMENT_ITEMS                       OrdersEntities.ShipmentItemEntity
+	5. SHIPMENT_RETURNS                     OrdersEntities.ReturnEntity
+	6. SHIPMENT_RETURN_ITEMS                OrdersEntities.ReturnItemEntity
+
+Parties:
+	1. CUSTOMERS                            PartiesEntities.CustomerEntity
+	2. CONTACTS                             PartiesEntities.ContactEntity
+	3. CONTACT_LINKS                        PartiesEntities.ContactLinkEntity
+
+Organization:
+	1. EMPLOYEES                           OrganizationEntities.EmployeeEntity
+	2. POSITIONS                            OrganizationEntities.PositionEntity
+	3. DEPARTMENTS                          OrganizationEntities.DepartmentEntity
+
+Security:
+	1. USERS                                SecurityEntities.UserEntity
+	2. ROLES                                SecurityEntities.RoleEntity
+
+Inventory:
+	1. WAREHOUSES                           InventoryEntities.WarehouseEntity
+	2. WAREHOUSE_MATERIALS                  InventoryEntities.WarehouseMaterialEntity
+	3. WAREHOUSE_PRODUCTS                   InventoryEntities.WarehouseProductEntity
+	4. INVENTORY_MOVEMENTS                  InventoryEntities.InventoryMovementEntity
+	5. INVENTORY_MOVEMENT_ITEMS             InventoryEntities.InventoryMovementItemEntity
+	6. FINISHED_GOODS                       InventoryEntities.FinishedGoodsEntity
+	7. FINISHED_GOODS_MOVEMENTS             InventoryEntities.FinishedGoodsMovementEntity
+	8. FINISHED_GOODS_MOVEMENT_ITEMS        InventoryEntities.FinishedGoodsMovementItemEntity
+	9. FINISHED_GOODS_STOCK                 InventoryEntities.FinishedGoodsStockEntity
+
+Materials:
+	1. MATERIAL_TYPES                       MaterialsEntities.MaterialTypeEntity
+	2. UNITS                                MaterialsEntities.UnitEntity
+	3. MATERIALS                            MaterialsEntities.MaterialEntity
+	4. SUPPLIERS                            MaterialsEntities.SupplierEntity
+	5. MATERIAL_SUPPLIERS                   MaterialsEntities.MaterialSupplierEntity
+	6. MATERIAL_SUPPLIERS_PRICES            MaterialsEntities.MaterialSupplierPriceEntity
+
+Products:
+	1. PRODUCTS                             ProductsEntities.ProductEntity
+	2. PRODUCT_MATERIALS                    ProductsEntities.ProductMaterialEntity
+	3. PRODUCT_DEPARTMENT_COSTS             ProductsEntities.ProductDepartmentCostEntity
+
+Production:
+	1. PRODUCTION_ORDERS                    ProductionEntities.ProductionOrderEntity
+	2. CUTTING_OPERATIONS                   ProductionEntities.CuttingOperationEntity
+	3. SEWING_OPERATIONS                    ProductionEntities.SewingOperationEntity
+	4. PACKAGING_OPERATIONS                 ProductionEntities.PackagingOperationEntity
+
+Finance:
+	1. TIMESHEETS                           FinanceEntities.TimesheetEntity
+	2. PAYROLL_RULES                        FinanceEntities.PayrollRuleEntity
+	3. PAYROLL_ACCRUALS                     FinanceEntities.PayrollAccrualEntity
+	4. PAYROLL_PAYMENTS                     FinanceEntities.PayrollPaymentEntity
+	5. EXPENSE_TYPES                        FinanceEntities.ExpenseTypesEntity
+	6. EXPENSES                             FinanceEntities.ExpenseEntity
+	7. CASH_ADVANCES                        FinanceEntities.CashAdvanceEntity
+	8. CASH_ADVANCE_EXPENSES                FinanceEntities.CashAdvanceExpenseEntity
+	9. CASH_ADVANCE_RETURNS                 FinanceEntities.CashAdvanceReturnEntity
+	10. MONTHLY_FINANCIAL_REPORTS           FinanceEntities.MonthlyFinancialReportEntity

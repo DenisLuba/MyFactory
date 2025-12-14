@@ -1,4 +1,4 @@
-using System;
+using MyFactory.Domain.Exceptions;
 
 namespace MyFactory.Domain.Common;
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using MyFactory.Domain.Common;
+using MyFactory.Domain.Exceptions;
 
 namespace MyFactory.Domain.ValueObjects;
 

@@ -1,5 +1,5 @@
-using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Employees;
+using MyFactory.Domain.Exceptions;
 using Xunit;
 
 namespace MyFactory.Domain.Tests.Employees;

@@ -1,6 +1,6 @@
 using System;
-using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Production;
+using MyFactory.Domain.Exceptions;
 using Xunit;
 
 namespace MyFactory.Domain.Tests.Production;

@@ -6,9 +6,9 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using MyFactory.Application.Features.Warehousing.Commands.AddInventoryReceiptItem;
 using MyFactory.Application.Tests.Common;
-using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Materials;
 using MyFactory.Domain.Entities.Warehousing;
+using MyFactory.Domain.Exceptions;
 
 namespace MyFactory.Application.Tests.Warehousing;
 

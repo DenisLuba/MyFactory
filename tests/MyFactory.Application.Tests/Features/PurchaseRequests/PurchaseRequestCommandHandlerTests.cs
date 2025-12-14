@@ -5,9 +5,9 @@ using FluentAssertions;
 using MyFactory.Application.Features.PurchaseRequests.Commands;
 using MyFactory.Application.Features.PurchaseRequests.Handlers;
 using MyFactory.Application.Tests.Common;
-using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Materials;
 using MyFactory.Domain.Entities.Warehousing;
+using MyFactory.Domain.Exceptions;
 
 namespace MyFactory.Application.Tests.Features.PurchaseRequests;
 

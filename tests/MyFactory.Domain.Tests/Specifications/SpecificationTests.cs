@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
-using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Specifications;
+using MyFactory.Domain.Exceptions;
 using Xunit;
 
 namespace MyFactory.Domain.Tests.Specifications;

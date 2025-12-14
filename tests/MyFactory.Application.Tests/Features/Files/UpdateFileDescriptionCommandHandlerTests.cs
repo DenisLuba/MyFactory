@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyFactory.Application.Features.Files.Commands.UpdateFileDescription;
 using MyFactory.Application.Tests.Common;
-using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Files;
+using MyFactory.Domain.Exceptions;
 using Xunit;
 
 namespace MyFactory.Application.Tests.Features.Files;

@@ -1,0 +1,854 @@
+///////////////////////////
+// Orders:
+///////////////////////////
+
+/////////////////////////////
+// Заказ
+Table SALES_ORDERS {
+    id uuid [pk]
+    order_number varchar [unique]          // номер заказа
+    customer_id uuid [ref: > CUSTOMERS.id] // заказчик
+    order_date date                        // дата заказа
+    created_at timestamp                   // дата и время создания заказа
+    updated_at timestamp                   // дата и время обновления заказа
+    required_by_date date [null]           // дата сдачи выполненного заказа
+    status sales_order_status              // статус выполнения заказа
+    created_by uuid [ref: > USERS.id]      // пользователь внесший заказ в программу
+}
+Enum sales_order_status {
+  NEW                   // новый
+  CONFIRMED             // подтвержден (принят к реализации)
+  PARTIALLY_FULFILLED   // выполнен частично
+  FULFILLED             // выполнен полностью
+  CANCELLED             // отклонен
+}
+// Связи
+// Ref: SALES_ORDERS.id < SALES_ORDER_ITEMS.sales_order_id
+// Ref: SALES_ORDERS.id < SHIPMENTS.sales_order_id
+// Ref: SALES_ORDERS.id < SHIPMENT_RETURNS.sales_order_id
+
+/////////////////////////////
+// Одна позиция заказа - один товар
+Table SALES_ORDER_ITEMS {
+    id uuid [pk]
+
+    sales_order_id uuid [ref: > SALES_ORDERS.id]             // заказ
+    product_id uuid [ref: > PRODUCTS.id]                     // какое изделие
+
+    qty_ordered numeric                                      // сколько штук
+    qty_allocated numeric [default: 0]                       // сколько заложено в производство
+    qty_shipped numeric [default: 0]                         // сколько реально отгружено
+
+    unit_price numeric [null]                                // цена за единицу товара для данного заказчика
+    status sales_order_item_status                           // статус выполнения этой позиции заказа
+}
+Enum sales_order_item_status {
+  NEW             // новый
+  CUT             // крой
+  SEWING          // пошив
+  PACKAGE         // упаковка
+  FINISHED        // готовая продукция
+  SHIPPED         // отгружен на склад готовой продукции
+  CANCELLED       // отклонен
+}
+// Связи
+// Ref: SALES_ORDER_ITEMS.id < PRODUCTION_ORDERS.sales_order_item_id
+// Ref: SALES_ORDER_ITEMS.id < SHIPMENT_ITEMS.sales_order_item_id
+// Ref: SALES_ORDER_ITEMS.id < SHIPMENT_RETURN_ITEMS.sales_order_item_id
+
+/////////////////////////////
+// Документ отгрузки готовой продукции
+Table SHIPMENTS {
+    id uuid [pk]
+
+    sales_order_id uuid [ref: > SALES_ORDERS.id]     // заказ клиента
+    customer_id uuid [ref: > CUSTOMERS.id]           // заказчик
+
+    shipment_date date                               // дата отгрузки
+    status shipment_status_enum                      // статус отгрузки
+
+    created_at timestamp
+    updated_at timestamp
+    created_by uuid [ref: > USERS.id]
+}
+Enum shipment_status_enum {
+  DRAFT        // создана
+  CONFIRMED    // подтверждена
+  SHIPPED      // отгружена
+  CANCELLED    // отменена
+}
+// Связи
+// Ref: SHIPMENTS.id < SHIPMENT_ITEMS.shipment_id
+// Ref: SHIPMENTS.id < SHIPMENT_RETURNS.shipment_id
+
+/////////////////////////////
+// Позиции отгрузки готовой продукции
+Table SHIPMENT_ITEMS {
+    id uuid [pk]
+
+    shipment_id uuid [ref: > SHIPMENTS.id]                       // документ отгрузки
+    sales_order_item_id uuid [ref: > SALES_ORDER_ITEMS.id]       // позиция заказа
+
+    warehouse_id uuid [ref: > WAREHOUSES.id]                     // с какого склада отгружаем
+
+    product_id uuid [ref: > PRODUCTS.id]                         // какой товар
+
+    qty int                                                      // сколько штук
+    unit_price numeric                                           // цена на момент отгрузки
+}
+// Связи
+// Ref: SHIPMENT_ITEMS.id < SHIPMENT_RETURN_ITEMS.shipment_item_id
+
+/////////////////////////////
+// Возврат отгруженной продукции
+Table SHIPMENT_RETURNS {
+    id uuid [pk]
+
+    shipment_id uuid [ref: > SHIPMENTS.id, null]  // с какой отгрузки возвращают (может быть null)
+    sales_order_id uuid [ref: > SALES_ORDERS.id]  // заказ клиента, если отгрузка не указана
+    customer_id uuid [ref: > CUSTOMERS.id]        // заказчик
+
+    return_date date                              // дата возврата
+    reason varchar [null]                         // причина возврата
+    status return_status_enum                     // статус возврата
+
+    created_at timestamp                          // создано
+    updated_at timestamp                          // обновлено
+    created_by uuid [ref: > USERS.id]             // создано пользователем
+}
+Enum return_status_enum {
+  NEW          // создан
+  PROCESSING   // в обработке
+  ACCEPTED     // принят
+  REJECTED     // отклонен
+  CANCELLED    // отменен
+}
+// Связи
+// Ref: SHIPMENT_RETURN_ITEMS.shipment_return_id < SHIPMENT_RETURNS.id
+
+Table SHIPMENT_RETURN_ITEMS {
+    id uuid [pk]
+
+    shipment_return_id uuid [ref: > SHIPMENT_RETURNS.id]               // документ возврата
+
+    shipment_item_id uuid [ref: > SHIPMENT_ITEMS.id, null]             // из какой позиции отгрузки возвращают (может быть null)
+    sales_order_item_id uuid [ref: > SALES_ORDER_ITEMS.id]             // позиция заказа
+    product_id uuid [ref: > PRODUCTS.id]                               // какой товар
+
+    warehouse_id uuid [ref: > WAREHOUSES.id]                           // КУДА вернули товар
+
+    qty int                                                            // сколько вернули
+    unit_price numeric                                                 // цена возврата (для финансов)
+
+    condition return_condition_enum                                    // состояние товара
+}
+Enum return_condition_enum {
+  NEW            // новый, нераспакованный
+  OPENED         // распакованный, но неиспользованный
+  USED           // использованный
+  DAMAGED        // поврежденный
+}
+
+///////////////////////////
+// Parties:
+///////////////////////////
+
+/////////////////////////////
+// Заказчики
+Table CUSTOMERS {
+    id uuid [pk]
+    name varchar               // имя/название заказчика
+    created_at timestamp       // заказчик создан
+    updated_at timestamp       // заказчик обновлен
+    is_active bool             // заказчик активен
+}
+// Связи
+Ref: CUSTOMERS.id < CONTACT_LINKS.owner_id     // has contacts
+// Ref: CUSTOMERS.id < SALES_ORDERS.customer_id 
+// Ref: CUSTOMERS.id < SHIPMENTS.customer_id
+// Ref: CUSTOMERS.id < SHIPMENT_RETURNS.customer_id
+
+/////////////////////////////
+// Таблица контактов (адрес, телефон, email, мессенджеры)
+Table CONTACTS {
+    id uuid [pk]
+    contact_type contact_type_enum        // тип контакта
+    value varchar                         // сам номер/адрес
+    is_primary bool [default: false]      // это основной контакт (телефон, почта)
+}
+Enum contact_type_enum {
+  ADDRESS   // адрес
+  PHONE     // телефон
+  EMAIL     // email
+  TELEGRAM  // Telegram
+  WHATSAPP  // WhatsApp
+  OTHER     // другое
+}
+// Связи
+// Ref: CONTACTS.id < CONTACT_LINKS.contact_id   // assigned to
+
+/////////////////////////////
+// Связующая таблица контактов с сущностями системы
+Table CONTACT_LINKS {
+    id uuid [pk]
+    contact_id uuid [ref: > CONTACTS.id]          // ID контакта
+    owner_type contact_owner_type_enum            // тип владельца контакта
+    owner_id uuid                                 // ID записи владельца
+}
+Enum contact_owner_type_enum {
+  CUSTOMER  // заказчик
+  USER      // пользователь
+  EMPLOYEE  // сотрудник
+}
+
+///////////////////////////
+// Organization:
+///////////////////////////
+
+/////////////////////////////
+// Сотрудники
+Table EMPLOYEES {
+    id uuid [pk]
+    full_name varchar                        // имя, фамилия, отчество
+    position_id uuid [ref: > POSITIONS.id]   // должность
+    grade int                                 // разряд сотрудника
+    rate_per_norm_hour numeric                // ставка в час
+    premium_percent numeric                   // процент за переработку
+    is_active bool                            // сотрудник на работе?
+    hired_at date                             // сотрудник нанят
+    fired_at date [null]                      // сотрудник уволен
+}
+// Связи
+Ref: EMPLOYEES.id < CONTACT_LINKS.owner_id    // has contacts
+// Ref: EMPLOYEES.id < CUTTING_OPERATIONS.employee_id
+// Ref: EMPLOYEES.id < PACKAGING_OPERATIONS.employee_id
+// Ref: EMPLOYEES.id < SEWING_OPERATIONS.employee_id
+// Ref: EMPLOYEES.id < TIMESHEETS.employee_id
+// Ref: EMPLOYEES.id < PAYROLL_ACCRUALS.employee_id
+// Ref: EMPLOYEES.id < PAYROLL_PAYMENTS.employee_id
+// Ref: EMPLOYEES.id < CASH_ADVANCES.employee_id
+
+/////////////////////////////
+// Должности
+Table POSITIONS {
+    id uuid [pk]
+    name varchar [unique]                        // Наименование должности
+    code varchar [unique, null]                  // Короткий код должности
+    description varchar [null]                   // Описание роли
+
+    department_id uuid [ref: > DEPARTMENTS.id]   // Цех / отдел
+
+    base_norm_per_hour numeric [null]            // Норма по умолчанию
+    base_rate_per_norm_hour numeric [null]       // Базовая ставка
+    default_premium_percent numeric [null]       // Премия по умолчанию (%)
+
+    can_cut bool [default: false]                // Можно работать в раскрое
+    can_sew bool [default: false]                // Можно работать в пошиве
+    can_package bool [default: false]            // Можно работать в упаковке
+    can_handle_materials bool [default: false]   // Можно работать на складе
+
+    is_active bool [default: true]               // Должность актуальна
+    created_at timestamp                         // создано
+    updated_at timestamp                         // обновлено
+}
+// Связи
+// Ref: POSITIONS.id < EMPLOYEES.position_id     // assigned
+
+/////////////////////////////
+// Цеха/Участки
+Table DEPARTMENTS {
+    id uuid [pk]
+    name varchar [unique]                 // Цех 1, Цех 2, Склад материалов
+    type department_type_enum             // тип участка
+    created_at timestamp                  // участок создан
+    updated_at timestamp                  // участок обновлен
+    is_active bool [default: true]        // участок активен
+}
+Enum department_type_enum {
+  PRODUCTION  // производство
+  STORAGE     // склад
+  OFFICE      // офис
+  OTHER       // другое
+}
+// Связи
+// Ref: DEPARTMENTS.id < POSITIONS.department_id            // belongs to
+// Ref: DEPARTMENTS.id < PRODUCT_DEPARTMENT_COSTS.department_id    // applies to
+// Ref: DEPARTMENTS.id < INVENTORY_MOVEMENTS.to_department_id 
+// Ref: DEPARTMENTS.id < PRODUCTION_ORDERS.department_id
+// Ref: DEPARTMENTS.id < TIMESHEETS.department_id
+
+///////////////////////////
+// Security:
+///////////////////////////
+
+/////////////////////////////
+// Пользователи
+Table USERS {
+    id uuid [pk]
+
+    username varchar               // имя пользователя
+    password_hash varchar          // хэш пароля
+    role_id uuid [ref: > ROLES.id] // роль (уровень доступа)
+
+    is_active bool                 // пользователь активен
+    created_at timestamp           // создан
+    updated_at timestamp           // обновлен
+}
+// Связи
+Ref: USERS.id < CONTACT_LINKS.owner_id          // has contacts
+// Ref: USERS.id < SALES_ORDERS.created_by      // created
+// Ref: USERS.id < INVENTORY_MOVEMENTS.created_by 
+// Ref: USERS.id < PRODUCTION_ORDERS.created_by  
+// Ref: USERS.id < FINISHED_GOODS_MOVEMENTS.created_by
+// Ref: USERS.id < SHIPMENTS.created_by
+// Ref: USERS.id < SHIPMENT_RETURNS.created_by
+// Ref: USERS.id < PAYROLL_PAYMENTS.created_by
+// Ref: USERS.id < EXPENSES.created_by
+// Ref: USERS.id < MONTHLY_FINANCIAL_REPORTS.created_by
+
+/////////////////////////////
+// Роли пользователей
+Table ROLES {
+    id uuid [pk]
+    name varchar      // название роли
+}
+// Связи
+// Ref: ROLES.id < USERS.role_id
+
+///////////////////////////
+// Inventory:
+///////////////////////////
+
+/////////////////////////////
+// Склады
+Table WAREHOUSES {
+    id uuid [pk]
+    name varchar [unique]                // название склада
+    type warehouse_type_enum             // тип склада
+
+    is_active bool [default: true]       // склад активен
+    created_at timestamp                 // склад создан
+    updated_at timestamp                 // склад обновлен
+}
+Enum warehouse_type_enum {
+  MATERIALS       // склад материалов
+  FINISHED_GOODS  // склад готовой продукции
+  AUX             // вспомогательный склад
+}
+// Связи
+// Ref: WAREHOUSES.id < WAREHOUSE_MATERIALS.warehouse_id    // stores
+// Ref: WAREHOUSES.id < INVENTORY_MOVEMENTS.from_warehouse_id  
+// Ref: WAREHOUSES.id < FINISHED_GOODS.warehouse_id
+// Ref: WAREHOUSES.id < WAREHOUSE_PRODUCTS.warehouse_id      // has products
+// Ref: WAREHOUSES.id < FINISHED_GOODS_MOVEMENTS.from_warehouse_id
+// Ref: WAREHOUSES.id < FINISHED_GOODS_MOVEMENTS.to_warehouse_id
+// Ref: WAREHOUSES.id < SHIPMENT_ITEMS.warehouse_id
+// Ref: WAREHOUSES.id < FINISHED_GOODS_STOCK.warehouse_id
+// Ref: WAREHOUSES.id < SHIPMENT_RETURN_ITEMS.warehouse_id
+
+/////////////////////////////
+// Материалы на складах
+Table WAREHOUSE_MATERIALS {
+    id uuid [pk]
+    warehouse_id uuid [ref: > WAREHOUSES.id]  // склад
+    material_id uuid [ref: > MATERIALS.id]    // материал
+    qty numeric [default: 0]                  // количество материала на складе
+
+    created_at timestamp                      // создано
+    updated_at timestamp                      // обновлено
+}
+
+/////////////////////////////
+// Связь склада готовой продукции и товаров на нем
+Table WAREHOUSE_PRODUCTS {
+    warehouse_id uuid [ref: > WAREHOUSES.id]   // склад готовой продукции
+    product_id uuid [ref: > PRODUCTS.id]       // товар
+
+    qty int                                    // остаток на складе
+
+    created_at timestamp
+    updated_at timestamp
+
+    Indexes {
+        (warehouse_id, product_id) [pk]
+    }
+}
+
+/////////////////////////////
+// Перемещение материалов со склада на участок (в цех)
+Table INVENTORY_MOVEMENTS {
+    id uuid [pk]
+    movement_type inventory_movement_type_enum   // статус: передать в цех, вернуть из цеха, передача, корректирование
+    from_warehouse_id uuid [ref: > WAREHOUSES.id, null]  // склад, откуда взяли материалы
+    to_department_id uuid [ref: > DEPARTMENTS.id, null]  // цех, куда передали материалы
+    production_order_id uuid [ref: > PRODUCTION_ORDERS.id, null] // документ производственного заказа
+
+    created_at timestamp   // создано
+    updated_at timestamp   // обновлено
+    created_by uuid [ref: > USERS.id] // создано пользователем
+}
+Enum inventory_movement_type_enum {
+  ISSUE_TO_DEPT      // передать в цех
+  RETURN_FROM_DEPT   // вернуть из цеха
+  TRANSFER           // перемещение
+  ADJUSTMENT         // корректирование
+}
+// Связи
+// Ref: INVENTORY_MOVEMENTS.id < INVENTORY_MOVEMENT_ITEMS.movement_id 
+
+/////////////////////////////
+// Перемещение одного вида материала со склада (из документа перемещения материалов со склада)
+Table INVENTORY_MOVEMENT_ITEMS {
+    id uuid [pk]
+    movement_id uuid [ref: > INVENTORY_MOVEMENTS.id]   // документ перемещения материалов со склада
+    material_id uuid [ref: > MATERIALS.id]             // сам перемещенный материал
+    qty numeric                                        // количество перемещенного материала
+}
+
+/////////////////////////////
+// Готовая продукция на складе готовой продукции по производственным заказам
+Table FINISHED_GOODS {
+    id uuid [pk]
+
+    product_id uuid [ref: > PRODUCTS.id]                    // какое изделие
+    warehouse_id uuid [ref: > WAREHOUSES.id]                // склад готовой продукции 
+
+    production_order_id uuid [ref: > PRODUCTION_ORDERS.id]  // производственный заказ
+    qty int                                                 // количество готовой продукции
+
+    created_at timestamp                                    // создано
+    updated_at timestamp                                    // обновлено
+}
+
+/////////////////////////////
+// Движение готовой продукции между складами готовой продукции
+Table FINISHED_GOODS_MOVEMENTS {
+    id uuid [pk]
+
+    from_warehouse_id uuid [ref: > WAREHOUSES.id]   // склад откуда перемещаем
+    to_warehouse_id uuid [ref: > WAREHOUSES.id]     // склад куда перемещаем
+
+    movement_date date                              // дата перемещения
+    created_at timestamp                            // создано
+    created_by uuid [ref: > USERS.id]               // создано пользователем
+}
+// Связи
+// Ref: FINISHED_GOODS_MOVEMENTS < FINISHED_GOODS_MOVEMENT_ITEMS.movement_id
+
+/////////////////////////////
+// Позиции перемещения готовой продукции между складами
+Table FINISHED_GOODS_MOVEMENT_ITEMS {
+    id uuid [pk]
+    movement_id uuid [ref: > FINISHED_GOODS_MOVEMENTS.id]
+    product_id uuid [ref: > PRODUCTS.id]
+    qty int
+}
+
+/////////////////////////////
+// Остатки готовой продукции на складах
+Table FINISHED_GOODS_STOCK {
+    warehouse_id uuid [ref: > WAREHOUSES.id]    // склад готовой продукции, куда кладем товар
+    product_id uuid [ref: > PRODUCTS.id]        // товар
+
+    qty int                                     // остаток на складе
+
+    Indexes {
+        (warehouse_id, product_id) [pk]
+    }
+}
+
+///////////////////////////
+// Materials:
+///////////////////////////
+
+/////////////////////////////
+// Тип материала
+Table MATERIAL_TYPES {
+    id uuid [pk]
+    name varchar [unique]      // ткань, фурнитура, нитки и т.д.
+    description varchar [null] // описание
+}
+// Связи
+// Ref: MATERIAL_TYPES.id < MATERIALS.material_type_id    // typed
+
+/////////////////////////////
+// Единицы измерения
+Table UNITS {
+    id uuid [pk]
+    code varchar [unique]   // m, kg, pcs
+    name varchar            // метр, килограмм, штука
+}
+// Связи
+// Ref: UNITS.id < MATERIALS.unit_id     // measured in
+
+/////////////////////////////
+// Материалы
+Table MATERIALS {
+    id uuid [pk]
+
+    name varchar [unique]                    // название материала
+    material_type_id uuid [ref: > MATERIAL_TYPES.id]  // тип материала
+    unit_id uuid [ref: > UNITS.id]           // единицы измерения
+    color varchar [null]                     // цвет
+
+    is_active bool [default: true]           // материал активен
+    created_at timestamp                     // создан
+    updated_at timestamp                     // обновлен
+}
+// Связи
+// Ref: MATERIALS.id < PRODUCT_MATERIALS.material_id        // part of
+// Ref: MATERIALS.id < WAREHOUSE_MATERIALS.material_id      // stocked
+// Ref: MATERIALS.id < MATERIAL_SUPPLIERS.material_id       // supplied by
+// Ref: MATERIALS.id < MATERIAL_SUPPLIERS_PRICES.material_id > 
+// Ref: MATERIALS.id < INVENTORY_MOVEMENT_ITEMS.material_id  
+
+/////////////////////////////
+// Поставщики
+Table SUPPLIERS {
+    id uuid [pk]
+    name varchar                // имя/название поставщика
+
+    is_active bool [default: true] // поставщик активен
+    created_at timestamp        // создан
+    updated_at timestamp        // обновлен
+}
+// Связи
+// Ref: SUPPLIERS.id < MATERIAL_SUPPLIERS.supplier_id       // offers
+// Ref: SUPPLIERS.id < MATERIAL_SUPPLIERS_PRICES.supplier_id 
+
+/////////////////////////////
+// Связь материала и поставщика: прайс/минимальный заказ
+Table MATERIAL_SUPPLIERS {
+    id uuid [pk]
+    material_id uuid [ref: > MATERIALS.id]   // материал
+    supplier_id uuid [ref: > SUPPLIERS.id]   // поставщик
+    min_order_qty numeric [null]             // минимальное количество для заказа
+
+    is_active bool [default: true]           // сейчас актуально
+    created_at timestamp                     // создано
+    updated_at timestamp                     // обновлено
+}
+
+/////////////////////////////
+// История цен поставщиков
+Table MATERIAL_SUPPLIERS_PRICES {
+    id uuid [pk]
+    supplier_id uuid [ref: > SUPPLIERS.id]   // поставщик
+    material_id uuid [ref: > MATERIALS.id]   // материал
+    price_per_unit numeric                   // цена за единицу
+    
+    created_at timestamp                     // цена создана
+}
+
+///////////////////////////
+// Products:
+///////////////////////////
+
+/////////////////////////////
+// Товары
+Table PRODUCTS {
+    id uuid [pk]
+    sku varchar [unique]                     // артикул (SKU)
+    name varchar                             // название изделия
+    version int [null]                       // версия изделия
+    description varchar [null]               // описание
+
+    status product_status_enum               // статус изделия
+
+    plan_per_hour numeric [null]             // норма пошива
+
+    created_at timestamp                     // создано
+    updated_at timestamp                     // обновлено
+}
+Enum product_status_enum {
+  ACTIVE          // используется
+  INACTIVE        // скрыт / выключен
+  DEVELOPMENT     // в разработке
+  DISCONTINUED    // снят с производства
+}
+// Связи
+// Ref: PRODUCTS.id < SALES_ORDER_ITEMS.product_id 
+// Ref: PRODUCTS.id < PRODUCT_DEPARTMENT_COSTS.product_id     // cost in dept
+// Ref: PRODUCTS.id < PRODUCT_MATERIALS.product_id            // uses
+// Ref: PRODUCTS.id < FINISHED_GOODS.product_id
+// Ref: PRODUCTS.id < WAREHOUSE_PRODUCTS.product_id
+// Ref: PRODUCTS.id < FINISHED_GOODS_MOVEMENT_ITEMS.product_id
+// Ref: PRODUCTS.id < SHIPMENT_ITEMS.product_id
+// Ref: PRODUCTS.id < FINISHED_GOODS_STOCK.product_id
+// Ref: PRODUCTS.id < SHIPMENT_RETURN_ITEMS.product_id
+
+/////////////////////////////
+// Материалы изделия
+Table PRODUCT_MATERIALS {
+    product_id uuid [ref: > PRODUCTS.id]   // товар
+    material_id uuid [ref: > MATERIALS.id] // материал
+    qty_per_unit numeric                   // расход материала на единицу изделия
+
+    // составной первичный ключ
+    Note: 'Composite primary key: (product_id, material_id)'
+    Indexes {
+        (product_id, material_id) [pk]
+    }
+}
+
+/////////////////////////////
+// Цеховые показатели продукции
+Table PRODUCT_DEPARTMENT_COSTS {
+    product_id uuid [ref: > PRODUCTS.id]       // товар
+    department_id uuid [ref: > DEPARTMENTS.id] // цех
+
+    expenses_per_unit numeric       // цеховые расходы
+    cut_cost_per_unit numeric       // стоимость раскроя
+    sewing_cost_per_unit numeric    // стоимость пошива
+    pack_cost_per_unit numeric      // стоимость упаковки
+
+    created_at timestamp            // создано
+    updated_at timestamp            // обновлено
+    is_active bool [default: true]  // актуально
+
+    // составной первичный ключ
+    Note: 'Composite primary key: (product_id, department_id)'
+    Indexes {
+        (product_id, department_id) [pk]
+    }
+}
+
+///////////////////////////
+// Production:
+///////////////////////////
+
+/////////////////////////////
+// Документ производственного заказа
+Table PRODUCTION_ORDERS {
+    id uuid [pk]
+    sales_order_item_id uuid [ref: > SALES_ORDER_ITEMS.id] // для какой позиции заказа
+    department_id uuid [ref: > DEPARTMENTS.id]             // цех исполнения заказа
+
+    qty_planned int                                        // сколько должны произвести
+    qty_finished int [default: 0]                          // сколько уже произведено
+
+    qty_cut int [default: 0]                               // сколько покроено
+    qty_sewn int [default: 0]                              // сколько сшито
+    qty_packed int [default: 0]                            // сколько упаковано
+
+    status production_order_status_enum                    // статус производственного заказа
+
+    created_at timestamp   // создано
+    updated_at timestamp   // обновлено
+    created_by uuid [ref: > USERS.id] // создано пользователем
+}
+Enum production_order_status_enum {
+  NEW
+  MATERIAL_ISSUED
+  CUTTING
+  SEWING
+  PACKAGING
+  FINISHED
+  CANCELLED
+}
+// Связи
+// Ref: PRODUCTION_ORDERS.id < INVENTORY_MOVEMENTS.production_order_id
+// Ref: PRODUCTION_ORDERS.id < CUTTING_OPERATIONS.production_order_id
+// Ref: PRODUCTION_ORDERS.id < PACKAGING_OPERATIONS.production_order_id
+// Ref: PRODUCTION_ORDERS.id < SEWING_OPERATIONS.production_order_id
+// Ref: PRODUCTION_ORDERS.id < FINISHED_GOODS.production_order_id
+
+/////////////////////////////
+// Операции раскроя
+Table CUTTING_OPERATIONS {
+    id uuid [pk]
+
+    production_order_id uuid [ref: > PRODUCTION_ORDERS.id] // производственный заказ
+
+    employee_id uuid [ref: > EMPLOYEES.id]                 // кто кроил
+    qty_cut int                                            // сколько единиц покроено
+
+    operation_date date                                    // дата выполнения
+    created_at timestamp                                   // создано
+}
+
+/////////////////////////////
+// Операции пошива
+Table SEWING_OPERATIONS {
+    id uuid [pk]
+
+    production_order_id uuid [ref: > PRODUCTION_ORDERS.id] // производственный заказ
+
+    employee_id uuid [ref: > EMPLOYEES.id]                 // швея
+    qty_sewn int                                           // сколько изделий сшито
+    hours_worked numeric                                   // отработано часов
+
+    operation_date date                                    // дата выполнения
+    created_at timestamp                                   // создано
+}
+
+/////////////////////////////
+// Операции упаковки
+Table PACKAGING_OPERATIONS {
+    id uuid [pk]
+
+    production_order_id uuid [ref: > PRODUCTION_ORDERS.id] // производственный заказ
+
+    employee_id uuid [ref: > EMPLOYEES.id]                 // упаковщик
+    qty_packed int                                         // сколько упаковано
+
+    operation_date date                                    // дата выполнения
+    created_at timestamp                                   // создано
+}
+
+///////////////////////////
+// Finance:
+///////////////////////////
+
+/////////////////////////////
+// Табель учета рабочего времени
+Table TIMESHEETS {
+    id uuid [pk]
+
+    employee_id uuid [ref: > EMPLOYEES.id]      // сотрудник
+    department_id uuid [ref: > DEPARTMENTS.id]  // цех
+
+    work_date date                              // дата работы
+    hours_worked numeric                        // отработано часов
+   
+    created_at timestamp                        // создано
+    updated_at timestamp                        // обновлено
+
+    Indexes {
+        (employee_id, work_date) [unique]
+    }
+}
+
+/////////////////////////////
+// Правила расчета заработной платы
+Table PAYROLL_RULES {
+    id uuid [pk]
+
+    effective_from date            // дата начала действия правила
+
+    premium_percent numeric        // X% за перевыполнение
+    description varchar            // описание правила
+}
+
+/////////////////////////////
+// Начисления в зарплате за день
+Table PAYROLL_ACCRUALS {
+    id uuid [pk]
+
+    employee_id uuid [ref: > EMPLOYEES.id]   // сотрудник
+    accrual_date date                        // дата начисления
+
+    hours_worked numeric                     // отработано часов
+    qty_planned numeric                      // плановое количество изделий
+    qty_produced numeric                     // фактическое количество произведенных изделий
+    qty_extra numeric                        // дополнительное количество произведенных изделий
+
+    base_amount numeric                      // базовая сумма
+    premium_amount numeric                   // премия
+    total_amount numeric                     // общая сумма
+
+    created_at timestamp                     // создано
+}   
+
+/////////////////////////////
+// Таблица выплат заработной платы
+Table PAYROLL_PAYMENTS {
+    id uuid [pk]
+
+    employee_id uuid [ref: > EMPLOYEES.id]  // сотрудник
+    payment_date date                       // дата за которую выплачивается зарплата
+    amount numeric                          // сумма выплаты
+
+    created_at timestamp                    // создано
+    created_by uuid [ref: > USERS.id]       // создано пользователем
+}
+ 
+/////////////////////////////
+// Типы расходов
+Table EXPENSE_TYPES {
+    id uuid [pk]
+    name varchar [unique]        // название типа расхода
+    description varchar [null]   // описание
+}
+// Связи
+// Ref: EXPENSE_TYPES.id < EXPENSES.expense_type_id
+
+/////////////////////////////
+// Расходы
+Table EXPENSES {
+    id uuid [pk]
+
+    expense_type_id uuid [ref: > EXPENSE_TYPES.id] // тип расхода
+
+    expense_date date                              // дата расхода
+    amount numeric                                 // сумма расхода
+    description varchar [null]                     // описание расхода
+
+    created_at timestamp                           // создано
+    created_by uuid [ref: > USERS.id]              // создано пользователем
+}
+
+/////////////////////////////
+// Выдача аванса на расходы
+Table CASH_ADVANCES {
+    id uuid [pk]
+
+    employee_id uuid [ref: > EMPLOYEES.id]    // подотчётное лицо
+    issue_date date                           // дата выдачи аванса
+    amount numeric                            // сумма аванса
+
+    created_at timestamp                      // создано
+}
+// Связи
+// Ref: CASH_ADVANCES.id < CASH_ADVANCE_EXPENSES.cash_advance_id
+// Ref: CASH_ADVANCES.id < CASH_ADVANCE_RETURNS.cash_advance_id
+ 
+/////////////////////////////
+// Транзакции из расходов по авансу
+Table CASH_ADVANCE_EXPENSES {
+    id uuid [pk]
+
+    cash_advance_id uuid [ref: > CASH_ADVANCES.id] // аванс, из которого списывается расход
+    expense_date date                              // дата расхода
+    amount numeric                                 // сумма расхода
+    description varchar                            // описание расхода
+}
+ 
+/////////////////////////////
+// Возврат неиспользованного аванса
+Table CASH_ADVANCE_RETURNS {
+    id uuid [pk]
+
+    cash_advance_id uuid [ref: > CASH_ADVANCES.id] // аванс, из которого возвращается сумма
+    return_date date                               // дата возврата
+    amount numeric                                 // сумма возврата
+    description varchar                            // описание возврата
+}
+
+///////////////////////////
+// Финансовые отчеты за месяц
+Table MONTHLY_FINANCIAL_REPORTS {
+    report_year int                               // год отчета
+    report_month int                              // месяц отчета (1-12)
+
+    total_revenue numeric                         // общий доход за месяц
+
+    payroll_expenses numeric                      // расходы на зарплату за месяц
+    material_expenses numeric                     // расходы на материалы за месяц
+    other_expenses numeric                        // прочие расходы за месяц
+
+    status monthly_report_status                  // статус отчета
+
+    calculated_at timestamp                       // посчитано
+    created_by uuid [ref: > USERS.id]             // создано пользователем
+
+    Indexes {
+        (report_year, report_month) [pk]
+    }
+}
+Enum monthly_report_status {
+  DRAFT       // можно пересчитывать
+  CALCULATED  // рассчитан автоматически
+  APPROVED    // утверждён
+  CLOSED      // закрыт, изменения запрещены
+}
