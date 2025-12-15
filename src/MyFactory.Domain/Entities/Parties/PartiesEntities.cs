@@ -3,21 +3,19 @@ using MyFactory.Domain.Entities.Orders;
 
 namespace MyFactory.Domain.Entities.Parties;
 
-public class CustomerEntity : AuditableEntity
+public class CustomerEntity : ActivatableEntity
 {
     public string Name { get; private set; }
-    public bool IsActive { get; private set; }
 
     public IReadOnlyCollection<ContactLinkEntity> ContactLinks { get; private set; } = new List<ContactLinkEntity>();
     public IReadOnlyCollection<SalesOrderEntity> SalesOrders { get; private set; } = new List<SalesOrderEntity>();
     public IReadOnlyCollection<ShipmentEntity> Shipments { get; private set; } = new List<ShipmentEntity>();
     public IReadOnlyCollection<ShipmentReturnEntity> ShipmentReturns { get; private set; } = new List<ShipmentReturnEntity>();
 
-    public CustomerEntity(string name, bool isActive)
+    public CustomerEntity(string name)
     {
         Guard.AgainstNullOrWhiteSpace(name, nameof(name));
         Name = name;
-        IsActive = isActive;
     }
 }
 

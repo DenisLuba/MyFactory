@@ -2,6 +2,7 @@ using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Inventory;
 using MyFactory.Domain.Entities.Materials;
 using MyFactory.Domain.Entities.Orders;
+using MyFactory.Domain.Entities.Organization;
 
 namespace MyFactory.Domain.Entities.Products;
 
@@ -15,16 +16,16 @@ public class ProductEntity : AuditableEntity
 	public decimal? PlanPerHour { get; private set; }
 
 	// Navigation properties
-	public IReadOnlyCollection<ProductDepartmentCostEntity> ProductDepartmentCosts { get; private set; } = new List<ProductDepartmentCostEntity>();
-	public IReadOnlyCollection<ProductMaterialEntity> ProductMaterials { get; private set; } = new List<ProductMaterialEntity>();
-	public IReadOnlyCollection<FinishedGoodsEntity> FinishedGoods { get; private set; } = new List<FinishedGoodsEntity>();
-	public IReadOnlyCollection<WarehouseProductEntity> WarehouseProducts { get; private set; } = new List<WarehouseProductEntity>();
-	public IReadOnlyCollection<FinishedGoodsMovementItemEntity> FinishedGoodsMovementItems { get; private set; } = new List<FinishedGoodsMovementItemEntity>();
-	public IReadOnlyCollection<ShipmentItemEntity> ShipmentItems { get; private set; } = new List<ShipmentItemEntity>();
-	public IReadOnlyCollection<FinishedGoodsStockEntity> FinishedGoodsStocks { get; private set; } = new List<FinishedGoodsStockEntity>();
-	public IReadOnlyCollection<ShipmentReturnItemEntity> ShipmentReturnItems { get; private set; } = new List<ShipmentReturnItemEntity>();
+	public IReadOnlyCollection<ProductDepartmentCostEntity> ProductDepartmentCosts { get; private set; } = [];
+	public IReadOnlyCollection<ProductMaterialEntity> ProductMaterials { get; private set; } = [];
+    public IReadOnlyCollection<FinishedGoodsEntity> FinishedGoods { get; private set; } = [];
+    public IReadOnlyCollection<WarehouseProductEntity> WarehouseProducts { get; private set; } = [];
+    public IReadOnlyCollection<FinishedGoodsMovementItemEntity> FinishedGoodsMovementItems { get; private set; } = [];
+    public IReadOnlyCollection<ShipmentItemEntity> ShipmentItems { get; private set; } = [];
+    public IReadOnlyCollection<FinishedGoodsStockEntity> FinishedGoodsStocks { get; private set; } = [];
+    public IReadOnlyCollection<ShipmentReturnItemEntity> ShipmentReturnItems { get; private set; } = [];
 
-	public ProductEntity(
+    public ProductEntity(
 		string sku,
 		string name,
 		ProductStatus status,
@@ -75,7 +76,7 @@ public class ProductMaterialEntity : BaseEntity
 	}
 }
 
-public class ProductDepartmentCostEntity : AuditableEntity
+public class ProductDepartmentCostEntity : ActivatableEntity
 {
 	public Guid ProductId { get; private set; }
 	public Guid DepartmentId { get; private set; }
@@ -83,10 +84,10 @@ public class ProductDepartmentCostEntity : AuditableEntity
 	public decimal CutCostPerUnit { get; private set; }
 	public decimal SewingCostPerUnit { get; private set; }
 	public decimal PackCostPerUnit { get; private set; }
-	public bool IsActive { get; private set; }
 
 	// Navigation properties
 	public ProductEntity? Product { get; private set; }
+	public DepartmentEntity? Department { get; private set; }
 
 	public ProductDepartmentCostEntity(
 		Guid productId,
@@ -94,8 +95,7 @@ public class ProductDepartmentCostEntity : AuditableEntity
 		decimal expensesPerUnit,
 		decimal cutCostPerUnit,
 		decimal sewingCostPerUnit,
-		decimal packCostPerUnit,
-		bool isActive = true)
+		decimal packCostPerUnit)
 	{
 		Guard.AgainstEmptyGuid(productId, "ProductId is required.");
 		Guard.AgainstEmptyGuid(departmentId, "DepartmentId is required.");
@@ -109,6 +109,5 @@ public class ProductDepartmentCostEntity : AuditableEntity
 		CutCostPerUnit = cutCostPerUnit;
 		SewingCostPerUnit = sewingCostPerUnit;
 		PackCostPerUnit = packCostPerUnit;
-		IsActive = isActive;
 	}
 }

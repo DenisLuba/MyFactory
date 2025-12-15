@@ -58,6 +58,9 @@ public class SalesOrderEntity : AuditableEntity
 
     public void SetRequiredByDate(DateTime? requiredByDate)
     {
+        if (requiredByDate.HasValue && requiredByDate.Value < OrderDate)
+            throw new DomainException("RequiredByDate cannot be earlier than OrderDate.");
+
         RequiredByDate = requiredByDate;
         Touch();
     }
@@ -182,17 +185,13 @@ public enum ShipmentStatus
     Cancelled
 }
 
-//public class ShipmentWarehouseEntity
-//{
-//}
-
 public class ShipmentItemEntity : AuditableEntity
 {
     public Guid ShipmentId { get; private set; }
     public Guid SalesOrderItemId { get; private set; }
     public Guid WarehouseId { get; private set; }
     public Guid ProductId { get; private set; }
-    public int Qty { get; private set; }
+    public decimal Qty { get; private set; }
     public decimal UnitPrice { get; private set; }
 
     public IReadOnlyCollection<ShipmentReturnItemEntity> ShipmentReturnItems { get; private set; } = new List<ShipmentReturnItemEntity>();

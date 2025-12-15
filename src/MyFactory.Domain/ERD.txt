@@ -93,7 +93,7 @@ Table SHIPMENT_ITEMS {
 
     product_id uuid [ref: > PRODUCTS.id]                         // какой товар
 
-    qty int                                                      // сколько штук
+    qty numeric                                                  // сколько штук
     unit_price numeric                                           // цена на момент отгрузки
 }
 // Связи

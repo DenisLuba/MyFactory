@@ -1,4 +1,5 @@
 ﻿using MyFactory.Domain.Common;
+using MyFactory.Domain.Exceptions;
 
 public abstract class BaseEntity
 {
@@ -46,5 +47,32 @@ public abstract class AuditableEntity : BaseEntity
     }
 }
 
+public abstract class ActivatableEntity : AuditableEntity
+{
+    public bool IsActive { get; protected set; }
+
+    protected ActivatableEntity(bool isActive = true)
+    {
+        IsActive = isActive;
+    }
+
+    public void Activate()
+    {
+        if (IsActive)
+            throw new DomainException("Entity is already active.");
+
+        IsActive = true;
+        Touch();
+    }
+
+    public void Deactivate()
+    {
+        if (!IsActive)
+            throw new DomainException("Entity is already inactive.");
+
+        IsActive = false;
+        Touch();
+    }
+}
 
 

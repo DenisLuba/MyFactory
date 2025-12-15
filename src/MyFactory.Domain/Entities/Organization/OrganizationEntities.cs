@@ -4,14 +4,14 @@ using MyFactory.Domain.Entities.Inventory;
 using MyFactory.Domain.Entities.Parties;
 using MyFactory.Domain.Entities.Production;
 using MyFactory.Domain.Entities.Products;
+using MyFactory.Domain.Exceptions;
 
 namespace MyFactory.Domain.Entities.Organization;
 
-public class DepartmentEntity : AuditableEntity
+public class DepartmentEntity : ActivatableEntity
 {
     public string Name { get; private set; }
     public DepartmentType Type { get; private set; }
-    public bool IsActive { get; private set; }
 
     public IReadOnlyCollection<PositionEntity> Positions { get; private set; } = new List<PositionEntity>();
     public IReadOnlyCollection<ProductDepartmentCostEntity> ProductDepartmentCosts { get; private set; } = new List<ProductDepartmentCostEntity>();
@@ -19,12 +19,11 @@ public class DepartmentEntity : AuditableEntity
     public IReadOnlyCollection<ProductionOrderEntity> ProductionOrders { get; private set; } = new List<ProductionOrderEntity>();
     public IReadOnlyCollection<TimesheetEntity> Timesheets { get; private set; } = new List<TimesheetEntity>();
 
-    public DepartmentEntity(string name, DepartmentType type, bool isActive)
+    public DepartmentEntity(string name, DepartmentType type)
     {
         Guard.AgainstNullOrWhiteSpace(name, nameof(name));
         Name = name;
         Type = type;
-        IsActive = isActive;
     }
 }
 
@@ -36,7 +35,7 @@ public enum DepartmentType
     Other
 }
 
-public class PositionEntity : AuditableEntity
+public class PositionEntity : ActivatableEntity
 {
     public string Name { get; private set; }
     public string? Code { get; private set; }
@@ -49,14 +48,12 @@ public class PositionEntity : AuditableEntity
     public bool CanSew { get; private set; }
     public bool CanPackage { get; private set; }
     public bool CanHandleMaterials { get; private set; }
-    public bool IsActive { get; private set; }
 
     public IReadOnlyCollection<EmployeeEntity> Employees { get; private set; } = new List<EmployeeEntity>();
 
     public PositionEntity(
         string name,
         Guid departmentId,
-        bool isActive,
         string? code = null,
         string? description = null,
         decimal? baseNormPerHour = null,
@@ -69,9 +66,16 @@ public class PositionEntity : AuditableEntity
     {
         Guard.AgainstNullOrWhiteSpace(name, nameof(name));
         Guard.AgainstEmptyGuid(departmentId, nameof(departmentId));
+
+        if (baseNormPerHour.HasValue)
+            Guard.AgainstNonPositive(baseNormPerHour.Value, nameof(baseNormPerHour));
+        if (baseRatePerNormHour.HasValue)
+            Guard.AgainstNonPositive(baseRatePerNormHour.Value, nameof(baseRatePerNormHour));
+        if (defaultPremiumPercent.HasValue)
+            Guard.AgainstNegative(defaultPremiumPercent.Value, nameof(defaultPremiumPercent));
+
         Name = name;
         DepartmentId = departmentId;
-        IsActive = isActive;
         Code = code;
         Description = description;
         BaseNormPerHour = baseNormPerHour;
@@ -84,14 +88,13 @@ public class PositionEntity : AuditableEntity
     }
 }
 
-public class EmployeeEntity : AuditableEntity
+public class EmployeeEntity : ActivatableEntity
 {
     public string FullName { get; private set; }
     public Guid PositionId { get; private set; }
     public int Grade { get; private set; }
     public decimal RatePerNormHour { get; private set; }
     public decimal PremiumPercent { get; private set; }
-    public bool IsActive { get; private set; }
     public DateTime HiredAt { get; private set; }
     public DateTime? FiredAt { get; private set; }
 
@@ -104,7 +107,7 @@ public class EmployeeEntity : AuditableEntity
     public IReadOnlyCollection<PayrollPaymentEntity> PayrollPayments { get; private set; } = new List<PayrollPaymentEntity>();
     public IReadOnlyCollection<CashAdvanceEntity> CashAdvances { get; private set; } = new List<CashAdvanceEntity>();
 
-    public EmployeeEntity(string fullName, Guid positionId, int grade, decimal ratePerNormHour, decimal premiumPercent, bool isActive, DateTime hiredAt)
+    public EmployeeEntity(string fullName, Guid positionId, int grade, decimal ratePerNormHour, decimal premiumPercent, DateTime hiredAt)
     {
         Guard.AgainstNullOrWhiteSpace(fullName, nameof(fullName));
         Guard.AgainstEmptyGuid(positionId, nameof(positionId));
@@ -118,7 +121,6 @@ public class EmployeeEntity : AuditableEntity
         Grade = grade;
         RatePerNormHour = ratePerNormHour;
         PremiumPercent = premiumPercent;
-        IsActive = isActive;
         HiredAt = hiredAt;
     }
 
