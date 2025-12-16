@@ -9,15 +9,15 @@ using MyFactory.Domain.Exceptions;
 
 namespace MyFactory.Domain.Entities.Inventory;
 
-public class WarehouseEntity : AuditableEntity
+public class WarehouseEntity : ActivatableEntity
 {
 	public string Name { get; private set; }
 	public WarehouseType Type { get; private set; }
-	public bool IsActive { get; private set; }
 
 	// Navigation properties
 	public IReadOnlyCollection<WarehouseMaterialEntity> WarehouseMaterials { get; private set; } = new List<WarehouseMaterialEntity>();
 	public IReadOnlyCollection<InventoryMovementEntity> InventoryMovementsFrom { get; private set; } = new List<InventoryMovementEntity>();
+	public IReadOnlyCollection<InventoryMovementEntity> InventoryMovementsTo { get; private set; } = new List<InventoryMovementEntity>();
 	public IReadOnlyCollection<FinishedGoodsEntity> FinishedGoods { get; private set; } = new List<FinishedGoodsEntity>();
 	public IReadOnlyCollection<WarehouseProductEntity> WarehouseProducts { get; private set; } = new List<WarehouseProductEntity>();
 	public IReadOnlyCollection<FinishedGoodsMovementEntity> FinishedGoodsMovementsFrom { get; private set; } = new List<FinishedGoodsMovementEntity>();
@@ -26,30 +26,11 @@ public class WarehouseEntity : AuditableEntity
 	public IReadOnlyCollection<FinishedGoodsStockEntity> FinishedGoodsStocks { get; private set; } = new List<FinishedGoodsStockEntity>();
 	public IReadOnlyCollection<ShipmentReturnItemEntity> ShipmentReturnItems { get; private set; } = new List<ShipmentReturnItemEntity>();
 
-	public WarehouseEntity(string name, WarehouseType type, bool isActive = true)
+	public WarehouseEntity(string name, WarehouseType type)
 	{
 		Guard.AgainstNullOrWhiteSpace(name, "Warehouse name is required.");
 		Name = name;
 		Type = type;
-		IsActive = isActive;
-	}
-
-	public void Activate()
-	{
-		if (!IsActive)
-		{
-			IsActive = true;
-			Touch();
-		}
-	}
-
-	public void Deactivate()
-	{
-		if (IsActive)
-		{
-			IsActive = false;
-			Touch();
-		}
 	}
 }
 
@@ -94,6 +75,13 @@ public class WarehouseMaterialEntity : AuditableEntity
 		if (amount > Qty)
 			throw new DomainException("Cannot remove more material than is available in stock.");
 		Qty -= amount;
+		Touch();
+	}
+
+	public void AdjustQty(decimal newQty)
+	{
+		Guard.AgainstNegative(newQty, "New quantity cannot be negative.");
+		Qty = newQty;
 		Touch();
 	}
 }
@@ -217,12 +205,14 @@ public class InventoryMovementEntity : AuditableEntity
 {
 	public InventoryMovementType MovementType { get; private set; }
 	public Guid? FromWarehouseId { get; private set; }
+	public Guid? ToWarehouseId { get; private set; }
 	public Guid? ToDepartmentId { get; private set; }
 	public Guid? ProductionOrderId { get; private set; }
 	public Guid CreatedBy { get; private set; }
 
 	// Navigation properties
 	public WarehouseEntity? FromWarehouse { get; private set; }
+	public WarehouseEntity? ToWarehouse { get; private set; }
 	public DepartmentEntity? ToDepartment { get; private set; }
 	public ProductionOrderEntity? ProductionOrder { get; private set; }
 	public UserEntity? CreatedByUser { get; private set; }
@@ -231,17 +221,46 @@ public class InventoryMovementEntity : AuditableEntity
 	public InventoryMovementEntity(
 		InventoryMovementType movementType,
 		Guid? fromWarehouseId,
+		Guid? toWarehouseId,
 		Guid? toDepartmentId,
 		Guid? productionOrderId,
 		Guid createdBy)
 	{
+		ValidateMovement(movementType, fromWarehouseId, toWarehouseId, toDepartmentId);
 		Guard.AgainstNull(movementType, "MovementType is required.");
 		Guard.AgainstEmptyGuid(createdBy, "CreatedBy is required.");
+		
 		MovementType = movementType;
 		FromWarehouseId = fromWarehouseId;
+		ToWarehouseId = toWarehouseId;
 		ToDepartmentId = toDepartmentId;
 		ProductionOrderId = productionOrderId;
 		CreatedBy = createdBy;
+	}
+
+	private static void ValidateMovement(
+		InventoryMovementType movementType,
+		Guid? fromWarehouseId,
+		Guid? toWarehouseId,
+		Guid? toDepartmentId)
+	{
+		switch (movementType)
+		{
+			case InventoryMovementType.IssueToDept:
+			case InventoryMovementType.ReturnFromDept:
+				Guard.AgainstNull(fromWarehouseId, nameof(fromWarehouseId));
+				Guard.AgainstNull(toDepartmentId, nameof(toDepartmentId));
+				break;
+
+			case InventoryMovementType.Transfer:
+				Guard.AgainstNull(fromWarehouseId, nameof(fromWarehouseId));
+				Guard.AgainstNull(toWarehouseId, nameof(toWarehouseId));
+				break;
+
+			case InventoryMovementType.Adjustment:
+				// допускаем всё null
+				break;
+		}
 	}
 }
 

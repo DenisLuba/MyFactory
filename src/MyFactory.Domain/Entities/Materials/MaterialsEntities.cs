@@ -4,13 +4,12 @@ using MyFactory.Domain.Entities.Products;
 
 namespace MyFactory.Domain.Entities.Materials;
 
-public class MaterialEntity : AuditableEntity
+public class MaterialEntity : ActivatableEntity
 {
 	public string Name { get; private set; }
 	public Guid MaterialTypeId { get; private set; }
 	public Guid UnitId { get; private set; }
 	public string? Color { get; private set; }
-	public bool IsActive { get; private set; }
 
 	// Navigation properties
 	public MaterialTypeEntity? MaterialType { get; private set; }
@@ -21,16 +20,17 @@ public class MaterialEntity : AuditableEntity
 	public IReadOnlyCollection<MaterialSupplierPriceEntity> MaterialSupplierPrices { get; private set; } = new List<MaterialSupplierPriceEntity>();
 	public IReadOnlyCollection<InventoryMovementItemEntity> InventoryMovementItems { get; private set; } = new List<InventoryMovementItemEntity>();
 
-	public MaterialEntity(string name, Guid materialTypeId, Guid unitId, string? color = null, bool isActive = true)
+	public MaterialEntity(string name, Guid materialTypeId, Guid unitId, string? color = null)
 	{
 		Guard.AgainstNullOrWhiteSpace(name, "Material name is required.");
 		Guard.AgainstEmptyGuid(materialTypeId, "MaterialTypeId is required.");
 		Guard.AgainstEmptyGuid(unitId, "UnitId is required.");
+		Guard.AgainstNullOrWhiteSpace(color, "The color can not be empty.");
+
 		Name = name;
 		MaterialTypeId = materialTypeId;
 		UnitId = unitId;
 		Color = color;
-		IsActive = isActive;
 	}
 }
 
@@ -67,35 +67,32 @@ public class UnitEntity : BaseEntity
 	}
 }
 
-public class SupplierEntity : AuditableEntity
+public class SupplierEntity : ActivatableEntity
 {
 	public string Name { get; private set; }
-	public bool IsActive { get; private set; }
 
 	// Navigation properties
 	public IReadOnlyCollection<MaterialSupplierEntity> MaterialSuppliers { get; private set; } = new List<MaterialSupplierEntity>();
 	public IReadOnlyCollection<MaterialSupplierPriceEntity> MaterialSupplierPrices { get; private set; } = new List<MaterialSupplierPriceEntity>();
 
-	public SupplierEntity(string name, bool isActive = true)
+	public SupplierEntity(string name)
 	{
 		Guard.AgainstNullOrWhiteSpace(name, "Supplier name is required.");
 		Name = name;
-		IsActive = isActive;
 	}
 }
 
-public class MaterialSupplierEntity : AuditableEntity
+public class MaterialSupplierEntity : ActivatableEntity
 {
 	public Guid MaterialId { get; private set; }
 	public Guid SupplierId { get; private set; }
 	public decimal? MinOrderQty { get; private set; }
-	public bool IsActive { get; private set; }
 
 	// Navigation properties
 	public MaterialEntity? Material { get; private set; }
 	public SupplierEntity? Supplier { get; private set; }
 
-	public MaterialSupplierEntity(Guid materialId, Guid supplierId, decimal? minOrderQty = null, bool isActive = true)
+	public MaterialSupplierEntity(Guid materialId, Guid supplierId, decimal? minOrderQty = null)
 	{
 		Guard.AgainstEmptyGuid(materialId, "MaterialId is required.");
 		Guard.AgainstEmptyGuid(supplierId, "SupplierId is required.");
@@ -104,7 +101,6 @@ public class MaterialSupplierEntity : AuditableEntity
 		MaterialId = materialId;
 		SupplierId = supplierId;
 		MinOrderQty = minOrderQty;
-		IsActive = isActive;
 	}
 }
 

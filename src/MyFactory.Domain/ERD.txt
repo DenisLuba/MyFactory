@@ -338,6 +338,7 @@ Enum warehouse_type_enum {
 // Связи
 // Ref: WAREHOUSES.id < WAREHOUSE_MATERIALS.warehouse_id    // stores
 // Ref: WAREHOUSES.id < INVENTORY_MOVEMENTS.from_warehouse_id  
+// Ref: WAREHOUSES.id < INVENTORY_MOVEMENTS.to_warehouse_id
 // Ref: WAREHOUSES.id < FINISHED_GOODS.warehouse_id
 // Ref: WAREHOUSES.id < WAREHOUSE_PRODUCTS.warehouse_id      // has products
 // Ref: WAREHOUSES.id < FINISHED_GOODS_MOVEMENTS.from_warehouse_id
@@ -378,9 +379,13 @@ Table WAREHOUSE_PRODUCTS {
 // Перемещение материалов со склада на участок (в цех)
 Table INVENTORY_MOVEMENTS {
     id uuid [pk]
+
     movement_type inventory_movement_type_enum   // статус: передать в цех, вернуть из цеха, передача, корректирование
-    from_warehouse_id uuid [ref: > WAREHOUSES.id, null]  // склад, откуда взяли материалы
+    
+    from_warehouse_id uuid [ref: > WAREHOUSES.id, null]  // склад, откуда взяли материал
+    to_warehouse_id uuid [ref: > WAREHOUSES.id, null]  // склад назначения
     to_department_id uuid [ref: > DEPARTMENTS.id, null]  // цех, куда передали материалы
+
     production_order_id uuid [ref: > PRODUCTION_ORDERS.id, null] // документ производственного заказа
 
     created_at timestamp   // создано

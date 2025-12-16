@@ -31,7 +31,12 @@ public class TimesheetEntity : AuditableEntity
 		HoursWorked = hoursWorked;
 	}
 
-	// No business methods specified in ERD/spec for this entity
+	public void UpdateHoursWorked(decimal hoursWorked)
+	{
+		if (hoursWorked < 0)
+			throw new DomainException($"{nameof(hoursWorked)} cannot be negative.");
+		HoursWorked = hoursWorked;
+	}
 }
 
 public class PayrollRuleEntity : BaseEntity
@@ -143,7 +148,12 @@ public class PayrollPaymentEntity : AuditableEntity
 		CreatedBy = createdBy;
 	}
 
-	// No business methods specified in ERD/spec for this entity
+	public void ChangeAmount(decimal amount)
+	{
+		if (amount < 0)
+			throw new DomainException($"{nameof(amount)} cannot be negative.");
+		Amount = amount;
+	}
 }
 
 public class ExpenseEntity : AuditableEntity
