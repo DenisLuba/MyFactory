@@ -504,8 +504,8 @@ Table MATERIALS {
 // Ref: MATERIALS.id < PRODUCT_MATERIALS.material_id        // part of
 // Ref: MATERIALS.id < WAREHOUSE_MATERIALS.material_id      // stocked
 // Ref: MATERIALS.id < MATERIAL_SUPPLIERS.material_id       // supplied by
-// Ref: MATERIALS.id < MATERIAL_SUPPLIERS_PRICES.material_id > 
 // Ref: MATERIALS.id < INVENTORY_MOVEMENT_ITEMS.material_id  
+// Ref: MATERIALS.id < MATERIAL_PURCHASE_ITEMS.material_id
 
 /////////////////////////////
 // Поставщики
@@ -519,7 +519,7 @@ Table SUPPLIERS {
 }
 // Связи
 // Ref: SUPPLIERS.id < MATERIAL_SUPPLIERS.supplier_id       // offers
-// Ref: SUPPLIERS.id < MATERIAL_SUPPLIERS_PRICES.supplier_id 
+// Ref:SUPPLIERS.id < MATERIAL_PURCHASE_ORDER_ITEMS.supplier_id
 
 /////////////////////////////
 // Связь материала и поставщика: прайс/минимальный заказ
@@ -535,14 +535,34 @@ Table MATERIAL_SUPPLIERS {
 }
 
 /////////////////////////////
-// История цен поставщиков
-Table MATERIAL_SUPPLIERS_PRICES {
+// Заказы на закупку материалов
+Table MATERIAL_PURCHASE_ORDERS {
+    id uuid [pk]            
+    supplier_id uuid [ref: > SUPPLIERS.id]   // поставщик     
+    order_date date                          // дата заказа
+    status purchase_order_status             // статус заказа
+    created_at timestamp                     // создано
+    updated_at timestamp [null]              // обновлено
+}
+Enum purchase_order_status {
+  NEW           // новый
+  CONFIRMED     // подтвержден
+  RECEIVED      // получен
+  CANCELLED     // отменен
+}
+// Связи
+// Ref: MATERIAL_PURCHASE_ORDERS.id < MATERIAL_PURCHASE_ITEMS.purchase_order_id
+
+/////////////////////////////
+// Позиции заказа на закупку материалов
+Table MATERIAL_PURCHASE_ITEMS {
     id uuid [pk]
-    supplier_id uuid [ref: > SUPPLIERS.id]   // поставщик
-    material_id uuid [ref: > MATERIALS.id]   // материал
-    price_per_unit numeric                   // цена за единицу
-    
-    created_at timestamp                     // цена создана
+    purchase_order_id uuid [ref: > MATERIAL_PURCHASE_ORDERS.id] // заказ на закупку
+    material_id uuid [ref: > MATERIALS.id]                      // материал
+    qty numeric                                                 // количество
+    unit_price numeric                                          // цена за единицу
+    created_at timestamp                                        // создано
+    updated_at timestamp                                        // обновлено
 }
 
 ///////////////////////////

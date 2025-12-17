@@ -1,6 +1,7 @@
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Inventory;
 using MyFactory.Domain.Entities.Products;
+using MyFactory.Domain.Exceptions;
 
 namespace MyFactory.Domain.Entities.Materials;
 
@@ -17,15 +18,14 @@ public class MaterialEntity : ActivatableEntity
 	public IReadOnlyCollection<ProductMaterialEntity> ProductMaterials { get; private set; } = new List<ProductMaterialEntity>();
 	public IReadOnlyCollection<WarehouseMaterialEntity> WarehouseMaterials { get; private set; } = new List<WarehouseMaterialEntity>();
 	public IReadOnlyCollection<MaterialSupplierEntity> MaterialSuppliers { get; private set; } = new List<MaterialSupplierEntity>();
-	public IReadOnlyCollection<MaterialSupplierPriceEntity> MaterialSupplierPrices { get; private set; } = new List<MaterialSupplierPriceEntity>();
 	public IReadOnlyCollection<InventoryMovementItemEntity> InventoryMovementItems { get; private set; } = new List<InventoryMovementItemEntity>();
+	public IReadOnlyCollection<MaterialPurchaseOrderItemEntity> MaterialPurchaseOrderItems { get; private set; } = new List<MaterialPurchaseOrderItemEntity>();
 
-	public MaterialEntity(string name, Guid materialTypeId, Guid unitId, string? color = null)
+    public MaterialEntity(string name, Guid materialTypeId, Guid unitId, string? color = null)
 	{
 		Guard.AgainstNullOrWhiteSpace(name, "Material name is required.");
 		Guard.AgainstEmptyGuid(materialTypeId, "MaterialTypeId is required.");
 		Guard.AgainstEmptyGuid(unitId, "UnitId is required.");
-		Guard.AgainstNullOrWhiteSpace(color, "The color can not be empty.");
 
 		Name = name;
 		MaterialTypeId = materialTypeId;
@@ -73,9 +73,9 @@ public class SupplierEntity : ActivatableEntity
 
 	// Navigation properties
 	public IReadOnlyCollection<MaterialSupplierEntity> MaterialSuppliers { get; private set; } = new List<MaterialSupplierEntity>();
-	public IReadOnlyCollection<MaterialSupplierPriceEntity> MaterialSupplierPrices { get; private set; } = new List<MaterialSupplierPriceEntity>();
+	public IReadOnlyCollection<MaterialPurchaseOrderEntity> MaterialPurchaseOrders { get; private set; } = new List<MaterialPurchaseOrderEntity>();
 
-	public SupplierEntity(string name)
+    public SupplierEntity(string name)
 	{
 		Guard.AgainstNullOrWhiteSpace(name, "Supplier name is required.");
 		Name = name;
@@ -104,23 +104,102 @@ public class MaterialSupplierEntity : ActivatableEntity
 	}
 }
 
-public class MaterialSupplierPriceEntity : BaseEntity
+public class MaterialPurchaseOrderEntity : AuditableEntity
 {
-	public Guid SupplierId { get; private set; }
-	public Guid MaterialId { get; private set; }
-	public decimal PricePerUnit { get; private set; }
+    public Guid SupplierId { get; private set; }
+    public DateTime OrderDate { get; private set; }
+    public PurchaseOrderStatus Status { get; private set; }
 
-	// Navigation properties
-	public SupplierEntity? Supplier { get; private set; }
-	public MaterialEntity? Material { get; private set; }
+    public IReadOnlyCollection<MaterialPurchaseOrderItemEntity> MaterialPurchaseItems { get; private set; } = new List<MaterialPurchaseOrderItemEntity>();
 
-	public MaterialSupplierPriceEntity(Guid supplierId, Guid materialId, decimal pricePerUnit)
+    public MaterialPurchaseOrderEntity(Guid supplierId, DateTime orderDate)
+    {
+        Guard.AgainstEmptyGuid(supplierId, nameof(supplierId));
+        Guard.AgainstDefaultDate(orderDate, nameof(orderDate));
+        SupplierId = supplierId;
+        OrderDate = orderDate;
+        Status = PurchaseOrderStatus.New;
+    }
+
+    public void Confirm()
+    {
+        if (Status != PurchaseOrderStatus.New)
+            throw new DomainException("Only new orders can be confirmed.");
+        Status = PurchaseOrderStatus.Confirmed;
+		Touch();
+    }
+
+    public void Receive()
+    {
+        if (Status != PurchaseOrderStatus.Confirmed)
+            throw new DomainException("Only confirmed orders can be received.");
+        Status = PurchaseOrderStatus.Received;
+        Touch();
+    }
+
+    public void Cancel()
+    {
+        if (Status == PurchaseOrderStatus.Received || Status == PurchaseOrderStatus.Cancelled)
+            throw new DomainException("Cannot cancel a received or already cancelled order.");
+        Status = PurchaseOrderStatus.Cancelled;
+        Touch();
+    }
+
+	public void EnsureEditable()
 	{
-		Guard.AgainstEmptyGuid(supplierId, "SupplierId is required.");
-		Guard.AgainstEmptyGuid(materialId, "MaterialId is required.");
-		Guard.AgainstNonPositive(pricePerUnit, "PricePerUnit must be positive.");
-		SupplierId = supplierId;
-		MaterialId = materialId;
-		PricePerUnit = pricePerUnit;
-	}
+		if (Status != PurchaseOrderStatus.New)
+			throw new DomainException("Only new orders can be modified.");
+    }
+}
+
+public enum PurchaseOrderStatus
+{
+    New,
+    Confirmed,
+    Received,
+    Cancelled
+}
+
+public class MaterialPurchaseOrderItemEntity : AuditableEntity
+{
+    public Guid PurchaseOrderId { get; private set; }
+    public Guid MaterialId { get; private set; }
+    public decimal Qty { get; private set; }
+    public decimal UnitPrice { get; private set; }
+    public string MaterialName { get; private set; }
+    public string UnitCode { get; private set; }
+
+
+    public MaterialPurchaseOrderItemEntity(Guid purchaseOrderId, Guid materialId, decimal qty, decimal unitPrice, string materialName, string unitCode)
+    {
+        Guard.AgainstEmptyGuid(purchaseOrderId, nameof(purchaseOrderId));
+        Guard.AgainstEmptyGuid(materialId, nameof(materialId));
+        Guard.AgainstNonPositive(qty, nameof(qty));
+        Guard.AgainstNegative(unitPrice, nameof(unitPrice));
+        Guard.AgainstNullOrWhiteSpace(materialName, nameof(materialName));
+        Guard.AgainstNullOrWhiteSpace(unitCode, nameof(unitCode));
+
+        PurchaseOrderId = purchaseOrderId;
+        MaterialId = materialId;
+        Qty = qty;
+        UnitPrice = unitPrice;
+		MaterialName = materialName;
+		UnitCode = unitCode;
+    }
+
+	public void UpdateQty(decimal qty, MaterialPurchaseOrderEntity order)
+	{
+		order.EnsureEditable();
+		Guard.AgainstNonPositive(qty, nameof(qty));
+		Qty = qty;
+		Touch();
+    }
+
+    public void UpdateUnitPrice(decimal unitPrice, MaterialPurchaseOrderEntity order)
+    {
+        order.EnsureEditable();
+        Guard.AgainstNegative(unitPrice, nameof(unitPrice));
+        UnitPrice = unitPrice;
+        Touch();
+    }
 }
