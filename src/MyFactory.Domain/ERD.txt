@@ -646,6 +646,8 @@ Table PRODUCT_DEPARTMENT_COSTS {
 // Документ производственного заказа
 Table PRODUCTION_ORDERS {
     id uuid [pk]
+    production_order_number varchar [unique]               // номер производственного заказа
+
     sales_order_item_id uuid [ref: > SALES_ORDER_ITEMS.id] // для какой позиции заказа
     department_id uuid [ref: > DEPARTMENTS.id]             // цех исполнения заказа
 
@@ -663,13 +665,13 @@ Table PRODUCTION_ORDERS {
     created_by uuid [ref: > USERS.id] // создано пользователем
 }
 Enum production_order_status_enum {
-  NEW
-  MATERIAL_ISSUED
-  CUTTING
-  SEWING
-  PACKAGING
-  FINISHED
-  CANCELLED
+NEW                     // новый
+MATERIAL_ISSUED         // материалы выданы
+CUTTING_IN_PROGRESS     // в раскрое
+SEWING_IN_PROGRESS      // в пошиве
+PACKAGING_IN_PROGRESS   // в упаковке
+FINISHED                // завершен
+CANCELLED               // отменен
 }
 // Связи
 // Ref: PRODUCTION_ORDERS.id < INVENTORY_MOVEMENTS.production_order_id

@@ -20,7 +20,8 @@ public enum ProductionOrderStatus
 public class ProductionOrderEntity : AuditableEntity
 {
 	// Properties mapped from ERD
-	public Guid SalesOrderItemId { get; private set; }
+	public string ProductionOrderNumber { get; private set; }
+    public Guid SalesOrderItemId { get; private set; }
 	public Guid DepartmentId { get; private set; }
 	public int QtyPlanned { get; private set; }
 	public int QtyFinished { get; private set; }
@@ -48,19 +49,21 @@ public class ProductionOrderEntity : AuditableEntity
 
 	// Constructor
 	public ProductionOrderEntity(
-		Guid salesOrderItemId,
+		string productionOrderNumber,
+        Guid salesOrderItemId,
 		Guid departmentId,
 		int qtyPlanned,
 		Guid createdBy)
 	{
-
-		Guard.AgainstEmptyGuid(salesOrderItemId, nameof(salesOrderItemId));
+		Guard.AgainstNullOrWhiteSpace(productionOrderNumber, nameof(productionOrderNumber));
+        Guard.AgainstEmptyGuid(salesOrderItemId, nameof(salesOrderItemId));
 		Guard.AgainstEmptyGuid(departmentId, nameof(departmentId));
 		if (qtyPlanned <= 0)
 			throw new DomainException($"{nameof(qtyPlanned)} must be positive.");
 		Guard.AgainstEmptyGuid(createdBy, nameof(createdBy));
 
-		SalesOrderItemId = salesOrderItemId;
+		ProductionOrderNumber = productionOrderNumber;
+        SalesOrderItemId = salesOrderItemId;
 		DepartmentId = departmentId;
 		QtyPlanned = qtyPlanned;
 		CreatedBy = createdBy;
