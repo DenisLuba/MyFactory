@@ -71,7 +71,8 @@ public class PayrollAccrualEntity : AuditableEntity
 	public decimal QtyPlanned { get; private set; }
 	public decimal QtyProduced { get; private set; }
 	public decimal QtyExtra { get; private set; }
-	public decimal BaseAmount { get; private set; }
+	public decimal PremiumPercentApplied { get; private set; }
+    public decimal BaseAmount { get; private set; }
 	public decimal PremiumAmount { get; private set; }
 	public decimal TotalAmount { get; private set; }
 
@@ -86,13 +87,15 @@ public class PayrollAccrualEntity : AuditableEntity
 		decimal qtyPlanned,
 		decimal qtyProduced,
 		decimal qtyExtra,
+		decimal premiumPercentApplied,
 		decimal baseAmount,
 		decimal premiumAmount,
 		decimal totalAmount)
 	{
 		Guard.AgainstEmptyGuid(employeeId, nameof(employeeId));
 		Guard.AgainstDefaultDate(accrualDate, nameof(accrualDate));
-		if (hoursWorked < 0)
+		Guard.AgainstNegative(premiumPercentApplied, nameof(premiumPercentApplied));
+        if (hoursWorked < 0)
 			throw new DomainException($"{nameof(hoursWorked)} cannot be negative.");
 		if (qtyPlanned < 0)
 			throw new DomainException($"{nameof(qtyPlanned)} cannot be negative.");
@@ -113,12 +116,19 @@ public class PayrollAccrualEntity : AuditableEntity
 		QtyPlanned = qtyPlanned;
 		QtyProduced = qtyProduced;
 		QtyExtra = qtyExtra;
-		BaseAmount = baseAmount;
+		PremiumPercentApplied = premiumPercentApplied;
+        BaseAmount = baseAmount;
 		PremiumAmount = premiumAmount;
 		TotalAmount = totalAmount;
 	}
 
 	// No business methods specified in ERD/spec for this entity
+
+	public void UpdatePremiumPercentApplied(decimal premiumPercentApplied)
+	{
+		Guard.AgainstNegative(premiumPercentApplied, nameof(premiumPercentApplied));
+		PremiumPercentApplied = premiumPercentApplied;
+    }
 }
 
 public class PayrollPaymentEntity : AuditableEntity

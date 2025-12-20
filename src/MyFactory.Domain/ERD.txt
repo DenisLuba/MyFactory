@@ -209,8 +209,8 @@ Enum contact_owner_type_enum {
 // Сотрудники
 Table EMPLOYEES {
     id uuid [pk]
-    full_name varchar                        // имя, фамилия, отчество
-    position_id uuid [ref: > POSITIONS.id]   // должность
+    full_name varchar                         // имя, фамилия, отчество
+    position_id uuid [ref: > POSITIONS.id]    // должность
     grade int                                 // разряд сотрудника
     rate_per_norm_hour numeric                // ставка в час
     premium_percent numeric                   // процент за переработку
@@ -770,6 +770,7 @@ Table PAYROLL_ACCRUALS {
     qty_produced numeric                     // фактическое количество произведенных изделий
     qty_extra numeric                        // дополнительное количество произведенных изделий
 
+    premium_percent_applied numeric          // примененный процент премии
     base_amount numeric                      // базовая сумма
     premium_amount numeric                   // премия
     total_amount numeric                     // общая сумма
