@@ -1,0 +1,13 @@
+using System;
+using MediatR;
+using MyFactory.Application.DTOs.Advances;
+
+namespace MyFactory.Application.OldFeatures.Advances.Commands.AddAdvanceReport;
+
+public sealed record AddAdvanceReportCommand(
+    Guid AdvanceId,
+    string Description,
+    decimal Amount,
+    DateOnly ReportedAt,
+    Guid FileId,
+    DateOnly SpentAt) : IRequest<AdvanceDto>;

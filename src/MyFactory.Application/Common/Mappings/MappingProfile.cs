@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MyFactory.Application.DTOs.Materials;
 
 namespace MyFactory.Application.Common.Mappings;
 

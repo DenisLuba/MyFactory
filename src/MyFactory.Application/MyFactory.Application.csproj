@@ -13,15 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Materials\" />
-    <Folder Include="Features\Inventory\" />
-    <Folder Include="Features\FinishedGoods\" />
-    <Folder Include="Features\Finance\" />
-    <Folder Include="Features\Advances\" />
-    <Folder Include="Features\Payroll\" />
-    <Folder Include="Features\Production\" />
-    <Folder Include="Features\Specifications\" />
-    <Folder Include="DTOs\" />
+    <Folder Include="OldDTOs\" />
   </ItemGroup>
 
   <PropertyGroup>

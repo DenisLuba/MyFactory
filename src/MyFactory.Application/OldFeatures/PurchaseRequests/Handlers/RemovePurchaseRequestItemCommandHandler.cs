@@ -1,0 +1,45 @@
+﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using MyFactory.Application.Common.Interfaces;
+using MyFactory.Application.DTOs.PurchaseRequests;
+using MyFactory.Application.Features.PurchaseRequests.Commands;
+using MyFactory.Domain.Entities.Warehousing;
+
+namespace MyFactory.Application.OldFeatures.PurchaseRequests.Handlers;
+
+public sealed class RemovePurchaseRequestItemCommandHandler : IRequestHandler<RemovePurchaseRequestItemCommand, PurchaseRequestDto>
+{
+    private readonly IApplicationDbContext _context;
+
+    public RemovePurchaseRequestItemCommandHandler(IApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<PurchaseRequestDto> Handle(RemovePurchaseRequestItemCommand request, CancellationToken cancellationToken)
+    {
+        var purchaseRequest = await _context.PurchaseRequests
+            .Include(pr => pr.Items)
+            .FirstOrDefaultAsync(pr => pr.Id == request.PurchaseRequestId, cancellationToken)
+            ?? throw new InvalidOperationException("Purchase request not found.");
+
+        if (purchaseRequest.Status != PurchaseRequestStatuses.Draft)
+        {
+            throw new InvalidOperationException("Only draft purchase requests can be modified.");
+        }
+
+        purchaseRequest.RemoveItem(request.PurchaseRequestItemId);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        var materialIds = purchaseRequest.Items.Select(item => item.MaterialId).Distinct().ToList();
+        var materials = await _context.Materials
+            .Where(material => materialIds.Contains(material.Id))
+            .ToDictionaryAsync(material => material.Id, cancellationToken);
+
+        return PurchaseRequestDto.FromEntity(purchaseRequest, purchaseRequest.Items, materials);
+    }
+}
