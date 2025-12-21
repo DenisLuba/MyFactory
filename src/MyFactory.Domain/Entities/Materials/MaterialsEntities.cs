@@ -32,6 +32,14 @@ public class MaterialEntity : ActivatableEntity
 		UnitId = unitId;
 		Color = color;
 	}
+
+    public void Update(string name, Guid materialTypeId, Guid unitId, string? color)
+	{
+		Name = name;
+		MaterialTypeId = materialTypeId;
+		UnitId = unitId;
+		Color = color;
+    }
 }
 
 public class MaterialTypeEntity : BaseEntity
