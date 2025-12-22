@@ -512,6 +512,7 @@ Table MATERIALS {
 Table SUPPLIERS {
     id uuid [pk]
     name varchar                // имя/название поставщика
+    description varchar [null]  // описание поставщика
 
     is_active bool [default: true] // поставщик активен
     created_at timestamp        // создан

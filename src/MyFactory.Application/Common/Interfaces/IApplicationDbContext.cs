@@ -18,6 +18,10 @@ public interface IApplicationDbContext
     DbSet<MaterialPurchaseOrderItemEntity> MaterialPurchaseOrderItems { get; }
     DbSet<SupplierEntity> Suppliers { get; }
 
+    // Inventory Movements
+    DbSet<InventoryMovementEntity> InventoryMovements { get; }
+    DbSet<InventoryMovementItemEntity> InventoryMovementItems { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
 

@@ -78,15 +78,25 @@ public class UnitEntity : BaseEntity
 public class SupplierEntity : ActivatableEntity
 {
 	public string Name { get; private set; }
+	public string? Description { get; private set; }
 
 	// Navigation properties
 	public IReadOnlyCollection<MaterialSupplierEntity> MaterialSuppliers { get; private set; } = new List<MaterialSupplierEntity>();
 	public IReadOnlyCollection<MaterialPurchaseOrderEntity> MaterialPurchaseOrders { get; private set; } = new List<MaterialPurchaseOrderEntity>();
 
-    public SupplierEntity(string name)
+    public SupplierEntity(string name, string? description = null)
 	{
 		Guard.AgainstNullOrWhiteSpace(name, "Supplier name is required.");
 		Name = name;
+		Description = description;
+		UpdatedAt = DateTime.UtcNow;
+	}
+
+	public void Update(string name, string? description)
+	{
+		Name = name;
+		Description = description;
+
 	}
 }
 
@@ -158,6 +168,11 @@ public class MaterialPurchaseOrderEntity : AuditableEntity
 		if (Status != PurchaseOrderStatus.New)
 			throw new DomainException("Only new orders can be modified.");
     }
+
+	public static MaterialPurchaseOrderEntity Create(Guid supplierId, DateTime orderDate)
+	{
+		return new MaterialPurchaseOrderEntity(supplierId, orderDate);
+	}
 }
 
 public enum PurchaseOrderStatus
