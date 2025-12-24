@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Warehouses\GetWarehouses\" />
     <Folder Include="OldDTOs\" />
   </ItemGroup>
 

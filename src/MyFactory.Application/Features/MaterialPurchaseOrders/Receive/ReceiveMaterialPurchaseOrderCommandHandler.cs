@@ -10,10 +10,12 @@ public sealed class ReceiveMaterialPurchaseOrderCommandHandler
     : IRequestHandler<ReceiveMaterialPurchaseOrderCommand>
 {
     private readonly IApplicationDbContext _db;
+    private readonly ICurrentUserService _currentUser;
 
-    public ReceiveMaterialPurchaseOrderCommandHandler(IApplicationDbContext db)
+    public ReceiveMaterialPurchaseOrderCommandHandler(IApplicationDbContext db, ICurrentUserService currentUser)
     {
         _db = db;
+        _currentUser = currentUser;
     }
     public async Task Handle(
         ReceiveMaterialPurchaseOrderCommand request,
@@ -36,7 +38,7 @@ public sealed class ReceiveMaterialPurchaseOrderCommandHandler
             toWarehouseId: request.WarehouseId,
             toDepartmentId: null,
             productionOrderId: null,
-            createdBy: request.ReceivedByUserId
+            createdBy: _currentUser.UserId
         );
 
         _db.InventoryMovements.Add(movement);

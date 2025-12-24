@@ -45,6 +45,28 @@ public class ProductEntity : AuditableEntity
 		Description = description;
 		PlanPerHour = planPerHour;
 	}
+
+	public void Update(
+		string? name = null,
+		ProductStatus? status = null,
+		decimal? planPerHour = null)
+	{
+		if (name is not null)
+		{
+			Guard.AgainstNullOrWhiteSpace(name, "Product name cannot be empty.");
+			Name = name;
+		}
+		if (status is not null)
+		{
+			Guard.AgainstNull(status, "Status cannot be null.");
+			Status = status.Value;
+		}
+		if (planPerHour is not null)
+		{
+			Guard.AgainstNonPositive(planPerHour.Value, "PlanPerHour must be positive if specified.");
+			PlanPerHour = planPerHour;
+		}
+    }
 }
 
 public enum ProductStatus
@@ -74,6 +96,12 @@ public class ProductMaterialEntity : BaseEntity
 		MaterialId = materialId;
 		QtyPerUnit = qtyPerUnit;
 	}
+
+	public void UpdateQty(decimal qtyPerUnit)
+	{
+		Guard.AgainstNegative(qtyPerUnit, "QtyPerUnit must be positive.");
+		QtyPerUnit = qtyPerUnit;
+    }
 }
 
 public class ProductDepartmentCostEntity : ActivatableEntity
@@ -110,4 +138,32 @@ public class ProductDepartmentCostEntity : ActivatableEntity
 		SewingCostPerUnit = sewingCostPerUnit;
 		PackCostPerUnit = packCostPerUnit;
 	}
+
+	public void Update(
+		decimal? expenses = null,
+		decimal? cut = null,
+		decimal? sewing = null,
+		decimal? pack = null)
+	{
+		if (expenses is not null)
+		{
+			Guard.AgainstNegative(expenses.Value, "ExpensesPerUnit cannot be negative.");
+			ExpensesPerUnit = expenses.Value;
+		}
+		if (cut is not null)
+		{
+			Guard.AgainstNegative(cut.Value, "CutCostPerUnit cannot be negative.");
+			CutCostPerUnit = cut.Value;
+		}
+		if (sewing is not null)
+		{
+			Guard.AgainstNegative(sewing.Value, "SewingCostPerUnit cannot be negative.");
+			SewingCostPerUnit = sewing.Value;
+		}
+		if (pack is not null)
+		{
+			Guard.AgainstNegative(pack.Value, "PackCostPerUnit cannot be negative.");
+			PackCostPerUnit = pack.Value;
+		}
+    }
 }

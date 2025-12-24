@@ -25,6 +25,13 @@ public interface IApplicationDbContext
 
     // Products
     DbSet<ProductEntity> Products { get; }
+    DbSet<ProductMaterialEntity> ProductMaterials { get; }
+    DbSet<ProductDepartmentCostEntity> ProductDepartmentCosts { get; }
+
+    // Warehouse
+    DbSet<FinishedGoodsStockEntity> FinishedGoodsStocks { get; }
+    DbSet<FinishedGoodsMovementEntity> FinishedGoodsMovements { get; }
+    DbSet<FinishedGoodsMovementItemEntity> FinishedGoodsMovementItems { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

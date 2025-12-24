@@ -32,6 +32,14 @@ public class WarehouseEntity : ActivatableEntity
 		Name = name;
 		Type = type;
 	}
+
+	public void Update(string name, WarehouseType type)
+	{
+		Guard.AgainstNullOrWhiteSpace(name, "Warehouse name is required.");
+		Name = name;
+		Type = type;
+		Touch();
+    }
 }
 
 public enum WarehouseType
