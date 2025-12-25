@@ -31,7 +31,11 @@ public class SalesOrderEntity : AuditableEntity
         Status = SalesOrderStatus.New;
     }
 
-    // Example state transition methods
+    public static SalesOrderEntity Create(string orderNumber, Guid customerId, DateTime orderDate, Guid createdBy)
+    {
+        return new SalesOrderEntity(orderNumber, customerId, orderDate, createdBy);
+    }
+
     public void Confirm()
     {
         if (Status != SalesOrderStatus.New)
@@ -62,6 +66,15 @@ public class SalesOrderEntity : AuditableEntity
             throw new DomainException("RequiredByDate cannot be earlier than OrderDate.");
 
         RequiredByDate = requiredByDate;
+        Touch();
+    }
+
+    public void Update(Guid customerId, DateTime orderDate)
+    {
+        Guard.AgainstEmptyGuid(customerId, nameof(customerId));
+        Guard.AgainstDefaultDate(orderDate, nameof(orderDate));
+        CustomerId = customerId;
+        OrderDate = orderDate;
         Touch();
     }
 }
@@ -112,6 +125,13 @@ public class SalesOrderItemEntity : AuditableEntity
     public void SetStatus(SalesOrderItemStatus status)
     {
         Status = status;
+        Touch();
+    }
+
+    public void UpdateQty(decimal qtyOrdered)
+    {
+        Guard.AgainstNonPositive(qtyOrdered, nameof(qtyOrdered));
+        QtyOrdered = qtyOrdered;
         Touch();
     }
 }

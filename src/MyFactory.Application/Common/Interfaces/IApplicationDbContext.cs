@@ -2,6 +2,9 @@
 using MyFactory.Domain.Entities.Materials;
 using MyFactory.Domain.Entities.Inventory;
 using MyFactory.Domain.Entities.Products;
+using MyFactory.Domain.Entities.Orders;
+using MyFactory.Domain.Entities.Parties;
+using MyFactory.Domain.Entities.Production;
 
 namespace MyFactory.Application.Common.Interfaces;
 
@@ -29,9 +32,18 @@ public interface IApplicationDbContext
     DbSet<ProductDepartmentCostEntity> ProductDepartmentCosts { get; }
 
     // Warehouse
+    DbSet<FinishedGoodsEntity> FinishedGoods { get; }
     DbSet<FinishedGoodsStockEntity> FinishedGoodsStocks { get; }
     DbSet<FinishedGoodsMovementEntity> FinishedGoodsMovements { get; }
     DbSet<FinishedGoodsMovementItemEntity> FinishedGoodsMovementItems { get; }
+
+    // Orders
+    DbSet<SalesOrderEntity> SalesOrders { get; }
+    DbSet<SalesOrderItemEntity> SalesOrderItems { get; }
+    DbSet<CustomerEntity> Customers { get; }
+
+    // Production
+    DbSet<ProductionOrderEntity> ProductionOrders { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

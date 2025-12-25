@@ -9,21 +9,6 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        // Create
-        new CreateProductCommand(
-            dto.Sku,
-            dto.Name,
-            dto.Status,
-            dto.PlanPerHour
-        );
-
-        // Update
-        new UpdateProductCommand(
-            dto.Id!.Value,
-            dto.Name,
-            dto.PlanPerHour,
-            dto.Status
-        );
 
     }
 }
