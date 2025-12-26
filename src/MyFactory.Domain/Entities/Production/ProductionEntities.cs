@@ -175,6 +175,22 @@ public class ProductionOrderEntity : AuditableEntity
         QtyFinished += qty;
 		Touch();
 	}
+
+	public void Update(Guid departmentId, int qtyPlanned)
+	{
+		if (Status != ProductionOrderStatus.New)
+			throw new DomainException("Only new production orders can be updated.");
+		Guard.AgainstEmptyGuid(departmentId, nameof(departmentId));
+		Guard.AgainstNonPositive(qtyPlanned, nameof(QtyPlanned));
+
+		if (qtyPlanned < QtyPlanned)
+			throw new DomainException("Cannot reduce planned quantity below already planned amount.");
+
+		DepartmentId = departmentId;
+		QtyPlanned = qtyPlanned;
+
+		Touch();
+    }
 }
 
 public class CuttingOperationEntity : AuditableEntity
