@@ -45,6 +45,10 @@ public interface IApplicationDbContext
     // Production
     DbSet<ProductionOrderEntity> ProductionOrders { get; }
 
+    // Contacts
+    DbSet<ContactEntity> Contacts { get; }
+    DbSet<ContactLinkEntity> ContactLinks { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
 

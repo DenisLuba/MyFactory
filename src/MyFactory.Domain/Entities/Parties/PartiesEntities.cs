@@ -17,6 +17,17 @@ public class CustomerEntity : ActivatableEntity
         Guard.AgainstNullOrWhiteSpace(name, nameof(name));
         Name = name;
     }
+
+    public void Update(string name)
+    {
+        Guard.AgainstNullOrWhiteSpace(name, nameof(name));
+        Name = name;
+    }
+
+    public static CustomerEntity Create(string name)
+    {
+        return new CustomerEntity(name);
+    }
 }
 
 public class ContactEntity : AuditableEntity
@@ -33,6 +44,17 @@ public class ContactEntity : AuditableEntity
         ContactType = contactType;
         Value = value;
         IsPrimary = isPrimary;
+    }
+
+    public static ContactEntity Create(ContactType contactType, string value, bool isPrimary)
+    {
+        return new ContactEntity(contactType, value, isPrimary);
+    }
+
+    public void UpdateValue(string value)
+    {
+        Guard.AgainstNullOrWhiteSpace(value, nameof(value));
+        Value = value;
     }
 }
 
@@ -59,6 +81,11 @@ public class ContactLinkEntity : AuditableEntity
         ContactId = contactId;
         OwnerType = ownerType;
         OwnerId = ownerId;
+    }
+
+    public static ContactLinkEntity Create(Guid contactId, ContactOwnerType ownerType, Guid ownerId)
+    {
+        return new ContactLinkEntity(contactId, ownerType, ownerId);
     }
 }
 
