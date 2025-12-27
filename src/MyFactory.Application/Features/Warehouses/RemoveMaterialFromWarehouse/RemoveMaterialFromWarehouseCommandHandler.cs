@@ -33,40 +33,25 @@ public sealed class RemoveMaterialFromWarehouseCommandHandler
 
         if (warehouseMaterial.Qty > 0)
         {
-            await CreateAdjustmentMovement(
+            var movement = new InventoryMovementEntity(
+                InventoryMovementType.Adjustment,
                 request.WarehouseId,
-                request.MaterialId,
-                -warehouseMaterial.Qty,
-                cancellationToken);
+                null,
+                null,
+                null,
+                _currentUser.UserId);
+
+            _db.InventoryMovements.Add(movement);
+
+            _db.InventoryMovementItems.Add(
+                new InventoryMovementItemEntity(
+                    movement.Id,
+                    request.MaterialId,
+                    warehouseMaterial.Qty));
         }
 
         _db.WarehouseMaterials.Remove(warehouseMaterial);
 
         await _db.SaveChangesAsync(cancellationToken);
-    }
-
-    private async Task CreateAdjustmentMovement(
-        Guid warehouseId,
-        Guid materialId,
-        decimal qtyDelta,
-        CancellationToken cancellationToken)
-    {
-        var movement = new InventoryMovementEntity(
-            InventoryMovementType.Adjustment,
-            warehouseId,
-            null,
-            null,
-            null,
-            _currentUser.UserId);
-
-        _db.InventoryMovements.Add(movement);
-
-        _db.InventoryMovementItems.Add(
-            new InventoryMovementItemEntity(
-                movement.Id,
-                materialId,
-                qtyDelta));
-
-        await Task.CompletedTask;
     }
 }

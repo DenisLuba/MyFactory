@@ -33,9 +33,9 @@ public sealed class ReceiveMaterialPurchaseOrderCommandHandler
 
         // 2. Создаём движение
         var movement = new InventoryMovementEntity(
-            movementType: InventoryMovementType.Transfer,
-            fromWarehouseId: null,
-            toWarehouseId: request.WarehouseId,
+            movementType: InventoryMovementType.Adjustment,
+            fromWarehouseId: request.WarehouseId,
+            toWarehouseId: null,
             toDepartmentId: null,
             productionOrderId: null,
             createdBy: _currentUser.UserId

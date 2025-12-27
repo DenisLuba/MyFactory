@@ -31,11 +31,11 @@ public sealed class UpdateWarehouseMaterialQtyCommandHandler
                 cancellationToken)
             ?? throw new NotFoundException("Material not found in warehouse");
 
-        var delta = request.Qty - warehouseMaterial.Qty;
+        var delta = Math.Abs(request.Qty - warehouseMaterial.Qty);
 
         warehouseMaterial.AdjustQty(request.Qty);
 
-        if (delta != 0)
+        if (delta > 0)
         {
             await CreateAdjustmentMovement(
                 request.WarehouseId,
