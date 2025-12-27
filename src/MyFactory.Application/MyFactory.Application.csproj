@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Customers\Queries\" />
     <Folder Include="Features\Warehouses\GetWarehouses\" />
   </ItemGroup>
 
