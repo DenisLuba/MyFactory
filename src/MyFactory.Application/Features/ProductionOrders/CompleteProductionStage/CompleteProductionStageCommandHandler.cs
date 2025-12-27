@@ -22,14 +22,14 @@ public sealed class CompleteProductionStageCommandHandler : IRequestHandler<Comp
         switch (po.Status)
         {
             case ProductionOrderStatus.Cutting:
-                po.AddCut(request.Qty);
+                po.StartCutting();
                 break;
             case ProductionOrderStatus.Sewing:
-                po.AddSewn(request.Qty);
+                po.StartSewing();
                 break;
             case ProductionOrderStatus.Packaging:
                 po.AddPacked(request.Qty);
-                po.AddFinished(request.Qty);
+                po.StartPackaging();
                 break;
             default:
                 throw new DomainException("Invalid stage for completion.");

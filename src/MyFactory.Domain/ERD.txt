@@ -689,6 +689,8 @@ Table CUTTING_OPERATIONS {
     production_order_id uuid [ref: > PRODUCTION_ORDERS.id] // производственный заказ
 
     employee_id uuid [ref: > EMPLOYEES.id]                 // кто кроил
+
+    qty_planned int                                        // сколько планировалось покроить
     qty_cut int                                            // сколько единиц покроено
 
     operation_date date                                    // дата выполнения
@@ -703,6 +705,8 @@ Table SEWING_OPERATIONS {
     production_order_id uuid [ref: > PRODUCTION_ORDERS.id] // производственный заказ
 
     employee_id uuid [ref: > EMPLOYEES.id]                 // швея
+
+    qty_planned int                                        // сколько планировалось сшить
     qty_sewn int                                           // сколько изделий сшито
     hours_worked numeric                                   // отработано часов
 
@@ -718,6 +722,8 @@ Table PACKAGING_OPERATIONS {
     production_order_id uuid [ref: > PRODUCTION_ORDERS.id] // производственный заказ
 
     employee_id uuid [ref: > EMPLOYEES.id]                 // упаковщик
+
+    qty_planned int                                        // сколько планировалось упаковать
     qty_packed int                                         // сколько упаковано
 
     operation_date date                                    // дата выполнения

@@ -21,7 +21,7 @@ public class ProductionOrderEntity : AuditableEntity
 {
 	// Properties mapped from ERD
 	public string ProductionOrderNumber { get; private set; }
-    public Guid SalesOrderItemId { get; private set; }
+	public Guid SalesOrderItemId { get; private set; }
 	public Guid DepartmentId { get; private set; }
 	public int QtyPlanned { get; private set; }
 	public int QtyFinished { get; private set; }
@@ -42,28 +42,28 @@ public class ProductionOrderEntity : AuditableEntity
 	public IReadOnlyCollection<PackagingOperationEntity> PackagingOperations => _packagingOperations;
 	private readonly List<PackagingOperationEntity> _packagingOperations = new();
 
-	
-    public IReadOnlyCollection<InventoryMovementEntity>? InventoryMovements { get; private set; }
-    public IReadOnlyCollection<FinishedGoodsEntity>? FinishedGoods { get; private set; }
+
+	public IReadOnlyCollection<InventoryMovementEntity>? InventoryMovements { get; private set; }
+	public IReadOnlyCollection<FinishedGoodsEntity>? FinishedGoods { get; private set; }
 
 
 	// Constructor
 	public ProductionOrderEntity(
 		string productionOrderNumber,
-        Guid salesOrderItemId,
+		Guid salesOrderItemId,
 		Guid departmentId,
 		int qtyPlanned,
 		Guid createdBy)
 	{
 		Guard.AgainstNullOrWhiteSpace(productionOrderNumber, nameof(productionOrderNumber));
-        Guard.AgainstEmptyGuid(salesOrderItemId, nameof(salesOrderItemId));
+		Guard.AgainstEmptyGuid(salesOrderItemId, nameof(salesOrderItemId));
 		Guard.AgainstEmptyGuid(departmentId, nameof(departmentId));
 		if (qtyPlanned <= 0)
 			throw new DomainException($"{nameof(qtyPlanned)} must be positive.");
 		Guard.AgainstEmptyGuid(createdBy, nameof(createdBy));
 
 		ProductionOrderNumber = productionOrderNumber;
-        SalesOrderItemId = salesOrderItemId;
+		SalesOrderItemId = salesOrderItemId;
 		DepartmentId = departmentId;
 		QtyPlanned = qtyPlanned;
 		CreatedBy = createdBy;
@@ -171,8 +171,8 @@ public class ProductionOrderEntity : AuditableEntity
 		if (QtyFinished + qty > QtyPlanned)
 			throw new DomainException("Cannot finish more than planned quantity.");
 		if (QtyFinished + qty > QtyPacked)
-	        throw new DomainException("Cannot finish more than packed quantity.");
-        QtyFinished += qty;
+			throw new DomainException("Cannot finish more than packed quantity.");
+		QtyFinished += qty;
 		Touch();
 	}
 
@@ -190,6 +190,72 @@ public class ProductionOrderEntity : AuditableEntity
 		QtyPlanned = qtyPlanned;
 
 		Touch();
+	}
+
+	public void RecalculateCutQty(int totalCutQty)
+	{
+        if (totalCutQty < 0)
+            throw new DomainException($"{nameof(totalCutQty)} must be positive.");
+        if (Status != ProductionOrderStatus.Cutting)
+            throw new DomainException("Can only recalculate cut quantity during Cutting stage.");
+        if (totalCutQty > QtyPlanned)
+            throw new DomainException("Cannot cut more than cut quantity.");
+        QtyCut = totalCutQty;
+		Touch();
+	}
+
+	public void RecalculateSewnQty(int totalSewnQty)
+	{
+		if (totalSewnQty < 0)
+			throw new DomainException($"{nameof(totalSewnQty)} must be positive.");
+		if (Status != ProductionOrderStatus.Sewing)
+			throw new DomainException("Can only add sewn quantity during Sewing stage.");
+		if (totalSewnQty > QtyCut)
+			throw new DomainException("Cannot sew more than cut quantity.");
+        QtySewn = totalSewnQty;
+		Touch();
+	}
+
+	public void RecalculatePackedQty(int totalPackedQty)
+	{
+		if (totalPackedQty < 0)
+			throw new DomainException($"{nameof(totalPackedQty)} must be positive.");
+		if (Status != ProductionOrderStatus.Packaging)
+			throw new DomainException("Can only add packed quantity during Packaging stage.");
+		if (totalPackedQty > QtySewn)
+			throw new DomainException("Cannot pack more than sewn quantity.");
+        QtyPacked = totalPackedQty;
+		Touch();
+    }
+
+    public void RemoveCut(int qtyCut)
+    {
+        if (qtyCut <= 0)
+			throw new DomainException($"{nameof(qtyCut)} must be positive.");
+		if (QtyCut - qtyCut < 0)
+			throw new DomainException("Cannot have negative cut quantity.");
+		QtyCut -= qtyCut;
+		Touch();
+    }
+
+	public void RemoveSewn(int qtySewn)
+	{
+		if (qtySewn <= 0)
+			throw new DomainException($"{nameof(qtySewn)} must be positive.");
+		if (QtySewn - qtySewn < 0)
+			throw new DomainException("Cannot have negative sewn quantity.");
+		QtySewn -= qtySewn;
+		Touch();
+    }
+
+	public void RemovePacked(int qtyPacked)
+	{ 		
+		if (qtyPacked <= 0)
+			throw new DomainException($"{nameof(qtyPacked)} must be positive.");
+		if (QtyPacked - qtyPacked < 0)
+			throw new DomainException("Cannot have negative packed quantity.");
+		QtyPacked -= qtyPacked;
+		Touch();
     }
 }
 
@@ -198,7 +264,8 @@ public class CuttingOperationEntity : AuditableEntity
 	// Properties mapped from ERD
 	public Guid ProductionOrderId { get; private set; }
 	public Guid EmployeeId { get; private set; }
-	public int QtyCut { get; private set; }
+	public int QtyPlanned { get; private set; }
+    public int QtyCut { get; private set; }
 	public DateOnly OperationDate { get; private set; }
 
 	// Navigation property stubs (types must exist elsewhere in the domain layer)
@@ -206,17 +273,18 @@ public class CuttingOperationEntity : AuditableEntity
 	// public EmployeeEntity? Employee { get; private set; }
 
 	// Constructor
-	public CuttingOperationEntity(Guid productionOrderId, Guid employeeId, int qtyCut, DateOnly operationDate)
+	public CuttingOperationEntity(Guid productionOrderId, Guid employeeId, int qtyPlanned, int qtyCut, DateOnly operationDate)
 	{
 		Guard.AgainstEmptyGuid(productionOrderId, nameof(productionOrderId));
 		Guard.AgainstEmptyGuid(employeeId, nameof(employeeId));
-		if (qtyCut <= 0)
-			throw new DomainException($"{nameof(qtyCut)} must be positive.");
+		Guard.AgainstNonPositive(qtyPlanned, nameof(qtyPlanned));
+		Guard.AgainstNonPositive(qtyCut, nameof(qtyCut));
 		Guard.AgainstDefaultDate(operationDate, nameof(operationDate));
 
 		ProductionOrderId = productionOrderId;
 		EmployeeId = employeeId;
-		QtyCut = qtyCut;
+		QtyPlanned = qtyPlanned;
+        QtyCut = qtyCut;
 		OperationDate = operationDate;
 	}
 
@@ -228,7 +296,8 @@ public class SewingOperationEntity : AuditableEntity
 	// Properties mapped from ERD
 	public Guid ProductionOrderId { get; private set; }
 	public Guid EmployeeId { get; private set; }
-	public int QtySewn { get; private set; }
+    public int QtyPlanned { get; private set; }
+    public int QtySewn { get; private set; }
 	public decimal HoursWorked { get; private set; }
 	public DateOnly OperationDate { get; private set; }
 
@@ -237,19 +306,19 @@ public class SewingOperationEntity : AuditableEntity
 	// public EmployeeEntity? Employee { get; private set; }
 
 	// Constructor
-	public SewingOperationEntity(Guid productionOrderId, Guid employeeId, int qtySewn, decimal hoursWorked, DateOnly operationDate)
+	public SewingOperationEntity(Guid productionOrderId, Guid employeeId, int qtyPlanned, int qtySewn, decimal hoursWorked, DateOnly operationDate)
 	{
 		Guard.AgainstEmptyGuid(productionOrderId, nameof(productionOrderId));
 		Guard.AgainstEmptyGuid(employeeId, nameof(employeeId));
-		if (qtySewn <= 0)
-			throw new DomainException($"{nameof(qtySewn)} must be positive.");
-		if (hoursWorked <= 0)
-			throw new DomainException($"{nameof(hoursWorked)} must be positive.");
+		Guard.AgainstNonPositive(qtyPlanned, nameof(qtyPlanned));
+		Guard.AgainstNonPositive(qtySewn, nameof(qtySewn));
+		Guard.AgainstNonPositive(hoursWorked, nameof(hoursWorked));
 		Guard.AgainstDefaultDate(operationDate, nameof(operationDate));
 
 		ProductionOrderId = productionOrderId;
 		EmployeeId = employeeId;
-		QtySewn = qtySewn;
+		QtyPlanned = qtyPlanned;
+        QtySewn = qtySewn;
 		HoursWorked = hoursWorked;
 		OperationDate = operationDate;
 	}
@@ -262,7 +331,8 @@ public class PackagingOperationEntity : AuditableEntity
 	// Properties mapped from ERD
 	public Guid ProductionOrderId { get; private set; }
 	public Guid EmployeeId { get; private set; }
-	public int QtyPacked { get; private set; }
+    public int QtyPlanned { get; private set; }
+    public int QtyPacked { get; private set; }
 	public DateOnly OperationDate { get; private set; }
 
 	// Navigation property stubs (types must exist elsewhere in the domain layer)
@@ -270,17 +340,18 @@ public class PackagingOperationEntity : AuditableEntity
 	// public EmployeeEntity? Employee { get; private set; }
 
 	// Constructor
-	public PackagingOperationEntity(Guid productionOrderId, Guid employeeId, int qtyPacked, DateOnly operationDate)
+	public PackagingOperationEntity(Guid productionOrderId, Guid employeeId, int qtyPlanned, int qtyPacked, DateOnly operationDate)
 	{
 		Guard.AgainstEmptyGuid(productionOrderId, nameof(productionOrderId));
 		Guard.AgainstEmptyGuid(employeeId, nameof(employeeId));
-		if (qtyPacked <= 0)
-			throw new DomainException($"{nameof(qtyPacked)} must be positive.");
-		Guard.AgainstDefaultDate(operationDate, nameof(operationDate));
+		Guard.AgainstNonPositive(qtyPlanned, nameof(qtyPlanned));
+		Guard.AgainstNonPositive(qtyPacked, nameof(qtyPacked));
+        Guard.AgainstDefaultDate(operationDate, nameof(operationDate));
 
 		ProductionOrderId = productionOrderId;
 		EmployeeId = employeeId;
-		QtyPacked = qtyPacked;
+		QtyPlanned = qtyPlanned;
+        QtyPacked = qtyPacked;
 		OperationDate = operationDate;
 	}
 

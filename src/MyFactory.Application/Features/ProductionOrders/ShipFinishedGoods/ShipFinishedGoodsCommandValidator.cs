@@ -7,7 +7,8 @@ public sealed class ShipFinishedGoodsCommandValidator : AbstractValidator<ShipFi
     public ShipFinishedGoodsCommandValidator()
     {
         RuleFor(x => x.ProductionOrderId).NotEmpty();
-        RuleFor(x => x.WarehouseId).NotEmpty();
+        RuleFor(x => x.FromWarehouseId).NotEmpty();
+        RuleFor(x => x.ToWarehouseId).NotEmpty();
         RuleFor(x => x.Qty).GreaterThan(0);
     }
 }

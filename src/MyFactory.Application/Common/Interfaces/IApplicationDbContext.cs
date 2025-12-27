@@ -5,6 +5,7 @@ using MyFactory.Domain.Entities.Products;
 using MyFactory.Domain.Entities.Orders;
 using MyFactory.Domain.Entities.Parties;
 using MyFactory.Domain.Entities.Production;
+using MyFactory.Domain.Entities.Organization;
 
 namespace MyFactory.Application.Common.Interfaces;
 
@@ -48,6 +49,12 @@ public interface IApplicationDbContext
     // Contacts
     DbSet<ContactEntity> Contacts { get; }
     DbSet<ContactLinkEntity> ContactLinks { get; }
+
+    // Production Operations
+    DbSet<CuttingOperationEntity> CuttingOperations { get; }
+    DbSet<SewingOperationEntity> SewingOperations { get; }
+    DbSet<PackagingOperationEntity> PackagingOperations { get; }
+    DbSet<EmployeeEntity> Employees { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
