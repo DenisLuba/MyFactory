@@ -11,13 +11,14 @@ public class TimesheetEntity : AuditableEntity
 	public Guid DepartmentId { get; private set; }
 	public DateOnly WorkDate { get; private set; }
 	public decimal HoursWorked { get; private set; }
+	public string? Comment { get; private set; }
 
-	// Navigation property stubs (types must exist elsewhere in the domain layer)
-	// public EmployeeEntity? Employee { get; private set; }
-	// public DepartmentEntity? Department { get; private set; }
+    // Navigation property stubs (types must exist elsewhere in the domain layer)
+    // public EmployeeEntity? Employee { get; private set; }
+    // public DepartmentEntity? Department { get; private set; }
 
-	// Constructor
-	public TimesheetEntity(Guid employeeId, Guid departmentId, DateOnly workDate, decimal hoursWorked)
+    // Constructor
+    public TimesheetEntity(Guid employeeId, Guid departmentId, DateOnly workDate, decimal hoursWorked, string? comment = null)
 	{
 		Guard.AgainstEmptyGuid(employeeId, nameof(employeeId));
 		Guard.AgainstEmptyGuid(departmentId, nameof(departmentId));
@@ -29,7 +30,8 @@ public class TimesheetEntity : AuditableEntity
 		DepartmentId = departmentId;
 		WorkDate = workDate;
 		HoursWorked = hoursWorked;
-	}
+		Comment = comment;
+    }
 
 	public void UpdateHoursWorked(decimal hoursWorked)
 	{
@@ -37,6 +39,15 @@ public class TimesheetEntity : AuditableEntity
 			throw new DomainException($"{nameof(hoursWorked)} cannot be negative.");
 		HoursWorked = hoursWorked;
 	}
+
+    public void Update(decimal hours, string? comment)
+    {
+        if (hours < 0)
+            throw new DomainException("Hours cannot be negative.");
+
+        HoursWorked = hours;
+        Comment = comment;
+    }
 }
 
 public class PayrollRuleEntity : BaseEntity

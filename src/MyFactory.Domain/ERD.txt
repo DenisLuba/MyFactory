@@ -744,7 +744,9 @@ Table TIMESHEETS {
 
     work_date date                              // дата работы
     hours_worked numeric                        // отработано часов
-   
+    
+    comment varchar [null]                      // комментарий
+
     created_at timestamp                        // создано
     updated_at timestamp                        // обновлено
 

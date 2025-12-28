@@ -56,6 +56,10 @@ public interface IApplicationDbContext
     DbSet<PackagingOperationEntity> PackagingOperations { get; }
     DbSet<EmployeeEntity> Employees { get; }
 
+    // Organization
+    DbSet<PositionEntity> Positions { get; }
+    DbSet<DepartmentEntity> Departments { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
 

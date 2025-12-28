@@ -1,0 +1,3 @@
+namespace MyFactory.Application.Features.GetEmployeeProductionAssignments;
+
+public sealed record GetEmployeeProductionAssignmentsQuery;

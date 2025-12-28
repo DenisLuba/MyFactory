@@ -4,7 +4,6 @@ using MyFactory.Domain.Entities.Inventory;
 using MyFactory.Domain.Entities.Parties;
 using MyFactory.Domain.Entities.Production;
 using MyFactory.Domain.Entities.Products;
-using MyFactory.Domain.Exceptions;
 
 namespace MyFactory.Domain.Entities.Organization;
 
@@ -129,6 +128,39 @@ public class EmployeeEntity : ActivatableEntity
         Guard.AgainstDefaultDate(firedAt, nameof(firedAt));
         FiredAt = firedAt;
         IsActive = false;
+        Touch();
+    }
+    public void Rehire(DateTime hiredAt)
+    {
+        Guard.AgainstDefaultDate(hiredAt, nameof(hiredAt));
+        FiredAt = null;
+        HiredAt = hiredAt;
+        IsActive = true;
+        Touch();
+    }
+
+    public void Update(
+        string fullName,
+        Guid positionId,
+        int grade,
+        decimal ratePerNormHour,
+        decimal premiumPercent,
+        DateTime hiredAt)
+    {
+        Guard.AgainstNullOrWhiteSpace(fullName, nameof(fullName));
+        Guard.AgainstEmptyGuid(positionId, nameof(positionId));
+        Guard.AgainstNonPositive(grade, nameof(grade));
+        Guard.AgainstNegative(ratePerNormHour, nameof(ratePerNormHour));
+        Guard.AgainstNegative(premiumPercent, nameof(premiumPercent));
+        Guard.AgainstDefaultDate(hiredAt, nameof(hiredAt));
+
+        FullName = fullName;
+        PositionId = positionId;
+        Grade = grade;
+        RatePerNormHour = ratePerNormHour;
+        PremiumPercent = premiumPercent;
+        HiredAt = hiredAt;
+
         Touch();
     }
 }
