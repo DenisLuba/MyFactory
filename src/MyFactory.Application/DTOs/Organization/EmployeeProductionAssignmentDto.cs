@@ -9,6 +9,6 @@ public sealed class EmployeeProductionAssignmentDto
 
     public ProductionOrderStatus Stage { get; init; }
 
-    public int QtyPlanned { get; init; }
+    public int QtyAssigned { get; init; }
     public int QtyCompleted { get; init; }
 }

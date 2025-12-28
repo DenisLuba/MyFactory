@@ -6,6 +6,7 @@ using MyFactory.Domain.Entities.Orders;
 using MyFactory.Domain.Entities.Parties;
 using MyFactory.Domain.Entities.Production;
 using MyFactory.Domain.Entities.Organization;
+using MyFactory.Domain.Entities.Finance;
 
 namespace MyFactory.Application.Common.Interfaces;
 
@@ -59,6 +60,7 @@ public interface IApplicationDbContext
     // Organization
     DbSet<PositionEntity> Positions { get; }
     DbSet<DepartmentEntity> Departments { get; }
+    DbSet<TimesheetEntity> Timesheets { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

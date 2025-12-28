@@ -1,5 +1,55 @@
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using MyFactory.Application.Common.Interfaces;
+using MyFactory.Application.DTOs.Organization;
+
 namespace MyFactory.Application.Features.GetTimesheets;
 
 public sealed class GetTimesheetsQueryHandler
+    : IRequestHandler<GetTimesheetsQuery, IReadOnlyList<TimesheetListItemDto>>
 {
+    private readonly IApplicationDbContext _db;
+
+    public GetTimesheetsQueryHandler(IApplicationDbContext db)
+    {
+        _db = db;
+    }
+
+    public async Task<IReadOnlyList<TimesheetListItemDto>> Handle(
+        GetTimesheetsQuery request,
+        CancellationToken cancellationToken)
+    {
+        var query =
+            from t in _db.Timesheets.AsNoTracking()
+            join e in _db.Employees.AsNoTracking() on t.EmployeeId equals e.Id
+            join d in _db.Departments.AsNoTracking() on t.DepartmentId equals d.Id
+            where t.WorkDate.Year == request.Period.Year
+               && t.WorkDate.Month == request.Period.Month
+            select new
+            {
+                e.Id,
+                e.FullName,
+                DepartmentName = d.Name,
+                t.HoursWorked,
+                t.WorkDate
+            };
+
+        if (request.EmployeeId.HasValue)
+            query = query.Where(x => x.Id == request.EmployeeId.Value);
+
+        if (request.DepartmentId.HasValue)
+            query = query.Where(x => x.DepartmentName != null);
+
+        return await query
+            .GroupBy(x => new { x.Id, x.FullName, x.DepartmentName })
+            .Select(g => new TimesheetListItemDto
+            {
+                EmployeeId = g.Key.Id,
+                EmployeeName = g.Key.FullName,
+                DepartmentName = g.Key.DepartmentName,
+                TotalHours = g.Sum(x => x.HoursWorked),
+                WorkDays = g.Select(x => x.WorkDate).Distinct().Count()
+            })
+            .ToListAsync(cancellationToken);
+    }
 }
