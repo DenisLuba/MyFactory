@@ -63,8 +63,8 @@ public sealed class GetEmployeeProductionAssignmentsQueryHandler
             };
 
         return await cutting
-            .Union(sewing)
-            .Union(packaging)
+            .Concat(sewing)
+            .Concat(packaging)
             .OrderBy(x => x.ProductionOrderNumber)
             .ToListAsync(cancellationToken);
     }

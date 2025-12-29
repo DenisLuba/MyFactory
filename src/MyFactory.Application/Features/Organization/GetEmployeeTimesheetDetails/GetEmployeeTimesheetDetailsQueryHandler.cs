@@ -30,7 +30,8 @@ public sealed class GetEmployeeTimesheetDetailsQueryHandler
             {
                 EntryId = x.Id,
                 Date = x.WorkDate,
-                Hours = x.HoursWorked
+                Hours = x.HoursWorked,
+                Comment = x.Comment
             })
             .ToListAsync(cancellationToken);
     }

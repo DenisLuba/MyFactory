@@ -27,24 +27,25 @@ public sealed class GetTimesheetsQueryHandler
                && t.WorkDate.Month == request.Period.Month
             select new
             {
-                e.Id,
+                EmployeeId = e.Id,
                 e.FullName,
+                DepartmentId = d.Id,
                 DepartmentName = d.Name,
                 t.HoursWorked,
                 t.WorkDate
             };
 
         if (request.EmployeeId.HasValue)
-            query = query.Where(x => x.Id == request.EmployeeId.Value);
+            query = query.Where(x => x.EmployeeId == request.EmployeeId.Value);
 
         if (request.DepartmentId.HasValue)
-            query = query.Where(x => x.DepartmentName != null);
+            query = query.Where(x => x.DepartmentId == request.DepartmentId.Value);
 
         return await query
-            .GroupBy(x => new { x.Id, x.FullName, x.DepartmentName })
+            .GroupBy(x => new { x.EmployeeId, x.FullName, x.DepartmentName })
             .Select(g => new TimesheetListItemDto
             {
-                EmployeeId = g.Key.Id,
+                EmployeeId = g.Key.EmployeeId,
                 EmployeeName = g.Key.FullName,
                 DepartmentName = g.Key.DepartmentName,
                 TotalHours = g.Sum(x => x.HoursWorked),

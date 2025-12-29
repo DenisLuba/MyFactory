@@ -63,12 +63,20 @@ public sealed class GetEmployeeDetailsQueryHandler
                 ? DateOnly.FromDateTime(employee.FiredAt.Value)
                 : null,
             IsActive = employee.IsActive,
+
+            Department = new DepartmentDto
+            {
+                Id = department.Id,
+                Name = department.Name
+            },
+
             Position = new PositionDto
             {
                 Id = position.Id,
                 Name = position.Name,
                 DepartmentName = department.Name
             },
+
             Contacts = contacts
         };
     }
