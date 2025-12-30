@@ -258,6 +258,7 @@ Table POSITIONS {
 // Цеха/Участки
 Table DEPARTMENTS {
     id uuid [pk]
+    code varchar [null]                   // код участка
     name varchar [unique]                 // Цех 1, Цех 2, Склад материалов
     type department_type_enum             // тип участка
     created_at timestamp                  // участок создан

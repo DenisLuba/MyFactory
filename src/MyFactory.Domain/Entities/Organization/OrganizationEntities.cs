@@ -10,6 +10,7 @@ namespace MyFactory.Domain.Entities.Organization;
 public class DepartmentEntity : ActivatableEntity
 {
     public string Name { get; private set; }
+    public string? Code { get; private set; }
     public DepartmentType Type { get; private set; }
 
     public IReadOnlyCollection<PositionEntity> Positions { get; private set; } = new List<PositionEntity>();
@@ -18,11 +19,27 @@ public class DepartmentEntity : ActivatableEntity
     public IReadOnlyCollection<ProductionOrderEntity> ProductionOrders { get; private set; } = new List<ProductionOrderEntity>();
     public IReadOnlyCollection<TimesheetEntity> Timesheets { get; private set; } = new List<TimesheetEntity>();
 
-    public DepartmentEntity(string name, DepartmentType type)
+    public DepartmentEntity(string name, DepartmentType type, string? code = null)
     {
         Guard.AgainstNullOrWhiteSpace(name, nameof(name));
         Name = name;
         Type = type;
+        Code = code;
+    }
+
+    public void SetCode(string code)
+    {
+        Guard.AgainstNullOrWhiteSpace(code, nameof(code));
+        Code = code;
+        Touch();
+    }
+
+    public void Update(string name, DepartmentType type)
+    {
+        Guard.AgainstNullOrWhiteSpace(name, nameof(name));
+        Name = name;
+        Type = type;
+        Touch();
     }
 }
 
