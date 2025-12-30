@@ -1,4 +1,4 @@
-﻿namespace MyFactory.Application.DTOs.Organization;
+﻿namespace MyFactory.Application.DTOs.Departments;
 
 public sealed class DepartmentDto
 {

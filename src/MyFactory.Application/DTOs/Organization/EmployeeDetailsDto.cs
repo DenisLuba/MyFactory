@@ -1,3 +1,5 @@
+using MyFactory.Application.DTOs.Departments;
+
 namespace MyFactory.Application.DTOs.Organization;
 
 public sealed class EmployeeDetailsDto

@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MyFactory.Application.Common.Exceptions;
 using MyFactory.Application.Common.Interfaces;
+using MyFactory.Application.DTOs.Departments;
 using MyFactory.Application.DTOs.Organization;
 using MyFactory.Domain.Entities.Parties;
 
