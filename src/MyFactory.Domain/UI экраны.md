@@ -2976,7 +2976,7 @@ UpdatePositionCommand
     bool IsActive;
 }
 ```
-
+DeactivatePositionCommand и ActivatePositionCommand аналогично предыдущим примерам.
 ---
 
 ### 🔗 Связь с сотрудниками

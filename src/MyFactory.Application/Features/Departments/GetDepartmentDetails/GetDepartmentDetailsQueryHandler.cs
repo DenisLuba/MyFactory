@@ -29,7 +29,7 @@ public sealed class GetDepartmentDetailsQueryHandler
         {
             Id = department.Id,
             Name = department.Name,
-            Code = department.Code!,
+            Code = department.Code ?? string.Empty,
             Type = department.Type,
             IsActive = department.IsActive
         };

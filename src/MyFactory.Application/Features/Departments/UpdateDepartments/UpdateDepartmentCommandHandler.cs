@@ -24,14 +24,17 @@ public sealed class UpdateDepartmentCommandHandler
             .FirstOrDefaultAsync(x => x.Id == request.DepartmentId, cancellationToken)
             ?? throw new NotFoundException("Department not found");
 
-        var codeExists = await _db.Departments
-            .AnyAsync(x =>
-                x.Id != request.DepartmentId &&
-                x.Code == request.Code,
-                cancellationToken);
+        if (!string.IsNullOrWhiteSpace(request.Code))
+        {
+            var codeExists = await _db.Departments
+                .AnyAsync(x =>
+                    x.Id != request.DepartmentId &&
+                    x.Code == request.Code,
+                    cancellationToken);
 
-        if (codeExists)
-            throw new DomainException("Department with the same code already exists.");
+            if (codeExists)
+                throw new DomainException("Department with the same code already exists.");
+        }
 
         department.Update(
             request.Name,

@@ -29,7 +29,7 @@ public sealed class GetDepartmentsQueryHandler
             .Select(x => new DepartmentListItemDto
             {
                 Id = x.Id,
-                Code = x.Code!,
+                Code = x.Code ?? string.Empty,
                 Name = x.Name,
                 Type = x.Type,
                 IsActive = x.IsActive

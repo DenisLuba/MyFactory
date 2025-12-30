@@ -102,6 +102,42 @@ public class PositionEntity : ActivatableEntity
         CanPackage = canPackage;
         CanHandleMaterials = canHandleMaterials;
     }
+
+    public void Update(
+        string name,
+        Guid departmentId,
+        string? code,
+        decimal? baseNormPerHour,
+        decimal? baseRatePerNormHour,
+        decimal? defaultPremiumPercent,
+        bool canCut,
+        bool canSew,
+        bool canPackage,
+        bool canHandleMaterials)
+    {
+        Guard.AgainstNullOrWhiteSpace(name, nameof(name));
+        Guard.AgainstEmptyGuid(departmentId, nameof(departmentId));
+
+        if (baseNormPerHour.HasValue)
+            Guard.AgainstNonPositive(baseNormPerHour.Value, nameof(baseNormPerHour));
+        if (baseRatePerNormHour.HasValue)
+            Guard.AgainstNonPositive(baseRatePerNormHour.Value, nameof(baseRatePerNormHour));
+        if (defaultPremiumPercent.HasValue)
+            Guard.AgainstNegative(defaultPremiumPercent.Value, nameof(defaultPremiumPercent));
+        
+        Name = name;
+        DepartmentId = departmentId;
+        Code = code;
+        BaseNormPerHour = baseNormPerHour;
+        BaseRatePerNormHour = baseRatePerNormHour;
+        DefaultPremiumPercent = defaultPremiumPercent;
+        CanCut = canCut;
+        CanSew = canSew;
+        CanPackage = canPackage;
+        CanHandleMaterials = canHandleMaterials;
+
+        Touch();
+    }
 }
 
 public class EmployeeEntity : ActivatableEntity
