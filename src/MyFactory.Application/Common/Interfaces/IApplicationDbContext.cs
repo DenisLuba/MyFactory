@@ -62,6 +62,11 @@ public interface IApplicationDbContext
     DbSet<DepartmentEntity> Departments { get; }
     DbSet<TimesheetEntity> Timesheets { get; }
 
+    // Finance
+    DbSet<PayrollAccrualEntity> PayrollAccruals { get; }
+    DbSet<PayrollPaymentEntity> PayrollPayments { get; }
+    DbSet<PayrollRuleEntity> PayrollRules { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
 

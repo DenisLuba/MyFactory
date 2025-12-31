@@ -358,3 +358,72 @@ public class PackagingOperationEntity : AuditableEntity
 	// No business methods specified in ERD/spec for this entity
 }
 
+public class ProductionOrderDepartmentEmployeeEntity : AuditableEntity
+{
+    public Guid ProductionOrderId { get; private set; }
+    public Guid DepartmentId { get; private set; }
+    public ProductionStage Stage { get; private set; }
+
+    public Guid EmployeeId { get; private set; }
+
+    public DateTime WorkDate { get; private set; }
+
+    public int QtyAssigned { get; private set; }
+    public int QtyCompleted { get; private set; }
+
+    protected ProductionOrderDepartmentEmployeeEntity() { }
+
+    public ProductionOrderDepartmentEmployeeEntity(
+        Guid productionOrderId,
+        Guid employeeId,
+        Guid departmentId,
+        ProductionStage stage,
+        DateTime workDate,
+        int qtyAssigned)
+    {
+        Guard.AgainstEmptyGuid(productionOrderId, "The Guid cannot be empty.");
+        Guard.AgainstEmptyGuid(departmentId, "The Guid cannot be empty.");
+        Guard.AgainstEmptyGuid(employeeId, "The Guid cannot be empty.");
+        Guard.AgainstDefaultDate(workDate, "The date cannot be set by default.");
+        Guard.AgainstNegativeOrZero(qtyAssigned, "Assigned quantity cannot be less than or equal to zero.");
+
+        ProductionOrderId = productionOrderId;
+        DepartmentId = departmentId;
+        Stage = stage;
+        EmployeeId = employeeId;
+        WorkDate = workDate.Date;
+        QtyAssigned = qtyAssigned;
+        QtyCompleted = 0;
+    }
+
+    public void UpdateAssignment(int qtyAssigned)
+    {
+        Guard.AgainstNegativeOrZero(qtyAssigned, "Assigned quantity cannot be less than or equal to zero.");
+
+        if (qtyAssigned < QtyCompleted)
+            throw new DomainException(
+                "Assigned quantity cannot be less than already completed.");
+
+        QtyAssigned = qtyAssigned;
+        Touch();
+    }
+
+    public void RegisterCompletion(int qtyCompleted)
+    {
+        Guard.AgainstNegative(qtyCompleted, "Completed quantity cannot be negative.");
+
+        if (qtyCompleted > QtyAssigned)
+            throw new DomainException(
+                "Completed quantity cannot exceed assigned quantity.");
+
+        QtyCompleted = qtyCompleted;
+        Touch();
+    }
+}
+
+public enum ProductionStage
+{
+	Cutting = 0,
+	Sewing = 1,
+	Packaging = 2
+}

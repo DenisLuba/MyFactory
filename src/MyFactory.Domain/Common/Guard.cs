@@ -36,6 +36,14 @@ public static class Guard
         }
     }
 
+    public static void AgainstNegativeOrZero(int value, string message)
+    {
+        if (value <= 0)
+        {
+            throw new DomainException(message);
+        }
+    }
+
     public static void AgainstEmptyGuid(Guid value, string message)
     {
         if (value == Guid.Empty)
