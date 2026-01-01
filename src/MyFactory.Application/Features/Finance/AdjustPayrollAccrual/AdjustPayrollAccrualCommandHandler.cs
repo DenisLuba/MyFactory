@@ -25,21 +25,7 @@ public sealed class AdjustPayrollAccrualCommandHandler
                 .FirstOrDefaultAsync(x => x.Id == request.AccrualId, cancellationToken)
             ?? throw new NotFoundException("Payroll accrual not found");
 
-        var total = request.BaseAmount + request.PremiumAmount;
-
-        _db.PayrollAccruals.Remove(accrual);
-
-        _db.PayrollAccruals.Add(new PayrollAccrualEntity(
-            accrual.EmployeeId,
-            accrual.AccrualDate,
-            accrual.HoursWorked,
-            accrual.QtyPlanned,
-            accrual.QtyProduced,
-            accrual.QtyExtra,
-            accrual.PremiumPercentApplied,
-            request.BaseAmount,
-            request.PremiumAmount,
-            total));
+        accrual.Adjust(request.BaseAmount, request.PremiumAmount, request.Reason);
 
         await _db.SaveChangesAsync(cancellationToken);
     }

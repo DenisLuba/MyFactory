@@ -3,6 +3,7 @@ using MyFactory.Domain.Entities.Inventory;
 using MyFactory.Domain.Entities.Materials;
 using MyFactory.Domain.Entities.Orders;
 using MyFactory.Domain.Entities.Organization;
+using MyFactory.Domain.Entities.Finance;
 
 namespace MyFactory.Domain.Entities.Products;
 
@@ -13,7 +14,8 @@ public class ProductEntity : AuditableEntity
 	public int? Version { get; private set; }
 	public string? Description { get; private set; }
 	public ProductStatus Status { get; private set; }
-	public decimal? PlanPerHour { get; private set; }
+	public int? PlanPerHour { get; private set; }
+    public Guid? PayrollRuleId { get; private set; }
 
 	// Navigation properties
 	public IReadOnlyCollection<ProductDepartmentCostEntity> ProductDepartmentCosts { get; private set; } = [];
@@ -31,7 +33,8 @@ public class ProductEntity : AuditableEntity
 		ProductStatus status,
 		int? version = null,
 		string? description = null,
-		decimal? planPerHour = null)
+		int? planPerHour = null,
+        Guid? payrollRuleId = null)
 	{
 		Guard.AgainstNullOrWhiteSpace(sku, "SKU is required.");
 		Guard.AgainstNullOrWhiteSpace(name, "Product name is required.");
@@ -44,12 +47,14 @@ public class ProductEntity : AuditableEntity
 		Version = version;
 		Description = description;
 		PlanPerHour = planPerHour;
+        PayrollRuleId = payrollRuleId;
 	}
 
 	public void Update(
 		string? name = null,
 		ProductStatus? status = null,
-		decimal? planPerHour = null)
+		int? planPerHour = null,
+        Guid? payrollRuleId = null)
 	{
 		if (name is not null)
 		{
@@ -66,6 +71,10 @@ public class ProductEntity : AuditableEntity
 			Guard.AgainstNonPositive(planPerHour.Value, "PlanPerHour must be positive if specified.");
 			PlanPerHour = planPerHour;
 		}
+        if (payrollRuleId is not null)
+        {
+            PayrollRuleId = payrollRuleId;
+        }
     }
 }
 

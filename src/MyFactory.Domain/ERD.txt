@@ -577,17 +577,18 @@ Table MATERIAL_PURCHASE_ITEMS {
 // Товары
 Table PRODUCTS {
     id uuid [pk]
-    sku varchar [unique]                     // артикул (SKU)
-    name varchar                             // название изделия
-    version int [null]                       // версия изделия
-    description varchar [null]               // описание
+    sku varchar [unique]                                 // артикул (SKU)
+    name varchar                                         // название изделия
+    version int [null]                                   // версия изделия
+    description varchar [null]                           // описание
+                                                         
+    status product_status_enum                           // статус изделия
+                                                         
+    plan_per_hour numeric [null]                         // норма пошива
+    payroll_rule_id uuid [ref: > PAYROLL_RULES.id, null] // правило расчета зарплаты
 
-    status product_status_enum               // статус изделия
-
-    plan_per_hour numeric [null]             // норма пошива
-
-    created_at timestamp                     // создано
-    updated_at timestamp                     // обновлено
+    created_at timestamp                                 // создано
+    updated_at timestamp                                 // обновлено
 }
 Enum product_status_enum {
   ACTIVE          // используется
@@ -790,12 +791,14 @@ Table TIMESHEETS {
 // Правила расчета заработной платы
 Table PAYROLL_RULES {
     id uuid [pk]
+    premium_percent numeric               // X% за перевыполнение
 
-    effective_from date            // дата начала действия правила
+    effective_from date                   // дата начала действия правила
 
-    premium_percent numeric        // X% за перевыполнение
-    description varchar            // описание правила
+    description varchar                   // описание правила
 }
+// Связи
+// Ref: PAYROLL_RULES.id < PRODUCTS.payroll_rule_id
 
 /////////////////////////////
 // Начисления в зарплате за день
@@ -810,10 +813,11 @@ Table PAYROLL_ACCRUALS {
     qty_produced numeric                     // фактическое количество произведенных изделий
     qty_extra numeric                        // дополнительное количество произведенных изделий
 
-    premium_percent_applied numeric          // примененный процент премии
     base_amount numeric                      // базовая сумма
     premium_amount numeric                   // премия
     total_amount numeric                     // общая сумма
+
+    ajustment_reason varchar [null]          // причина корректировки
 
     created_at timestamp                     // создано
 }   

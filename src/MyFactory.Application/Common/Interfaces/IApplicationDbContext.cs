@@ -56,6 +56,7 @@ public interface IApplicationDbContext
     DbSet<SewingOperationEntity> SewingOperations { get; }
     DbSet<PackagingOperationEntity> PackagingOperations { get; }
     DbSet<EmployeeEntity> Employees { get; }
+    DbSet<ProductionOrderDepartmentEmployeeEntity> ProductionOrderDepartmentEmployees { get; }
 
     // Organization
     DbSet<PositionEntity> Positions { get; }

@@ -21,35 +21,78 @@ public sealed class AddProductionStageEmployeeCommandHandler : IRequestHandler<A
             ?? throw new NotFoundException("Production order not found");
         if (po.Status != request.Stage)
             throw new DomainException("Cannot add operation: stage does not match order status.");
-        
+
+        var stageQty = request.QtyCompleted;
+        var stage = MapStage(request.Stage);
+        var workDate = request.Date;
+
         if (request.Stage == ProductionOrderStatus.Cutting)
         {
-            if (po.QtyCut + request.Qty > po.QtyPlanned)
+            if (po.QtyCut + request.QtyCompleted > po.QtyPlanned)
                 throw new DomainException("Cannot cut more than planned.");
-            var op = new CuttingOperationEntity(request.ProductionOrderId, request.EmployeeId, request.QtyPlanned, request.Qty, request.Date);
+            var op = new CuttingOperationEntity(request.ProductionOrderId, request.EmployeeId, request.QtyPlanned, stageQty, workDate);
             _db.CuttingOperations.Add(op);
-            po.AddCut(request.Qty);
+            po.AddCut(stageQty);
         }
         else if (request.Stage == ProductionOrderStatus.Sewing)
         {
-            if (po.QtySewn + request.Qty > po.QtyCut)
+            if (po.QtySewn + request.QtyCompleted > po.QtyCut)
                 throw new DomainException("Cannot sew more than cut.");
-            var op = new SewingOperationEntity(request.ProductionOrderId, request.EmployeeId, request.QtyPlanned, request.Qty, request.HoursWorked!.Value, request.Date);
+            var op = new SewingOperationEntity(request.ProductionOrderId, request.EmployeeId, request.QtyPlanned, stageQty, request.HoursWorked!.Value, workDate);
             _db.SewingOperations.Add(op);
-            po.AddSewn(request.Qty);
+            po.AddSewn(stageQty);
         }
         else if (request.Stage == ProductionOrderStatus.Packaging)
         {
-            if (po.QtyPacked + request.Qty > po.QtySewn)
+            if (po.QtyPacked + request.QtyCompleted > po.QtySewn)
                 throw new DomainException("Cannot pack more than sewn.");
-            var op = new PackagingOperationEntity(request.ProductionOrderId, request.EmployeeId, request.QtyPlanned, request.Qty, request.Date);
+            var op = new PackagingOperationEntity(request.ProductionOrderId, request.EmployeeId, request.QtyPlanned, stageQty, workDate);
             _db.PackagingOperations.Add(op);
-            po.AddPacked(request.Qty);
+            po.AddPacked(stageQty);
         }
         else
         {
             throw new DomainException("Invalid stage for operation.");
         }
+
+        var departmentId = po.DepartmentId;
+        var podEmployee = await _db.ProductionOrderDepartmentEmployees
+            .FirstOrDefaultAsync(x =>
+                x.ProductionOrderId == request.ProductionOrderId &&
+                x.DepartmentId == departmentId &&
+                x.EmployeeId == request.EmployeeId &&
+                x.Stage == stage &&
+                x.WorkDate == workDate,
+                cancellationToken);
+
+        if (podEmployee is null)
+        {
+            podEmployee = new ProductionOrderDepartmentEmployeeEntity(
+                request.ProductionOrderId,
+                request.EmployeeId,
+                departmentId,
+                stage,
+                workDate,
+                request.QtyPlanned);
+            podEmployee.RegisterCompletion(stageQty);
+            _db.ProductionOrderDepartmentEmployees.Add(podEmployee);
+        }
+        else
+        {
+            var newAssigned = podEmployee.QtyAssigned + request.QtyPlanned;
+            var newCompleted = podEmployee.QtyCompleted + stageQty;
+            podEmployee.UpdateAssignment(newAssigned);
+            podEmployee.RegisterCompletion(newCompleted);
+        }
+
         await _db.SaveChangesAsync(cancellationToken);
     }
+
+    private static ProductionStage MapStage(ProductionOrderStatus status) => status switch
+    {
+        ProductionOrderStatus.Cutting => ProductionStage.Cutting,
+        ProductionOrderStatus.Sewing => ProductionStage.Sewing,
+        ProductionOrderStatus.Packaging => ProductionStage.Packaging,
+        _ => throw new DomainException("Invalid stage for production order department employee")
+    };
 }

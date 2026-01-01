@@ -1,4 +1,3 @@
-using System;
 using MediatR;
 using MyFactory.Domain.Entities.Production;
 
@@ -8,8 +7,8 @@ public sealed record AddProductionStageEmployeeCommand(
     Guid ProductionOrderId,
     ProductionOrderStatus Stage,
     Guid EmployeeId,
-    int QtyPlanned,
-    int Qty,
+    int QtyPlanned, // если уже есть запланированное количество, то будет добавлено к нему
+    int QtyCompleted,
     DateOnly Date,
     decimal? HoursWorked
 ) : IRequest;

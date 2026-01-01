@@ -1,5 +1,5 @@
-
 using MyFactory.Domain.Common;
+using MyFactory.Domain.Entities.Products;
 using MyFactory.Domain.Exceptions;
 
 namespace MyFactory.Domain.Entities.Finance;
@@ -57,8 +57,10 @@ public class PayrollRuleEntity : BaseEntity
 	public decimal PremiumPercent { get; private set; }
 	public string Description { get; private set; }
 
-	// Constructor
-	public PayrollRuleEntity(DateOnly effectiveFrom, decimal premiumPercent, string description)
+    public IReadOnlyCollection<ProductEntity> Products { get; private set; } = [];
+
+    // Constructor
+    public PayrollRuleEntity(DateOnly effectiveFrom, decimal premiumPercent, string description)
 	{
 		Guard.AgainstDefaultDate(effectiveFrom, nameof(effectiveFrom));
 		if (premiumPercent < 0)
@@ -82,13 +84,11 @@ public class PayrollAccrualEntity : AuditableEntity
 	public decimal QtyPlanned { get; private set; }
 	public decimal QtyProduced { get; private set; }
 	public decimal QtyExtra { get; private set; }
-	public decimal PremiumPercentApplied { get; private set; }
     public decimal BaseAmount { get; private set; }
 	public decimal PremiumAmount { get; private set; }
 	public decimal TotalAmount { get; private set; }
+	public string? AdjustmentReason { get; private set; }
 
-	// Navigation property stubs (types must exist elsewhere in the domain layer)
-	// public EmployeeEntity? Employee { get; private set; }
 
 	// Constructor
 	public PayrollAccrualEntity(
@@ -98,14 +98,13 @@ public class PayrollAccrualEntity : AuditableEntity
 		decimal qtyPlanned,
 		decimal qtyProduced,
 		decimal qtyExtra,
-		decimal premiumPercentApplied,
 		decimal baseAmount,
 		decimal premiumAmount,
-		decimal totalAmount)
+		decimal totalAmount,
+		string? adjustmentReason = null)
 	{
 		Guard.AgainstEmptyGuid(employeeId, nameof(employeeId));
 		Guard.AgainstDefaultDate(accrualDate, nameof(accrualDate));
-		Guard.AgainstNegative(premiumPercentApplied, nameof(premiumPercentApplied));
         if (hoursWorked < 0)
 			throw new DomainException($"{nameof(hoursWorked)} cannot be negative.");
 		if (qtyPlanned < 0)
@@ -127,19 +126,27 @@ public class PayrollAccrualEntity : AuditableEntity
 		QtyPlanned = qtyPlanned;
 		QtyProduced = qtyProduced;
 		QtyExtra = qtyExtra;
-		PremiumPercentApplied = premiumPercentApplied;
         BaseAmount = baseAmount;
 		PremiumAmount = premiumAmount;
 		TotalAmount = totalAmount;
+		AdjustmentReason = adjustmentReason;
 	}
 
-	// No business methods specified in ERD/spec for this entity
-
-	public void UpdatePremiumPercentApplied(decimal premiumPercentApplied)
+	public void Adjust(decimal baseAmount, decimal premiumAmount, string reason)
 	{
-		Guard.AgainstNegative(premiumPercentApplied, nameof(premiumPercentApplied));
-		PremiumPercentApplied = premiumPercentApplied;
-    }
+		if (baseAmount < 0)
+			throw new DomainException($"{nameof(baseAmount)} cannot be negative.");
+		if (premiumAmount < 0)
+			throw new DomainException($"{nameof(premiumAmount)} cannot be negative.");
+		Guard.AgainstNullOrWhiteSpace(reason, nameof(reason));
+
+		BaseAmount = baseAmount;
+		PremiumAmount = premiumAmount;
+		TotalAmount = baseAmount + premiumAmount;
+		AdjustmentReason = reason;
+
+		Touch();
+	}
 }
 
 public class PayrollPaymentEntity : AuditableEntity
@@ -149,10 +156,6 @@ public class PayrollPaymentEntity : AuditableEntity
 	public DateOnly PaymentDate { get; private set; }
 	public decimal Amount { get; private set; }
 	public Guid CreatedBy { get; private set; }
-
-	// Navigation property stubs (types must exist elsewhere in the domain layer)
-	// public EmployeeEntity? Employee { get; private set; }
-	// public UserEntity? Creator { get; private set; }
 
 	// Constructor
 	public PayrollPaymentEntity(Guid employeeId, DateOnly paymentDate, decimal amount, Guid createdBy)

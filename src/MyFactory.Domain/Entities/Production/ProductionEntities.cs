@@ -46,9 +46,12 @@ public class ProductionOrderEntity : AuditableEntity
 	public IReadOnlyCollection<InventoryMovementEntity>? InventoryMovements { get; private set; }
 	public IReadOnlyCollection<FinishedGoodsEntity>? FinishedGoods { get; private set; }
 
+    public IReadOnlyCollection<ProductionOrderDepartmentEmployeeEntity> ProductionOrderDepartmentEmployees => _productionOrderDepartmentEmployees;
+	private readonly List<ProductionOrderDepartmentEmployeeEntity> _productionOrderDepartmentEmployees = new();
 
-	// Constructor
-	public ProductionOrderEntity(
+
+    // Constructor
+    public ProductionOrderEntity(
 		string productionOrderNumber,
 		Guid salesOrderItemId,
 		Guid departmentId,
@@ -366,7 +369,7 @@ public class ProductionOrderDepartmentEmployeeEntity : AuditableEntity
 
     public Guid EmployeeId { get; private set; }
 
-    public DateTime WorkDate { get; private set; }
+    public DateOnly WorkDate { get; private set; }
 
     public int QtyAssigned { get; private set; }
     public int QtyCompleted { get; private set; }
@@ -378,7 +381,7 @@ public class ProductionOrderDepartmentEmployeeEntity : AuditableEntity
         Guid employeeId,
         Guid departmentId,
         ProductionStage stage,
-        DateTime workDate,
+        DateOnly workDate,
         int qtyAssigned)
     {
         Guard.AgainstEmptyGuid(productionOrderId, "The Guid cannot be empty.");
@@ -391,7 +394,7 @@ public class ProductionOrderDepartmentEmployeeEntity : AuditableEntity
         DepartmentId = departmentId;
         Stage = stage;
         EmployeeId = employeeId;
-        WorkDate = workDate.Date;
+        WorkDate = workDate;
         QtyAssigned = qtyAssigned;
         QtyCompleted = 0;
     }

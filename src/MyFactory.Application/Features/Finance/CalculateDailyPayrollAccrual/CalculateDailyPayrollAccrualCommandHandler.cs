@@ -25,47 +25,66 @@ public sealed class CalculateDailyPayrollAccrualCommandHandler
                 .FirstOrDefaultAsync(x => x.Id == request.EmployeeId, cancellationToken)
             ?? throw new NotFoundException("Employee not found");
 
-        var position =
-            await _db.Positions
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == employee.PositionId, cancellationToken)
-            ?? throw new NotFoundException("Position not found");
+        var sewingOps = await (
+            from op in _db.SewingOperations.AsNoTracking()
+            join po in _db.ProductionOrders.AsNoTracking() on op.ProductionOrderId equals po.Id
+            join so in _db.SalesOrderItems.AsNoTracking() on po.SalesOrderItemId equals so.Id
+            join p in _db.Products.AsNoTracking() on so.ProductId equals p.Id
+            join pr in _db.PayrollRules.AsNoTracking() on p.PayrollRuleId equals pr.Id into prg
+            from pr in prg.DefaultIfEmpty()
+            where op.EmployeeId == employee.Id && op.OperationDate == request.Date
+            select new
+            {
+                op.QtySewn,
+                op.HoursWorked,
+                p.PlanPerHour,
+                PremiumPercent = pr != null ? (decimal?)pr.PremiumPercent : null
+            }
+        ).ToListAsync(cancellationToken);
 
-        var timesheet =
-            await _db.Timesheets
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x =>
-                    x.EmployeeId == employee.Id &&
-                    x.WorkDate == request.Date,
-                    cancellationToken);
-
-        if (timesheet == null || timesheet.HoursWorked == 0)
+        if (sewingOps.Count == 0)
             return;
 
-        // TODO: получить фактическое производство
-        var qtyProduced = 0m;
+        var hoursWorked = sewingOps.Sum(x => x.HoursWorked);
+        if (hoursWorked <= 0)
+            return;
 
 
 
+        //var ruleByDate =
+        //    await _db.PayrollRules
+        //        .AsNoTracking()
+        //        .Where(x => x.EffectiveFrom <= request.Date)
+        //        .OrderByDescending(x => x.EffectiveFrom)
+        //        .FirstOrDefaultAsync(cancellationToken);
 
+        //var fallbackPremiumPercent = employee.PremiumPercent ?? ruleByDate?.PremiumPercent ?? 0m;
 
+        var qtyProduced = sewingOps.Sum(x => x.QtySewn);
+        decimal qtyPlanned = 0m;
+        decimal qtyExtra = 0m;
+        decimal premiumAmount = 0m;
+        //decimal maxPremiumApplied = fallbackPremiumPercent;
 
-        var qtyPlanned =
-            (position.BaseNormPerHour ?? 0m) * timesheet.HoursWorked;
+        foreach (var op in sewingOps)
+        {
+            var planPerHour = op.PlanPerHour ?? 0m;
+            var planned = planPerHour * op.HoursWorked;
+            qtyPlanned += planned;
 
-        var qtyExtra = Math.Max(0, qtyProduced - qtyPlanned);
+            var extra = Math.Max(0, op.QtySewn - planned);
+            qtyExtra += extra;
 
-        var rule =
-            await _db.PayrollRules
-                .AsNoTracking()
-                .Where(x => x.EffectiveFrom <= request.Date)
-                .OrderByDescending(x => x.EffectiveFrom)
-                .FirstOrDefaultAsync(cancellationToken);
+            var premiumPercent = employee.PremiumPercent ?? op.PremiumPercent ?? 0m;
 
-        var premiumPercent = rule?.PremiumPercent ?? employee.PremiumPercent;
+            //var premiumPercent = op.ProductPremiumPercent ?? fallbackPremiumPercent;
+            //if (premiumPercent > maxPremiumApplied)
+            //    maxPremiumApplied = premiumPercent;
 
-        var baseAmount = timesheet.HoursWorked * employee.RatePerNormHour;
-        var premiumAmount = qtyExtra * employee.RatePerNormHour * premiumPercent / 100m;
+            premiumAmount += extra * employee.RatePerNormHour * premiumPercent / 100m;
+        }
+
+        var baseAmount = hoursWorked * employee.RatePerNormHour;
         var totalAmount = baseAmount + premiumAmount;
 
         var existing =
@@ -81,13 +100,13 @@ public sealed class CalculateDailyPayrollAccrualCommandHandler
         }
 
         _db.PayrollAccruals.Add(new PayrollAccrualEntity(
-            employee.Id,
-            request.Date,
-            timesheet.HoursWorked,
-            qtyPlanned,
-            qtyProduced,
-            qtyExtra,
-            premiumPercent,
+            employeeId: employee.Id,
+            accrualDate: request.Date,
+            hoursWorked: hoursWorked,
+            qtyPlanned: qtyPlanned,
+            qtyProduced: qtyProduced,
+            qtyExtra: qtyExtra,
+            //premiumPercentApplied: maxPremiumApplied,
             baseAmount,
             premiumAmount,
             totalAmount));
