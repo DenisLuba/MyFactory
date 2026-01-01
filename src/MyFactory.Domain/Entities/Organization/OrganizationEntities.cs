@@ -19,8 +19,8 @@ public class DepartmentEntity : ActivatableEntity
     public IReadOnlyCollection<ProductionOrderEntity> ProductionOrders { get; private set; } = new List<ProductionOrderEntity>();
     public IReadOnlyCollection<TimesheetEntity> Timesheets { get; private set; } = new List<TimesheetEntity>();
 
-    public IReadOnlyCollection<ProductionOrderDepartmentEmployeeEntity> ProductionOrderDepartmentEmployees => _productionOrderDepartmentEmployees;
-    private readonly List<ProductionOrderDepartmentEmployeeEntity> _productionOrderDepartmentEmployees = new();
+    //public IReadOnlyCollection<ProductionOrderDepartmentEmployeeEntity> ProductionOrderDepartmentEmployees => _productionOrderDepartmentEmployees;
+    //private readonly List<ProductionOrderDepartmentEmployeeEntity> _productionOrderDepartmentEmployees = new();
 
     public DepartmentEntity(string name, DepartmentType type, string? code = null)
     {
@@ -162,8 +162,8 @@ public class EmployeeEntity : ActivatableEntity
     public IReadOnlyCollection<PayrollPaymentEntity> PayrollPayments { get; private set; } = new List<PayrollPaymentEntity>();
     public IReadOnlyCollection<CashAdvanceEntity> CashAdvances { get; private set; } = new List<CashAdvanceEntity>();
 
-    public IReadOnlyCollection<ProductionOrderDepartmentEmployeeEntity> ProductionOrderDepartmentEmployees => _productionOrderDepartmentEmployees;
-    private readonly List<ProductionOrderDepartmentEmployeeEntity> _productionOrderDepartmentEmployees = new();
+    //public IReadOnlyCollection<ProductionOrderDepartmentEmployeeEntity> ProductionOrderDepartmentEmployees => _productionOrderDepartmentEmployees;
+    //private readonly List<ProductionOrderDepartmentEmployeeEntity> _productionOrderDepartmentEmployees = new();
 
     public EmployeeEntity(string fullName, Guid positionId, int grade, decimal ratePerNormHour, decimal premiumPercent, DateTime hiredAt)
     {

@@ -56,7 +56,7 @@ public interface IApplicationDbContext
     DbSet<SewingOperationEntity> SewingOperations { get; }
     DbSet<PackagingOperationEntity> PackagingOperations { get; }
     DbSet<EmployeeEntity> Employees { get; }
-    DbSet<ProductionOrderDepartmentEmployeeEntity> ProductionOrderDepartmentEmployees { get; }
+    //DbSet<ProductionOrderDepartmentEmployeeEntity> ProductionOrderDepartmentEmployees { get; }
 
     // Organization
     DbSet<PositionEntity> Positions { get; }
@@ -67,6 +67,7 @@ public interface IApplicationDbContext
     DbSet<PayrollAccrualEntity> PayrollAccruals { get; }
     DbSet<PayrollPaymentEntity> PayrollPayments { get; }
     DbSet<PayrollRuleEntity> PayrollRules { get; }
+    DbSet<ExpenseTypeEntity> ExpenseTypes { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

@@ -55,7 +55,7 @@ public sealed class CalculateDailyPayrollAccrualCommandHandler
         //    await _db.PayrollRules
         //        .AsNoTracking()
         //        .Where(x => x.EffectiveFrom <= request.Date)
-        //        .OrderByDescending(x => x.EffectiveFrom)
+        //        .OrderByDescending(x => x.EffectiveFrom) // сейчас можно создавать несколько правил в одну дату, поэтому могут быть разночтения и дублирования
         //        .FirstOrDefaultAsync(cancellationToken);
 
         //var fallbackPremiumPercent = employee.PremiumPercent ?? ruleByDate?.PremiumPercent ?? 0m;

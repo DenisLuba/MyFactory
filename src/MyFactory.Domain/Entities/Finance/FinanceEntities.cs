@@ -72,6 +72,18 @@ public class PayrollRuleEntity : BaseEntity
 		Description = description;
 	}
 
+	public void Update(DateOnly effectiveFrom, decimal premiumPercent, string description)
+	{
+		Guard.AgainstDefaultDate(effectiveFrom, nameof(effectiveFrom));
+		if (premiumPercent < 0)
+			throw new DomainException($"{nameof(premiumPercent)} cannot be negative.");
+		Guard.AgainstNullOrWhiteSpace(description, nameof(description));
+
+		EffectiveFrom = effectiveFrom;
+		PremiumPercent = premiumPercent;
+		Description = description;
+	}
+
 	// No business methods specified in ERD/spec for this entity
 }
 
@@ -224,6 +236,13 @@ public class ExpenseTypeEntity : BaseEntity
 
 	// Constructor
 	public ExpenseTypeEntity(string name, string? description)
+	{
+		Guard.AgainstNullOrWhiteSpace(name, nameof(name));
+		Name = name;
+		Description = description;
+	}
+
+	public void Update(string name, string? description)
 	{
 		Guard.AgainstNullOrWhiteSpace(name, nameof(name));
 		Name = name;

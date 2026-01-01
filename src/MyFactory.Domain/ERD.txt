@@ -227,7 +227,8 @@ Ref: EMPLOYEES.id < CONTACT_LINKS.owner_id    // has contacts
 // Ref: EMPLOYEES.id < PAYROLL_ACCRUALS.employee_id
 // Ref: EMPLOYEES.id < PAYROLL_PAYMENTS.employee_id
 // Ref: EMPLOYEES.id < CASH_ADVANCES.employee_id
-// Ref: EMPLOYEES.id < PRODUCTION_ORDER_DEPARTMENT_EMPLOYEES.employee_id
+
+// // Ref: EMPLOYEES.id < PRODUCTION_ORDER_DEPARTMENT_EMPLOYEES.employee_id
 
 /////////////////////////////
 // Должности
@@ -278,7 +279,8 @@ Enum department_type_enum {
 // Ref: DEPARTMENTS.id < INVENTORY_MOVEMENTS.to_department_id 
 // Ref: DEPARTMENTS.id < PRODUCTION_ORDERS.department_id
 // Ref: DEPARTMENTS.id < TIMESHEETS.department_id
-// Ref: DEPARTMENTS.id < PRODUCTION_ORDER_DEPARTMENT_EMPLOYEES.department_id
+
+// // Ref: DEPARTMENTS.id < PRODUCTION_ORDER_DEPARTMENT_EMPLOYEES.department_id
 
 ///////////////////////////
 // Security:
@@ -684,7 +686,8 @@ CANCELLED               // отменен
 // Ref: PRODUCTION_ORDERS.id < PACKAGING_OPERATIONS.production_order_id
 // Ref: PRODUCTION_ORDERS.id < SEWING_OPERATIONS.production_order_id
 // Ref: PRODUCTION_ORDERS.id < FINISHED_GOODS.production_order_id
-// Ref: PRODUCTION_ORDERS.id < PRODUCTION_ORDER_DEPARTMENT_EMPLOYEES.production_order_id
+
+// // Ref: PRODUCTION_ORDERS.id < PRODUCTION_ORDER_DEPARTMENT_EMPLOYEES.production_order_id
 
 /////////////////////////////
 // Операции раскроя
@@ -737,30 +740,30 @@ Table PACKAGING_OPERATIONS {
 
 /////////////////////////////
 // Диспетчерская таблица
-Table PRODUCTION_ORDER_DEPARTMENT_EMPLOYEES {
-    id uuid [pk]
-
-    production_order_id uuid [ref: > PRODUCTION_ORDERS.id, unique]    // производственный заказ
-    employee_id uuid [ref: > EMPLOYEES.id, unique]                  // сотрудник
-    department_id uuid [ref: > DEPARTMENTS.id, unique]                // цех
-    stage production_stage_enum                               // этап производства
-
-    qty_assigned int                                          // назначено сотруднику
-    qty_completed int                                         // выполнено (текущий статус)
-                                                              
-    work_date date [unique]                                            // рабочий день
-
-    created_at timestamp
-    updated_at timestamp
-}
-
-
-
-Enum production_stage_enum {
-  CUTTING    // раскрой
-  SEWING     // пошив
-  PACKAGING  // упаковка
-}
+//Table PRODUCTION_ORDER_DEPARTMENT_EMPLOYEES {
+//    id uuid [pk]
+//
+//    production_order_id uuid [ref: > PRODUCTION_ORDERS.id, unique]    // производственный заказ
+//    employee_id uuid [ref: > EMPLOYEES.id, unique]                  // сотрудник
+//    department_id uuid [ref: > DEPARTMENTS.id, unique]                // цех
+//    stage production_stage_enum                               // этап производства
+//
+//    qty_assigned int                                          // назначено сотруднику
+//    qty_completed int                                         // выполнено (текущий статус)
+//                                                              
+//    work_date date [unique]                                            // рабочий день
+//
+//    created_at timestamp
+//    updated_at timestamp
+//}
+//
+//
+//
+//Enum production_stage_enum {
+//  CUTTING    // раскрой
+//  SEWING     // пошив
+//  PACKAGING  // упаковка
+//}
 
 ///////////////////////////
 // Finance:
