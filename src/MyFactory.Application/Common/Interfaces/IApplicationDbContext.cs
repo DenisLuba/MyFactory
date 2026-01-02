@@ -7,11 +7,15 @@ using MyFactory.Domain.Entities.Parties;
 using MyFactory.Domain.Entities.Production;
 using MyFactory.Domain.Entities.Organization;
 using MyFactory.Domain.Entities.Finance;
+using MyFactory.Domain.Entities.Security;
 
 namespace MyFactory.Application.Common.Interfaces;
 
 public interface IApplicationDbContext
 {
+    DbSet<RoleEntity> Roles { get; }
+    DbSet<UserEntity> Users { get; }
+
     // Materials List
     DbSet<MaterialEntity> Materials { get; }
     DbSet<MaterialTypeEntity> MaterialTypes { get; }

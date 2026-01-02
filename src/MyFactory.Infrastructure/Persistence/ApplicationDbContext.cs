@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using MyFactory.Application.Common.Interfaces;
 using MyFactory.Domain.Entities.Finance;
+using MyFactory.Domain.Entities.Security;
 using MyFactory.Domain.Entities.Inventory;
 using MyFactory.Domain.Entities.Materials;
 using MyFactory.Domain.Entities.Orders;
@@ -20,12 +21,14 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
 
+    public DbSet<RoleEntity> Roles => throw new NotImplementedException();
+    public DbSet<UserEntity> Users => throw new NotImplementedException();
     
-    public DbSet<ExpenseEntity> Expenses => Set<ExpenseEntity>();
-    public DbSet<CashAdvanceEntity> CashAdvances => Set<CashAdvanceEntity>();
-    public DbSet<CashAdvanceExpenseEntity> CashAdvanceExpenses => Set<CashAdvanceExpenseEntity>();
-    public DbSet<CashAdvanceReturnEntity> CashAdvanceReturns => Set<CashAdvanceReturnEntity>();
-    public DbSet<MonthlyFinancialReportEntity> MonthlyFinancialReports => Set<MonthlyFinancialReportEntity>();
+    public DbSet<ExpenseEntity> Expenses => throw new NotImplementedException();
+    public DbSet<CashAdvanceEntity> CashAdvances => throw new NotImplementedException();
+    public DbSet<CashAdvanceExpenseEntity> CashAdvanceExpenses => throw new NotImplementedException();
+    public DbSet<CashAdvanceReturnEntity> CashAdvanceReturns => throw new NotImplementedException();
+    public DbSet<MonthlyFinancialReportEntity> MonthlyFinancialReports => throw new NotImplementedException();
 
     public DbSet<MaterialEntity> Materials => throw new NotImplementedException();
 
@@ -94,6 +97,9 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<PayrollRuleEntity> PayrollRules => throw new NotImplementedException();
 
     public DbSet<ExpenseTypeEntity> ExpenseTypes => throw new NotImplementedException();
+
+    public DbSet<ShipmentEntity> Shipments => throw new NotImplementedException();
+    public DbSet<ShipmentItemEntity> ShipmentItems => throw new NotImplementedException();
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {

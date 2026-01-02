@@ -15,7 +15,6 @@ public class UserEntity : ActivatableEntity
 
     public IReadOnlyCollection<ContactLinkEntity> ContactLinks { get; private set; } = new List<ContactLinkEntity>();
 
-    
     // public IReadOnlyCollection<SalesOrderEntity> CreatedSalesOrders { get; private set; } = new List<SalesOrderEntity>();
     // public IReadOnlyCollection<InventoryMovementEntity> CreatedInventoryMovements { get; private set; } = new List<InventoryMovementEntity>();
     // public IReadOnlyCollection<ProductionOrderEntity> CreatedProductionOrders { get; private set; } = new List<ProductionOrderEntity>();
@@ -36,6 +35,13 @@ public class UserEntity : ActivatableEntity
         PasswordHash = passwordHash;
         RoleId = roleId;
     }
+
+    public void ChangeRoleId(Guid roleId)
+    {
+        Guard.AgainstEmptyGuid(roleId, nameof(roleId));
+        RoleId = roleId;
+        Touch();
+    }
 }
 
 public class RoleEntity : AuditableEntity
@@ -47,5 +53,12 @@ public class RoleEntity : AuditableEntity
     {
         Guard.AgainstNullOrWhiteSpace(name, nameof(name));
         Name = name;
+    }
+
+    public void Rename(string name)
+    {
+        Guard.AgainstNullOrWhiteSpace(name, nameof(name));
+        Name = name;
+        Touch();
     }
 }
