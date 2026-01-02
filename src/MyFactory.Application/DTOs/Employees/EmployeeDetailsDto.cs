@@ -13,7 +13,7 @@ public sealed class EmployeeDetailsDto
     public int Grade { get; init; }
 
     public decimal RatePerNormHour { get; init; }
-    public decimal PremiumPercent { get; init; }
+    public decimal? PremiumPercent { get; init; }
 
     public DateOnly HiredAt { get; init; }
     public DateOnly? FiredAt { get; init; }

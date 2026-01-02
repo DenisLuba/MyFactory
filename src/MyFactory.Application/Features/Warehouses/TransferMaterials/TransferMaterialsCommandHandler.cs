@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MyFactory.Application.Common.Exceptions;
 using MyFactory.Application.Common.Interfaces;
 using MyFactory.Domain.Entities.Inventory;
+using MyFactory.Domain.Entities.Materials;
 
 namespace MyFactory.Application.Features.Warehouses.TransferMaterials;
 
@@ -74,14 +75,30 @@ public sealed class TransferMaterialsCommandHandler
                 toStock.AddQty(item.Qty);
             }
 
+            var unitCost = await GetUnitCost(item.MaterialId, cancellationToken);
+
             var movementItem = new InventoryMovementItemEntity(
                 movement.Id,
                 item.MaterialId,
-                item.Qty);
+                item.Qty,
+                unitCost);
 
             _db.InventoryMovementItems.Add(movementItem);
         }
 
         await _db.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task<decimal> GetUnitCost(Guid materialId, CancellationToken cancellationToken)
+    {
+        var cost = await (
+            from i in _db.MaterialPurchaseOrderItems.AsNoTracking()
+            join o in _db.MaterialPurchaseOrders.AsNoTracking() on i.PurchaseOrderId equals o.Id
+            where i.MaterialId == materialId && o.Status == PurchaseOrderStatus.Received
+            orderby o.OrderDate descending
+            select (decimal?)i.UnitPrice)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return cost ?? 0m;
     }
 }

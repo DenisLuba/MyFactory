@@ -221,6 +221,21 @@ public class ExpenseEntity : AuditableEntity
 		CreatedBy = createdBy;
 	}
 
+	public void Update(Guid expenseTypeId, DateOnly expenseDate, decimal amount, string? description)
+	{
+		Guard.AgainstEmptyGuid(expenseTypeId, nameof(expenseTypeId));
+		Guard.AgainstDefaultDate(expenseDate, nameof(expenseDate));
+		if (amount < 0)
+			throw new DomainException($"{nameof(amount)} cannot be negative.");
+
+		ExpenseTypeId = expenseTypeId;
+		ExpenseDate = expenseDate;
+		Amount = amount;
+		Description = description;
+
+		Touch();
+	}
+
 	// No business methods specified in ERD/spec for this entity
 }
 
@@ -257,17 +272,20 @@ public class CashAdvanceEntity : AuditableEntity
 	// Properties mapped from ERD
 	public Guid EmployeeId { get; private set; }
 	public DateOnly IssueDate { get; private set; }
-	public decimal Amount { get; private set; }
+	public decimal Amount { get; set; }
 
-	// Navigation property stubs (types must exist elsewhere in the domain layer)
-	// public EmployeeEntity? Employee { get; private set; }
-	// public IReadOnlyCollection<CashAdvanceExpenseEntity> CashAdvanceExpenses => _cashAdvanceExpenses;
-	// private readonly List<CashAdvanceExpenseEntity> _cashAdvanceExpenses = new();
-	// public IReadOnlyCollection<CashAdvanceReturnEntity> CashAdvanceReturns => _cashAdvanceReturns;
-	// private readonly List<CashAdvanceReturnEntity> _cashAdvanceReturns = new();
+	public CashAdvanceStatus Status { get; private set; }
+	public DateOnly? ClosedAt { get; private set; }
 
-	// Constructor
-	public CashAdvanceEntity(Guid employeeId, DateOnly issueDate, decimal amount)
+    // Navigation property stubs (types must exist elsewhere in the domain layer)
+    // public EmployeeEntity? Employee { get; private set; }
+    // public IReadOnlyCollection<CashAdvanceExpenseEntity> CashAdvanceExpenses => _cashAdvanceExpenses;
+    // private readonly List<CashAdvanceExpenseEntity> _cashAdvanceExpenses = new();
+    // public IReadOnlyCollection<CashAdvanceReturnEntity> CashAdvanceReturns => _cashAdvanceReturns;
+    // private readonly List<CashAdvanceReturnEntity> _cashAdvanceReturns = new();
+
+    // Constructor
+    public CashAdvanceEntity(Guid employeeId, DateOnly issueDate, decimal amount)
 	{
 		Guard.AgainstEmptyGuid(employeeId, nameof(employeeId));
 		Guard.AgainstDefaultDate(issueDate, nameof(issueDate));
@@ -277,9 +295,29 @@ public class CashAdvanceEntity : AuditableEntity
 		EmployeeId = employeeId;
 		IssueDate = issueDate;
 		Amount = amount;
+		Status = CashAdvanceStatus.Issued;
+		ClosedAt = null;
 	}
 
-	// No business methods specified in ERD/spec for this entity
+	public void Close(decimal balance)
+	{
+		if (Status == CashAdvanceStatus.Returned)
+			throw new DomainException("Cash advance is already closed.");
+
+		if (balance != 0)
+			throw new DomainException("Cannot close cash advance with non-zero balance.");
+
+		Status = CashAdvanceStatus.Returned;
+		ClosedAt = DateOnly.FromDateTime(DateTime.UtcNow);
+	}
+}
+
+public enum CashAdvanceStatus
+{
+	Issued = 0,
+	PartiallyUsed = 1,
+	Used = 2,
+    Returned = 3
 }
 
 public class CashAdvanceExpenseEntity : BaseEntity
@@ -401,6 +439,44 @@ public class MonthlyFinancialReportEntity : BaseEntity
 		CalculatedAt = calculatedAt;
 		CreatedBy = createdBy;
 	}
+
+	public void Recalculate(decimal totalRevenue, decimal payrollExpenses, decimal materialExpenses, decimal otherExpenses)
+	{
+        if (Status == MonthlyReportStatus.Closed)
+            throw new DomainException("Monthly report is closed and cannot be recalculated.");
+
+        if (totalRevenue < 0 || payrollExpenses < 0 || materialExpenses < 0 || otherExpenses < 0)
+            throw new DomainException("Amounts cannot be negative.");
+
+        TotalRevenue = totalRevenue;
+        PayrollExpenses = payrollExpenses;
+        MaterialExpenses = materialExpenses;
+        OtherExpenses = otherExpenses;
+        Status = MonthlyReportStatus.Calculated;
+        CalculatedAt = DateTime.UtcNow;
+    }
+
+    public void Approve()
+    {
+        if (Status == MonthlyReportStatus.Closed)
+            throw new DomainException("Monthly report is closed.");
+
+        if (Status != MonthlyReportStatus.Calculated)
+            throw new DomainException("Only calculated reports can be approved.");
+
+        Status = MonthlyReportStatus.Approved;
+    }
+
+    public void Close()
+    {
+        if (Status == MonthlyReportStatus.Closed)
+            return;
+
+        if (Status != MonthlyReportStatus.Approved)
+            throw new DomainException("Only approved reports can be closed.");
+
+        Status = MonthlyReportStatus.Closed;
+    }
 
 	// No business methods specified in ERD/spec for this entity
 }

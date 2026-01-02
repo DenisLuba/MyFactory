@@ -6,6 +6,6 @@ namespace MyFactory.Application.Features.Products.UpdateProduct;
 public sealed record UpdateProductCommand(
     Guid ProductId,
     string Name,
-    decimal? PlanPerHour,
+    int? PlanPerHour,
     ProductStatus Status
 ) : IRequest<Guid>;

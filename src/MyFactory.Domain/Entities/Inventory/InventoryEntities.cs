@@ -268,6 +268,10 @@ public class InventoryMovementEntity : AuditableEntity
 			case InventoryMovementType.Adjustment:
 				// допускаем всё null
 				break;
+
+			case InventoryMovementType.Receipt:
+				Guard.AgainstNull(toWarehouseId, nameof(toWarehouseId));
+				break;
 		}
 	}
 }
@@ -277,7 +281,8 @@ public enum InventoryMovementType
 	IssueToDept,
 	ReturnFromDept,
 	Transfer,
-	Adjustment
+	Adjustment,
+    Receipt
 }
 
 public class InventoryMovementItemEntity : AuditableEntity
@@ -285,20 +290,24 @@ public class InventoryMovementItemEntity : AuditableEntity
 	public Guid MovementId { get; private set; }
 	public Guid MaterialId { get; private set; }
 	public decimal Qty { get; private set; }
+	public decimal UnitCost { get; private set; }
 
-	// Navigation properties
-	public InventoryMovementEntity? Movement { get; private set; }
+    // Navigation properties
+    public InventoryMovementEntity? Movement { get; private set; }
 	public MaterialEntity? Material { get; private set; }
 
-	public InventoryMovementItemEntity(Guid movementId, Guid materialId, decimal qty)
+	public InventoryMovementItemEntity(Guid movementId, Guid materialId, decimal qty, decimal unitCost)
 	{
 		Guard.AgainstEmptyGuid(movementId, "MovementId is required.");
 		Guard.AgainstEmptyGuid(materialId, "MaterialId is required.");
 		Guard.AgainstNegative(qty, "Qty cannot be negative.");
-		MovementId = movementId;
+		Guard.AgainstNegative(unitCost, "UnitCost cannot be negative.");
+
+        MovementId = movementId;
 		MaterialId = materialId;
 		Qty = qty;
-	}
+		UnitCost = unitCost;
+    }
 
 	public void AddQty(decimal amount)
 	{

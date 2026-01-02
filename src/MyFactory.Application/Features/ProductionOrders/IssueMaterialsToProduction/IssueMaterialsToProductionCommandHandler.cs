@@ -4,6 +4,7 @@ using MyFactory.Application.Common.Exceptions;
 using MyFactory.Application.Common.Interfaces;
 using MyFactory.Domain.Entities.Production;
 using MyFactory.Domain.Entities.Inventory;
+using MyFactory.Domain.Entities.Materials;
 
 namespace MyFactory.Application.Features.ProductionOrders.IssueMaterialsToProduction;
 
@@ -108,10 +109,13 @@ public sealed class IssueMaterialsToProductionCommandHandler
 
                 stock.RemoveQty(line.Qty);
 
+                var unitCost = await GetUnitCost(line.MaterialId, cancellationToken);
+
                 var item = new InventoryMovementItemEntity(
                     movement.Id,
                     line.MaterialId,
-                    line.Qty);
+                    line.Qty,
+                    unitCost);
 
                 _db.InventoryMovementItems.Add(item);
             }
@@ -121,5 +125,18 @@ public sealed class IssueMaterialsToProductionCommandHandler
         po.IssueMaterials();
 
         await _db.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task<decimal> GetUnitCost(Guid materialId, CancellationToken cancellationToken)
+    {
+        var cost = await (
+            from i in _db.MaterialPurchaseOrderItems.AsNoTracking()
+            join o in _db.MaterialPurchaseOrders.AsNoTracking() on i.PurchaseOrderId equals o.Id
+            where i.MaterialId == materialId && o.Status == PurchaseOrderStatus.Received
+            orderby o.OrderDate descending
+            select (decimal?)i.UnitPrice)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return cost ?? 0m;
     }
 }

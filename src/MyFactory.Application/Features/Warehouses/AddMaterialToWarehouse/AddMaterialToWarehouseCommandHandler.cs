@@ -1,6 +1,7 @@
 ﻿using MyFactory.Application.Common.Exceptions;
 using MyFactory.Application.Common.Interfaces;
 using MyFactory.Domain.Entities.Inventory;
+using MyFactory.Domain.Entities.Materials;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,10 +48,13 @@ public sealed class AddMaterialToWarehouseCommandHandler
 
         _db.WarehouseMaterials.Add(warehouseMaterial);
 
+        var unitCost = await GetUnitCost(request.MaterialId, cancellationToken);
+
         await CreateAdjustmentMovement(
             request.WarehouseId,
             request.MaterialId,
             request.Qty,
+            unitCost,
             cancellationToken);
 
         await _db.SaveChangesAsync(cancellationToken);
@@ -60,6 +64,7 @@ public sealed class AddMaterialToWarehouseCommandHandler
         Guid warehouseId,
         Guid materialId,
         decimal qty,
+        decimal unitCost,
         CancellationToken cancellationToken)
     {
         var movement = new InventoryMovementEntity(
@@ -76,8 +81,22 @@ public sealed class AddMaterialToWarehouseCommandHandler
             new InventoryMovementItemEntity(
                 movement.Id,
                 materialId,
-                qty));
+                qty,
+                unitCost));
 
         await Task.CompletedTask;
+    }
+
+    private async Task<decimal> GetUnitCost(Guid materialId, CancellationToken cancellationToken)
+    {
+        var cost = await (
+            from i in _db.MaterialPurchaseOrderItems.AsNoTracking()
+            join o in _db.MaterialPurchaseOrders.AsNoTracking() on i.PurchaseOrderId equals o.Id
+            where i.MaterialId == materialId && o.Status == PurchaseOrderStatus.Received
+            orderby o.OrderDate descending
+            select (decimal?)i.UnitPrice)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return cost ?? 0m;
     }
 }

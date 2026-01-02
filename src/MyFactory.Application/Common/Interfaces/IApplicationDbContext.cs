@@ -68,6 +68,15 @@ public interface IApplicationDbContext
     DbSet<PayrollPaymentEntity> PayrollPayments { get; }
     DbSet<PayrollRuleEntity> PayrollRules { get; }
     DbSet<ExpenseTypeEntity> ExpenseTypes { get; }
+    DbSet<ExpenseEntity> Expenses { get; }
+    DbSet<CashAdvanceEntity> CashAdvances { get; }
+    DbSet<CashAdvanceExpenseEntity> CashAdvanceExpenses { get; }
+    DbSet<CashAdvanceReturnEntity> CashAdvanceReturns { get; }
+    DbSet<MonthlyFinancialReportEntity> MonthlyFinancialReports { get; }
+
+    // Shipments for Revenue Calculation
+    DbSet<ShipmentEntity> Shipments { get; }
+    DbSet<ShipmentItemEntity> ShipmentItems { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

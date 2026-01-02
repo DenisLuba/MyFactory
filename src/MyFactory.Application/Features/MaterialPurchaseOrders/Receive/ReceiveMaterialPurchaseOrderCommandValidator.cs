@@ -9,6 +9,6 @@ public sealed class ReceiveMaterialPurchaseOrderCommandValidator
     {
         RuleFor(x => x.PurchaseOrderId).NotEmpty();
         RuleFor(x => x.WarehouseId).NotEmpty();
-        RuleFor(x => x.ReceiveDate).NotEmpty();
+        //RuleFor(x => x.ReceiveDate).NotEmpty();
     }
 }

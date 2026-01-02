@@ -402,6 +402,7 @@ Enum inventory_movement_type_enum {
   RETURN_FROM_DEPT   // вернуть из цеха
   TRANSFER           // перемещение
   ADJUSTMENT         // корректирование
+  RECEIPT            // поступление на склад
 }
 // Связи
 // Ref: INVENTORY_MOVEMENTS.id < INVENTORY_MOVEMENT_ITEMS.movement_id 
@@ -413,6 +414,7 @@ Table INVENTORY_MOVEMENT_ITEMS {
     movement_id uuid [ref: > INVENTORY_MOVEMENTS.id]   // документ перемещения материалов со склада
     material_id uuid [ref: > MATERIALS.id]             // сам перемещенный материал
     qty numeric                                        // количество перемещенного материала
+    unit_cost numeric                                  // себестоимость единицы материала для подсчета себестоимости продукции и отчетов по расходам на материалы
 }
 
 /////////////////////////////
@@ -877,6 +879,12 @@ Table CASH_ADVANCES {
 // Связи
 // Ref: CASH_ADVANCES.id < CASH_ADVANCE_EXPENSES.cash_advance_id
 // Ref: CASH_ADVANCES.id < CASH_ADVANCE_RETURNS.cash_advance_id
+Enum cash_advance_status {
+  ISSUED         // выдан
+  PARTIALLY_USED // частично использован
+  USED           // использован полностью
+  RETURNED       // возвращен
+}
  
 /////////////////////////////
 // Транзакции из расходов по авансу

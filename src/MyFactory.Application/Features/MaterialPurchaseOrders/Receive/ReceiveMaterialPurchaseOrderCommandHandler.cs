@@ -31,11 +31,11 @@ public sealed class ReceiveMaterialPurchaseOrderCommandHandler
         // 1. Меняем статус заказа
         order.Receive();
 
-        // 2. Создаём движение
+        // 2. Создаём движение (приход на склад)
         var movement = new InventoryMovementEntity(
-            movementType: InventoryMovementType.Adjustment,
-            fromWarehouseId: request.WarehouseId,
-            toWarehouseId: null,
+            movementType: InventoryMovementType.Receipt,
+            fromWarehouseId: null,
+            toWarehouseId: request.WarehouseId,
             toDepartmentId: null,
             productionOrderId: null,
             createdBy: _currentUser.UserId
@@ -50,7 +50,8 @@ public sealed class ReceiveMaterialPurchaseOrderCommandHandler
             var movementItem = new InventoryMovementItemEntity(
                 movementId: movement.Id,
                 materialId: item.MaterialId,
-                qty: item.Qty
+                qty: item.Qty,
+                unitCost: item.UnitPrice
             );
 
             _db.InventoryMovementItems.Add(movementItem);

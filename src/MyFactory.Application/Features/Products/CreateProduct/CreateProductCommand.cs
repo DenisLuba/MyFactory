@@ -7,6 +7,6 @@ public sealed record CreateProductCommand(
     string Sku,
     string Name,
     ProductStatus Status,
-    decimal? PlanPerHour
+    int? PlanPerHour
 ) : IRequest<Guid>;
 

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MyFactory.Application.Common.Exceptions;
 using MyFactory.Application.Common.Interfaces;
 using MyFactory.Domain.Entities.Inventory;
+using MyFactory.Domain.Entities.Materials;
 
 namespace MyFactory.Application.Features.Warehouses.RemoveMaterialFromWarehouse;
 
@@ -31,6 +32,8 @@ public sealed class RemoveMaterialFromWarehouseCommandHandler
                 cancellationToken)
             ?? throw new NotFoundException("Material not found in warehouse");
 
+        var unitCost = await GetUnitCost(request.MaterialId, cancellationToken);
+
         if (warehouseMaterial.Qty > 0)
         {
             var movement = new InventoryMovementEntity(
@@ -47,11 +50,25 @@ public sealed class RemoveMaterialFromWarehouseCommandHandler
                 new InventoryMovementItemEntity(
                     movement.Id,
                     request.MaterialId,
-                    warehouseMaterial.Qty));
+                    warehouseMaterial.Qty,
+                    unitCost));
         }
 
         _db.WarehouseMaterials.Remove(warehouseMaterial);
 
         await _db.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task<decimal> GetUnitCost(Guid materialId, CancellationToken cancellationToken)
+    {
+        var cost = await (
+            from i in _db.MaterialPurchaseOrderItems.AsNoTracking()
+            join o in _db.MaterialPurchaseOrders.AsNoTracking() on i.PurchaseOrderId equals o.Id
+            where i.MaterialId == materialId && o.Status == PurchaseOrderStatus.Received
+            orderby o.OrderDate descending
+            select (decimal?)i.UnitPrice)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return cost ?? 0m;
     }
 }

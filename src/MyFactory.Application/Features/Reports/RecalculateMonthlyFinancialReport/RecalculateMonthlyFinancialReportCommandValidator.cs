@@ -1,0 +1,1 @@
+namespace MyFactory.Application.Features.Reports.RecalculateMonthlyFinancialReport;
