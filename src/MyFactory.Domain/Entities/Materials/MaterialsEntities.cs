@@ -128,6 +128,8 @@ public class MaterialPurchaseOrderEntity : AuditableEntity
     public DateTime OrderDate { get; private set; }
     public PurchaseOrderStatus Status { get; private set; }
 
+    // Navigation properties
+	public SupplierEntity? Supplier { get; private set; }
     public IReadOnlyCollection<MaterialPurchaseOrderItemEntity> MaterialPurchaseItems { get; private set; } = new List<MaterialPurchaseOrderItemEntity>();
 
     public MaterialPurchaseOrderEntity(Guid supplierId, DateTime orderDate)
@@ -191,6 +193,10 @@ public class MaterialPurchaseOrderItemEntity : AuditableEntity
     public decimal UnitPrice { get; private set; }
     public string MaterialName { get; private set; }
     public string UnitCode { get; private set; }
+
+    // Navigation properties
+	public MaterialEntity? Material { get; private set; }
+	public MaterialPurchaseOrderEntity? MaterialPurchaseOrder { get; private set; }
 
 
     public MaterialPurchaseOrderItemEntity(Guid purchaseOrderId, Guid materialId, decimal qty, decimal unitPrice, string materialName, string unitCode)

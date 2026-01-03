@@ -13,6 +13,8 @@ public class DepartmentEntity : ActivatableEntity
     public string? Code { get; private set; }
     public DepartmentType Type { get; private set; }
 
+    // Navigation properties
+
     public IReadOnlyCollection<PositionEntity> Positions { get; private set; } = new List<PositionEntity>();
     public IReadOnlyCollection<ProductDepartmentCostEntity> ProductDepartmentCosts { get; private set; } = new List<ProductDepartmentCostEntity>();
     public IReadOnlyCollection<InventoryMovementEntity> InventoryMovements { get; private set; } = new List<InventoryMovementEntity>();
@@ -67,6 +69,9 @@ public class PositionEntity : ActivatableEntity
     public bool CanSew { get; private set; }
     public bool CanPackage { get; private set; }
     public bool CanHandleMaterials { get; private set; }
+
+    // Navigation properties
+    public DepartmentEntity? Department { get; private set; }
 
     public IReadOnlyCollection<EmployeeEntity> Employees { get; private set; } = new List<EmployeeEntity>();
 
@@ -152,6 +157,9 @@ public class EmployeeEntity : ActivatableEntity
     public decimal? PremiumPercent { get; private set; }
     public DateTime HiredAt { get; private set; }
     public DateTime? FiredAt { get; private set; }
+
+    // Navigation properties
+    public PositionEntity? Position { get; private set; }
 
     public IReadOnlyCollection<ContactLinkEntity> ContactLinks { get; private set; } = new List<ContactLinkEntity>();
     public IReadOnlyCollection<CuttingOperationEntity> CuttingOperations { get; private set; } = new List<CuttingOperationEntity>();

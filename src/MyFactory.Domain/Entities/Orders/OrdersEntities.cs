@@ -1,5 +1,8 @@
 using MyFactory.Domain.Common;
+using MyFactory.Domain.Entities.Inventory;
+using MyFactory.Domain.Entities.Parties;
 using MyFactory.Domain.Entities.Production;
+using MyFactory.Domain.Entities.Products;
 using MyFactory.Domain.Exceptions;
 
 namespace MyFactory.Domain.Entities.Orders;
@@ -13,6 +16,8 @@ public class SalesOrderEntity : AuditableEntity
     public SalesOrderStatus Status { get; private set; }
     public Guid CreatedBy { get; private set; }
 
+    // Navigation properties
+    public CustomerEntity? Customer { get; private set; }
     public IReadOnlyCollection<SalesOrderItemEntity> SalesOrderItems { get; private set; } = new List<SalesOrderItemEntity>();
     public IReadOnlyCollection<ShipmentEntity> Shipments { get; private set; } = new List<ShipmentEntity>();
     public IReadOnlyCollection<ShipmentReturnEntity> ShipmentReturns { get; private set; } = new List<ShipmentReturnEntity>();
@@ -98,6 +103,10 @@ public class SalesOrderItemEntity : AuditableEntity
     public decimal? UnitPrice { get; private set; }
     public SalesOrderItemStatus Status { get; private set; }
 
+    // Navigation properties
+
+    public SalesOrderEntity? SalesOrder { get; private set; }
+
     public IReadOnlyCollection<ProductionOrderEntity> ProductionOrders { get; private set; } = new List<ProductionOrderEntity>();
     public IReadOnlyCollection<ShipmentItemEntity> ShipmentItems { get; private set; } = new List<ShipmentItemEntity>();
     public IReadOnlyCollection<ShipmentReturnItemEntity> ShipmentReturnItems { get; private set; } = new List<ShipmentReturnItemEntity>();
@@ -154,6 +163,10 @@ public class ShipmentEntity : AuditableEntity
     public DateTime ShipmentDate { get; private set; }
     public ShipmentStatus Status { get; private set; }
     public Guid CreatedBy { get; private set; }
+
+    // Navigation properties
+    public SalesOrderEntity? SalesOrder { get; private set; }
+    public CustomerEntity? Customer { get; private set; }
 
     public IReadOnlyCollection<ShipmentItemEntity> ShipmentItems { get; private set; } = new List<ShipmentItemEntity>();
     public IReadOnlyCollection<ShipmentReturnEntity> ShipmentReturns { get; private set; } = new List<ShipmentReturnEntity>();
@@ -214,6 +227,12 @@ public class ShipmentItemEntity : AuditableEntity
     public decimal Qty { get; private set; }
     public decimal UnitPrice { get; private set; }
 
+    // Navigation properties
+    public SalesOrderItemEntity? SalesOrderItem { get; private set; }
+    public WarehouseEntity? Warehouse { get; private set; }
+    public ShipmentEntity? Shipment { get; private set; }
+    public ProductEntity? Product { get; private set; }
+
     public IReadOnlyCollection<ShipmentReturnItemEntity> ShipmentReturnItems { get; private set; } = new List<ShipmentReturnItemEntity>();
 
     public ShipmentItemEntity(Guid shipmentId, Guid salesOrderItemId, Guid warehouseId, Guid productId, int qty, decimal unitPrice)
@@ -243,6 +262,11 @@ public class ShipmentReturnEntity : AuditableEntity
     public string? Reason { get; private set; }
     public ReturnStatus Status { get; private set; }
     public Guid CreatedBy { get; private set; }
+
+    // Navigation properties
+    public CustomerEntity? Customer { get; private set; }
+    public SalesOrderEntity? SalesOrder { get; private set; }
+    public ShipmentEntity? Shipment { get; private set; }
 
     public IReadOnlyCollection<ShipmentReturnItemEntity> ShipmentReturnItems { get; private set; } = new List<ShipmentReturnItemEntity>();
 
@@ -292,6 +316,13 @@ public class ShipmentReturnItemEntity : AuditableEntity
     public int Qty { get; private set; }
     public decimal UnitPrice { get; private set; }
     public ReturnCondition Condition { get; private set; }
+
+    // Navigation properties
+    public SalesOrderItemEntity? SalesOrderItem { get; private set; }
+    public ShipmentItemEntity? ShipmentItem { get; private set; }
+    public ShipmentReturnEntity? ShipmentReturn { get; private set; }
+    public WarehouseEntity? Warehouse { get; private set; }
+    public ProductEntity? Product { get; private set; }
 
     public ShipmentReturnItemEntity(
         Guid shipmentReturnId,

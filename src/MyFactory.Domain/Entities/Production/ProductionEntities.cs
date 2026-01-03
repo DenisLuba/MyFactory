@@ -2,6 +2,8 @@
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Exceptions;
 using MyFactory.Domain.Entities.Inventory;
+using MyFactory.Domain.Entities.Orders;
+using MyFactory.Domain.Entities.Organization;
 
 
 namespace MyFactory.Domain.Entities.Production;
@@ -32,8 +34,10 @@ public class ProductionOrderEntity : AuditableEntity
 	public Guid CreatedBy { get; private set; }
 
 	// Navigation properties intentionally omitted: related entity types do not exist or are not required in the domain model per current context.
+	public DepartmentEntity? Department { get; private set; }
+    public SalesOrderItemEntity? SalesOrderItem { get; private set; }
 
-	public IReadOnlyCollection<CuttingOperationEntity> CuttingOperations => _cuttingOperations;
+    public IReadOnlyCollection<CuttingOperationEntity> CuttingOperations => _cuttingOperations;
 	private readonly List<CuttingOperationEntity> _cuttingOperations = new();
 
 	public IReadOnlyCollection<SewingOperationEntity> SewingOperations => _sewingOperations;
@@ -271,9 +275,9 @@ public class CuttingOperationEntity : AuditableEntity
     public int QtyCut { get; private set; }
 	public DateOnly OperationDate { get; private set; }
 
-	// Navigation property stubs (types must exist elsewhere in the domain layer)
-	// public ProductionOrderEntity? ProductionOrder { get; private set; }
-	// public EmployeeEntity? Employee { get; private set; }
+	// Navigation property
+	public ProductionOrderEntity? ProductionOrder { get; private set; }
+	public EmployeeEntity? Employee { get; private set; }
 
 	// Constructor
 	public CuttingOperationEntity(Guid productionOrderId, Guid employeeId, int qtyPlanned, int qtyCut, DateOnly operationDate)
@@ -304,9 +308,9 @@ public class SewingOperationEntity : AuditableEntity
 	public decimal HoursWorked { get; private set; }
 	public DateOnly OperationDate { get; private set; }
 
-	// Navigation property stubs (types must exist elsewhere in the domain layer)
-	// public ProductionOrderEntity? ProductionOrder { get; private set; }
-	// public EmployeeEntity? Employee { get; private set; }
+	// Navigation property 
+	public ProductionOrderEntity? ProductionOrder { get; private set; }
+	public EmployeeEntity? Employee { get; private set; }
 
 	// Constructor
 	public SewingOperationEntity(Guid productionOrderId, Guid employeeId, int qtyPlanned, int qtySewn, decimal hoursWorked, DateOnly operationDate)
@@ -338,9 +342,9 @@ public class PackagingOperationEntity : AuditableEntity
     public int QtyPacked { get; private set; }
 	public DateOnly OperationDate { get; private set; }
 
-	// Navigation property stubs (types must exist elsewhere in the domain layer)
-	// public ProductionOrderEntity? ProductionOrder { get; private set; }
-	// public EmployeeEntity? Employee { get; private set; }
+	// Navigation property
+	public ProductionOrderEntity? ProductionOrder { get; private set; }
+	public EmployeeEntity? Employee { get; private set; }
 
 	// Constructor
 	public PackagingOperationEntity(Guid productionOrderId, Guid employeeId, int qtyPlanned, int qtyPacked, DateOnly operationDate)

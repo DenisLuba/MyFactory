@@ -1,4 +1,5 @@
 using MyFactory.Domain.Common;
+using MyFactory.Domain.Entities.Organization;
 using MyFactory.Domain.Entities.Products;
 using MyFactory.Domain.Exceptions;
 
@@ -13,9 +14,8 @@ public class TimesheetEntity : AuditableEntity
 	public decimal HoursWorked { get; private set; }
 	public string? Comment { get; private set; }
 
-    // Navigation property stubs (types must exist elsewhere in the domain layer)
-    // public EmployeeEntity? Employee { get; private set; }
-    // public DepartmentEntity? Department { get; private set; }
+    public EmployeeEntity? Employee { get; private set; }
+    public DepartmentEntity? Department { get; private set; }
 
     // Constructor
     public TimesheetEntity(Guid employeeId, Guid departmentId, DateOnly workDate, decimal hoursWorked, string? comment = null)
@@ -101,9 +101,11 @@ public class PayrollAccrualEntity : AuditableEntity
 	public decimal TotalAmount { get; private set; }
 	public string? AdjustmentReason { get; private set; }
 
+    // Navigation property
+	public EmployeeEntity? Employee { get; private set; }
 
-	// Constructor
-	public PayrollAccrualEntity(
+    // Constructor
+    public PayrollAccrualEntity(
 		Guid employeeId,
 		DateOnly accrualDate,
 		decimal hoursWorked,
@@ -169,8 +171,11 @@ public class PayrollPaymentEntity : AuditableEntity
 	public decimal Amount { get; private set; }
 	public Guid CreatedBy { get; private set; }
 
-	// Constructor
-	public PayrollPaymentEntity(Guid employeeId, DateOnly paymentDate, decimal amount, Guid createdBy)
+	// Navigation property
+	public EmployeeEntity? Employee { get; private set; }
+
+    // Constructor
+    public PayrollPaymentEntity(Guid employeeId, DateOnly paymentDate, decimal amount, Guid createdBy)
 	{
 		Guard.AgainstEmptyGuid(employeeId, nameof(employeeId));
 		Guard.AgainstDefaultDate(paymentDate, nameof(paymentDate));
@@ -277,8 +282,8 @@ public class CashAdvanceEntity : AuditableEntity
 	public CashAdvanceStatus Status { get; private set; }
 	public DateOnly? ClosedAt { get; private set; }
 
-    // Navigation property stubs (types must exist elsewhere in the domain layer)
-    // public EmployeeEntity? Employee { get; private set; }
+    // Navigation property
+	public EmployeeEntity? Employee { get; private set; }
     // public IReadOnlyCollection<CashAdvanceExpenseEntity> CashAdvanceExpenses => _cashAdvanceExpenses;
     // private readonly List<CashAdvanceExpenseEntity> _cashAdvanceExpenses = new();
     // public IReadOnlyCollection<CashAdvanceReturnEntity> CashAdvanceReturns => _cashAdvanceReturns;

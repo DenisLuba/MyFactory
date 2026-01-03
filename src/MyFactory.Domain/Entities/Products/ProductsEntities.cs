@@ -3,7 +3,6 @@ using MyFactory.Domain.Entities.Inventory;
 using MyFactory.Domain.Entities.Materials;
 using MyFactory.Domain.Entities.Orders;
 using MyFactory.Domain.Entities.Organization;
-using MyFactory.Domain.Entities.Finance;
 
 namespace MyFactory.Domain.Entities.Products;
 
@@ -186,6 +185,7 @@ public class ProductImageEntity : AuditableEntity
     public string? ContentType { get; private set; }
     public int SortOrder { get; private set; }
 
+    // Navigation properties
     public ProductEntity? Product { get; private set; }
 
     public ProductImageEntity(Guid productId, string fileName, string path, string? contentType = null, int sortOrder = 0)
