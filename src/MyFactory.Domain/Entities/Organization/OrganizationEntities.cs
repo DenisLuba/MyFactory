@@ -173,13 +173,14 @@ public class EmployeeEntity : ActivatableEntity
     //public IReadOnlyCollection<ProductionOrderDepartmentEmployeeEntity> ProductionOrderDepartmentEmployees => _productionOrderDepartmentEmployees;
     //private readonly List<ProductionOrderDepartmentEmployeeEntity> _productionOrderDepartmentEmployees = new();
 
-    public EmployeeEntity(string fullName, Guid positionId, int grade, decimal ratePerNormHour, decimal premiumPercent, DateTime hiredAt)
+    public EmployeeEntity(string fullName, Guid positionId, int grade, decimal ratePerNormHour, decimal? premiumPercent, DateTime hiredAt)
     {
         Guard.AgainstNullOrWhiteSpace(fullName, nameof(fullName));
         Guard.AgainstEmptyGuid(positionId, nameof(positionId));
         Guard.AgainstNonPositive(grade, nameof(grade));
         Guard.AgainstNegative(ratePerNormHour, nameof(ratePerNormHour));
-        Guard.AgainstNegative(premiumPercent, nameof(premiumPercent));
+        if (premiumPercent.HasValue)
+            Guard.AgainstNegative(premiumPercent.Value, nameof(premiumPercent));
         Guard.AgainstDefaultDate(hiredAt, nameof(hiredAt));
 
         FullName = fullName;
@@ -211,14 +212,15 @@ public class EmployeeEntity : ActivatableEntity
         Guid positionId,
         int grade,
         decimal ratePerNormHour,
-        decimal premiumPercent,
+        decimal? premiumPercent,
         DateTime hiredAt)
     {
         Guard.AgainstNullOrWhiteSpace(fullName, nameof(fullName));
         Guard.AgainstEmptyGuid(positionId, nameof(positionId));
         Guard.AgainstNonPositive(grade, nameof(grade));
         Guard.AgainstNegative(ratePerNormHour, nameof(ratePerNormHour));
-        Guard.AgainstNegative(premiumPercent, nameof(premiumPercent));
+        if (premiumPercent.HasValue)
+            Guard.AgainstNegative(premiumPercent.Value, nameof(premiumPercent));
         Guard.AgainstDefaultDate(hiredAt, nameof(hiredAt));
 
         FullName = fullName;

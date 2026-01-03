@@ -224,7 +224,7 @@ public class ShipmentItemEntity : AuditableEntity
     public Guid SalesOrderItemId { get; private set; }
     public Guid WarehouseId { get; private set; }
     public Guid ProductId { get; private set; }
-    public decimal Qty { get; private set; }
+    public int Qty { get; private set; }
     public decimal UnitPrice { get; private set; }
 
     // Navigation properties

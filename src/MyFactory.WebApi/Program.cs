@@ -1,9 +1,7 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using MyFactory.Application;
 using MyFactory.Infrastructure.Extensions;
-using MyFactory.Infrastructure.Persistence.Seeds;
+using MyFactory.Infrastructure.Persistence;
 using MyFactory.WebApi.Contracts.Auth;
 using MyFactory.WebApi.Services.Employees;
 using Swashbuckle.AspNetCore.Filters;
@@ -17,7 +15,10 @@ builder.Services.AddSwaggerExamplesFromAssemblyOf<LoginRequest>();
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
-//builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AssemblyMarker).Assembly));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AssemblyMarker).Assembly));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+	options.UseNpgsql(
+		builder.Configuration.GetConnectionString("Default")));
 //builder.Services.AddAutoMapper(typeof(AssemblyMarker));
 
 builder.Services.AddSingleton<IEmployeeRepository, InMemoryEmployeeRepository>();

@@ -17,14 +17,16 @@ public static class ServiceCollectionExtensions
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection")
-                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
+            var connectionString = configuration.GetConnectionString("Default")
+                ?? throw new InvalidOperationException("Connection string 'Default' is not configured.");
 
             options.UseNpgsql(connectionString);
         });
 
         services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
         services.AddSingleton<IFileStorage, LocalFileStorage>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<InitialDataSeeder>();
 
         return services;
     }
