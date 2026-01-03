@@ -585,9 +585,9 @@ Table PRODUCTS {
     name varchar                                         // название изделия
     version int [null]                                   // версия изделия
     description varchar [null]                           // описание
-                                                         
+                                                        
     status product_status_enum                           // статус изделия
-                                                         
+                                                        
     plan_per_hour numeric [null]                         // норма пошива
     payroll_rule_id uuid [ref: > PAYROLL_RULES.id, null] // правило расчета зарплаты
 
@@ -604,12 +604,28 @@ Enum product_status_enum {
 // Ref: PRODUCTS.id < SALES_ORDER_ITEMS.product_id 
 // Ref: PRODUCTS.id < PRODUCT_DEPARTMENT_COSTS.product_id     // cost in dept
 // Ref: PRODUCTS.id < PRODUCT_MATERIALS.product_id            // uses
+// Ref: PRODUCTS.id < PRODUCT_IMAGES.product_id               // images
 // Ref: PRODUCTS.id < FINISHED_GOODS.product_id
 // Ref: PRODUCTS.id < WAREHOUSE_PRODUCTS.product_id
 // Ref: PRODUCTS.id < FINISHED_GOODS_MOVEMENT_ITEMS.product_id
 // Ref: PRODUCTS.id < SHIPMENT_ITEMS.product_id
 // Ref: PRODUCTS.id < FINISHED_GOODS_STOCK.product_id
 // Ref: PRODUCTS.id < SHIPMENT_RETURN_ITEMS.product_id
+
+/////////////////////////////
+// Изображения товаров
+Table PRODUCT_IMAGES {
+    id uuid [pk]
+    product_id uuid [ref: > PRODUCTS.id]     // товар
+
+    file_name varchar                        // имя файла
+    path varchar                             // путь в хранилище
+    content_type varchar [null]              // MIME-тип
+    sort_order int [default: 0]              // порядок показа
+
+    created_at timestamp
+    updated_at timestamp [null]
+}
 
 /////////////////////////////
 // Материалы изделия

@@ -36,6 +36,7 @@ public interface IApplicationDbContext
     DbSet<ProductEntity> Products { get; }
     DbSet<ProductMaterialEntity> ProductMaterials { get; }
     DbSet<ProductDepartmentCostEntity> ProductDepartmentCosts { get; }
+    DbSet<ProductImageEntity> ProductImages { get; }
 
     // Warehouse
     DbSet<FinishedGoodsEntity> FinishedGoods { get; }

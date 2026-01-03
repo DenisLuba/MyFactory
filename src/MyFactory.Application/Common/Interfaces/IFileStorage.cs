@@ -1,7 +1,3 @@
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace MyFactory.Application.Common.Interfaces;
 
 public interface IFileStorage

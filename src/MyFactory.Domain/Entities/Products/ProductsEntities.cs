@@ -26,6 +26,7 @@ public class ProductEntity : AuditableEntity
     public IReadOnlyCollection<ShipmentItemEntity> ShipmentItems { get; private set; } = [];
     public IReadOnlyCollection<FinishedGoodsStockEntity> FinishedGoodsStocks { get; private set; } = [];
     public IReadOnlyCollection<ShipmentReturnItemEntity> ShipmentReturnItems { get; private set; } = [];
+    public IReadOnlyCollection<ProductImageEntity> ProductImages { get; private set; } = [];
 
     public ProductEntity(
 		string sku,
@@ -174,5 +175,46 @@ public class ProductDepartmentCostEntity : ActivatableEntity
 			Guard.AgainstNegative(pack.Value, "PackCostPerUnit cannot be negative.");
 			PackCostPerUnit = pack.Value;
 		}
+    }
+}
+
+public class ProductImageEntity : AuditableEntity
+{
+    public Guid ProductId { get; private set; }
+    public string FileName { get; private set; }
+    public string Path { get; private set; }
+    public string? ContentType { get; private set; }
+    public int SortOrder { get; private set; }
+
+    public ProductEntity? Product { get; private set; }
+
+    public ProductImageEntity(Guid productId, string fileName, string path, string? contentType = null, int sortOrder = 0)
+    {
+        Guard.AgainstEmptyGuid(productId, "ProductId is required.");
+        Guard.AgainstNullOrWhiteSpace(fileName, "FileName is required.");
+        Guard.AgainstNullOrWhiteSpace(path, "Path is required.");
+
+        ProductId = productId;
+        FileName = fileName;
+        Path = path;
+        ContentType = contentType;
+        SortOrder = sortOrder;
+    }
+
+    public void UpdateFile(string fileName, string path, string? contentType = null)
+    {
+        Guard.AgainstNullOrWhiteSpace(fileName, "FileName is required.");
+        Guard.AgainstNullOrWhiteSpace(path, "Path is required.");
+
+        FileName = fileName;
+        Path = path;
+        ContentType = contentType;
+        Touch();
+    }
+
+    public void SetSortOrder(int sortOrder)
+    {
+        SortOrder = sortOrder;
+        Touch();
     }
 }
