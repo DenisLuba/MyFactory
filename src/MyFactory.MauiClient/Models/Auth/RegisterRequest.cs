@@ -2,5 +2,5 @@
 
 public record RegisterRequest(
     string UserName,
-    string Email,
+    Guid RoleId,
     string Password);

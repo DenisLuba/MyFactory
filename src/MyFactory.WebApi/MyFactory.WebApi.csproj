@@ -26,8 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Contracts\Returns\" />
     <Folder Include="MIddlewares\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

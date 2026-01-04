@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using MyFactory.Application.Features.Identity.Commands.RegisterUser;
-using MyFactory.Application.Interfaces.Auth;
 using MyFactory.Application.Tests.Common;
 using MyFactory.Domain.Entities.Identity;
 using MyFactory.Application.Common.Interfaces;

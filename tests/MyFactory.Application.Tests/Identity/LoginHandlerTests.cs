@@ -3,10 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using MyFactory.Application.Features.Identity.Commands.Login;
-using MyFactory.Application.Interfaces.Auth;
 using MyFactory.Application.Tests.Common;
 using MyFactory.Domain.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
+using MyFactory.Application.Common.Interfaces;
 
 namespace MyFactory.Application.Tests.Identity;
 

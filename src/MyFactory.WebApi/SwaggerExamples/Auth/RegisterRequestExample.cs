@@ -8,8 +8,7 @@ public class RegisterRequestExample : IExamplesProvider<RegisterRequest>
     public RegisterRequest GetExamples() =>
         new(
             UserName: "ivanov",
-            Email: "i@domain.com",
+            RoleId: Guid.Parse("aaaaaaaa-aa00-4000-8000-aaaaaaaa0001"),
             Password: "P@ssw0rd123"
         );
 }
-

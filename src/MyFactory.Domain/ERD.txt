@@ -310,6 +310,7 @@ Ref: USERS.id < CONTACT_LINKS.owner_id          // has contacts
 // Ref: USERS.id < PAYROLL_PAYMENTS.created_by
 // Ref: USERS.id < EXPENSES.created_by
 // Ref: USERS.id < MONTHLY_FINANCIAL_REPORTS.created_by
+// Ref: USERS.id < TOKENS.user_id
 
 /////////////////////////////
 // Роли пользователей
@@ -319,6 +320,19 @@ Table ROLES {
 }
 // Связи
 // Ref: ROLES.id < USERS.role_id
+
+/////////////////////////////
+// Refresh-токены
+Table TOKENS {
+    id uuid [pk]
+    user_id uuid [ref: > USERS.id]    // владелец токена
+    refresh_token varchar [unique]    // сам refresh токен
+    expires_at timestamp              // когда истекает
+    created_at timestamp              // создан
+    revoked_at timestamp [null]       // отозван
+}
+// Связи
+Ref: TOKENS.user_id > USERS.id
 
 ///////////////////////////
 // Inventory:

@@ -13,8 +13,10 @@ namespace MyFactory.Application.Common.Interfaces;
 
 public interface IApplicationDbContext
 {
+    // Security
     DbSet<RoleEntity> Roles { get; }
     DbSet<UserEntity> Users { get; }
+    DbSet<TokenEntity> Tokens { get; }
 
     // Materials List
     DbSet<MaterialEntity> Materials { get; }

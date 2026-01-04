@@ -1,9 +1,5 @@
 using MyFactory.Domain.Common;
-using MyFactory.Domain.Entities.Finance;
-using MyFactory.Domain.Entities.Inventory;
-using MyFactory.Domain.Entities.Orders;
 using MyFactory.Domain.Entities.Parties;
-using MyFactory.Domain.Entities.Production;
 
 namespace MyFactory.Domain.Entities.Security;
 
@@ -14,16 +10,7 @@ public class UserEntity : ActivatableEntity
     public Guid RoleId { get; private set; }
 
     public IReadOnlyCollection<ContactLinkEntity> ContactLinks { get; private set; } = new List<ContactLinkEntity>();
-
-    // public IReadOnlyCollection<SalesOrderEntity> CreatedSalesOrders { get; private set; } = new List<SalesOrderEntity>();
-    // public IReadOnlyCollection<InventoryMovementEntity> CreatedInventoryMovements { get; private set; } = new List<InventoryMovementEntity>();
-    // public IReadOnlyCollection<ProductionOrderEntity> CreatedProductionOrders { get; private set; } = new List<ProductionOrderEntity>();
-    // public IReadOnlyCollection<FinishedGoodsMovementEntity> CreatedFinishedGoodsMovements { get; private set; } = new List<FinishedGoodsMovementEntity>();
-    // public IReadOnlyCollection<ShipmentEntity> CreatedShipments { get; private set; } = new List<ShipmentEntity>();
-    // public IReadOnlyCollection<ShipmentReturnEntity> CreatedShipmentReturns { get; private set; } = new List<ShipmentReturnEntity>();
-    // public IReadOnlyCollection<PayrollPaymentEntity> CreatedPayrollPayments { get; private set; } = new List<PayrollPaymentEntity>();
-    // public IReadOnlyCollection<ExpenseEntity> CreatedExpenses { get; private set; } = new List<ExpenseEntity>();
-    // public IReadOnlyCollection<MonthlyFinancialReportEntity> CreatedMonthlyFinancialReports { get; private set; } = new List<MonthlyFinancialReportEntity>();
+    public IReadOnlyCollection<TokenEntity> Tokens { get; private set; } = new List<TokenEntity>();
 
     public UserEntity(string username, string passwordHash, Guid roleId)
     {
@@ -47,7 +34,6 @@ public class UserEntity : ActivatableEntity
 public class RoleEntity : AuditableEntity
 {
     public string Name { get; private set; }
-    // public IReadOnlyCollection<UserEntity> Users { get; private set; } = new List<UserEntity>();
 
     public RoleEntity(string name)
     {
@@ -59,6 +45,41 @@ public class RoleEntity : AuditableEntity
     {
         Guard.AgainstNullOrWhiteSpace(name, nameof(name));
         Name = name;
+        Touch();
+    }
+}
+
+public class TokenEntity : AuditableEntity
+{
+    public Guid UserId { get; private set; }
+    public string RefreshToken { get; private set; }
+    public DateTime ExpiresAt { get; private set; }
+    public DateTime? RevokedAt { get; private set; }
+
+    public UserEntity? User { get; private set; }
+
+    public TokenEntity(Guid userId, string refreshToken, DateTime expiresAt)
+    {
+        Guard.AgainstEmptyGuid(userId, nameof(userId));
+        Guard.AgainstNullOrWhiteSpace(refreshToken, nameof(refreshToken));
+        Guard.AgainstDefaultDate(expiresAt, nameof(expiresAt));
+
+        UserId = userId;
+        RefreshToken = refreshToken;
+        ExpiresAt = expiresAt;
+    }
+
+    public bool IsExpired => DateTime.UtcNow >= ExpiresAt;
+
+    public bool IsRevoked => RevokedAt.HasValue;
+
+    public void Revoke(DateTime revokedAt)
+    {
+        Guard.AgainstDefaultDate(revokedAt, nameof(revokedAt));
+        if (IsRevoked)
+            return;
+
+        RevokedAt = revokedAt;
         Touch();
     }
 }

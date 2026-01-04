@@ -22,4 +22,12 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="**/*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="SmokeDomain.cs" />
+  </ItemGroup>
+
 </Project>

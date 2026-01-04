@@ -1,8 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Http;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using MyFactory.Application.Features.Customers.CreateCustomer;
+using MyFactory.Application.Features.Customers.DeactivateCustomer;
+using MyFactory.Application.Features.Customers.GetCustomerCard;
+using MyFactory.Application.Features.Customers.GetCustomerDetails;
+using MyFactory.Application.Features.Customers.GetCustomers;
+using MyFactory.Application.Features.Customers.UpdateCustomer;
 using MyFactory.WebApi.Contracts.Customers;
 using MyFactory.WebApi.SwaggerExamples.Customers;
 using Swashbuckle.AspNetCore.Filters;
@@ -11,35 +14,99 @@ namespace MyFactory.WebApi.Controllers;
 
 [ApiController]
 [Route("api/customers")]
+[Produces("application/json")]
 public class CustomersController : ControllerBase
 {
-    private static readonly IReadOnlyList<CustomerLookupResponse> Customers = new List<CustomerLookupResponse>
-    {
-        new(Guid.Parse("11111111-1111-1111-1111-111111111111"), "ООО \"Текстиль\"", "Сети на северо-западе"),
-        new(Guid.Parse("22222222-2222-2222-2222-222222222222"), "ИП Клиент1", "Оптовые поставки"),
-        new(Guid.Parse("33333333-3333-3333-3333-333333333333"), "ООО \"Ателье Люкс\"", "Розничные магазины"),
-        new(Guid.Parse("44444444-4444-4444-4444-444444444444"), "ИП Пижама", "Онлайн продажи"),
-        new(Guid.Parse("55555555-5555-5555-5555-555555555555"), "ООО \"Дом Ткани\"", "Новые клиенты"),
-        new(Guid.Parse("66666666-6666-6666-6666-666666666666"), "АО \"Стиль-Мода\"", "Федеральная сеть"),
-        new(Guid.Parse("77777777-7777-7777-7777-777777777777"), "ООО \"Мягкий Дом\"", "HoReCa"),
-        new(Guid.Parse("88888888-8888-8888-8888-888888888888"), "ИП Хлопков", "Региональные поставки")
-    };
+    private readonly IMediator _mediator;
 
-    // GET /api/customers/search
-    [HttpGet("search")]
-    [Produces("application/json")]
-    [SwaggerResponseExample(StatusCodes.Status200OK, typeof(CustomerLookupResponseExample))]
-    [ProducesResponseType(typeof(IEnumerable<CustomerLookupResponse>), StatusCodes.Status200OK)]
-    public IActionResult Search([FromQuery] string? query)
+    public CustomersController(IMediator mediator)
     {
-        var term = query?.Trim();
-        var result = Customers
-            .Where(c => string.IsNullOrWhiteSpace(term)
-                || c.Name.Contains(term, StringComparison.OrdinalIgnoreCase)
-                || c.CustomerId.ToString().Contains(term, StringComparison.OrdinalIgnoreCase))
-            .Take(10)
+        _mediator = mediator;
+    }
+
+    // -------------------------
+    //  LIST
+    // -------------------------
+    [HttpGet]
+    [ProducesResponseType(typeof(IReadOnlyList<CustomerListItemResponse>), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(200, typeof(CustomerListResponseExample))]
+    public async Task<IActionResult> GetList()
+    {
+        var result = await _mediator.Send(new GetCustomersQuery());
+        var response = result
+            .Select(x => new CustomerListItemResponse(x.Id, x.Name, x.Phone, x.Email, x.Address))
             .ToList();
+        return Ok(response);
+    }
 
-        return Ok(result);
+    // -------------------------
+    //  DETAILS
+    // -------------------------
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(CustomerDetailsResponse), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(200, typeof(CustomerDetailsResponseExample))]
+    public async Task<IActionResult> GetDetails(Guid id)
+    {
+        var dto = await _mediator.Send(new GetCustomerDetailsQuery(id));
+        var response = new CustomerDetailsResponse(dto.Id, dto.Name, dto.Phone, dto.Email, dto.Address);
+        return Ok(response);
+    }
+
+    // -------------------------
+    //  CARD
+    // -------------------------
+    [HttpGet("{id:guid}/card")]
+    [ProducesResponseType(typeof(CustomerCardResponse), StatusCodes.Status200OK)]
+    [SwaggerResponseExample(200, typeof(CustomerCardResponseExample))]
+    public async Task<IActionResult> GetCard(Guid id)
+    {
+        var dto = await _mediator.Send(new GetCustomerCardQuery(id));
+        var response = new CustomerCardResponse(
+            dto.Id,
+            dto.Name,
+            dto.Phone,
+            dto.Email,
+            dto.Address,
+            dto.Orders.Select(o => new CustomerOrderItemResponse(o.Id, o.OrderNumber, o.OrderDate, o.Status)).ToList());
+        return Ok(response);
+    }
+
+    // -------------------------
+    //  CREATE
+    // -------------------------
+    [HttpPost]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(CreateCustomerResponse), StatusCodes.Status201Created)]
+    [SwaggerRequestExample(typeof(CreateCustomerRequest), typeof(CreateCustomerRequestExample))]
+    [SwaggerResponseExample(201, typeof(CreateCustomerResponseExample))]
+    public async Task<IActionResult> Create([FromBody] CreateCustomerRequest req)
+    {
+        var id = await _mediator.Send(new CreateCustomerCommand(req.Name, req.Phone, req.Email, req.Address));
+        return Created(string.Empty, new CreateCustomerResponse(id));
+    }
+
+    // -------------------------
+    //  UPDATE
+    // -------------------------
+    [HttpPut("{id:guid}")]
+    [Consumes("application/json")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [SwaggerRequestExample(typeof(UpdateCustomerRequest), typeof(UpdateCustomerRequestExample))]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateCustomerRequest req)
+    {
+        await _mediator.Send(new UpdateCustomerCommand(id, req.Name, req.Phone, req.Email, req.Address));
+        return NoContent();
+    }
+
+    // -------------------------
+    //  DEACTIVATE
+    // -------------------------
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Deactivate(Guid id)
+    {
+        await _mediator.Send(new DeactivateCustomerCommand(id));
+        return NoContent();
     }
 }
+

@@ -27,4 +27,12 @@
     <ProjectReference Include="..\..\src\MyFactory.Domain\MyFactory.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="**/*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Smoke.cs" />
+  </ItemGroup>
+
 </Project>

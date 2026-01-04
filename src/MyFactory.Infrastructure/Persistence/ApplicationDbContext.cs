@@ -19,6 +19,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public DbSet<RoleEntity> Roles { get; set; } = default!;
     public DbSet<UserEntity> Users { get; set; } = default!;
+    public DbSet<TokenEntity> Tokens { get; set; } = default!;
 
     public DbSet<ExpenseEntity> Expenses { get; set; } = default!;
     public DbSet<CashAdvanceEntity> CashAdvances { get; set; } = default!;

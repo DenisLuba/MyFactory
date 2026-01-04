@@ -25,7 +25,10 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
         services.AddSingleton<IFileStorage, LocalFileStorage>();
+        services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<InitialDataSeeder>();
 
         return services;
