@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Http;
 using CommunityToolkit.Maui;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MyFactory.MauiClient.Pages.Finance.Advances;
 using MyFactory.MauiClient.Pages.Finance.Overheads;
@@ -41,11 +40,11 @@ using MyFactory.MauiClient.Services.PayrollRules;
 using MyFactory.MauiClient.Services.PayrollServices;
 using MyFactory.MauiClient.Services.Positions;
 using MyFactory.MauiClient.Services.ProductionOrders;
-using MyFactory.MauiClient.Services.ProductionServices;
 using MyFactory.MauiClient.Services.Products;
 using MyFactory.MauiClient.Services.PurchasesServices;
 using MyFactory.MauiClient.Services.Reports;
 using MyFactory.MauiClient.Services.ReturnsServices;
+using MyFactory.MauiClient.Services.SalesOrders;
 using MyFactory.MauiClient.Services.SettingsServices;
 using MyFactory.MauiClient.Services.ShipmentsServices;
 using MyFactory.MauiClient.Services.ShiftsServices;
@@ -134,6 +133,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IProductionService, ProductionService>();
         builder.Services.AddSingleton<IProductsService, ProductsService>();
         builder.Services.AddSingleton<IReportsService, ReportsService>();
+        builder.Services.AddSingleton<ISalesOrdersService, SalesOrdersService>();
         builder.Services.AddSingleton<ISuppliersService, SuppliersService>();
         builder.Services.AddSingleton<IPurchasesService, PurchasesService>();
         builder.Services.AddSingleton<ISettingsService, SettingsService>();
@@ -141,6 +141,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IShiftsService, ShiftsService>();
         builder.Services.AddSingleton<IWarehouseMaterialsService, WarehouseMaterialsService>();
         builder.Services.AddSingleton<IWarehousesService, WarehousesService>();
+        builder.Services.AddSingleton<IWorkshopExpensesService, WorkshopExpensesService>();
         builder.Services.AddSingleton<IWorkshopsService, WorkshopsService>();
         builder.Services.AddSingleton<ISpecificationsService, SpecificationsService>();
         builder.Services.AddSingleton<IUsersService, UsersService>();
@@ -159,7 +160,8 @@ public static class MauiProgram
         builder.Services.AddTransient<MaterialPriceAddModalViewModel>();
         builder.Services.AddTransient<OperationsTablePageViewModel>();
         builder.Services.AddTransient<OperationCardPageViewModel>();
-        builder.Services.AddTransient<ProductsTablePageViewModel>();
+        builder.Services.AddTransient<ProductsTablePageViewModel>
+        ();
         builder.Services.AddTransient<ProductCardPageViewModel>();
         builder.Services.AddTransient<ProductBomTablePageViewModel>();
         builder.Services.AddTransient<ProductOperationsTablePageViewModel>();
