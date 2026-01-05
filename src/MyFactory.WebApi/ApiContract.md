@@ -5,284 +5,242 @@
 **Базовый URL:** `/api/{controller}`. Все контроллеры возвращают `application/json`, если не указано другое `Produces/Consumes` в описании.
 
 ## Содержание
-1. AuthController
-2. FilesController
-3. FinanceController
-4. FinishedGoodsController
-5. InventoryController
-6. MaterialsController
-7. MaterialReceiptsController
-8. MaterialTransfersController
-9. OperationsController
-10. PayrollController
-11. ProductionController
-12. ProductionOrdersController
-13. ProductsController
-14. PurchasesController
+1. AdvancesController
+2. AuthController
+3. CustomersController
+4. DepartmentsController
+5. EmployeesController
+6. ExpenceTypesController
+7. ExpencesController
+8. FinanceController
+9. MaterialPurchaseOrdersController
+10. MaterialsController
+11. PayrollRulesController
+12. PositionsController
+13. ProductionOrdersController
+14. ProductsController
 15. ReportsController
-16. ReturnsController
-17. SettingsController
-18. ShipmentsController
-19. ShiftsController
-20. SpecificationsController
-21. SuppliersController
-22. UsersController
-23. WarehousesController
-24. WorkshopExpensesController
-25. WorkshopsController
-26. CustomersController
-27. EmployeesController
+16. SalesOrdersController
+17. SuppliersController
+18. UsersController
+19. WarehousesController
 
 ---
 
-## 1. AuthController (`/api/auth`)
-- **Назначение:** аутентификация и управление токенами.
+## 1. AdvancesController (`/api/advances`)
+- **Назначение:** учёт авансов, расходов и возвратов.
 - **Endpoints:**
-  1. `POST /login` — вход пользователя. `LoginRequest` → `LoginResponse` (200 OK).
-  2. `POST /refresh` — обновление токена. `RefreshRequest` → `RefreshResponse` (200 OK).
-  3. `POST /register` — регистрация. `RegisterRequest` → `RegisterResponse` (201 Created).
+  - `GET /` — список авансов (query: `from`, `to`, `employeeId`). `CashAdvanceListItemResponse` (200 OK).
+  - `POST /issue` — выдать аванс. `CreateCashAdvanceRequest` → `CreateCashAdvanceResponse` (201 Created).
+  - `POST /{id}/amount` — добавить сумму. `AddCashAdvanceAmountRequest` (204 No Content).
+  - `POST /{id}/expenses` — учесть расход. `CreateCashAdvanceExpenseRequest` → `CreateCashAdvanceExpenseResponse` (201 Created).
+  - `POST /{id}/returns` — оформить возврат. `CreateCashAdvanceReturnRequest` → `CreateCashAdvanceReturnResponse` (201 Created).
+  - `POST /{id}/close` — закрыть аванс. (204 No Content).
 
-## 2. FilesController (`/api/files`)
-- **Назначение:** управление файлами.
+## 2. AuthController (`/api/auth`)
+- **Назначение:** аутентификация.
 - **Endpoints:**
-  1. `POST /upload` — загрузка файла. Multipart `UploadFileRequest` → `UploadFileResponse` (200 OK).
-  2. `GET /{id}` — скачивание файла (`application/octet-stream`).
-  3. `DELETE /{id}` — удаление. `DeleteFileResponse` (200 OK).
+  - `POST /login` — вход. `LoginRequest` → `LoginResponse` (200 OK).
+  - `POST /refresh` — обновление токена. `RefreshRequest` → `RefreshResponse` (200 OK).
+  - `POST /register` — регистрация. `RegisterRequest` → `RegisterResponse` (201 Created).
 
-## 3. FinanceController (`/api/finance`)
-- **Назначение:** накладные расходы и подотчётные суммы.
+## 3. CustomersController (`/api/customers`)
+- **Назначение:** клиенты.
 - **Endpoints:**
-  1. `POST /overheads` — создать расход. `RecordOverheadRequest` → `RecordOverheadResponse` (200 OK).
-  2. `PUT /overheads/{id}` — обновить расход. `RecordOverheadRequest` → `RecordOverheadResponse` (200 OK).
-  3. `PUT /overheads/{id}/post` — провести расход. Ответ: `RecordOverheadResponse` (200 OK).
-  4. `DELETE /overheads/{id}` — удалить расход. Ответ: `RecordOverheadResponse` (200 OK).
-  5. `GET /overheads` — список расходов (query: `month`, `year`, `article`, `status`). Ответ: `IEnumerable<OverheadItemDto>` (200 OK).
-  6. `GET /overheads/articles` — справочник статей. Ответ: `string[]` (200 OK).
-  7. `POST /advances` — выдать аванс. `CreateAdvanceRequest` → `AdvanceStatusResponse` (201 Created).
-  8. `POST /advances/{id}/report` — отчёт по авансу. `SubmitAdvanceReportRequest` → `AdvanceStatusResponse` (200 OK).
-  9. `GET /advances` — список авансов. Ответ: `IEnumerable<AdvanceItemDto>` (200 OK).
-  10. `DELETE /advances/{advanceNumber}` — удалить аванс. Ответ: `AdvanceStatusResponse` (200 OK).
-  11. `PUT /advances/{advanceNumber}/close` — закрыть аванс. Ответ: `AdvanceStatusResponse` (200 OK).
+  - `GET /` — список. `CustomerListItemResponse` (200 OK).
+  - `GET /{id}` — детали. `CustomerDetailsResponse` (200 OK).
+  - `GET /{id}/card` — карточка с заказами. `CustomerCardResponse` (200 OK).
+  - `POST /` — создать. `CreateCustomerRequest` → `CreateCustomerResponse` (201 Created).
+  - `PUT /{id}` — обновить. `UpdateCustomerRequest` (204 No Content).
+  - `DELETE /{id}` — деактивация. (204 No Content).
 
-## 4. FinishedGoodsController (`/api/finished-goods`)
-- **Назначение:** приёмка и движение готовой продукции.
+## 4. DepartmentsController (`/api/departments`)
+- **Назначение:** справочник цехов/отделов.
 - **Endpoints:**
-  1. `POST /receipt` — оформление приёмки. `ReceiptFinishedGoodsRequest` → `ReceiptFinishedGoodsResponse` (201 Created).
-  2. `GET /receipt` — список приёмок. `IEnumerable<FinishedGoodsReceiptListResponse>` (200 OK).
-  3. `GET /receipt/{id}` — карточка приёмки. `FinishedGoodsReceiptCardResponse` (200 OK).
-  4. `GET /` — остатки ГП. `IEnumerable<FinishedGoodsInventoryResponse>` (200 OK).
-  5. `POST /move` — перемещение. `MoveFinishedGoodsRequest` → `MoveFinishedGoodsResponse` (200 OK).
+  - `GET /` — список (query: `includeInactive`). `DepartmentListItemResponse` (200 OK).
+  - `GET /{id}` — детали. `DepartmentDetailsResponse` (200 OK).
+  - `POST /` — создать. `CreateDepartmentRequest` → `CreateDepartmentResponse` (201 Created).
+  - `PUT /{id}` — обновить. `UpdateDepartmentRequest` (204 No Content).
+  - `POST /{id}/activate` — активировать. (204 No Content).
+  - `POST /{id}/deactivate` — деактивировать. (204 No Content).
 
-## 5. InventoryController (`/api/inventory`)
-- **Назначение:** операции по складам материалов.
+## 5. EmployeesController (`/api/employees`)
+- **Назначение:** сотрудники, контакты, табель, назначения.
 - **Endpoints:**
-  1. `GET /` — остатки (query `materialId`). `IEnumerable<InventoryItemResponse>` (200 OK).
-  2. `GET /by-warehouse/{warehouseId}` — остатки по складу. `IEnumerable<InventoryItemResponse>` (200 OK).
-  3. `POST /receipt` — приход. `CreateInventoryReceiptRequest` → `CreateInventoryReceiptResponse` (201 Created).
-  4. `POST /adjust` — корректировка. `AdjustInventoryRequest` → `AdjustInventoryResponse` (200 OK).
-  5. `POST /transfer` — внутренний перенос. `TransferInventoryRequest` → `TransferInventoryResponse` (200 OK).
+  - `GET /` — список (query: `search`, `sortBy`, `sortDesc`). `EmployeeListItemResponse` (200 OK).
+  - `GET /{id}` — детали. `EmployeeDetailsResponse` (200 OK).
+  - `POST /` — создать. `CreateEmployeeRequest` → `CreateEmployeeResponse` (201 Created).
+  - `PUT /{id}` — обновить. `UpdateEmployeeRequest` (204 No Content).
+  - `POST /{id}/activate` — активировать с датой найма. `ActivateEmployeeRequest` (204 No Content).
+  - `POST /{id}/deactivate` — деактивировать с датой увольнения. `DeactivateEmployeeRequest` (204 No Content).
+  - `GET /{id}/assignments` — назначения в производстве. `EmployeeProductionAssignmentResponse` (200 OK).
+  - `GET /timesheets` — табель сводный (query: `employeeId`, `departmentId`, `year`, `month`). `TimesheetListItemResponse` (200 OK).
+  - `GET /{id}/timesheet` — табель сотрудника (query: `year`, `month`). `EmployeeTimesheetEntryResponse` (200 OK).
+  - `POST /{id}/timesheet` — добавить запись. `AddTimesheetEntryRequest` → `AddTimesheetEntryResponse` (201 Created).
+  - `PUT /timesheet/{entryId}` — обновить запись. `UpdateTimesheetEntryRequest` (204 No Content).
+  - `DELETE /timesheet/{entryId}` — удалить запись. (204 No Content).
 
-## 6. MaterialsController (`/api/materials`)
-- **Назначение:** справочник материалов и цен.
+## 6. ExpenceTypesController (`/api/expencetypes`)
+- **Назначение:** типы расходов.
 - **Endpoints:**
-  1. `GET /` — список (query `type`). `IEnumerable<MaterialListResponse>` (200 OK).
-  2. `GET /{id}` — карточка. `MaterialCardResponse` (200 OK).
-  3. `POST /` — создать. `CreateMaterialRequest` → `CreateMaterialResponse` (201 Created).
-  4. `PUT /{id}` — обновить. `UpdateMaterialRequest` → `UpdateMaterialResponse` (200 OK).
-  5. `GET /{id}/price-history` — история цен. `IEnumerable<MaterialPriceHistoryItem>` (200 OK).
-  6. `POST /{id}/prices` — добавить цену. `AddMaterialPriceRequest` → `AddMaterialPriceResponse` (200 OK).
-  7. `GET /type?id={id}` — получить тип. `MaterialTypeResponse` (200 OK).
+  - `GET /` — список. `ExpenseTypeResponse` (200 OK).
+  - `GET /{id}` — детали. `ExpenseTypeResponse` (200 OK).
+  - `POST /` — создать. `CreateExpenseTypeRequest` → `CreateExpenseTypeResponse` (201 Created).
+  - `PUT /{id}` — обновить. `UpdateExpenseTypeRequest` (204 No Content).
+  - `DELETE /{id}` — удалить. (204 No Content).
 
-## 7. MaterialReceiptsController (`/api/material-receipts`)
-- **Назначение:** документы поступления материалов.
+## 7. ExpencesController (`/api/expences`)
+- **Назначение:** расходы.
 - **Endpoints:**
-  1. `GET /` — список. `IEnumerable<MaterialReceiptListResponse>` (200 OK).
-  2. `GET /{id}` — карточка. `MaterialReceiptCardResponse` (200 OK).
-  3. `POST /` — создать. `MaterialReceiptUpsertRequest` → `MaterialReceiptUpsertResponse` (201 Created).
-  4. `PUT /{id}` — обновить. `MaterialReceiptUpsertRequest` → `MaterialReceiptUpsertResponse` (200 OK).
-  5. `POST /{id}/post` — провести. `MaterialReceiptPostResponse` (200 OK).
-  6. `GET /{id}/lines` — строки. `IEnumerable<MaterialReceiptLineResponse>` (200 OK).
-  7. `POST /{id}/lines` — добавить строку. `MaterialReceiptLineUpsertRequest` → `MaterialReceiptLineUpsertResponse` (201 Created).
-  8. `PUT /{id}/lines/{lineId}` — изменить строку. `MaterialReceiptLineUpsertResponse` (200 OK).
-  9. `DELETE /{id}/lines/{lineId}` — удалить строку. `MaterialReceiptLineDeleteResponse` (200 OK).
+  - `GET /` — список (query: `from`, `to`, `expenseTypeId`). `ExpenseListItemResponse` (200 OK).
+  - `POST /` — создать. `CreateExpenseRequest` → `CreateExpenseResponse` (201 Created).
+  - `PUT /{id}` — обновить. `UpdateExpenseRequest` (204 No Content).
+  - `DELETE /{id}` — удалить. (204 No Content).
 
-## 8. MaterialTransfersController (`/api/material-transfers`)
-- **Назначение:** перемещения материалов в производство.
+## 8. FinanceController (`/api/finance`)
+- **Назначение:** расчёты зарплаты и выплаты.
 - **Endpoints:**
-  1. `GET /` — фильтруемый список (query `date`, `warehouse`, `productionOrder`). `IEnumerable<MaterialTransferListResponse>` (200 OK).
-  2. `GET /{id}` — карточка. `MaterialTransferCardResponse` (200 OK/404).
-  3. `POST /` — создать. `MaterialTransferCreateRequest` → `MaterialTransferCreateResponse` (201 Created).
-  4. `PUT /{id}` — обновить. `MaterialTransferUpdateRequest` → `MaterialTransferUpdateResponse` (200 OK/404).
-  5. `DELETE /{id}` — удалить. `MaterialTransferDeleteResponse` (200 OK).
-  6. `POST /{id}/submit` — отправить на утверждение. `MaterialTransferSubmitResponse` (200 OK/404).
+  - `GET /payroll/accruals` — список начислений (query: `from`, `to`, `employeeId`, `departmentId`). `PayrollAccrualListItemResponse` (200 OK).
+  - `GET /payroll/employees/{employeeId}/accruals` — детали по сотруднику (query: `year`, `month`). `EmployeePayrollAccrualDetailsResponse` (200 OK).
+  - `POST /payroll/accruals/calculate/daily` — рассчитать за день. `CalculateDailyPayrollAccrualRequest` (204 No Content).
+  - `POST /payroll/accruals/calculate/period` — рассчитать за месяц. `CalculatePayrollAccrualsForPeriodRequest` (204 No Content).
+  - `POST /payroll/accruals/{accrualId}/adjust` — корректировка. `AdjustPayrollAccrualRequest` (204 No Content).
+  - `POST /payroll/payments` — выплата. `CreatePayrollPaymentRequest` → `CreatePayrollPaymentResponse` (201 Created).
 
-## 9. OperationsController (`/api/operations`)
-- **Назначение:** технологические операции.
+## 9. MaterialPurchaseOrdersController (`/api/material-purchase-orders`)
+- **Назначение:** заказы на закупку материалов.
 - **Endpoints:**
-  1. `GET /` — список. `IEnumerable<OperationListResponse>` (200 OK).
-  2. `GET /{id}` — карточка. `OperationCardResponse` (200 OK).
-  3. `PUT /{id}` — изменение. `OperationUpdateRequest` → `OperationUpdateResponse` (200 OK).
+  - `POST /` — создать заказ. `CreateMaterialPurchaseOrderRequest` → `CreateMaterialPurchaseOrderResponse` (201 Created).
+  - `POST /{purchaseOrderId}/items` — добавить позицию. `AddMaterialPurchaseOrderItemRequest` (204 No Content).
+  - `POST /{purchaseOrderId}/confirm` — подтвердить. (204 No Content).
+  - `POST /{purchaseOrderId}/receive` — приемка на склад. `ReceiveMaterialPurchaseOrderRequest` (204 No Content).
 
-## 10. PayrollController (`/api/payroll`)
-- **Назначение:** расчёт и выплаты зарплаты.
+## 10. MaterialsController (`/api/materials`)
+- **Назначение:** материалы и их остатки.
 - **Endpoints:**
-  1. `GET /` — свод за период (query `periodMonth`, `periodYear`). `IEnumerable<PayrollGetResponse>` (200 OK).
-  2. `POST /calc?from={from}&to={to}` — запуск расчёта. `PayrollCalculateResponse` (200 OK).
-  3. `POST /pay` — выплата. `PayrollPayRequest` → `PayrollPayResponse` (200 OK).
+  - `GET /` — список (query: `materialName`, `materialType`, `isActive`, `warehouseId`). `MaterialListItemResponse` (200 OK).
+  - `GET /{id}` — детали. `MaterialDetailsResponse` (200 OK).
+  - `PUT /{id}` — обновить. `UpdateMaterialRequest` (204 No Content).
 
-## 11. ProductionController (`/api/production`)
-- **Назначение:** исполнение производственных заказов.
+## 11. PayrollRulesController (`/api/payroll-rules`)
+- **Назначение:** правила расчёта премии.
 - **Endpoints:**
-  1. `POST /orders` — создать заказ. `ProductionCreateOrderRequest` → `ProductionCreateOrderResponse` (201 Created).
-  2. `GET /orders/{id}` — карточка заказа. `ProductionGetOrderResponse` (200 OK).
-  3. `GET /orders/{id}/status` — статус. `ProductionGetOrderStatusResponse` (200 OK).
-  4. `POST /orders/{id}/allocate` — распределить материалы. `ProductionAllocateRequest` → `ProductionAllocateResponse` (200 OK).
-  5. `POST /orders/{id}/stages` — зафиксировать этап. `ProductionRecordStageRequest` → `ProductionRecordStageResponse` (200 OK).
-  6. `POST /orders/{id}/assign` — назначить сотрудника. `ProductionAssignWorkerRequest` → `ProductionAssignWorkerResponse` (200 OK).
+  - `GET /` — список. `PayrollRuleResponse` (200 OK).
+  - `GET /{id}` — детали. `PayrollRuleResponse` (200 OK).
+  - `POST /` — создать. `CreatePayrollRuleRequest` → `CreatePayrollRuleResponse` (201 Created).
+  - `PUT /{id}` — обновить. `UpdatePayrollRuleRequest` (204 No Content).
+  - `DELETE /{id}` — удалить. (204 No Content).
 
-## 12. ProductionOrdersController (`/api/production-orders`)
-- **Назначение:** планирование партий.
+## 12. PositionsController (`/api/positions`)
+- **Назначение:** должности.
 - **Endpoints:**
-  1. `GET /` — список заказов. `IEnumerable<ProductionOrderListResponse>` (200 OK).
-  2. `GET /{id}` — карточка. `ProductionOrderCardResponse` (200 OK/404).
-  3. `POST /` — создать. `ProductionOrderCreateRequest` → `ProductionOrderCreateResponse` (201 Created).
-  4. `PUT /{id}` — обновить. `ProductionOrderUpdateRequest` → `ProductionOrderUpdateResponse` (200 OK/404).
-  5. `DELETE /{id}` — удалить. `ProductionOrderDeleteResponse` (200 OK).
-  6. `GET /{id}/material-transfers` — материалы заказа. `IEnumerable<MaterialTransferItemDto>` (200 OK).
-  7. `GET /{id}/stage-distribution` — распределение стадий. `IEnumerable<StageDistributionItemResponse>` (200 OK).
+  - `GET /` — список (query: `departmentId`, `includeInactive`, `sortBy`, `sortDesc`). `PositionListItemResponse` (200 OK).
+  - `GET /{id}` — детали. `PositionDetailsResponse` (200 OK).
+  - `POST /` — создать. `CreatePositionRequest` → `CreatePositionResponse` (201 Created).
+  - `PUT /{id}` — обновить. `UpdatePositionRequest` (204 No Content).
 
-## 13. ProductsController (`/api/products`)
-- **Назначение:** продукты и их спецификации.
+## 13. ProductionOrdersController (`/api/production-orders`)
+- **Назначение:** производственные заказы и этапы.
 - **Endpoints:**
-  1. `GET /` — список. `IEnumerable<ProductsListResponse>` (200 OK).
-  2. `GET /{id}` — карточка. `ProductCardResponse` (200 OK).
-  3. `PUT /{id}` — обновление. `ProductUpdateRequest` → `ProductUpdateResponse` (200 OK).
-  4. `GET /{id}/bom` — материалы изделия. `IEnumerable<ProductBomItemResponse>` (200 OK).
-  5. `POST /{id}/bom` — добавить материал. `ProductBomCreateRequest` → `ProductBomItemResponse` (201 Created).
-  6. `DELETE /{id}/bom/{lineId}` — удалить строку. `ProductBomDeleteResponse` (200 OK/404).
-  7. `GET /{id}/operations` — операции. `IEnumerable<ProductOperationItemResponse>` (200 OK).
-  8. `POST /{id}/operations` — добавить операцию. `ProductOperationCreateRequest` → `ProductOperationItemResponse` (201 Created).
-  9. `DELETE /{id}/operations/{lineId}` — удалить операцию. `ProductOperationDeleteResponse` (200 OK/404).
+  - `GET /` — список. `ProductionOrderListItemResponse` (200 OK).
+  - `GET /sales-order/{salesOrderId}` — по заказу клиента. `ProductionOrderListItemResponse` (200 OK).
+  - `GET /{id}` — детали. `ProductionOrderDetailsResponse` (200 OK).
+  - `POST /` — создать. `CreateProductionOrderRequest` → `CreateProductionOrderResponse` (201 Created).
+  - `PUT /{id}` — обновить. `UpdateProductionOrderRequest` (204 No Content).
+  - `DELETE /{id}` — удалить. (204 No Content).
+  - `POST /{id}/cancel` — отменить. (204 No Content).
+  - `POST /{id}/start-stage` — старт этапа. `StartProductionStageRequest` (204 No Content).
+  - `POST /{id}/complete-stage` — завершить этап. `CompleteProductionStageRequest` (204 No Content).
+  - `GET /{id}/materials` — потребность материалов. `ProductionOrderMaterialResponse` (200 OK).
+  - `GET /{id}/materials/{materialId}/issue-details` — детализация выдачи. `ProductionOrderMaterialIssueDetailsResponse` (200 OK).
+  - `POST /{id}/materials/issue` — выдать материалы. `IssueMaterialsToProductionRequest` (204 No Content).
+  - `GET /{id}/stages` — свод этапов. `ProductionStageSummaryResponse` (200 OK).
+  - `GET /{id}/stages/{stage}` — сотрудники этапа. `ProductionStageEmployeeResponse` (200 OK).
+  - `POST /{id}/stages/{stage}` — добавить сотрудника. `AddProductionStageEmployeeRequest` (204 No Content).
+  - `PUT /{id}/stages/{stage}/employees/{operationId}` — обновить сотрудника. `UpdateProductionStageEmployeeRequest` (204 No Content).
+  - `DELETE /{id}/stages/{stage}/employees/{operationId}` — удалить сотрудника. (204 No Content).
+  - `POST /{id}/ship` — отгрузить ГП. `ShipFinishedGoodsRequest` (204 No Content).
+  - `GET /{id}/shipments` — отгрузки. `ProductionOrderShipmentResponse` (200 OK).
 
-## 14. PurchasesController (`/api/purchases`)
-- **Назначение:** заявки на закупку.
+## 14. ProductsController (`/api/products`)
+- **Назначение:** товары, материалы, цеховые затраты, изображения.
 - **Endpoints:**
-  1. `POST /requests` — создать. `PurchasesCreateRequest` → `PurchasesCreateResponse` (201 Created).
-  2. `PUT /requests/{id}` — обновить. `PurchasesCreateRequest` → `PurchasesCreateResponse` (200 OK/404).
-  3. `GET /requests` — список. `IEnumerable<PurchasesResponse>` (200 OK).
-  4. `GET /requests/{id}` — карточка. `PurchaseRequestDetailResponse` (200 OK/404).
-  5. `DELETE /requests/{id}` — удалить. 204 No Content/404.
-  6. `POST /requests/{id}/convert-to-order` — конвертация. `PurchasesConvertToOrderResponse` (200 OK/404).
+  - `GET /` — список (query: `search`, `sortBy`, `sortDesc`). `ProductListItemResponse` (200 OK).
+  - `GET /{id}` — детали. `ProductDetailsResponse` (200 OK).
+  - `POST /` — создать. `CreateProductRequest` → `CreateProductResponse` (201 Created).
+  - `PUT /{id}` — обновить. `UpdateProductRequest` (204 No Content).
+  - `POST /{id}/materials` — добавить материал. `AddProductMaterialRequest` → `AddProductMaterialResponse` (201 Created).
+  - `PUT /materials/{productMaterialId}` — изменить расход. `UpdateProductMaterialRequest` (204 No Content).
+  - `DELETE /materials/{productMaterialId}` — удалить. (204 No Content).
+  - `POST /{id}/production-costs` — затраты по цехам. `SetProductProductionCostsRequest` (204 No Content).
+  - `GET /{id}/images` — список с контентом. `ProductImageFileResponse` (200 OK).
+  - `GET /images/{imageId}` — скачать файл. (200 OK/404).
+  - `POST /{id}/images` — загрузить файл (multipart). → `Guid` (201 Created).
+  - `DELETE /images/{imageId}` — удалить файл. (204 No Content).
 
 ## 15. ReportsController (`/api/reports`)
-- **Назначение:** финансовые отчёты.
+- **Назначение:** месячные финансовые отчёты.
 - **Endpoints:**
-  1. `GET /monthly-profit?month={m}&year={y}` — прибыль месяца. `ReportsMonthlyProfitResponse` (200 OK).
-  2. `GET /monthly-profit/year/{year}` — прибыль по месяцам. `IEnumerable<ReportsMonthlyProfitResponse>` (200 OK).
-  3. `GET /revenue?month={m}&year={y}` — выручка по спецификациям. `IEnumerable<ReportsRevenueResponse>` (200 OK).
-  4. `GET /production-cost?month={m}&year={y}` — себестоимость партий. `IEnumerable<ReportsProductionCostResponse>` (200 OK).
+  - `GET /monthly` — список. `MonthlyFinancialReportListItemResponse` (200 OK).
+  - `GET /monthly/{year}/{month}` — детали. `MonthlyFinancialReportDetailsResponse` (200 OK).
+  - `POST /monthly/calculate` — рассчитать. `CalculateMonthlyFinancialReportRequest` → `CalculateMonthlyFinancialReportResponse` (201 Created).
+  - `POST /monthly/recalculate` — пересчитать. `RecalculateMonthlyFinancialReportRequest` (204 No Content).
+  - `POST /monthly/approve` — утвердить. `ApproveMonthlyFinancialReportRequest` (204 No Content).
+  - `POST /monthly/close` — закрыть. `CloseMonthlyFinancialReportRequest` (204 No Content).
 
-## 16. ReturnsController (`/api/returns`)
-- **Назначение:** возвраты клиентов.
+## 16. SalesOrdersController (`/api/sales-orders`)
+- **Назначение:** клиентские заказы и отгрузки.
 - **Endpoints:**
-  1. `GET /` — список. `IEnumerable<ReturnsListResponse>` (200 OK).
-  2. `GET /{id}` — карточка. `ReturnCardResponse` (200 OK).
-  3. `POST /` — создать. `ReturnsCreateRequest` → `ReturnsCreateResponse` (201 Created).
+  - `GET /` — список. `SalesOrderListItemResponse` (200 OK).
+  - `GET /{id}` — карточка. `SalesOrderDetailsResponse` (200 OK).
+  - `POST /` — создать. `CreateSalesOrderRequest` → `CreateSalesOrderResponse` (201 Created).
+  - `PUT /{id}` — обновить. `UpdateSalesOrderRequest` (200 OK).
+  - `POST /{id}/start` — старт. (200 OK).
+  - `POST /{id}/complete` — завершить. (200 OK).
+  - `POST /{id}/cancel` — отменить. (200 OK).
+  - `DELETE /{id}` — удалить. (200 OK).
+  - `POST /{id}/items` — добавить позицию. `AddSalesOrderItemRequest` → `AddSalesOrderItemResponse` (201 Created).
+  - `PUT /items/{itemId}` — обновить позицию. `UpdateSalesOrderItemRequest` (200 OK).
+  - `DELETE /items/{itemId}` — удалить позицию. (200 OK).
+  - `GET /{id}/shipments` — отгрузки. `SalesOrderShipmentResponse` (200 OK).
 
-## 17. SettingsController (`/api/settings`)
-- **Назначение:** системные настройки.
+## 17. SuppliersController (`/api/suppliers`)
+- **Назначение:** поставщики.
 - **Endpoints:**
-  1. `GET /` — список. `IEnumerable<SettingsListResponse>` (200 OK).
-  2. `GET /{key}` — конкретная настройка. `SettingGetResponse` (200 OK).
-  3. `PUT /{key}` — обновление. `SettingUpdateRequest` → `SettingUpdateResponse` (200 OK).
+  - `GET /` — список (query: `search`). `SupplierListItemResponse` (200 OK).
+  - `GET /{id}` — детали. `SupplierDetailsResponse` (200 OK).
+  - `POST /` — создать. `CreateSupplierRequest` → `CreateSupplierResponse` (201 Created).
+  - `PUT /{id}` — обновить. `UpdateSupplierRequest` (200 OK).
+  - `DELETE /{id}` — деактивировать. (200 OK).
 
-## 18. ShipmentsController (`/api/shipments`)
-- **Назначение:** отгрузки клиентам.
-- **Endpoints:**
-  1. `GET /` — список. `IEnumerable<ShipmentsListResponse>` (200 OK).
-  2. `POST /` — создать. `ShipmentsCreateRequest` → `ShipmentsCreateResponse` (201 Created).
-  3. `GET /{id}` — карточка. `ShipmentCardResponse` (200 OK).
-  4. `POST /{id}/confirm-payment` — подтверждение оплаты. `ShipmentsConfirmPaymentResponse` (200 OK).
+## 18. UsersController (`/api/users`)
+- **Назначение:** роли и пользователи.
+- **Roles:**
+  - `GET /roles` — список. `RoleResponse` (200 OK).
+  - `POST /roles` — создать. `CreateRoleRequest` → `CreateRoleResponse` (201 Created).
+  - `PUT /roles/{roleId}` — переименовать. `UpdateRoleRequest` (200 OK).
+  - `DELETE /roles/{roleId}` — деактивировать. (200 OK).
+- **Users:**
+  - `GET /` — список (query: `roleId`, `roleName`). `UserListItemResponse` (200 OK).
+  - `GET /{id}` — карточка. `UserDetailsResponse` (200 OK).
+  - `POST /` — создать. `CreateUserRequest` → `CreateUserResponse` (201 Created).
+  - `PUT /{id}` — изменить роль/статус. `UpdateUserRequest` (200 OK).
+  - `POST /{id}/deactivate` — деактивировать. (200 OK).
 
-## 19. ShiftsController (`/api/shifts`)
-- **Назначение:** план/факт смен.
+## 19. WarehousesController (`/api/warehouses`)
+- **Назначение:** склады, остатки, перемещения.
 - **Endpoints:**
-  1. `POST /plans` — создать план. `ShiftsCreatePlanRequest` → `ShiftsCreatePlanResponse` (201 Created).
-  2. `GET /plans` — список планов (query `date`). `IEnumerable<ShiftPlanListResponse>` (200 OK).
-  3. `GET /plans/{id}` — карточка плана. `ShiftPlanCardResponse` (200 OK).
-  4. `POST /results` — зафиксировать результат. `ShiftsRecordResultRequest` → `ShiftsRecordResultResponse` (200 OK).
-  5. `GET /results` — список фактов (query `employeeId`, `date`). `IEnumerable<ShiftResultListResponse>` (200 OK).
-  6. `GET /results/{id}` — карточка результата. `ShiftResultCardResponse` (200 OK).
-
-## 20. SpecificationsController (`/api/specifications`)
-- **Назначение:** технологические спецификации.
-- **Endpoints:**
-  1. `GET /` — список. `IEnumerable<SpecificationsListResponse>` (200 OK).
-  2. `GET /{id}` — карточка. `SpecificationsGetResponse` (200 OK).
-  3. `GET /{id}/bom` — материалы BOM. `IEnumerable<SpecificationBomItemResponse>` (200 OK).
-  4. `GET /{id}/operations` — операции. `IEnumerable<SpecificationOperationItemResponse>` (200 OK).
-  5. `POST /` — создать. `SpecificationsCreateRequest` → `SpecificationsCreateResponse` (201 Created).
-  6. `PUT /{id}` — обновить. `SpecificationsUpdateRequest` → `SpecificationsUpdateResponse` (200 OK).
-  7. `POST /{id}/bom` — добавить материал. `SpecificationsAddBomRequest` → `SpecificationsAddBomResponse` (200 OK).
-  8. `DELETE /{id}/bom/{bomId}` — удалить материал. `SpecificationsDeleteBomItemResponse` (200 OK).
-  9. `POST /{id}/operations` — добавить операцию. `SpecificationsAddOperationRequest` → `SpecificationsAddOperationResponse` (200 OK).
-  10. `POST /{id}/images` — загрузка изображения (multipart). `SpecificationsUploadImageResponse` (200 OK).
-  11. `GET /{id}/cost?asOf={date}` — расчёт себестоимости. `SpecificationsCostResponse` (200 OK).
-
-## 21. SuppliersController (`/api/suppliers`)
-- **Назначение:** управление поставщиками.
-- **Endpoints:**
-  1. `GET /` — список. `IEnumerable<SupplierResponse>` (200 OK).
-  2. `GET /{id}` — карточка. `SupplierResponse` (200 OK).
-  3. `POST /` — создать. `SuppliersCreateUpdateRequest` → `SuppliersCreateUpdateDeleteResponse` (201 Created).
-  4. `PUT /{id}` — обновить. `SuppliersCreateUpdateRequest` → `SuppliersCreateUpdateDeleteResponse` (200 OK).
-  5. `DELETE /{id}` — удалить. `SuppliersCreateUpdateDeleteResponse` (200 OK).
-
-## 22. UsersController (`/api/users`)
-- **Назначение:** административные пользователи.
-- **Endpoints:**
-  1. `GET /` — список по роли (query `role`). `IEnumerable<UsersGetByRoleResponse>` (200 OK).
-  2. `GET /{id}` — карточка. `UsersGetByIdResponse` (200 OK).
-  3. `POST /` — создать. `UsersCreateRequest` → `UsersCreateResponse` (201 Created).
-  4. `PUT /{id}` — обновить. `UsersUpdateRequest` → `UsersUpdateResponse` (200 OK).
-  5. `DELETE /{id}` — удалить. `UsersDeleteResponse` (200 OK).
-
-## 23. WarehousesController (`/api/warehouses`)
-- **Назначение:** справочник складов.
-- **Endpoints:**
-  1. `GET /` — список. `IEnumerable<WarehousesListResponse>` (200 OK).
-  2. `GET /{id}` — карточка. `WarehousesGetResponse` (200 OK).
-  3. `POST /` — создать. `WarehousesCreateRequest` → `WarehousesCreateResponse` (201 Created).
-  4. `PUT /{id}` — обновить. `WarehousesUpdateRequest` → `WarehousesUpdateResponse` (200 OK).
-  5. `DELETE /{id}` — удалить. 204 No Content.
-
-## 24. WorkshopExpensesController (`/api/workshops/expenses`)
-- **Назначение:** нормативы и расходы по цехам.
-- **Endpoints:**
-  1. `GET /` — список (query `workshopId`). `IEnumerable<WorkshopExpenseListResponse>` (200 OK).
-  2. `GET /{id}` — карточка. `WorkshopExpenseGetResponse` (200 OK).
-  3. `POST /` — создать. `WorkshopExpenseCreateRequest` → `WorkshopExpenseCreateResponse` (201 Created).
-  4. `PUT /{id}` — обновить. `WorkshopExpenseUpdateRequest` → `WorkshopExpenseUpdateResponse` (200 OK).
-
-## 25. WorkshopsController (`/api/workshops`)
-- **Назначение:** справочник производственных участков.
-- **Endpoints:**
-  1. `GET /` — список. `IEnumerable<WorkshopsListResponse>` (200 OK).
-  2. `GET /{id}` — карточка. `WorkshopGetResponse` (200 OK).
-  3. `POST /` — создать. `WorkshopCreateRequest` → `WorkshopCreateResponse` (201 Created).
-  4. `PUT /{id}` — обновить. `WorkshopUpdateRequest` → `WorkshopUpdateResponse` (200 OK).
-
-## 26. CustomersController (`/api/customers`)
-- **Назначение:** поиск клиентов.
-- **Endpoints:**
-  1. `GET /search?query={text}` — поиск. `IEnumerable<CustomerLookupResponse>` (200 OK).
-
-## 27. EmployeesController (`/api/employees`)
-- **Назначение:** кадровый справочник.
-- **Endpoints:**
-  1. `GET /` — список сотрудников (query `role`). `IEnumerable<EmployeeListResponse>` (200 OK).
-  2. `GET /{id}` — карточка. `EmployeeCardResponse` (200 OK/404).
-  3. `PUT /{id}` — обновление данных. `EmployeeUpdateRequest` → 204 No Content/404.
+  - `GET /` — список (query: `includeInactive`). `WarehouseListItemResponse` (200 OK).
+  - `GET /{id}` — информация. `WarehouseInfoResponse` (200 OK).
+  - `GET /{id}/stock` — остатки. `WarehouseStockItemResponse` (200 OK).
+  - `POST /` — создать. `CreateWarehouseRequest` → `CreateWarehouseResponse` (201 Created).
+  - `PUT /{id}` — обновить. `UpdateWarehouseRequest` (200 OK).
+  - `DELETE /{id}` — деактивировать. (200 OK).
+  - `POST /{id}/materials` — добавить материал. `AddMaterialToWarehouseRequest` (200 OK).
+  - `DELETE /{id}/materials/{materialId}` — удалить материал. (200 OK).
+  - `PUT /{id}/materials/{materialId}` — изменить количество. `UpdateWarehouseMaterialQtyRequest` (200 OK).
+  - `POST /materials/transfer` — перенос материалов. `TransferMaterialsRequest` (200 OK).
+  - `POST /products/transfer` — перенос готовой продукции. `TransferProductsRequest` (200 OK).
 
 ---
 
