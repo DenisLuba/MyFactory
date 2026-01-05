@@ -11,7 +11,6 @@ using MyFactory.Application.Features.Warehouses.UpdateWarehouseMaterialQty;
 using MyFactory.WebApi.Contracts.Warehouses;
 using MyFactory.WebApi.SwaggerExamples.Warehouses;
 using Swashbuckle.AspNetCore.Filters;
-using CreateUpdateDeactivateWarehouse = MyFactory.Application.Features.Warehouses.GetWarehouses;
 
 namespace MyFactory.WebApi.Controllers;
 
