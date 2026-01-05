@@ -1,4 +1,4 @@
-﻿namespace MyFactory.MauiClient.Models.Auth;
+namespace MyFactory.MauiClient.Models.Auth;
 
 public record RefreshResponse(
     string AccessToken,

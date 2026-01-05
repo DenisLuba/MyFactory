@@ -1,4 +1,3 @@
-﻿namespace MyFactory.MauiClient.Models.Auth;
+namespace MyFactory.MauiClient.Models.Auth;
 
-public record RefreshRequest(
-    string RefreshToken);
+public record RefreshRequest(string RefreshToken);

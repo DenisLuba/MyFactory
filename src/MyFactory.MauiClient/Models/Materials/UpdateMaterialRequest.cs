@@ -1,8 +1,7 @@
-﻿namespace MyFactory.MauiClient.Models.Materials;
+namespace MyFactory.MauiClient.Models.Materials;
 
 public record UpdateMaterialRequest(
-    string Code,
     string Name,
     Guid MaterialTypeId,
-    Units Unit,
-    bool IsActive);
+    Guid UnitId,
+    string? Color);

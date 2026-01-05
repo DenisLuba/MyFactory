@@ -1,9 +1,0 @@
-﻿namespace MyFactory.MauiClient.Models.Shipments;
-
-public enum ShipmentStatus
-{
-    Draft,
-    Shipped,
-    Paid,
-    Cancelled
-}
