@@ -1,10 +1,10 @@
-﻿using MyFactory.MauiClient.Pages.Finance.Overheads;
-using MyFactory.MauiClient.Pages.FinishedGoods.Receipt;
-using MyFactory.MauiClient.Pages.FinishedGoods.Returns;
-using MyFactory.MauiClient.Pages.FinishedGoods.Shipment;
-using MyFactory.MauiClient.Pages.Reference.Employees;
-using MyFactory.MauiClient.Pages.Reference.Warehouses;
-using MyFactory.MauiClient.Pages.Reference.Workshops;
+﻿using MyFactory.MauiClient.OldPages.Finance.Overheads;
+using MyFactory.MauiClient.OldPages.FinishedGoods.Receipt;
+using MyFactory.MauiClient.OldPages.FinishedGoods.Returns;
+using MyFactory.MauiClient.OldPages.FinishedGoods.Shipment;
+using MyFactory.MauiClient.OldPages.Reference.Employees;
+using MyFactory.MauiClient.OldPages.Reference.Warehouses;
+using MyFactory.MauiClient.OldPages.Reference.Workshops;
 
 namespace MyFactory.MauiClient;
 

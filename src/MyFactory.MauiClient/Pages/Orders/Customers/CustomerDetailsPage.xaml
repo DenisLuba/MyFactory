@@ -1,0 +1,42 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Orders.Customers.CustomerDetailsPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Orders.Customers"
+	Title="Карточка заказчика"
+	x:DataType="view_model:CustomerDetailsPageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Button Command="{Binding BackCommand}" Text="Назад" />
+
+			<Label
+				FontAttributes="Bold"
+				FontSize="20"
+				Text="{Binding Name}" />
+
+			<VerticalStackLayout Spacing="4">
+				<Label FontAttributes="Bold" Text="Контакты:" />
+				<Label Text="{Binding Phone}" />
+				<Label Text="{Binding Email}" />
+				<Label Text="{Binding Address}" />
+			</VerticalStackLayout>
+
+			<Label FontAttributes="Bold" Text="История заказов" />
+			<CollectionView ItemsSource="{Binding Orders}" SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<Grid
+							Padding="0,6"
+							ColumnDefinitions="*,Auto,Auto"
+							ColumnSpacing="8">
+							<Label Text="{Binding OrderNumber}" />
+							<Label Grid.Column="1" Text="{Binding OrderDate}" />
+							<Label Grid.Column="2" Text="{Binding Status}" />
+						</Grid>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
+

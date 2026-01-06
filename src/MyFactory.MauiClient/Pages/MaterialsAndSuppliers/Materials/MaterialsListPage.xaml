@@ -1,0 +1,76 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Materials.MaterialsListPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Materials"
+	Title="Материалы"
+	x:DataType="view_model:MaterialsListPageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Grid ColumnDefinitions="*,*,Auto" ColumnSpacing="8">
+				<Entry Placeholder="Поиск по типу материала" Text="{Binding MaterialTypeSearch}" />
+				<Entry
+					Grid.Column="1"
+					Placeholder="Поиск по материалу"
+					Text="{Binding MaterialNameSearch}" />
+				<Button
+					Grid.Column="2"
+					Command="{Binding AddCommand}"
+					Text="+ Добавить" />
+			</Grid>
+
+			<Grid
+				Padding="0,4"
+				ColumnDefinitions="*,*,*"
+				ColumnSpacing="8">
+				<Label FontAttributes="Bold" Text="ТИП МАТЕРИАЛА" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					Text="МАТЕРИАЛ" />
+				<Label
+					Grid.Column="2"
+					FontAttributes="Bold"
+					Text="ОСТАТОК" />
+			</Grid>
+
+			<CollectionView
+				x:Name="MaterialsListCollection"
+				ItemsSource="{Binding FilteredMaterials}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<SwipeView>
+							<SwipeView.RightItems>
+								<SwipeItems Mode="Reveal">
+									<SwipeItem
+										BackgroundColor="LightGray"
+										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=MaterialsListCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Редактировать" />
+									<SwipeItem
+										BackgroundColor="Tomato"
+										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=MaterialsListCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Удалить" />
+								</SwipeItems>
+							</SwipeView.RightItems>
+							<Grid
+								Padding="0,8"
+								ColumnDefinitions="*,*,*"
+								ColumnSpacing="8">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=MaterialsListCollection}}" CommandParameter="{Binding .}" />
+								</Grid.GestureRecognizers>
+								<Label Text="{Binding MaterialTypeName}" />
+								<Label Grid.Column="1" Text="{Binding MaterialName}" />
+								<Label Grid.Column="2" Text="{Binding TotalQty}" />
+							</Grid>
+						</SwipeView>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
+

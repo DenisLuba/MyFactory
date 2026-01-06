@@ -1,0 +1,94 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Finance.FinancialReports.FinancialReportsListPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.FinancialReports"
+	Title="Финансовые отчёты"
+	x:DataType="view_model:FinancialReportsListPageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+				<Label
+					FontAttributes="Bold"
+					FontSize="18"
+					Text="Финансовые отчёты по месяцам" />
+				<Button
+					Grid.Column="1"
+					Command="{Binding CalculateCommand}"
+					Text="Рассчитать месяц" />
+			</Grid>
+
+			<Grid
+				Padding="0,4"
+				ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+				ColumnSpacing="8">
+				<Label FontAttributes="Bold" Text="Год" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					Text="Месяц" />
+				<Label
+					Grid.Column="2"
+					FontAttributes="Bold"
+					Text="Доход" />
+				<Label
+					Grid.Column="3"
+					FontAttributes="Bold"
+					Text="Зарплата" />
+				<Label
+					Grid.Column="4"
+					FontAttributes="Bold"
+					Text="Материалы" />
+				<Label
+					Grid.Column="5"
+					FontAttributes="Bold"
+					Text="Прочее" />
+				<Label
+					Grid.Column="6"
+					FontAttributes="Bold"
+					Text="Прибыль" />
+			</Grid>
+
+			<CollectionView
+				x:Name="ReportsCollection"
+				ItemsSource="{Binding Reports}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<Grid
+							Padding="0,8"
+							ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+							ColumnSpacing="8">
+							<Grid.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=ReportsCollection}}" CommandParameter="{Binding .}" />
+							</Grid.GestureRecognizers>
+							<Label Text="{Binding Year}" />
+							<Label Grid.Column="1" Text="{Binding Month}" />
+							<Label
+								Grid.Column="2"
+								HorizontalTextAlignment="End"
+								Text="{Binding TotalRevenue}" />
+							<Label
+								Grid.Column="3"
+								HorizontalTextAlignment="End"
+								Text="{Binding PayrollExpenses}" />
+							<Label
+								Grid.Column="4"
+								HorizontalTextAlignment="End"
+								Text="{Binding MaterialExpenses}" />
+							<Label
+								Grid.Column="5"
+								HorizontalTextAlignment="End"
+								Text="{Binding OtherExpenses}" />
+							<Label
+								Grid.Column="6"
+								HorizontalTextAlignment="End"
+								Text="{Binding Profit}" />
+						</Grid>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
+

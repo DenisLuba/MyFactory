@@ -1,0 +1,148 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Finance.Payroll.PayrollDailyBreakdownPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.Payroll"
+	Title="Детализация начислений"
+	x:DataType="view_model:PayrollDailyBreakdownPageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Label
+				FontAttributes="Bold"
+				FontSize="18"
+				Text="{Binding EmployeeName}" />
+			<Label Text="{Binding Position}" />
+
+			<Grid
+				ColumnDefinitions="Auto,Auto,Auto,Auto"
+				ColumnSpacing="8"
+				RowSpacing="8">
+				<Label Text="Период:" VerticalTextAlignment="Center" />
+				<DatePicker Grid.Column="1" Date="{Binding FromDate}" />
+				<DatePicker Grid.Column="2" Date="{Binding ToDate}" />
+				<Label Grid.Column="3" />
+			</Grid>
+
+			<Grid
+				ColumnDefinitions="*,Auto,Auto"
+				ColumnSpacing="8"
+				VerticalOptions="Center">
+				<Label FontAttributes="Bold" Text="Сумма для выплаты:" />
+				<Entry
+					Grid.Column="1"
+					HorizontalTextAlignment="End"
+					Text="{Binding PayoutAmount}" />
+				<Button
+					Grid.Column="2"
+					Command="{Binding PayCommand}"
+					Text="Выплатить" />
+			</Grid>
+
+			<Grid
+				Padding="0,4"
+				ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+				ColumnSpacing="8">
+				<Label FontAttributes="Bold" Text="Дата" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					Text="Часы" />
+				<Label
+					Grid.Column="2"
+					FontAttributes="Bold"
+					Text="План" />
+				<Label
+					Grid.Column="3"
+					FontAttributes="Bold"
+					Text="Факт" />
+				<Label
+					Grid.Column="4"
+					FontAttributes="Bold"
+					Text="Сверх" />
+				<Label
+					Grid.Column="5"
+					FontAttributes="Bold"
+					Text="База" />
+				<Label
+					Grid.Column="6"
+					FontAttributes="Bold"
+					Text="Премия" />
+			</Grid>
+
+			<CollectionView ItemsSource="{Binding DailyItems}" SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<Grid
+							Padding="0,6"
+							ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+							ColumnSpacing="8">
+							<Label Text="{Binding Date}" />
+							<Label
+								Grid.Column="1"
+								HorizontalTextAlignment="End"
+								Text="{Binding Hours}" />
+							<Label
+								Grid.Column="2"
+								HorizontalTextAlignment="End"
+								Text="{Binding QtyPlanned}" />
+							<Label
+								Grid.Column="3"
+								HorizontalTextAlignment="End"
+								Text="{Binding QtyProduced}" />
+							<Label
+								Grid.Column="4"
+								HorizontalTextAlignment="End"
+								Text="{Binding QtyExtra}" />
+							<Label
+								Grid.Column="5"
+								HorizontalTextAlignment="End"
+								Text="{Binding BaseAmount}" />
+							<Label
+								Grid.Column="6"
+								HorizontalTextAlignment="End"
+								Text="{Binding PremiumAmount}" />
+						</Grid>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+
+			<Grid
+				Padding="0,6"
+				ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+				ColumnSpacing="8">
+				<Label FontAttributes="Bold" Text="Всего:" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="{Binding TotalHours}" />
+				<Label
+					Grid.Column="2"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="{Binding TotalQtyPlanned}" />
+				<Label
+					Grid.Column="3"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="{Binding TotalQtyProduced}" />
+				<Label
+					Grid.Column="4"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="{Binding TotalQtyExtra}" />
+				<Label
+					Grid.Column="5"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="{Binding TotalBaseAmount}" />
+				<Label
+					Grid.Column="6"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="{Binding TotalPremiumAmount}" />
+			</Grid>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
+

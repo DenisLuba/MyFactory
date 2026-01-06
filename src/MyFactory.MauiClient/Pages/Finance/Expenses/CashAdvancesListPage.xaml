@@ -1,0 +1,107 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Finance.Expenses.CashAdvancesListPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.Expenses"
+	Title="Подотчётные авансы"
+	x:DataType="view_model:CashAdvancesListPageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+				<Label
+					FontAttributes="Bold"
+					FontSize="18"
+					Text="Подотчётные авансы" />
+				<Button
+					Grid.Column="1"
+					Command="{Binding AddCommand}"
+					Text="+ Выдать" />
+			</Grid>
+
+			<Grid
+				Padding="0,4"
+				ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto,Auto"
+				ColumnSpacing="8">
+				<Label FontAttributes="Bold" Text="Дата" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					Text="Сотрудник" />
+				<Label
+					Grid.Column="2"
+					FontAttributes="Bold"
+					Text="Выдано" />
+				<Label
+					Grid.Column="3"
+					FontAttributes="Bold"
+					Text="Потрачено" />
+				<Label
+					Grid.Column="4"
+					FontAttributes="Bold"
+					Text="Возвращено" />
+				<Label
+					Grid.Column="5"
+					FontAttributes="Bold"
+					Text="Долг" />
+				<Label
+					Grid.Column="6"
+					FontAttributes="Bold"
+					Text="Статус" />
+			</Grid>
+
+			<CollectionView
+				x:Name="CashAdvancesCollection"
+				ItemsSource="{Binding CashAdvances}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<SwipeView>
+							<SwipeView.RightItems>
+								<SwipeItems Mode="Reveal">
+									<SwipeItem
+										BackgroundColor="LightGray"
+										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=CashAdvancesCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Редактировать" />
+									<SwipeItem
+										BackgroundColor="Tomato"
+										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=CashAdvancesCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Удалить" />
+								</SwipeItems>
+							</SwipeView.RightItems>
+							<Grid
+								Padding="0,8"
+								ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto,Auto"
+								ColumnSpacing="8">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=CashAdvancesCollection}}" CommandParameter="{Binding .}" />
+								</Grid.GestureRecognizers>
+								<Label Text="{Binding IssueDate}" />
+								<Label Grid.Column="1" Text="{Binding EmployeeName}" />
+								<Label
+									Grid.Column="2"
+									HorizontalTextAlignment="End"
+									Text="{Binding IssuedAmount}" />
+								<Label
+									Grid.Column="3"
+									HorizontalTextAlignment="End"
+									Text="{Binding SpentAmount}" />
+								<Label
+									Grid.Column="4"
+									HorizontalTextAlignment="End"
+									Text="{Binding ReturnedAmount}" />
+								<Label
+									Grid.Column="5"
+									HorizontalTextAlignment="End"
+									Text="{Binding Balance}" />
+								<Label Grid.Column="6" Text="{Binding Status}" />
+							</Grid>
+						</SwipeView>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
+

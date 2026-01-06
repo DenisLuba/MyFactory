@@ -1,0 +1,59 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Finance.Expenses.CashAdvanceCreatePage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.Expenses"
+	Title="Выдать аванс"
+	x:DataType="view_model:CashAdvanceCreatePageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Label
+				FontAttributes="Bold"
+				FontSize="18"
+				Text="Выдать аванс" />
+
+			<Grid
+				ColumnDefinitions="Auto,*"
+				ColumnSpacing="8"
+				RowDefinitions="Auto,Auto,Auto,Auto"
+				RowSpacing="8">
+				<Label FontAttributes="Bold" Text="Сотрудник:" />
+				<Picker
+					Grid.Column="1"
+					ItemDisplayBinding="{Binding FullName}"
+					ItemsSource="{Binding Employees}"
+					SelectedItem="{Binding SelectedEmployee}" />
+				<Label
+					Grid.Row="1"
+					FontAttributes="Bold"
+					Text="Дата:" />
+				<DatePicker
+					Grid.Row="1"
+					Grid.Column="1"
+					Date="{Binding IssueDate}" />
+				<Label
+					Grid.Row="2"
+					FontAttributes="Bold"
+					Text="Сумма:" />
+				<Entry
+					Grid.Row="2"
+					Grid.Column="1"
+					Keyboard="Numeric"
+					Text="{Binding Amount}" />
+				<Label
+					Grid.Row="3"
+					FontAttributes="Bold"
+					Text="Описание:" />
+				<Entry
+					Grid.Row="3"
+					Grid.Column="1"
+					Text="{Binding Description}" />
+			</Grid>
+
+			<HorizontalStackLayout Spacing="12">
+				<Button Command="{Binding SaveCommand}" Text="Выдать" />
+				<Button Command="{Binding CancelCommand}" Text="Отмена" />
+			</HorizontalStackLayout>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>

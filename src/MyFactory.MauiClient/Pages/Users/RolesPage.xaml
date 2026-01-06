@@ -1,0 +1,53 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Users.RolesPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Users"
+	Title="Роли"
+	x:DataType="view_model:RolesPageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+				<Label
+					FontAttributes="Bold"
+					FontSize="18"
+					Text="Роли" />
+				<Button
+					Grid.Column="1"
+					Command="{Binding AddCommand}"
+					Text="+ Добавить" />
+			</Grid>
+
+			<Grid Padding="0,4" ColumnDefinitions="*">
+				<Label FontAttributes="Bold" Text="Название роли" />
+			</Grid>
+
+			<CollectionView
+				x:Name="RolesCollection"
+				ItemsSource="{Binding Roles}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<SwipeView>
+							<SwipeView.RightItems>
+								<SwipeItems Mode="Reveal">
+									<SwipeItem
+										BackgroundColor="Tomato"
+										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=RolesCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Удалить" />
+								</SwipeItems>
+							</SwipeView.RightItems>
+							<Grid Padding="0,8" ColumnDefinitions="*">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=RolesCollection}}" CommandParameter="{Binding .}" />
+								</Grid.GestureRecognizers>
+								<Label Text="{Binding Name}" />
+							</Grid>
+						</SwipeView>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>

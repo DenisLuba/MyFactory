@@ -1,0 +1,70 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Finance.Payroll.PayrollRulesListPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.Payroll"
+	Title="Правила расчёта зарплаты"
+	x:DataType="view_model:PayrollRulesListPageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+				<Label
+					FontAttributes="Bold"
+					FontSize="18"
+					Text="Правила расчёта зарплаты" />
+				<Button
+					Grid.Column="1"
+					Command="{Binding AddCommand}"
+					Text="+ Добавить" />
+			</Grid>
+
+			<Grid
+				Padding="0,4"
+				ColumnDefinitions="Auto,Auto,*"
+				ColumnSpacing="8">
+				<Label FontAttributes="Bold" Text="Дата с" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					Text="% премии" />
+				<Label
+					Grid.Column="2"
+					FontAttributes="Bold"
+					Text="Описание" />
+			</Grid>
+
+			<CollectionView
+				x:Name="RulesCollection"
+				ItemsSource="{Binding Rules}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<SwipeView>
+							<SwipeView.RightItems>
+								<SwipeItems Mode="Reveal">
+									<SwipeItem
+										BackgroundColor="Tomato"
+										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=RulesCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Удалить" />
+								</SwipeItems>
+							</SwipeView.RightItems>
+							<Grid
+								Padding="0,8"
+								ColumnDefinitions="Auto,Auto,*"
+								ColumnSpacing="8">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=RulesCollection}}" CommandParameter="{Binding .}" />
+								</Grid.GestureRecognizers>
+								<Label Text="{Binding EffectiveFrom}" />
+								<Label Grid.Column="1" Text="{Binding PremiumPercent}" />
+								<Label Grid.Column="2" Text="{Binding Description}" />
+							</Grid>
+						</SwipeView>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
+

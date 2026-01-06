@@ -1,0 +1,341 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Production.ProductionStagesPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Production"
+	Title="Этапы производства"
+	x:DataType="view_model:ProductionStagesPageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Label
+				FontAttributes="Bold"
+				FontSize="18"
+				Text="Этапы производства" />
+			<Grid
+				ColumnDefinitions="Auto,*"
+				ColumnSpacing="8"
+				RowDefinitions="Auto,Auto"
+				RowSpacing="6">
+				<Label FontAttributes="Bold" Text="Производственный заказ:" />
+				<Label Grid.Column="1" Text="{Binding ProductionOrderNumber}" />
+				<Label
+					Grid.Row="1"
+					FontAttributes="Bold"
+					Text="Изделие / Кол-во:" />
+				<Label
+					Grid.Row="1"
+					Grid.Column="1"
+					Text="{Binding ProductInfo}" />
+			</Grid>
+
+			<VerticalStackLayout Spacing="12">
+				<Border
+					Padding="8"
+					Stroke="LightGray"
+					StrokeThickness="1">
+					<VerticalStackLayout Spacing="8">
+						<Label FontAttributes="Bold" Text="Раскрой" />
+						<Grid
+							ColumnDefinitions="*,Auto"
+							ColumnSpacing="8"
+							RowDefinitions="Auto,Auto"
+							RowSpacing="4">
+							<Label FontAttributes="Bold" Text="Покроено:" />
+							<Label
+								Grid.Column="1"
+								HorizontalTextAlignment="End"
+								Text="{Binding CuttingDone}" />
+							<Label
+								Grid.Row="1"
+								FontAttributes="Bold"
+								Text="Осталось:" />
+							<Label
+								Grid.Row="1"
+								Grid.Column="1"
+								HorizontalTextAlignment="End"
+								Text="{Binding CuttingLeft}" />
+						</Grid>
+						<Grid
+							Padding="0,4"
+							ColumnDefinitions="*,Auto,Auto"
+							ColumnSpacing="8">
+							<Label FontAttributes="Bold" Text="Сотрудник" />
+							<Label
+								Grid.Column="1"
+								FontAttributes="Bold"
+								Text="Назначено" />
+							<Label
+								Grid.Column="2"
+								FontAttributes="Bold"
+								Text="Выполнено" />
+						</Grid>
+						<CollectionView
+							x:Name="CuttingCollection"
+							ItemsSource="{Binding CuttingEmployees}"
+							SelectionMode="None">
+							<CollectionView.ItemTemplate>
+								<DataTemplate>
+									<SwipeView>
+										<SwipeView.RightItems>
+											<SwipeItems Mode="Reveal">
+												<SwipeItem
+													BackgroundColor="LightGray"
+													Command="{Binding BindingContext.EditEmployeeCommand, Source={x:Reference Name=CuttingCollection}}"
+													CommandParameter="{Binding .}"
+													Text="Редактировать" />
+												<SwipeItem
+													BackgroundColor="Tomato"
+													Command="{Binding BindingContext.DeleteEmployeeCommand, Source={x:Reference Name=CuttingCollection}}"
+													CommandParameter="{Binding .}"
+													Text="Удалить" />
+											</SwipeItems>
+										</SwipeView.RightItems>
+										<Grid
+											Padding="0,6"
+											ColumnDefinitions="*,Auto,Auto"
+											ColumnSpacing="8">
+											<Label Text="{Binding EmployeeName}" />
+											<Label
+												Grid.Column="1"
+												HorizontalTextAlignment="End"
+												Text="{Binding Assigned}" />
+											<Label
+												Grid.Column="2"
+												HorizontalTextAlignment="End"
+												Text="{Binding Completed}" />
+										</Grid>
+									</SwipeView>
+								</DataTemplate>
+							</CollectionView.ItemTemplate>
+						</CollectionView>
+						<Grid
+							Padding="0,4"
+							ColumnDefinitions="*,Auto,Auto"
+							ColumnSpacing="8">
+							<Label FontAttributes="Bold" Text="Итого" />
+							<Label
+								Grid.Column="1"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="{Binding CuttingAssignedTotal}" />
+							<Label
+								Grid.Column="2"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="{Binding CuttingCompletedTotal}" />
+						</Grid>
+						<Button Command="{Binding AddCuttingEmployeeCommand}" Text="+ Добавить" />
+					</VerticalStackLayout>
+				</Border>
+
+				<Border
+					Padding="8"
+					Stroke="LightGray"
+					StrokeThickness="1">
+					<VerticalStackLayout Spacing="8">
+						<Label FontAttributes="Bold" Text="Шитьё" />
+						<Grid
+							ColumnDefinitions="*,Auto"
+							ColumnSpacing="8"
+							RowDefinitions="Auto,Auto"
+							RowSpacing="4">
+							<Label FontAttributes="Bold" Text="Пошито:" />
+							<Label
+								Grid.Column="1"
+								HorizontalTextAlignment="End"
+								Text="{Binding SewingDone}" />
+							<Label
+								Grid.Row="1"
+								FontAttributes="Bold"
+								Text="Осталось:" />
+							<Label
+								Grid.Row="1"
+								Grid.Column="1"
+								HorizontalTextAlignment="End"
+								Text="{Binding SewingLeft}" />
+						</Grid>
+						<Grid
+							Padding="0,4"
+							ColumnDefinitions="*,Auto,Auto,Auto"
+							ColumnSpacing="8">
+							<Label FontAttributes="Bold" Text="Сотрудник" />
+							<Label
+								Grid.Column="1"
+								FontAttributes="Bold"
+								Text="Норма" />
+							<Label
+								Grid.Column="2"
+								FontAttributes="Bold"
+								Text="Назначено" />
+							<Label
+								Grid.Column="3"
+								FontAttributes="Bold"
+								Text="Выполнено" />
+						</Grid>
+						<CollectionView
+							x:Name="SewingCollection"
+							ItemsSource="{Binding SewingEmployees}"
+							SelectionMode="None">
+							<CollectionView.ItemTemplate>
+								<DataTemplate>
+									<SwipeView>
+										<SwipeView.RightItems>
+											<SwipeItems Mode="Reveal">
+												<SwipeItem
+													BackgroundColor="LightGray"
+													Command="{Binding BindingContext.EditEmployeeCommand, Source={x:Reference Name=SewingCollection}}"
+													CommandParameter="{Binding .}"
+													Text="Редактировать" />
+												<SwipeItem
+													BackgroundColor="Tomato"
+													Command="{Binding BindingContext.DeleteEmployeeCommand, Source={x:Reference Name=SewingCollection}}"
+													CommandParameter="{Binding .}"
+													Text="Удалить" />
+											</SwipeItems>
+										</SwipeView.RightItems>
+										<Grid
+											Padding="0,6"
+											ColumnDefinitions="*,Auto,Auto,Auto"
+											ColumnSpacing="8">
+											<Label Text="{Binding EmployeeName}" />
+											<Label
+												Grid.Column="1"
+												HorizontalTextAlignment="End"
+												Text="{Binding Norm}" />
+											<Label
+												Grid.Column="2"
+												HorizontalTextAlignment="End"
+												Text="{Binding Assigned}" />
+											<Label
+												Grid.Column="3"
+												HorizontalTextAlignment="End"
+												Text="{Binding Completed}" />
+										</Grid>
+									</SwipeView>
+								</DataTemplate>
+							</CollectionView.ItemTemplate>
+						</CollectionView>
+						<Grid
+							Padding="0,4"
+							ColumnDefinitions="*,Auto,Auto,Auto"
+							ColumnSpacing="8">
+							<Label FontAttributes="Bold" Text="Итого" />
+							<Label Grid.Column="1" Text="" />
+							<Label
+								Grid.Column="2"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="{Binding SewingAssignedTotal}" />
+							<Label
+								Grid.Column="3"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="{Binding SewingCompletedTotal}" />
+						</Grid>
+						<Button Command="{Binding AddSewingEmployeeCommand}" Text="+ Добавить" />
+					</VerticalStackLayout>
+				</Border>
+
+				<Border
+					Padding="8"
+					Stroke="LightGray"
+					StrokeThickness="1">
+					<VerticalStackLayout Spacing="8">
+						<Label FontAttributes="Bold" Text="Упаковка" />
+						<Grid
+							ColumnDefinitions="*,Auto"
+							ColumnSpacing="8"
+							RowDefinitions="Auto,Auto"
+							RowSpacing="4">
+							<Label FontAttributes="Bold" Text="Упаковано:" />
+							<Label
+								Grid.Column="1"
+								HorizontalTextAlignment="End"
+								Text="{Binding PackagingDone}" />
+							<Label
+								Grid.Row="1"
+								FontAttributes="Bold"
+								Text="Осталось:" />
+							<Label
+								Grid.Row="1"
+								Grid.Column="1"
+								HorizontalTextAlignment="End"
+								Text="{Binding PackagingLeft}" />
+						</Grid>
+						<Grid
+							Padding="0,4"
+							ColumnDefinitions="*,Auto,Auto"
+							ColumnSpacing="8">
+							<Label FontAttributes="Bold" Text="Сотрудник" />
+							<Label
+								Grid.Column="1"
+								FontAttributes="Bold"
+								Text="Назначено" />
+							<Label
+								Grid.Column="2"
+								FontAttributes="Bold"
+								Text="Выполнено" />
+						</Grid>
+						<CollectionView
+							x:Name="PackagingCollection"
+							ItemsSource="{Binding PackagingEmployees}"
+							SelectionMode="None">
+							<CollectionView.ItemTemplate>
+								<DataTemplate>
+									<SwipeView>
+										<SwipeView.RightItems>
+											<SwipeItems Mode="Reveal">
+												<SwipeItem
+													BackgroundColor="LightGray"
+													Command="{Binding BindingContext.EditEmployeeCommand, Source={x:Reference Name=PackagingCollection}}"
+													CommandParameter="{Binding .}"
+													Text="Редактировать" />
+												<SwipeItem
+													BackgroundColor="Tomato"
+													Command="{Binding BindingContext.DeleteEmployeeCommand, Source={x:Reference Name=PackagingCollection}}"
+													CommandParameter="{Binding .}"
+													Text="Удалить" />
+											</SwipeItems>
+										</SwipeView.RightItems>
+										<Grid
+											Padding="0,6"
+											ColumnDefinitions="*,Auto,Auto"
+											ColumnSpacing="8">
+											<Label Text="{Binding EmployeeName}" />
+											<Label
+												Grid.Column="1"
+												HorizontalTextAlignment="End"
+												Text="{Binding Assigned}" />
+											<Label
+												Grid.Column="2"
+												HorizontalTextAlignment="End"
+												Text="{Binding Completed}" />
+										</Grid>
+									</SwipeView>
+								</DataTemplate>
+							</CollectionView.ItemTemplate>
+						</CollectionView>
+						<Grid
+							Padding="0,4"
+							ColumnDefinitions="*,Auto,Auto"
+							ColumnSpacing="8">
+							<Label FontAttributes="Bold" Text="Итого" />
+							<Label
+								Grid.Column="1"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="{Binding PackagingAssignedTotal}" />
+							<Label
+								Grid.Column="2"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="{Binding PackagingCompletedTotal}" />
+						</Grid>
+						<Button Command="{Binding AddPackagingEmployeeCommand}" Text="+ Добавить" />
+					</VerticalStackLayout>
+				</Border>
+			</VerticalStackLayout>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
+

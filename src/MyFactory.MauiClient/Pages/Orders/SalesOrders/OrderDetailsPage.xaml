@@ -1,0 +1,171 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Orders.SalesOrders.OrderDetailsPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Orders.SalesOrders"
+	Title="Карточка заказа"
+	x:DataType="view_model:OrderDetailsPageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+				<Button Command="{Binding BackCommand}" Text="Назад" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					FontSize="18"
+					Text="{Binding OrderTitle}"
+					VerticalTextAlignment="Center" />
+				<Button
+					Grid.Column="2"
+					Command="{Binding ProductionCommand}"
+					Text="Производство" />
+			</Grid>
+
+			<Grid
+				ColumnDefinitions="Auto,*"
+				ColumnSpacing="8"
+				RowDefinitions="Auto,Auto,Auto,Auto"
+				RowSpacing="6">
+				<Label FontAttributes="Bold" Text="Заказчик:" />
+				<Label Grid.Column="1" Text="{Binding CustomerName}" />
+				<Label
+					Grid.Row="1"
+					FontAttributes="Bold"
+					Text="Дата:" />
+				<Label
+					Grid.Row="1"
+					Grid.Column="1"
+					Text="{Binding OrderDate}" />
+				<Label
+					Grid.Row="2"
+					FontAttributes="Bold"
+					Text="Статус:" />
+				<Label
+					Grid.Row="2"
+					Grid.Column="1"
+					Text="{Binding Status}" />
+				<Label
+					Grid.Row="3"
+					FontAttributes="Bold"
+					Text="Создал:" />
+				<Label
+					Grid.Row="3"
+					Grid.Column="1"
+					Text="{Binding CreatedBy}" />
+			</Grid>
+
+			<Border
+				Padding="8"
+				Stroke="LightGray"
+				StrokeThickness="1">
+				<VerticalStackLayout Spacing="8">
+					<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+						<Label FontAttributes="Bold" Text="Товары в заказе" />
+						<Button
+							Grid.Column="1"
+							Command="{Binding AddItemCommand}"
+							Text="+ Добавить" />
+					</Grid>
+					<Grid
+						Padding="0,4"
+						ColumnDefinitions="*,Auto"
+						ColumnSpacing="8">
+						<Label FontAttributes="Bold" Text="Товар" />
+						<Label
+							Grid.Column="1"
+							FontAttributes="Bold"
+							HorizontalTextAlignment="End"
+							Text="Количество" />
+					</Grid>
+					<CollectionView
+						x:Name="OrderItemsCollection"
+						ItemsSource="{Binding Items}"
+						SelectionMode="None">
+						<CollectionView.ItemTemplate>
+							<DataTemplate>
+								<SwipeView>
+									<SwipeView.RightItems>
+										<SwipeItems Mode="Reveal">
+											<SwipeItem
+												BackgroundColor="LightGray"
+												Command="{Binding BindingContext.EditItemCommand, Source={x:Reference Name=OrderItemsCollection}}"
+												CommandParameter="{Binding .}"
+												Text="Редактировать" />
+											<SwipeItem
+												BackgroundColor="Tomato"
+												Command="{Binding BindingContext.DeleteItemCommand, Source={x:Reference Name=OrderItemsCollection}}"
+												CommandParameter="{Binding .}"
+												Text="Удалить" />
+										</SwipeItems>
+									</SwipeView.RightItems>
+									<Grid
+										Padding="0,6"
+										ColumnDefinitions="*,Auto"
+										ColumnSpacing="8">
+										<Grid.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding BindingContext.OpenProductCommand, Source={x:Reference Name=OrderItemsCollection}}" CommandParameter="{Binding .}" />
+										</Grid.GestureRecognizers>
+										<Label Text="{Binding ProductName}" />
+										<Label
+											Grid.Column="1"
+											HorizontalTextAlignment="End"
+											Text="{Binding Quantity}" />
+									</Grid>
+								</SwipeView>
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
+					</CollectionView>
+				</VerticalStackLayout>
+			</Border>
+
+			<Border
+				Padding="8"
+				Stroke="LightGray"
+				StrokeThickness="1">
+				<VerticalStackLayout Spacing="8">
+					<Label FontAttributes="Bold" Text="Отгрузки по заказу" />
+					<Grid
+						Padding="0,4"
+						ColumnDefinitions="*,Auto,Auto,Auto"
+						ColumnSpacing="8">
+						<Label FontAttributes="Bold" Text="Изделие" />
+						<Label
+							Grid.Column="1"
+							FontAttributes="Bold"
+							Text="ПЗ" />
+						<Label
+							Grid.Column="2"
+							FontAttributes="Bold"
+							Text="Склад" />
+						<Label
+							Grid.Column="3"
+							FontAttributes="Bold"
+							Text="Кол-во / Дата" />
+					</Grid>
+					<CollectionView
+						x:Name="ShipmentsCollection"
+						ItemsSource="{Binding Shipments}"
+						SelectionMode="None">
+						<CollectionView.ItemTemplate>
+							<DataTemplate>
+								<Grid
+									Padding="0,6"
+									ColumnDefinitions="*,Auto,Auto,Auto"
+									ColumnSpacing="8">
+									<Label Text="{Binding ProductName}" />
+									<Label Grid.Column="1" Text="{Binding ProductionOrderNumber}" />
+									<Label Grid.Column="2" Text="{Binding WarehouseName}" />
+									<VerticalStackLayout Grid.Column="3" Spacing="2">
+										<Label HorizontalTextAlignment="End" Text="{Binding Qty}" />
+										<Label HorizontalTextAlignment="End" Text="{Binding ShippedAt}" />
+									</VerticalStackLayout>
+								</Grid>
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
+					</CollectionView>
+				</VerticalStackLayout>
+			</Border>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
+

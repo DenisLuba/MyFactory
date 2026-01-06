@@ -1,0 +1,83 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Organization.Positions.PositionDetailsPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Organization.Positions"
+	Title="Карточка должности"
+	x:DataType="view_model:PositionDetailsPageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Label
+				FontAttributes="Bold"
+				FontSize="18"
+				Text="Карточка должности" />
+
+			<Grid
+				ColumnDefinitions="Auto,*"
+				ColumnSpacing="8"
+				RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+				RowSpacing="8">
+				<Label FontAttributes="Bold" Text="Наименование:" />
+				<Entry Grid.Column="1" Text="{Binding Name}" />
+				<Label
+					Grid.Row="1"
+					FontAttributes="Bold"
+					Text="Код должности:" />
+				<Entry
+					Grid.Row="1"
+					Grid.Column="1"
+					Text="{Binding Code}" />
+				<Label
+					Grid.Row="2"
+					FontAttributes="Bold"
+					Text="Цех:" />
+				<Picker
+					Grid.Row="2"
+					Grid.Column="1"
+					ItemDisplayBinding="{Binding Name}"
+					ItemsSource="{Binding Departments}"
+					SelectedItem="{Binding SelectedDepartment}" />
+				<Label
+					Grid.Row="3"
+					FontAttributes="Bold"
+					Text="Базовая ставка:" />
+				<Entry
+					Grid.Row="3"
+					Grid.Column="1"
+					Keyboard="Numeric"
+					Text="{Binding BaseRate}" />
+				<Label
+					Grid.Row="4"
+					FontAttributes="Bold"
+					Text="Премия по умолч.:" />
+				<Entry
+					Grid.Row="4"
+					Grid.Column="1"
+					Keyboard="Numeric"
+					Text="{Binding DefaultPremiumPercent}" />
+			</Grid>
+
+			<VerticalStackLayout Spacing="6">
+				<Label FontAttributes="Bold" Text="Разрешенные операции:" />
+				<CheckBox Content="Раскрой" IsChecked="{Binding CanCut}" />
+				<CheckBox Content="Пошив" IsChecked="{Binding CanSew}" />
+				<CheckBox Content="Упаковка" IsChecked="{Binding CanPackage}" />
+				<CheckBox Content="Склад" IsChecked="{Binding CanHandleMaterials}" />
+			</VerticalStackLayout>
+
+			<HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+				<Label
+					FontAttributes="Bold"
+					Text="Актуальна:"
+					VerticalOptions="Center" />
+				<Switch IsToggled="{Binding IsActive}" />
+			</HorizontalStackLayout>
+
+			<HorizontalStackLayout Spacing="12">
+				<Button Command="{Binding SaveCommand}" Text="Сохранить" />
+				<Button Command="{Binding CancelCommand}" Text="Отмена" />
+			</HorizontalStackLayout>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
+

@@ -1,0 +1,82 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Warehouses.WarehouseStockPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Warehouses"
+	Title="Остатки склада"
+	x:DataType="view_model:WarehouseStockPageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Grid
+				ColumnDefinitions="Auto,*,Auto"
+				ColumnSpacing="8"
+				RowDefinitions="Auto">
+				<Button Command="{Binding BackCommand}" Text="Назад" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					FontSize="18"
+					Text="{Binding WarehouseName}"
+					VerticalTextAlignment="Center" />
+				<Button
+					Grid.Column="2"
+					Command="{Binding AddItemCommand}"
+					Text="+ Добавить" />
+			</Grid>
+
+			<Grid
+				Padding="0,4"
+				ColumnDefinitions="*,Auto"
+				ColumnSpacing="8">
+				<Label FontAttributes="Bold" Text="Материал / Товар" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="Количество" />
+			</Grid>
+
+			<CollectionView
+				x:Name="StockCollection"
+				ItemsSource="{Binding StockItems}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<SwipeView>
+							<SwipeView.RightItems>
+								<SwipeItems Mode="Reveal">
+									<SwipeItem
+										BackgroundColor="LightGray"
+										Command="{Binding BindingContext.EditItemCommand, Source={x:Reference Name=StockCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Редактировать" />
+									<SwipeItem
+										BackgroundColor="Tomato"
+										Command="{Binding BindingContext.DeleteItemCommand, Source={x:Reference Name=StockCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Удалить" />
+								</SwipeItems>
+							</SwipeView.RightItems>
+							<Grid
+								Padding="0,8"
+								ColumnDefinitions="*,Auto"
+								ColumnSpacing="8">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding BindingContext.OpenItemCommand, Source={x:Reference Name=StockCollection}}" CommandParameter="{Binding .}" />
+								</Grid.GestureRecognizers>
+								<Label Text="{Binding Name}" />
+								<Label
+									Grid.Column="1"
+									HorizontalTextAlignment="End"
+									Text="{Binding Quantity}" />
+							</Grid>
+						</SwipeView>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+
+			<Button Command="{Binding TransferCommand}" Text="Переместить" />
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
+

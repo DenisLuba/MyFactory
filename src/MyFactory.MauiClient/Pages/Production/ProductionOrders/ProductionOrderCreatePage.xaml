@@ -1,0 +1,193 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Production.ProductionOrders.ProductionOrderCreatePage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Production.ProductionOrders"
+	Title="Производственный заказ"
+	x:DataType="view_model:ProductionOrderCreatePageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Label
+				FontAttributes="Bold"
+				FontSize="18"
+				Text="Производственный заказ" />
+
+			<Grid
+				ColumnDefinitions="Auto,*"
+				ColumnSpacing="8"
+				RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+				RowSpacing="8">
+				<Label FontAttributes="Bold" Text="Номер:" />
+				<Label Grid.Column="1" Text="{Binding ProductionOrderNumber}" />
+				<Label
+					Grid.Row="1"
+					FontAttributes="Bold"
+					Text="Заказ клиента:" />
+				<Picker
+					Grid.Row="1"
+					Grid.Column="1"
+					ItemDisplayBinding="{Binding OrderNumber}"
+					ItemsSource="{Binding SalesOrders}"
+					SelectedItem="{Binding SelectedSalesOrder}" />
+				<Label
+					Grid.Row="2"
+					FontAttributes="Bold"
+					Text="Изделие:" />
+				<Picker
+					Grid.Row="2"
+					Grid.Column="1"
+					ItemDisplayBinding="{Binding Name}"
+					ItemsSource="{Binding Products}"
+					SelectedItem="{Binding SelectedProduct}" />
+				<Label
+					Grid.Row="3"
+					FontAttributes="Bold"
+					Text="Количество:" />
+				<Entry
+					Grid.Row="3"
+					Grid.Column="1"
+					Keyboard="Numeric"
+					Text="{Binding Quantity}" />
+				<Label
+					Grid.Row="4"
+					FontAttributes="Bold"
+					Text="Цех:" />
+				<Picker
+					Grid.Row="4"
+					Grid.Column="1"
+					ItemDisplayBinding="{Binding Name}"
+					ItemsSource="{Binding Departments}"
+					SelectedItem="{Binding SelectedDepartment}" />
+			</Grid>
+
+			<Grid
+				ColumnDefinitions="Auto,*"
+				ColumnSpacing="8"
+				RowDefinitions="Auto">
+				<Label FontAttributes="Bold" Text="Статус:" />
+				<Label Grid.Column="1" Text="{Binding Status}" />
+			</Grid>
+
+			<Border
+				Padding="8"
+				Stroke="LightGray"
+				StrokeThickness="1">
+				<VerticalStackLayout Spacing="8">
+					<Label FontAttributes="Bold" Text="Материалы (спецификация)" />
+					<Grid
+						Padding="0,4"
+						ColumnDefinitions="*,Auto,Auto,Auto,Auto"
+						ColumnSpacing="8">
+						<Label FontAttributes="Bold" Text="Материал" />
+						<Label
+							Grid.Column="1"
+							FontAttributes="Bold"
+							Text="Нужно" />
+						<Label
+							Grid.Column="2"
+							FontAttributes="Bold"
+							Text="Есть" />
+						<Label
+							Grid.Column="3"
+							FontAttributes="Bold"
+							Text="Не хватает" />
+						<Label
+							Grid.Column="4"
+							FontAttributes="Bold"
+							Text="Действия" />
+					</Grid>
+					<CollectionView
+						x:Name="MaterialsCollection"
+						ItemsSource="{Binding Materials}"
+						SelectionMode="None">
+						<CollectionView.ItemTemplate>
+							<DataTemplate>
+								<Grid
+									Padding="0,6"
+									ColumnDefinitions="*,Auto,Auto,Auto,Auto"
+									ColumnSpacing="8">
+									<Label Text="{Binding Name}" />
+									<Label
+										Grid.Column="1"
+										HorizontalTextAlignment="End"
+										Text="{Binding Required}" />
+									<Label
+										Grid.Column="2"
+										HorizontalTextAlignment="End"
+										Text="{Binding Available}" />
+									<Label
+										Grid.Column="3"
+										HorizontalTextAlignment="End"
+										Text="{Binding Missing}" />
+									<HorizontalStackLayout Grid.Column="4" Spacing="6">
+										<Button
+											Command="{Binding BindingContext.CreatePurchaseCommand, Source={x:Reference Name=MaterialsCollection}}"
+											CommandParameter="{Binding .}"
+											Text="Создать заказ" />
+										<Button
+											Command="{Binding BindingContext.ConsumeCommand, Source={x:Reference Name=MaterialsCollection}}"
+											CommandParameter="{Binding .}"
+											Text="Списать" />
+									</HorizontalStackLayout>
+								</Grid>
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
+					</CollectionView>
+				</VerticalStackLayout>
+			</Border>
+
+			<Border
+				Padding="8"
+				Stroke="LightGray"
+				StrokeThickness="1">
+				<VerticalStackLayout Spacing="8">
+					<Label FontAttributes="Bold" Text="Отгружено" />
+					<Grid
+						Padding="0,4"
+						ColumnDefinitions="*,Auto,Auto"
+						ColumnSpacing="8">
+						<Label FontAttributes="Bold" Text="Склад" />
+						<Label
+							Grid.Column="1"
+							FontAttributes="Bold"
+							Text="Кол-во" />
+						<Label
+							Grid.Column="2"
+							FontAttributes="Bold"
+							Text="Дата" />
+					</Grid>
+					<CollectionView
+						x:Name="ShipmentsCollection"
+						ItemsSource="{Binding Shipments}"
+						SelectionMode="None">
+						<CollectionView.ItemTemplate>
+							<DataTemplate>
+								<Grid
+									Padding="0,6"
+									ColumnDefinitions="*,Auto,Auto"
+									ColumnSpacing="8">
+									<Label Text="{Binding WarehouseName}" />
+									<Label
+										Grid.Column="1"
+										HorizontalTextAlignment="End"
+										Text="{Binding Quantity}" />
+									<Label
+										Grid.Column="2"
+										HorizontalTextAlignment="End"
+										Text="{Binding Date}" />
+								</Grid>
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
+					</CollectionView>
+				</VerticalStackLayout>
+			</Border>
+
+			<HorizontalStackLayout Spacing="12">
+				<Button Command="{Binding CancelCommand}" Text="Отменить" />
+				<Button Command="{Binding StagesCommand}" Text="Этапы производства" />
+				<Button Command="{Binding StartProductionCommand}" Text="Запустить в производство" />
+			</HorizontalStackLayout>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
+

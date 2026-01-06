@@ -1,0 +1,101 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Production.ProductionOrders.ProductionOrdersListPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Production.ProductionOrders"
+	Title="Производственные заказы"
+	x:DataType="view_model:ProductionOrdersListPageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+				<Label
+					FontAttributes="Bold"
+					FontSize="18"
+					Text="Производственные заказы" />
+				<Button
+					Grid.Column="1"
+					Command="{Binding AddCommand}"
+					Text="+ Добавить" />
+			</Grid>
+
+			<Grid
+				Padding="0,4"
+				ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto"
+				ColumnSpacing="8">
+				<Label FontAttributes="Bold" Text="№ ПЗ" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					Text="№ Заказа" />
+				<Label
+					Grid.Column="2"
+					FontAttributes="Bold"
+					Text="Изделие" />
+				<Label
+					Grid.Column="3"
+					FontAttributes="Bold"
+					Text="Кол-во" />
+				<Label
+					Grid.Column="4"
+					FontAttributes="Bold"
+					Text="Отгружено" />
+				<Label
+					Grid.Column="5"
+					FontAttributes="Bold"
+					Text="Статус" />
+			</Grid>
+
+			<CollectionView
+				x:Name="ProductionOrdersCollection"
+				ItemsSource="{Binding Orders}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<SwipeView>
+							<SwipeView.RightItems>
+								<SwipeItems Mode="Reveal">
+									<SwipeItem
+										BackgroundColor="LightGray"
+										Command="{Binding BindingContext.OpenStagesCommand, Source={x:Reference Name=ProductionOrdersCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Этапы" />
+									<SwipeItem
+										BackgroundColor="Gainsboro"
+										Command="{Binding BindingContext.OpenOrderCommand, Source={x:Reference Name=ProductionOrdersCollection}}"
+										CommandParameter="{Binding .}"
+										Text="ПЗ" />
+									<SwipeItem
+										BackgroundColor="Tomato"
+										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=ProductionOrdersCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Удалить" />
+								</SwipeItems>
+							</SwipeView.RightItems>
+							<Grid
+								Padding="0,8"
+								ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto"
+								ColumnSpacing="8">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding BindingContext.OpenOrderCommand, Source={x:Reference Name=ProductionOrdersCollection}}" CommandParameter="{Binding .}" />
+								</Grid.GestureRecognizers>
+								<Label Text="{Binding ProductionOrderNumber}" />
+								<Label Grid.Column="1" Text="{Binding SalesOrderNumber}" />
+								<Label Grid.Column="2" Text="{Binding ProductName}" />
+								<Label
+									Grid.Column="3"
+									HorizontalTextAlignment="End"
+									Text="{Binding Quantity}" />
+								<Label
+									Grid.Column="4"
+									HorizontalTextAlignment="End"
+									Text="{Binding Shipped}" />
+								<Label Grid.Column="5" Text="{Binding Status}" />
+							</Grid>
+						</SwipeView>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
+

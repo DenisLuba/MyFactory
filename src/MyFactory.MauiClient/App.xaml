@@ -29,7 +29,7 @@
 				</Setter>
 			</Style>
 
-			<!-- Implicit default vertical layout for CollectionView -->
+			<!--  Implicit default vertical layout for CollectionView  -->
 			<Style TargetType="CollectionView">
 				<Setter Property="ItemsLayout">
 					<Setter.Value>
@@ -38,8 +38,11 @@
 				</Setter>
 			</Style>
 
-			<!-- Keyed style for horizontal layout usage -->
-			<Style x:Key="HorizontalCollectionViewStyle" TargetType="CollectionView" BasedOn="{StaticResource {x:Type CollectionView}}">
+			<!--  Keyed style for horizontal layout usage  -->
+			<Style
+				x:Key="HorizontalCollectionViewStyle"
+				BasedOn="{StaticResource {x:Type CollectionView}}"
+				TargetType="CollectionView">
 				<Setter Property="ItemsLayout">
 					<Setter.Value>
 						<LinearItemsLayout ItemSpacing="12" Orientation="Horizontal" />

@@ -1,0 +1,134 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Finance.Payroll.PayrollAccrualsPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.Payroll"
+	Title="Начисления зарплаты"
+	x:DataType="view_model:PayrollAccrualsPageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Grid
+				ColumnDefinitions="Auto,Auto,*,Auto"
+				ColumnSpacing="8"
+				RowDefinitions="Auto,Auto"
+				RowSpacing="8">
+				<Label Text="Период:" VerticalTextAlignment="Center" />
+				<DatePicker Grid.Column="1" Date="{Binding FromDate}" />
+				<DatePicker Grid.Column="2" Date="{Binding ToDate}" />
+				<Picker
+					Grid.Column="3"
+					ItemDisplayBinding="{Binding Name}"
+					ItemsSource="{Binding PayrollRules}"
+					SelectedItem="{Binding SelectedRule}" />
+				<Label
+					Grid.Row="1"
+					Text="Сотрудник:"
+					VerticalTextAlignment="Center" />
+				<Picker
+					Grid.Row="1"
+					Grid.Column="1"
+					ItemDisplayBinding="{Binding FullName}"
+					ItemsSource="{Binding Employees}"
+					SelectedItem="{Binding SelectedEmployee}" />
+				<Label
+					Grid.Row="1"
+					Grid.Column="2"
+					Text="Цех:"
+					VerticalTextAlignment="Center" />
+				<Picker
+					Grid.Row="1"
+					Grid.Column="3"
+					ItemDisplayBinding="{Binding Name}"
+					ItemsSource="{Binding Departments}"
+					SelectedItem="{Binding SelectedDepartment}" />
+			</Grid>
+
+			<Grid
+				Padding="0,4"
+				ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+				ColumnSpacing="8">
+				<Label FontAttributes="Bold" Text="Сотрудник" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					Text="Часы" />
+				<Label
+					Grid.Column="2"
+					FontAttributes="Bold"
+					Text="План" />
+				<Label
+					Grid.Column="3"
+					FontAttributes="Bold"
+					Text="Факт" />
+				<Label
+					Grid.Column="4"
+					FontAttributes="Bold"
+					Text="Сверх" />
+				<Label
+					Grid.Column="5"
+					FontAttributes="Bold"
+					Text="Начислено" />
+				<Label
+					Grid.Column="6"
+					FontAttributes="Bold"
+					Text="Выплачено" />
+				<Label
+					Grid.Column="7"
+					FontAttributes="Bold"
+					Text="Осталось" />
+			</Grid>
+
+			<CollectionView
+				x:Name="AccrualsCollection"
+				ItemsSource="{Binding Accruals}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<Grid
+							Padding="0,8"
+							ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+							ColumnSpacing="8">
+							<Grid.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding BindingContext.OpenDailyBreakdownCommand, Source={x:Reference Name=AccrualsCollection}}" CommandParameter="{Binding .}" />
+								<TapGestureRecognizer
+									Command="{Binding BindingContext.EditPayrollRuleCommand, Source={x:Reference Name=AccrualsCollection}}"
+									CommandParameter="{Binding .}"
+									NumberOfTapsRequired="2" />
+							</Grid.GestureRecognizers>
+							<Label Text="{Binding EmployeeName}" />
+							<Label
+								Grid.Column="1"
+								HorizontalTextAlignment="End"
+								Text="{Binding TotalHours}" />
+							<Label
+								Grid.Column="2"
+								HorizontalTextAlignment="End"
+								Text="{Binding QtyPlanned}" />
+							<Label
+								Grid.Column="3"
+								HorizontalTextAlignment="End"
+								Text="{Binding QtyProduced}" />
+							<Label
+								Grid.Column="4"
+								HorizontalTextAlignment="End"
+								Text="{Binding QtyExtra}" />
+							<Label
+								Grid.Column="5"
+								HorizontalTextAlignment="End"
+								Text="{Binding TotalAmount}" />
+							<Label
+								Grid.Column="6"
+								HorizontalTextAlignment="End"
+								Text="{Binding PaidAmount}" />
+							<Label
+								Grid.Column="7"
+								HorizontalTextAlignment="End"
+								Text="{Binding RemainingAmount}" />
+						</Grid>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
+

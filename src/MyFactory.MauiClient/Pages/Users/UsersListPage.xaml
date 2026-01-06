@@ -1,0 +1,94 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Users.UsersListPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Users"
+	Title="Пользователи"
+	x:DataType="view_model:UsersListPageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Grid
+				ColumnDefinitions="*,Auto,Auto"
+				ColumnSpacing="8"
+				RowSpacing="8">
+				<Entry
+					Grid.ColumnSpan="2"
+					Placeholder="Поиск по роли или логину"
+					Text="{Binding SearchText}" />
+				<Picker
+					Grid.Column="2"
+					ItemDisplayBinding="{Binding Name}"
+					ItemsSource="{Binding Roles}"
+					SelectedItem="{Binding SelectedRole}" />
+				<Label
+					Grid.Row="1"
+					FontAttributes="Bold"
+					FontSize="18"
+					Text="Пользователи" />
+				<Button
+					Grid.Row="1"
+					Grid.Column="2"
+					Command="{Binding AddCommand}"
+					Text="Добавить" />
+			</Grid>
+
+			<Grid
+				Padding="0,4"
+				ColumnDefinitions="Auto,Auto,Auto,Auto"
+				ColumnSpacing="8">
+				<Label FontAttributes="Bold" Text="Логин" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					Text="Роль" />
+				<Label
+					Grid.Column="2"
+					FontAttributes="Bold"
+					Text="Статус" />
+				<Label
+					Grid.Column="3"
+					FontAttributes="Bold"
+					Text="Создан" />
+			</Grid>
+
+			<CollectionView
+				x:Name="UsersCollection"
+				ItemsSource="{Binding Users}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<SwipeView>
+							<SwipeView.RightItems>
+								<SwipeItems Mode="Reveal">
+									<SwipeItem
+										BackgroundColor="LightGray"
+										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=UsersCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Редактировать" />
+									<SwipeItem
+										BackgroundColor="Tomato"
+										Command="{Binding BindingContext.ToggleActiveCommand, Source={x:Reference Name=UsersCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Заблокировать" />
+								</SwipeItems>
+							</SwipeView.RightItems>
+							<Grid
+								Padding="0,8"
+								ColumnDefinitions="Auto,Auto,Auto,Auto"
+								ColumnSpacing="8">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=UsersCollection}}" CommandParameter="{Binding .}" />
+								</Grid.GestureRecognizers>
+								<Label Text="{Binding Username}" />
+								<Label Grid.Column="1" Text="{Binding RoleName}" />
+								<Label Grid.Column="2" Text="{Binding Status}" />
+								<Label Grid.Column="3" Text="{Binding CreatedAt}" />
+							</Grid>
+						</SwipeView>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
+

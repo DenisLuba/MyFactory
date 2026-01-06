@@ -1,0 +1,87 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.MaterialsAndSuppliers.SupplierOrders.SupplierOrderCreatePage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.SupplierOrders"
+	Title="Создание заказа поставщику"
+	x:DataType="view_model:SupplierOrderCreatePageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+				<Label
+					FontAttributes="Bold"
+					FontSize="18"
+					Text="Создание заказа" />
+				<Button
+					Grid.Column="1"
+					Command="{Binding AddItemCommand}"
+					Text="+" />
+			</Grid>
+
+			<Grid
+				Padding="0,4"
+				ColumnDefinitions="*,*,*,*,Auto"
+				ColumnSpacing="8">
+				<Label FontAttributes="Bold" Text="Поставщик" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					Text="Тип" />
+				<Label
+					Grid.Column="2"
+					FontAttributes="Bold"
+					Text="Материал" />
+				<Label
+					Grid.Column="3"
+					FontAttributes="Bold"
+					Text="Количество" />
+				<Label
+					Grid.Column="4"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="Цена" />
+			</Grid>
+
+			<CollectionView
+				x:Name="SupplierOrderItemsCollection"
+				ItemsSource="{Binding Items}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<Grid
+							Padding="0,6"
+							ColumnDefinitions="*,*,*,*,Auto"
+							ColumnSpacing="8">
+							<Picker ItemDisplayBinding="{Binding Name}" ItemsSource="{Binding BindingContext.SupplierOptions, Source={x:Reference Name=SupplierOrderItemsCollection}}" SelectedItem="{Binding Supplier}" />
+							<Picker
+								Grid.Column="1"
+								ItemsSource="{Binding BindingContext.MaterialTypeOptions, Source={x:Reference Name=SupplierOrderItemsCollection}}"
+								SelectedItem="{Binding MaterialType}" />
+							<Picker
+								Grid.Column="2"
+								ItemDisplayBinding="{Binding Name}"
+								ItemsSource="{Binding BindingContext.MaterialOptions, Source={x:Reference Name=SupplierOrderItemsCollection}}"
+								SelectedItem="{Binding Material}" />
+							<Entry
+								Grid.Column="3"
+								Keyboard="Numeric"
+								Text="{Binding Qty}" />
+							<Entry
+								Grid.Column="4"
+								HorizontalTextAlignment="End"
+								Keyboard="Numeric"
+								Text="{Binding Price}" />
+						</Grid>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+
+			<HorizontalStackLayout Spacing="8">
+				<Button Command="{Binding SaveCommand}" Text="Сохранить" />
+				<Button Command="{Binding PrintCommand}" Text="Печать" />
+				<Button Command="{Binding BackCommand}" Text="Назад" />
+			</HorizontalStackLayout>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
+

@@ -1,0 +1,80 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Orders.Customers.CustomersListPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Orders.Customers"
+	Title="Заказчики"
+	x:DataType="view_model:CustomersListPageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+				<Label
+					FontAttributes="Bold"
+					FontSize="18"
+					Text="Заказчики" />
+				<Button
+					Grid.Column="1"
+					Command="{Binding AddCommand}"
+					Text="+ Добавить" />
+			</Grid>
+
+			<Grid
+				Padding="0,4"
+				ColumnDefinitions="*,Auto,Auto,Auto"
+				ColumnSpacing="8">
+				<Label FontAttributes="Bold" Text="Название" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					Text="Телефон" />
+				<Label
+					Grid.Column="2"
+					FontAttributes="Bold"
+					Text="Email" />
+				<Label
+					Grid.Column="3"
+					FontAttributes="Bold"
+					Text="Адрес" />
+			</Grid>
+
+			<CollectionView
+				x:Name="CustomersCollection"
+				ItemsSource="{Binding Customers}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<SwipeView>
+							<SwipeView.RightItems>
+								<SwipeItems Mode="Reveal">
+									<SwipeItem
+										BackgroundColor="LightGray"
+										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=CustomersCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Редактировать" />
+									<SwipeItem
+										BackgroundColor="Tomato"
+										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=CustomersCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Удалить" />
+								</SwipeItems>
+							</SwipeView.RightItems>
+							<Grid
+								Padding="0,8"
+								ColumnDefinitions="*,Auto,Auto,Auto"
+								ColumnSpacing="8">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=CustomersCollection}}" CommandParameter="{Binding .}" />
+								</Grid.GestureRecognizers>
+								<Label Text="{Binding Name}" />
+								<Label Grid.Column="1" Text="{Binding Phone}" />
+								<Label Grid.Column="2" Text="{Binding Email}" />
+								<Label Grid.Column="3" Text="{Binding Address}" />
+							</Grid>
+						</SwipeView>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
+

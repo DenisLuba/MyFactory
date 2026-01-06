@@ -1,0 +1,127 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Finance.Expenses.CashAdvanceDetailsPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.Expenses"
+	Title="Карточка аванса"
+	x:DataType="view_model:CashAdvanceDetailsPageViewModel">
+	<ScrollView>
+		<VerticalStackLayout Padding="16" Spacing="12">
+			<Label
+				FontAttributes="Bold"
+				FontSize="18"
+				Text="{Binding Title}" />
+
+			<Border
+				Padding="8"
+				Stroke="LightGray"
+				StrokeThickness="1">
+				<VerticalStackLayout Spacing="6">
+					<Label FontAttributes="Bold" Text="Сотрудник:" />
+					<Label Text="{Binding EmployeeName}" />
+					<Label FontAttributes="Bold" Text="Дата выдачи:" />
+					<Label Text="{Binding IssueDate}" />
+					<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+						<Label Text="Выдано:" />
+						<Label
+							Grid.Column="1"
+							HorizontalTextAlignment="End"
+							Text="{Binding IssuedAmount}" />
+						<Label Grid.Row="1" Text="Потрачено:" />
+						<Label
+							Grid.Row="1"
+							Grid.Column="1"
+							HorizontalTextAlignment="End"
+							Text="{Binding SpentAmount}" />
+						<Label Grid.Row="2" Text="Возвращено:" />
+						<Label
+							Grid.Row="2"
+							Grid.Column="1"
+							HorizontalTextAlignment="End"
+							Text="{Binding ReturnedAmount}" />
+						<Label Grid.Row="3" Text="Долг:" />
+						<Label
+							Grid.Row="3"
+							Grid.Column="1"
+							HorizontalTextAlignment="End"
+							Text="{Binding Balance}" />
+						<Label Grid.Row="4" Text="Статус:" />
+						<Label
+							Grid.Row="4"
+							Grid.Column="1"
+							HorizontalTextAlignment="End"
+							Text="{Binding Status}" />
+					</Grid>
+				</VerticalStackLayout>
+			</Border>
+
+			<Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+				<Label Text="Добавить сумму:" VerticalTextAlignment="Center" />
+				<Entry
+					Grid.Column="1"
+					Keyboard="Numeric"
+					Text="{Binding AdditionalAmount}" />
+				<Button
+					Grid.Column="2"
+					Command="{Binding AddAmountCommand}"
+					Text="Добавить" />
+			</Grid>
+
+			<Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+				<Label Text="Вернул сумму:" VerticalTextAlignment="Center" />
+				<Entry
+					Grid.Column="1"
+					Keyboard="Numeric"
+					Text="{Binding ReturnAmount}" />
+				<Button
+					Grid.Column="2"
+					Command="{Binding ReturnCommand}"
+					Text="Вернул" />
+			</Grid>
+
+			<Grid
+				Padding="0,4"
+				ColumnDefinitions="Auto,Auto,*,Auto"
+				ColumnSpacing="8">
+				<Label FontAttributes="Bold" Text="Дата" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					Text="Тип" />
+				<Label
+					Grid.Column="2"
+					FontAttributes="Bold"
+					Text="Описание" />
+				<Label
+					Grid.Column="3"
+					FontAttributes="Bold"
+					Text="Сумма" />
+			</Grid>
+
+			<CollectionView
+				x:Name="CashAdvanceOperations"
+				ItemsSource="{Binding Operations}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate>
+						<Grid
+							Padding="0,6"
+							ColumnDefinitions="Auto,Auto,*,Auto"
+							ColumnSpacing="8">
+							<Label Text="{Binding Date}" />
+							<Label Grid.Column="1" Text="{Binding Type}" />
+							<Label Grid.Column="2" Text="{Binding Description}" />
+							<Label
+								Grid.Column="3"
+								HorizontalTextAlignment="End"
+								Text="{Binding Amount}" />
+						</Grid>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+
+			<Button Command="{Binding AddExpenseCommand}" Text="+ Добавить расход" />
+		</VerticalStackLayout>
+	</ScrollView>
+</ContentPage>
+
