@@ -64,7 +64,7 @@ public class SalesOrdersController : ControllerBase
             dto.OrderNumber,
             dto.OrderDate,
             dto.Status,
-            new CustomerDetailsResponse(
+            new SalesOrderCustomerDetailsResponse(
                 dto.Customer.Id,
                 dto.Customer.Name,
                 dto.Customer.Phone,

@@ -7,5 +7,5 @@ public sealed record SalesOrderDetailsResponse(
     string OrderNumber,
     DateTime OrderDate,
     SalesOrderStatus Status,
-    CustomerDetailsResponse Customer,
+    SalesOrderCustomerDetailsResponse Customer,
     IReadOnlyList<SalesOrderItemResponse> Items);

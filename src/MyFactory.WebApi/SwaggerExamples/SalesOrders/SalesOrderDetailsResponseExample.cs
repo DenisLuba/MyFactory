@@ -11,7 +11,7 @@ public sealed class SalesOrderDetailsResponseExample : IExamplesProvider<SalesOr
         OrderNumber: "SO-001",
         OrderDate: new DateTime(2025, 3, 15),
         Status: SalesOrderStatus.New,
-        Customer: new CustomerDetailsResponse(
+        Customer: new SalesOrderCustomerDetailsResponse(
             Id: Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccc0003"),
             Name: "ООО \"Текстиль\"",
             Phone: "+7 (900) 111-22-33",

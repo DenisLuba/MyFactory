@@ -24,6 +24,8 @@ public class InitialDataSeeder
 
     public async Task SeedAsync(CancellationToken cancellationToken = default)
     {
+        await _db.Database.MigrateAsync(cancellationToken);
+
         if (!_settings.SeedDemoData)
             return;
 

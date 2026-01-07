@@ -1,6 +1,6 @@
 namespace MyFactory.WebApi.Contracts.SalesOrders;
 
-public sealed record CustomerDetailsResponse(
+public sealed record SalesOrderCustomerDetailsResponse(
     Guid Id,
     string Name,
     string? Phone,
