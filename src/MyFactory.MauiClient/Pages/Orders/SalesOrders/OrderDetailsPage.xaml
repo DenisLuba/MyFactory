@@ -3,12 +3,12 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Orders.SalesOrders"
-	Title="Êàðòî÷êà çàêàçà"
+	Title="ÐšÐ°Ñ€Ñ‚Ð¾Ñ‡ÐºÐ° Ð·Ð°ÐºÐ°Ð·Ð°"
 	x:DataType="view_model:OrderDetailsPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
 			<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
-				<Button Command="{Binding BackCommand}" Text="Íàçàä" />
+				<Button Command="{Binding BackCommand}" Text="ÐÐ°Ð·Ð°Ð´" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"
@@ -18,7 +18,7 @@
 				<Button
 					Grid.Column="2"
 					Command="{Binding ProductionCommand}"
-					Text="Ïðîèçâîäñòâî" />
+					Text="ÐŸÑ€Ð¾Ð¸Ð·Ð²Ð¾Ð´ÑÑ‚Ð²Ð¾" />
 			</Grid>
 
 			<Grid
@@ -26,12 +26,12 @@
 				ColumnSpacing="8"
 				RowDefinitions="Auto,Auto,Auto,Auto"
 				RowSpacing="6">
-				<Label FontAttributes="Bold" Text="Çàêàç÷èê:" />
+				<Label FontAttributes="Bold" Text="Ð—Ð°ÐºÐ°Ð·Ñ‡Ð¸Ðº:" />
 				<Label Grid.Column="1" Text="{Binding CustomerName}" />
 				<Label
 					Grid.Row="1"
 					FontAttributes="Bold"
-					Text="Äàòà:" />
+					Text="Ð”Ð°Ñ‚Ð°:" />
 				<Label
 					Grid.Row="1"
 					Grid.Column="1"
@@ -39,7 +39,7 @@
 				<Label
 					Grid.Row="2"
 					FontAttributes="Bold"
-					Text="Ñòàòóñ:" />
+					Text="Ð¡Ñ‚Ð°Ñ‚ÑƒÑ:" />
 				<Label
 					Grid.Row="2"
 					Grid.Column="1"
@@ -47,7 +47,7 @@
 				<Label
 					Grid.Row="3"
 					FontAttributes="Bold"
-					Text="Ñîçäàë:" />
+					Text="Ð¡Ð¾Ð·Ð´Ð°Ð»:" />
 				<Label
 					Grid.Row="3"
 					Grid.Column="1"
@@ -60,22 +60,22 @@
 				StrokeThickness="1">
 				<VerticalStackLayout Spacing="8">
 					<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-						<Label FontAttributes="Bold" Text="Òîâàðû â çàêàçå" />
+						<Label FontAttributes="Bold" Text="Ð¢Ð¾Ð²Ð°Ñ€Ñ‹ Ð² Ð·Ð°ÐºÐ°Ð·Ðµ" />
 						<Button
 							Grid.Column="1"
 							Command="{Binding AddItemCommand}"
-							Text="+ Äîáàâèòü" />
+							Text="+ Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ" />
 					</Grid>
 					<Grid
 						Padding="0,4"
 						ColumnDefinitions="*,Auto"
 						ColumnSpacing="8">
-						<Label FontAttributes="Bold" Text="Òîâàð" />
+						<Label FontAttributes="Bold" Text="Ð¢Ð¾Ð²Ð°Ñ€" />
 						<Label
 							Grid.Column="1"
 							FontAttributes="Bold"
 							HorizontalTextAlignment="End"
-							Text="Êîëè÷åñòâî" />
+							Text="ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾" />
 					</Grid>
 					<CollectionView
 						x:Name="OrderItemsCollection"
@@ -90,12 +90,12 @@
 												BackgroundColor="LightGray"
 												Command="{Binding BindingContext.EditItemCommand, Source={x:Reference Name=OrderItemsCollection}}"
 												CommandParameter="{Binding .}"
-												Text="Ðåäàêòèðîâàòü" />
+												Text="Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ" />
 											<SwipeItem
 												BackgroundColor="Tomato"
 												Command="{Binding BindingContext.DeleteItemCommand, Source={x:Reference Name=OrderItemsCollection}}"
 												CommandParameter="{Binding .}"
-												Text="Óäàëèòü" />
+												Text="Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ" />
 										</SwipeItems>
 									</SwipeView.RightItems>
 									<Grid
@@ -123,24 +123,24 @@
 				Stroke="LightGray"
 				StrokeThickness="1">
 				<VerticalStackLayout Spacing="8">
-					<Label FontAttributes="Bold" Text="Îòãðóçêè ïî çàêàçó" />
+					<Label FontAttributes="Bold" Text="ÐžÑ‚Ð³Ñ€ÑƒÐ·ÐºÐ¸ Ð¿Ð¾ Ð·Ð°ÐºÐ°Ð·Ñƒ" />
 					<Grid
 						Padding="0,4"
 						ColumnDefinitions="*,Auto,Auto,Auto"
 						ColumnSpacing="8">
-						<Label FontAttributes="Bold" Text="Èçäåëèå" />
+						<Label FontAttributes="Bold" Text="Ð˜Ð·Ð´ÐµÐ»Ð¸Ðµ" />
 						<Label
 							Grid.Column="1"
 							FontAttributes="Bold"
-							Text="ÏÇ" />
+							Text="ÐŸÐ—" />
 						<Label
 							Grid.Column="2"
 							FontAttributes="Bold"
-							Text="Ñêëàä" />
+							Text="Ð¡ÐºÐ»Ð°Ð´" />
 						<Label
 							Grid.Column="3"
 							FontAttributes="Bold"
-							Text="Êîë-âî / Äàòà" />
+							Text="ÐšÐ¾Ð»-Ð²Ð¾ / Ð”Ð°Ñ‚Ð°" />
 					</Grid>
 					<CollectionView
 						x:Name="ShipmentsCollection"

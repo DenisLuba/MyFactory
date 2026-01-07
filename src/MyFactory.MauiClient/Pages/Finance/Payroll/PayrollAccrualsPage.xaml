@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.Payroll"
-	Title="Íà÷èñëåíèÿ çàðïëàòû"
+	Title="ÐÐ°Ñ‡Ð¸ÑÐ»ÐµÐ½Ð¸Ñ Ð·Ð°Ñ€Ð¿Ð»Ð°Ñ‚Ñ‹"
 	x:DataType="view_model:PayrollAccrualsPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
@@ -12,7 +12,7 @@
 				ColumnSpacing="8"
 				RowDefinitions="Auto,Auto"
 				RowSpacing="8">
-				<Label Text="Ïåðèîä:" VerticalTextAlignment="Center" />
+				<Label Text="ÐŸÐµÑ€Ð¸Ð¾Ð´:" VerticalTextAlignment="Center" />
 				<DatePicker Grid.Column="1" Date="{Binding FromDate}" />
 				<DatePicker Grid.Column="2" Date="{Binding ToDate}" />
 				<Picker
@@ -22,7 +22,7 @@
 					SelectedItem="{Binding SelectedRule}" />
 				<Label
 					Grid.Row="1"
-					Text="Ñîòðóäíèê:"
+					Text="Ð¡Ð¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸Ðº:"
 					VerticalTextAlignment="Center" />
 				<Picker
 					Grid.Row="1"
@@ -33,7 +33,7 @@
 				<Label
 					Grid.Row="1"
 					Grid.Column="2"
-					Text="Öåõ:"
+					Text="Ð¦ÐµÑ…:"
 					VerticalTextAlignment="Center" />
 				<Picker
 					Grid.Row="1"
@@ -47,35 +47,35 @@
 				Padding="0,4"
 				ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
 				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Ñîòðóäíèê" />
+				<Label FontAttributes="Bold" Text="Ð¡Ð¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸Ðº" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"
-					Text="×àñû" />
+					Text="Ð§Ð°ÑÑ‹" />
 				<Label
 					Grid.Column="2"
 					FontAttributes="Bold"
-					Text="Ïëàí" />
+					Text="ÐŸÐ»Ð°Ð½" />
 				<Label
 					Grid.Column="3"
 					FontAttributes="Bold"
-					Text="Ôàêò" />
+					Text="Ð¤Ð°ÐºÑ‚" />
 				<Label
 					Grid.Column="4"
 					FontAttributes="Bold"
-					Text="Ñâåðõ" />
+					Text="Ð¡Ð²ÐµÑ€Ñ…" />
 				<Label
 					Grid.Column="5"
 					FontAttributes="Bold"
-					Text="Íà÷èñëåíî" />
+					Text="ÐÐ°Ñ‡Ð¸ÑÐ»ÐµÐ½Ð¾" />
 				<Label
 					Grid.Column="6"
 					FontAttributes="Bold"
-					Text="Âûïëà÷åíî" />
+					Text="Ð’Ñ‹Ð¿Ð»Ð°Ñ‡ÐµÐ½Ð¾" />
 				<Label
 					Grid.Column="7"
 					FontAttributes="Bold"
-					Text="Îñòàëîñü" />
+					Text="ÐžÑÑ‚Ð°Ð»Ð¾ÑÑŒ" />
 			</Grid>
 
 			<CollectionView

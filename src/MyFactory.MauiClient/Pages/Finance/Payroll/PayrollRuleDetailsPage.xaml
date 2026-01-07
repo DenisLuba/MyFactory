@@ -3,26 +3,26 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.Payroll"
-	Title="Ïðàâèëî ðàñ÷¸òà çàðïëàòû"
+	Title="ÐŸÑ€Ð°Ð²Ð¸Ð»Ð¾ Ñ€Ð°ÑÑ‡Ñ‘Ñ‚Ð° Ð·Ð°Ñ€Ð¿Ð»Ð°Ñ‚Ñ‹"
 	x:DataType="view_model:PayrollRuleDetailsPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
 			<Label
 				FontAttributes="Bold"
 				FontSize="18"
-				Text="Ïðàâèëî ðàñ÷¸òà çàðïëàòû" />
+				Text="ÐŸÑ€Ð°Ð²Ð¸Ð»Ð¾ Ñ€Ð°ÑÑ‡Ñ‘Ñ‚Ð° Ð·Ð°Ñ€Ð¿Ð»Ð°Ñ‚Ñ‹" />
 
 			<Grid
 				ColumnDefinitions="Auto,*"
 				ColumnSpacing="8"
 				RowDefinitions="Auto,Auto,Auto"
 				RowSpacing="8">
-				<Label FontAttributes="Bold" Text="Äàòà íà÷àëà:" />
+				<Label FontAttributes="Bold" Text="Ð”Ð°Ñ‚Ð° Ð½Ð°Ñ‡Ð°Ð»Ð°:" />
 				<DatePicker Grid.Column="1" Date="{Binding EffectiveFrom}" />
 				<Label
 					Grid.Row="1"
 					FontAttributes="Bold"
-					Text="Ïðåìèÿ (%):" />
+					Text="ÐŸÑ€ÐµÐ¼Ð¸Ñ (%):" />
 				<Entry
 					Grid.Row="1"
 					Grid.Column="1"
@@ -31,7 +31,7 @@
 				<Label
 					Grid.Row="2"
 					FontAttributes="Bold"
-					Text="Îïèñàíèå:" />
+					Text="ÐžÐ¿Ð¸ÑÐ°Ð½Ð¸Ðµ:" />
 				<Entry
 					Grid.Row="2"
 					Grid.Column="1"
@@ -39,8 +39,8 @@
 			</Grid>
 
 			<HorizontalStackLayout Spacing="12">
-				<Button Command="{Binding SaveCommand}" Text="Ñîõðàíèòü" />
-				<Button Command="{Binding CancelCommand}" Text="Îòìåíà" />
+				<Button Command="{Binding SaveCommand}" Text="Ð¡Ð¾Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒ" />
+				<Button Command="{Binding CancelCommand}" Text="ÐžÑ‚Ð¼ÐµÐ½Ð°" />
 			</HorizontalStackLayout>
 		</VerticalStackLayout>
 	</ScrollView>

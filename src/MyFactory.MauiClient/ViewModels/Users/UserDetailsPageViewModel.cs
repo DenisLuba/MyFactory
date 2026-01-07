@@ -88,7 +88,7 @@ public partial class UserDetailsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -101,7 +101,7 @@ public partial class UserDetailsPageViewModel : ObservableObject
     {
         if (SelectedRole is null || string.IsNullOrWhiteSpace(Username))
         {
-            await Shell.Current.DisplayAlertAsync("Ошибка", "Укажите логин и роль", "OK");
+            await Shell.Current.DisplayAlert("Ошибка", "Укажите логин и роль", "OK");
             return;
         }
 
@@ -112,10 +112,10 @@ public partial class UserDetailsPageViewModel : ObservableObject
 
             if (UserId is null)
             {
-                var password = await Shell.Current.DisplayPromptAsync("Пароль", "Введите пароль", placeholder: "******", maxLength: 100, keyboard: Keyboard.Text, isPassword: true);
+                var password = await Shell.Current.DisplayPromptAsync("Пароль", "Введите пароль", accept: "OK", cancel: "Отмена", placeholder: "******", maxLength: 100, keyboard: Keyboard.Text, initialValue: string.Empty);
                 if (string.IsNullOrWhiteSpace(password))
                 {
-                    await Shell.Current.DisplayAlertAsync("Ошибка", "Пароль обязателен", "OK");
+                    await Shell.Current.DisplayAlert("Ошибка", "Пароль обязателен", "OK");
                     return;
                 }
 
@@ -123,7 +123,7 @@ public partial class UserDetailsPageViewModel : ObservableObject
                 var response = await _usersService.CreateUserAsync(request);
                 if (response is not null)
                 {
-                    await Shell.Current.DisplayAlertAsync("Успех", "Пользователь создан", "OK");
+                    await Shell.Current.DisplayAlert("Успех", "Пользователь создан", "OK");
                     await Shell.Current.GoToAsync("..", true);
                 }
             }
@@ -131,13 +131,13 @@ public partial class UserDetailsPageViewModel : ObservableObject
             {
                 var request = new UpdateUserRequest(SelectedRole.Id, IsActive);
                 await _usersService.UpdateUserAsync(UserId.Value, request);
-                await Shell.Current.DisplayAlertAsync("Успех", "Данные сохранены", "OK");
+                await Shell.Current.DisplayAlert("Успех", "Данные сохранены", "OK");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -153,7 +153,7 @@ public partial class UserDetailsPageViewModel : ObservableObject
             return;
         }
 
-        var confirm = await Shell.Current.DisplayAlertAsync("Блокировка", $"Заблокировать пользователя {Username}?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlert("Блокировка", $"Заблокировать пользователя {Username}?", "Да", "Нет");
         if (!confirm)
         {
             return;
@@ -166,12 +166,12 @@ public partial class UserDetailsPageViewModel : ObservableObject
 
             await _usersService.DeactivateUserAsync(UserId.Value);
             IsActive = false;
-            await Shell.Current.DisplayAlertAsync("Готово", "Пользователь заблокирован", "OK");
+            await Shell.Current.DisplayAlert("Готово", "Пользователь заблокирован", "OK");
         }
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
         }
         finally
         {

@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.Expenses"
-	Title="Êàòåãîðèè ðàñõîäîâ"
+	Title="ÐšÐ°Ñ‚ÐµÐ³Ð¾Ñ€Ð¸Ð¸ Ñ€Ð°ÑÑ…Ð¾Ð´Ð¾Ð²"
 	x:DataType="view_model:ExpenseCategoriesPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
@@ -11,26 +11,26 @@
 				<Label
 					FontAttributes="Bold"
 					FontSize="18"
-					Text="Òèïû ðàñõîäîâ" />
+					Text="Ð¢Ð¸Ð¿Ñ‹ Ñ€Ð°ÑÑ…Ð¾Ð´Ð¾Ð²" />
 				<Button
 					Grid.Column="1"
 					Command="{Binding AddCommand}"
-					Text="Äîáàâèòü" />
+					Text="Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ" />
 			</Grid>
 
 			<Grid
 				Padding="0,4"
 				ColumnDefinitions="Auto,*,*"
 				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Êîä" />
+				<Label FontAttributes="Bold" Text="ÐšÐ¾Ð´" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"
-					Text="Íàèìåíîâàíèå" />
+					Text="ÐÐ°Ð¸Ð¼ÐµÐ½Ð¾Ð²Ð°Ð½Ð¸Ðµ" />
 				<Label
 					Grid.Column="2"
 					FontAttributes="Bold"
-					Text="Îïèñàíèå" />
+					Text="ÐžÐ¿Ð¸ÑÐ°Ð½Ð¸Ðµ" />
 			</Grid>
 
 			<CollectionView
@@ -46,7 +46,7 @@
 										BackgroundColor="Tomato"
 										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=ExpenseTypesCollection}}"
 										CommandParameter="{Binding .}"
-										Text="Óäàëèòü" />
+										Text="Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ" />
 								</SwipeItems>
 							</SwipeView.RightItems>
 							<Grid

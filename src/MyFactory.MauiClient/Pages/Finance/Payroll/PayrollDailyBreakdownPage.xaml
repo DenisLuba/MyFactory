@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.Payroll"
-	Title="Äåòàëèçàöèÿ íà÷èñëåíèé"
+	Title="Ð”ÐµÑ‚Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ñ Ð½Ð°Ñ‡Ð¸ÑÐ»ÐµÐ½Ð¸Ð¹"
 	x:DataType="view_model:PayrollDailyBreakdownPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
@@ -17,7 +17,7 @@
 				ColumnDefinitions="Auto,Auto,Auto,Auto"
 				ColumnSpacing="8"
 				RowSpacing="8">
-				<Label Text="Ïåðèîä:" VerticalTextAlignment="Center" />
+				<Label Text="ÐŸÐµÑ€Ð¸Ð¾Ð´:" VerticalTextAlignment="Center" />
 				<DatePicker Grid.Column="1" Date="{Binding FromDate}" />
 				<DatePicker Grid.Column="2" Date="{Binding ToDate}" />
 				<Label Grid.Column="3" />
@@ -27,7 +27,7 @@
 				ColumnDefinitions="*,Auto,Auto"
 				ColumnSpacing="8"
 				VerticalOptions="Center">
-				<Label FontAttributes="Bold" Text="Ñóììà äëÿ âûïëàòû:" />
+				<Label FontAttributes="Bold" Text="Ð¡ÑƒÐ¼Ð¼Ð° Ð´Ð»Ñ Ð²Ñ‹Ð¿Ð»Ð°Ñ‚Ñ‹:" />
 				<Entry
 					Grid.Column="1"
 					HorizontalTextAlignment="End"
@@ -35,38 +35,38 @@
 				<Button
 					Grid.Column="2"
 					Command="{Binding PayCommand}"
-					Text="Âûïëàòèòü" />
+					Text="Ð’Ñ‹Ð¿Ð»Ð°Ñ‚Ð¸Ñ‚ÑŒ" />
 			</Grid>
 
 			<Grid
 				Padding="0,4"
 				ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
 				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Äàòà" />
+				<Label FontAttributes="Bold" Text="Ð”Ð°Ñ‚Ð°" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"
-					Text="×àñû" />
+					Text="Ð§Ð°ÑÑ‹" />
 				<Label
 					Grid.Column="2"
 					FontAttributes="Bold"
-					Text="Ïëàí" />
+					Text="ÐŸÐ»Ð°Ð½" />
 				<Label
 					Grid.Column="3"
 					FontAttributes="Bold"
-					Text="Ôàêò" />
+					Text="Ð¤Ð°ÐºÑ‚" />
 				<Label
 					Grid.Column="4"
 					FontAttributes="Bold"
-					Text="Ñâåðõ" />
+					Text="Ð¡Ð²ÐµÑ€Ñ…" />
 				<Label
 					Grid.Column="5"
 					FontAttributes="Bold"
-					Text="Áàçà" />
+					Text="Ð‘Ð°Ð·Ð°" />
 				<Label
 					Grid.Column="6"
 					FontAttributes="Bold"
-					Text="Ïðåìèÿ" />
+					Text="ÐŸÑ€ÐµÐ¼Ð¸Ñ" />
 			</Grid>
 
 			<CollectionView ItemsSource="{Binding DailyItems}" SelectionMode="None">
@@ -110,7 +110,7 @@
 				Padding="0,6"
 				ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
 				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Âñåãî:" />
+				<Label FontAttributes="Bold" Text="Ð’ÑÐµÐ³Ð¾:" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"

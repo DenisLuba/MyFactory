@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Warehouses"
-	Title="Îñòàòêè ñêëàäà"
+	Title="ÐžÑÑ‚Ð°Ñ‚ÐºÐ¸ ÑÐºÐ»Ð°Ð´Ð°"
 	x:DataType="view_model:WarehouseStockPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
@@ -11,7 +11,7 @@
 				ColumnDefinitions="Auto,*,Auto"
 				ColumnSpacing="8"
 				RowDefinitions="Auto">
-				<Button Command="{Binding BackCommand}" Text="Íàçàä" />
+				<Button Command="{Binding BackCommand}" Text="ÐÐ°Ð·Ð°Ð´" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"
@@ -21,19 +21,19 @@
 				<Button
 					Grid.Column="2"
 					Command="{Binding AddItemCommand}"
-					Text="+ Äîáàâèòü" />
+					Text="+ Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ" />
 			</Grid>
 
 			<Grid
 				Padding="0,4"
 				ColumnDefinitions="*,Auto"
 				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Ìàòåðèàë / Òîâàð" />
+				<Label FontAttributes="Bold" Text="ÐœÐ°Ñ‚ÐµÑ€Ð¸Ð°Ð» / Ð¢Ð¾Ð²Ð°Ñ€" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"
 					HorizontalTextAlignment="End"
-					Text="Êîëè÷åñòâî" />
+					Text="ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾" />
 			</Grid>
 
 			<CollectionView
@@ -49,12 +49,12 @@
 										BackgroundColor="LightGray"
 										Command="{Binding BindingContext.EditItemCommand, Source={x:Reference Name=StockCollection}}"
 										CommandParameter="{Binding .}"
-										Text="Ðåäàêòèðîâàòü" />
+										Text="Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ" />
 									<SwipeItem
 										BackgroundColor="Tomato"
 										Command="{Binding BindingContext.DeleteItemCommand, Source={x:Reference Name=StockCollection}}"
 										CommandParameter="{Binding .}"
-										Text="Óäàëèòü" />
+										Text="Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ" />
 								</SwipeItems>
 							</SwipeView.RightItems>
 							<Grid
@@ -75,7 +75,7 @@
 				</CollectionView.ItemTemplate>
 			</CollectionView>
 
-			<Button Command="{Binding TransferCommand}" Text="Ïåðåìåñòèòü" />
+			<Button Command="{Binding TransferCommand}" Text="ÐŸÐµÑ€ÐµÐ¼ÐµÑÑ‚Ð¸Ñ‚ÑŒ" />
 		</VerticalStackLayout>
 	</ScrollView>
 </ContentPage>

@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.SupplierOrders"
-	Title="Ñîçäàíèå çàêàçà ïîñòàâùèêó"
+	Title="Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð·Ð°ÐºÐ°Ð·Ð° Ð¿Ð¾ÑÑ‚Ð°Ð²Ñ‰Ð¸ÐºÑƒ"
 	x:DataType="view_model:SupplierOrderCreatePageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
@@ -11,7 +11,7 @@
 				<Label
 					FontAttributes="Bold"
 					FontSize="18"
-					Text="Ñîçäàíèå çàêàçà" />
+					Text="Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð·Ð°ÐºÐ°Ð·Ð°" />
 				<Button
 					Grid.Column="1"
 					Command="{Binding AddItemCommand}"
@@ -22,24 +22,24 @@
 				Padding="0,4"
 				ColumnDefinitions="*,*,*,*,Auto"
 				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Ïîñòàâùèê" />
+				<Label FontAttributes="Bold" Text="ÐŸÐ¾ÑÑ‚Ð°Ð²Ñ‰Ð¸Ðº" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"
-					Text="Òèï" />
+					Text="Ð¢Ð¸Ð¿" />
 				<Label
 					Grid.Column="2"
 					FontAttributes="Bold"
-					Text="Ìàòåðèàë" />
+					Text="ÐœÐ°Ñ‚ÐµÑ€Ð¸Ð°Ð»" />
 				<Label
 					Grid.Column="3"
 					FontAttributes="Bold"
-					Text="Êîëè÷åñòâî" />
+					Text="ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾" />
 				<Label
 					Grid.Column="4"
 					FontAttributes="Bold"
 					HorizontalTextAlignment="End"
-					Text="Öåíà" />
+					Text="Ð¦ÐµÐ½Ð°" />
 			</Grid>
 
 			<CollectionView
@@ -77,9 +77,9 @@
 			</CollectionView>
 
 			<HorizontalStackLayout Spacing="8">
-				<Button Command="{Binding SaveCommand}" Text="Ñîõðàíèòü" />
-				<Button Command="{Binding PrintCommand}" Text="Ïå÷àòü" />
-				<Button Command="{Binding BackCommand}" Text="Íàçàä" />
+				<Button Command="{Binding SaveCommand}" Text="Ð¡Ð¾Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒ" />
+				<Button Command="{Binding PrintCommand}" Text="ÐŸÐµÑ‡Ð°Ñ‚ÑŒ" />
+				<Button Command="{Binding BackCommand}" Text="ÐÐ°Ð·Ð°Ð´" />
 			</HorizontalStackLayout>
 		</VerticalStackLayout>
 	</ScrollView>

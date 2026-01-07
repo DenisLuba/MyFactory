@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Authentication"
-	Title="Âõîä"
+	Title="Ð’Ñ…Ð¾Ð´"
 	x:DataType="view_model:LoginPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout
@@ -17,11 +17,11 @@
 				Text="Sign in" />
 			<Entry
 				Keyboard="Email"
-				Placeholder="Email èëè ëîãèí"
+				Placeholder="Email Ð¸Ð»Ð¸ Ð»Ð¾Ð³Ð¸Ð½"
 				Text="{Binding Email}" />
 			<Entry
 				IsPassword="True"
-				Placeholder="Ïàðîëü"
+				Placeholder="ÐŸÐ°Ñ€Ð¾Ð»ÑŒ"
 				Text="{Binding Password}" />
 			<Button Command="{Binding LoginCommand}" Text="Login" />
 			<ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />

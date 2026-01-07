@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.Expenses"
-	Title="Êàðòî÷êà àâàíñà"
+	Title="ÐšÐ°Ñ€Ñ‚Ð¾Ñ‡ÐºÐ° Ð°Ð²Ð°Ð½ÑÐ°"
 	x:DataType="view_model:CashAdvanceDetailsPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
@@ -17,35 +17,35 @@
 				Stroke="LightGray"
 				StrokeThickness="1">
 				<VerticalStackLayout Spacing="6">
-					<Label FontAttributes="Bold" Text="Ñîòðóäíèê:" />
+					<Label FontAttributes="Bold" Text="Ð¡Ð¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸Ðº:" />
 					<Label Text="{Binding EmployeeName}" />
-					<Label FontAttributes="Bold" Text="Äàòà âûäà÷è:" />
+					<Label FontAttributes="Bold" Text="Ð”Ð°Ñ‚Ð° Ð²Ñ‹Ð´Ð°Ñ‡Ð¸:" />
 					<Label Text="{Binding IssueDate}" />
 					<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-						<Label Text="Âûäàíî:" />
+						<Label Text="Ð’Ñ‹Ð´Ð°Ð½Ð¾:" />
 						<Label
 							Grid.Column="1"
 							HorizontalTextAlignment="End"
 							Text="{Binding IssuedAmount}" />
-						<Label Grid.Row="1" Text="Ïîòðà÷åíî:" />
+						<Label Grid.Row="1" Text="ÐŸÐ¾Ñ‚Ñ€Ð°Ñ‡ÐµÐ½Ð¾:" />
 						<Label
 							Grid.Row="1"
 							Grid.Column="1"
 							HorizontalTextAlignment="End"
 							Text="{Binding SpentAmount}" />
-						<Label Grid.Row="2" Text="Âîçâðàùåíî:" />
+						<Label Grid.Row="2" Text="Ð’Ð¾Ð·Ð²Ñ€Ð°Ñ‰ÐµÐ½Ð¾:" />
 						<Label
 							Grid.Row="2"
 							Grid.Column="1"
 							HorizontalTextAlignment="End"
 							Text="{Binding ReturnedAmount}" />
-						<Label Grid.Row="3" Text="Äîëã:" />
+						<Label Grid.Row="3" Text="Ð”Ð¾Ð»Ð³:" />
 						<Label
 							Grid.Row="3"
 							Grid.Column="1"
 							HorizontalTextAlignment="End"
 							Text="{Binding Balance}" />
-						<Label Grid.Row="4" Text="Ñòàòóñ:" />
+						<Label Grid.Row="4" Text="Ð¡Ñ‚Ð°Ñ‚ÑƒÑ:" />
 						<Label
 							Grid.Row="4"
 							Grid.Column="1"
@@ -56,7 +56,7 @@
 			</Border>
 
 			<Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
-				<Label Text="Äîáàâèòü ñóììó:" VerticalTextAlignment="Center" />
+				<Label Text="Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ ÑÑƒÐ¼Ð¼Ñƒ:" VerticalTextAlignment="Center" />
 				<Entry
 					Grid.Column="1"
 					Keyboard="Numeric"
@@ -64,11 +64,11 @@
 				<Button
 					Grid.Column="2"
 					Command="{Binding AddAmountCommand}"
-					Text="Äîáàâèòü" />
+					Text="Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ" />
 			</Grid>
 
 			<Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
-				<Label Text="Âåðíóë ñóììó:" VerticalTextAlignment="Center" />
+				<Label Text="Ð’ÐµÑ€Ð½ÑƒÐ» ÑÑƒÐ¼Ð¼Ñƒ:" VerticalTextAlignment="Center" />
 				<Entry
 					Grid.Column="1"
 					Keyboard="Numeric"
@@ -76,26 +76,26 @@
 				<Button
 					Grid.Column="2"
 					Command="{Binding ReturnCommand}"
-					Text="Âåðíóë" />
+					Text="Ð’ÐµÑ€Ð½ÑƒÐ»" />
 			</Grid>
 
 			<Grid
 				Padding="0,4"
 				ColumnDefinitions="Auto,Auto,*,Auto"
 				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Äàòà" />
+				<Label FontAttributes="Bold" Text="Ð”Ð°Ñ‚Ð°" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"
-					Text="Òèï" />
+					Text="Ð¢Ð¸Ð¿" />
 				<Label
 					Grid.Column="2"
 					FontAttributes="Bold"
-					Text="Îïèñàíèå" />
+					Text="ÐžÐ¿Ð¸ÑÐ°Ð½Ð¸Ðµ" />
 				<Label
 					Grid.Column="3"
 					FontAttributes="Bold"
-					Text="Ñóììà" />
+					Text="Ð¡ÑƒÐ¼Ð¼Ð°" />
 			</Grid>
 
 			<CollectionView
@@ -120,7 +120,7 @@
 				</CollectionView.ItemTemplate>
 			</CollectionView>
 
-			<Button Command="{Binding AddExpenseCommand}" Text="+ Äîáàâèòü ðàñõîä" />
+			<Button Command="{Binding AddExpenseCommand}" Text="+ Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ Ñ€Ð°ÑÑ…Ð¾Ð´" />
 		</VerticalStackLayout>
 	</ScrollView>
 </ContentPage>

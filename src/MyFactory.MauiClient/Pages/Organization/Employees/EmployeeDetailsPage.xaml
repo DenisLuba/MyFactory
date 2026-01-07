@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Organization.Employees"
-	Title="Êàðòî÷êà ñîòðóäíèêà"
+	Title="ÐšÐ°Ñ€Ñ‚Ð¾Ñ‡ÐºÐ° ÑÐ¾Ñ‚Ñ€ÑƒÐ´Ð½Ð¸ÐºÐ°"
 	x:DataType="view_model:EmployeeDetailsPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
@@ -17,12 +17,12 @@
 				ColumnSpacing="8"
 				RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
 				RowSpacing="6">
-				<Label FontAttributes="Bold" Text="Öåõ:" />
+				<Label FontAttributes="Bold" Text="Ð¦ÐµÑ…:" />
 				<Label Grid.Column="1" Text="{Binding Department}" />
 				<Label
 					Grid.Row="1"
 					FontAttributes="Bold"
-					Text="Äîëæíîñòü:" />
+					Text="Ð”Ð¾Ð»Ð¶Ð½Ð¾ÑÑ‚ÑŒ:" />
 				<Label
 					Grid.Row="1"
 					Grid.Column="1"
@@ -30,7 +30,7 @@
 				<Label
 					Grid.Row="2"
 					FontAttributes="Bold"
-					Text="Äàòà ïðè¸ìà:" />
+					Text="Ð”Ð°Ñ‚Ð° Ð¿Ñ€Ð¸Ñ‘Ð¼Ð°:" />
 				<Label
 					Grid.Row="2"
 					Grid.Column="1"
@@ -38,7 +38,7 @@
 				<Label
 					Grid.Row="3"
 					FontAttributes="Bold"
-					Text="Ñòàòóñ:" />
+					Text="Ð¡Ñ‚Ð°Ñ‚ÑƒÑ:" />
 				<Label
 					Grid.Row="3"
 					Grid.Column="1"
@@ -46,7 +46,7 @@
 				<Label
 					Grid.Row="4"
 					FontAttributes="Bold"
-					Text="Ðàçðÿä:" />
+					Text="Ð Ð°Ð·Ñ€ÑÐ´:" />
 				<Label
 					Grid.Row="4"
 					Grid.Column="1"
@@ -54,7 +54,7 @@
 				<Label
 					Grid.Row="5"
 					FontAttributes="Bold"
-					Text="Ïðîöåíò çà ïåðåðàáîòêó:" />
+					Text="ÐŸÑ€Ð¾Ñ†ÐµÐ½Ñ‚ Ð·Ð° Ð¿ÐµÑ€ÐµÑ€Ð°Ð±Ð¾Ñ‚ÐºÑƒ:" />
 				<Label
 					Grid.Row="5"
 					Grid.Column="1"
@@ -62,41 +62,41 @@
 			</Grid>
 
 			<Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
-				<Button Command="{Binding EditCommand}" Text="Ðåäàêòèðîâàòü" />
+				<Button Command="{Binding EditCommand}" Text="Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ" />
 				<Button
 					Grid.Column="1"
 					Command="{Binding DeactivateCommand}"
-					Text="Äåàêòèâèðîâàòü" />
+					Text="Ð”ÐµÐ°ÐºÑ‚Ð¸Ð²Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ" />
 				<Button
 					Grid.Column="2"
 					Command="{Binding AccrualsCommand}"
-					Text="Íà÷èñëåíèÿ" />
+					Text="ÐÐ°Ñ‡Ð¸ÑÐ»ÐµÐ½Ð¸Ñ" />
 			</Grid>
-			<Button Command="{Binding PaymentsCommand}" Text="Âûïëàòû" />
+			<Button Command="{Binding PaymentsCommand}" Text="Ð’Ñ‹Ð¿Ð»Ð°Ñ‚Ñ‹" />
 
 			<Border
 				Padding="8"
 				Stroke="LightGray"
 				StrokeThickness="1">
 				<VerticalStackLayout Spacing="8">
-					<Label FontAttributes="Bold" Text="Òåêóùèå çàäàíèÿ" />
+					<Label FontAttributes="Bold" Text="Ð¢ÐµÐºÑƒÑ‰Ð¸Ðµ Ð·Ð°Ð´Ð°Ð½Ð¸Ñ" />
 					<Grid
 						Padding="0,4"
 						ColumnDefinitions="*,Auto,Auto,Auto"
 						ColumnSpacing="8">
-						<Label FontAttributes="Bold" Text="Ïðîèçâîäñòâåííûé çàêàç" />
+						<Label FontAttributes="Bold" Text="ÐŸÑ€Ð¾Ð¸Ð·Ð²Ð¾Ð´ÑÑ‚Ð²ÐµÐ½Ð½Ñ‹Ð¹ Ð·Ð°ÐºÐ°Ð·" />
 						<Label
 							Grid.Column="1"
 							FontAttributes="Bold"
-							Text="Ýòàï" />
+							Text="Ð­Ñ‚Ð°Ð¿" />
 						<Label
 							Grid.Column="2"
 							FontAttributes="Bold"
-							Text="Íàçíà÷åíî" />
+							Text="ÐÐ°Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¾" />
 						<Label
 							Grid.Column="3"
 							FontAttributes="Bold"
-							Text="Âûïîëíåíî" />
+							Text="Ð’Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¾" />
 					</Grid>
 					<CollectionView
 						x:Name="TasksCollection"
@@ -135,7 +135,7 @@
 				<VerticalStackLayout Spacing="8">
 					<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
 						<HorizontalStackLayout Spacing="8">
-							<Label FontAttributes="Bold" Text="Òàáåëü" />
+							<Label FontAttributes="Bold" Text="Ð¢Ð°Ð±ÐµÐ»ÑŒ" />
 							<DatePicker Date="{Binding TimesheetPeriod}" />
 						</HorizontalStackLayout>
 						<Button
@@ -147,15 +147,15 @@
 						Padding="0,4"
 						ColumnDefinitions="Auto,Auto,Auto"
 						ColumnSpacing="12">
-						<Label FontAttributes="Bold" Text="Äàòà" />
+						<Label FontAttributes="Bold" Text="Ð”Ð°Ñ‚Ð°" />
 						<Label
 							Grid.Column="1"
 							FontAttributes="Bold"
-							Text="×àñû" />
+							Text="Ð§Ð°ÑÑ‹" />
 						<Label
 							Grid.Column="2"
 							FontAttributes="Bold"
-							Text="Ïðèìå÷àíèå" />
+							Text="ÐŸÑ€Ð¸Ð¼ÐµÑ‡Ð°Ð½Ð¸Ðµ" />
 					</Grid>
 					<CollectionView ItemsSource="{Binding TimesheetEntries}" SelectionMode="None">
 						<CollectionView.ItemTemplate>

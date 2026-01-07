@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Production.ProductionOrders"
-	Title="Ïðîèçâîäñòâåííûå çàêàçû"
+	Title="ÐŸÑ€Ð¾Ð¸Ð·Ð²Ð¾Ð´ÑÑ‚Ð²ÐµÐ½Ð½Ñ‹Ðµ Ð·Ð°ÐºÐ°Ð·Ñ‹"
 	x:DataType="view_model:ProductionOrdersListPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
@@ -11,38 +11,38 @@
 				<Label
 					FontAttributes="Bold"
 					FontSize="18"
-					Text="Ïðîèçâîäñòâåííûå çàêàçû" />
+					Text="ÐŸÑ€Ð¾Ð¸Ð·Ð²Ð¾Ð´ÑÑ‚Ð²ÐµÐ½Ð½Ñ‹Ðµ Ð·Ð°ÐºÐ°Ð·Ñ‹" />
 				<Button
 					Grid.Column="1"
 					Command="{Binding AddCommand}"
-					Text="+ Äîáàâèòü" />
+					Text="+ Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ" />
 			</Grid>
 
 			<Grid
 				Padding="0,4"
 				ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto"
 				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="¹ ÏÇ" />
+				<Label FontAttributes="Bold" Text="â„– ÐŸÐ—" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"
-					Text="¹ Çàêàçà" />
+					Text="â„– Ð—Ð°ÐºÐ°Ð·Ð°" />
 				<Label
 					Grid.Column="2"
 					FontAttributes="Bold"
-					Text="Èçäåëèå" />
+					Text="Ð˜Ð·Ð´ÐµÐ»Ð¸Ðµ" />
 				<Label
 					Grid.Column="3"
 					FontAttributes="Bold"
-					Text="Êîë-âî" />
+					Text="ÐšÐ¾Ð»-Ð²Ð¾" />
 				<Label
 					Grid.Column="4"
 					FontAttributes="Bold"
-					Text="Îòãðóæåíî" />
+					Text="ÐžÑ‚Ð³Ñ€ÑƒÐ¶ÐµÐ½Ð¾" />
 				<Label
 					Grid.Column="5"
 					FontAttributes="Bold"
-					Text="Ñòàòóñ" />
+					Text="Ð¡Ñ‚Ð°Ñ‚ÑƒÑ" />
 			</Grid>
 
 			<CollectionView
@@ -58,17 +58,17 @@
 										BackgroundColor="LightGray"
 										Command="{Binding BindingContext.OpenStagesCommand, Source={x:Reference Name=ProductionOrdersCollection}}"
 										CommandParameter="{Binding .}"
-										Text="Ýòàïû" />
+										Text="Ð­Ñ‚Ð°Ð¿Ñ‹" />
 									<SwipeItem
 										BackgroundColor="Gainsboro"
 										Command="{Binding BindingContext.OpenOrderCommand, Source={x:Reference Name=ProductionOrdersCollection}}"
 										CommandParameter="{Binding .}"
-										Text="ÏÇ" />
+										Text="ÐŸÐ—" />
 									<SwipeItem
 										BackgroundColor="Tomato"
 										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=ProductionOrdersCollection}}"
 										CommandParameter="{Binding .}"
-										Text="Óäàëèòü" />
+										Text="Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ" />
 								</SwipeItems>
 							</SwipeView.RightItems>
 							<Grid

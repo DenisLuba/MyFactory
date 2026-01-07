@@ -72,7 +72,7 @@ public partial class WarehouseStockPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -89,13 +89,13 @@ public partial class WarehouseStockPageViewModel : ObservableObject
     [RelayCommand]
     private async Task AddItemAsync()
     {
-        await Shell.Current.DisplayAlertAsync("Действие", "Добавление позиции не реализовано", "OK");
+        await Shell.Current.DisplayAlert("Действие", "Добавление позиции не реализовано", "OK");
     }
 
     [RelayCommand]
     private async Task TransferCommandAsync()
     {
-        await Shell.Current.DisplayAlertAsync("Действие", "Перемещение не реализовано", "OK");
+        await Shell.Current.DisplayAlert("Действие", "Перемещение не реализовано", "OK");
     }
 
     [RelayCommand]
@@ -104,7 +104,7 @@ public partial class WarehouseStockPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlertAsync("Действие", "Редактирование количества не реализовано", "OK");
+        await Shell.Current.DisplayAlert("Действие", "Редактирование количества не реализовано", "OK");
     }
 
     [RelayCommand]
@@ -113,7 +113,7 @@ public partial class WarehouseStockPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlertAsync("Действие", "Удаление позиции не реализовано", "OK");
+        await Shell.Current.DisplayAlert("Действие", "Удаление позиции не реализовано", "OK");
     }
 
     [RelayCommand]
@@ -122,7 +122,7 @@ public partial class WarehouseStockPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlertAsync("Действие", "Открытие карточки не реализовано", "OK");
+        await Shell.Current.DisplayAlert("Действие", "Открытие карточки не реализовано", "OK");
     }
 
     public sealed class StockItemViewModel

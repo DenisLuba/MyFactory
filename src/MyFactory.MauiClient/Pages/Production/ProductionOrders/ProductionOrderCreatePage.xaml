@@ -3,26 +3,26 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Production.ProductionOrders"
-	Title="Ïðîèçâîäñòâåííûé çàêàç"
+	Title="ÐŸÑ€Ð¾Ð¸Ð·Ð²Ð¾Ð´ÑÑ‚Ð²ÐµÐ½Ð½Ñ‹Ð¹ Ð·Ð°ÐºÐ°Ð·"
 	x:DataType="view_model:ProductionOrderCreatePageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
 			<Label
 				FontAttributes="Bold"
 				FontSize="18"
-				Text="Ïðîèçâîäñòâåííûé çàêàç" />
+				Text="ÐŸÑ€Ð¾Ð¸Ð·Ð²Ð¾Ð´ÑÑ‚Ð²ÐµÐ½Ð½Ñ‹Ð¹ Ð·Ð°ÐºÐ°Ð·" />
 
 			<Grid
 				ColumnDefinitions="Auto,*"
 				ColumnSpacing="8"
 				RowDefinitions="Auto,Auto,Auto,Auto,Auto"
 				RowSpacing="8">
-				<Label FontAttributes="Bold" Text="Íîìåð:" />
+				<Label FontAttributes="Bold" Text="ÐÐ¾Ð¼ÐµÑ€:" />
 				<Label Grid.Column="1" Text="{Binding ProductionOrderNumber}" />
 				<Label
 					Grid.Row="1"
 					FontAttributes="Bold"
-					Text="Çàêàç êëèåíòà:" />
+					Text="Ð—Ð°ÐºÐ°Ð· ÐºÐ»Ð¸ÐµÐ½Ñ‚Ð°:" />
 				<Picker
 					Grid.Row="1"
 					Grid.Column="1"
@@ -32,7 +32,7 @@
 				<Label
 					Grid.Row="2"
 					FontAttributes="Bold"
-					Text="Èçäåëèå:" />
+					Text="Ð˜Ð·Ð´ÐµÐ»Ð¸Ðµ:" />
 				<Picker
 					Grid.Row="2"
 					Grid.Column="1"
@@ -42,7 +42,7 @@
 				<Label
 					Grid.Row="3"
 					FontAttributes="Bold"
-					Text="Êîëè÷åñòâî:" />
+					Text="ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾:" />
 				<Entry
 					Grid.Row="3"
 					Grid.Column="1"
@@ -51,7 +51,7 @@
 				<Label
 					Grid.Row="4"
 					FontAttributes="Bold"
-					Text="Öåõ:" />
+					Text="Ð¦ÐµÑ…:" />
 				<Picker
 					Grid.Row="4"
 					Grid.Column="1"
@@ -64,7 +64,7 @@
 				ColumnDefinitions="Auto,*"
 				ColumnSpacing="8"
 				RowDefinitions="Auto">
-				<Label FontAttributes="Bold" Text="Ñòàòóñ:" />
+				<Label FontAttributes="Bold" Text="Ð¡Ñ‚Ð°Ñ‚ÑƒÑ:" />
 				<Label Grid.Column="1" Text="{Binding Status}" />
 			</Grid>
 
@@ -73,28 +73,28 @@
 				Stroke="LightGray"
 				StrokeThickness="1">
 				<VerticalStackLayout Spacing="8">
-					<Label FontAttributes="Bold" Text="Ìàòåðèàëû (ñïåöèôèêàöèÿ)" />
+					<Label FontAttributes="Bold" Text="ÐœÐ°Ñ‚ÐµÑ€Ð¸Ð°Ð»Ñ‹ (ÑÐ¿ÐµÑ†Ð¸Ñ„Ð¸ÐºÐ°Ñ†Ð¸Ñ)" />
 					<Grid
 						Padding="0,4"
 						ColumnDefinitions="*,Auto,Auto,Auto,Auto"
 						ColumnSpacing="8">
-						<Label FontAttributes="Bold" Text="Ìàòåðèàë" />
+						<Label FontAttributes="Bold" Text="ÐœÐ°Ñ‚ÐµÑ€Ð¸Ð°Ð»" />
 						<Label
 							Grid.Column="1"
 							FontAttributes="Bold"
-							Text="Íóæíî" />
+							Text="ÐÑƒÐ¶Ð½Ð¾" />
 						<Label
 							Grid.Column="2"
 							FontAttributes="Bold"
-							Text="Åñòü" />
+							Text="Ð•ÑÑ‚ÑŒ" />
 						<Label
 							Grid.Column="3"
 							FontAttributes="Bold"
-							Text="Íå õâàòàåò" />
+							Text="ÐÐµ Ñ…Ð²Ð°Ñ‚Ð°ÐµÑ‚" />
 						<Label
 							Grid.Column="4"
 							FontAttributes="Bold"
-							Text="Äåéñòâèÿ" />
+							Text="Ð”ÐµÐ¹ÑÑ‚Ð²Ð¸Ñ" />
 					</Grid>
 					<CollectionView
 						x:Name="MaterialsCollection"
@@ -123,11 +123,11 @@
 										<Button
 											Command="{Binding BindingContext.CreatePurchaseCommand, Source={x:Reference Name=MaterialsCollection}}"
 											CommandParameter="{Binding .}"
-											Text="Ñîçäàòü çàêàç" />
+											Text="Ð¡Ð¾Ð·Ð´Ð°Ñ‚ÑŒ Ð·Ð°ÐºÐ°Ð·" />
 										<Button
 											Command="{Binding BindingContext.ConsumeCommand, Source={x:Reference Name=MaterialsCollection}}"
 											CommandParameter="{Binding .}"
-											Text="Ñïèñàòü" />
+											Text="Ð¡Ð¿Ð¸ÑÐ°Ñ‚ÑŒ" />
 									</HorizontalStackLayout>
 								</Grid>
 							</DataTemplate>
@@ -141,20 +141,20 @@
 				Stroke="LightGray"
 				StrokeThickness="1">
 				<VerticalStackLayout Spacing="8">
-					<Label FontAttributes="Bold" Text="Îòãðóæåíî" />
+					<Label FontAttributes="Bold" Text="ÐžÑ‚Ð³Ñ€ÑƒÐ¶ÐµÐ½Ð¾" />
 					<Grid
 						Padding="0,4"
 						ColumnDefinitions="*,Auto,Auto"
 						ColumnSpacing="8">
-						<Label FontAttributes="Bold" Text="Ñêëàä" />
+						<Label FontAttributes="Bold" Text="Ð¡ÐºÐ»Ð°Ð´" />
 						<Label
 							Grid.Column="1"
 							FontAttributes="Bold"
-							Text="Êîë-âî" />
+							Text="ÐšÐ¾Ð»-Ð²Ð¾" />
 						<Label
 							Grid.Column="2"
 							FontAttributes="Bold"
-							Text="Äàòà" />
+							Text="Ð”Ð°Ñ‚Ð°" />
 					</Grid>
 					<CollectionView
 						x:Name="ShipmentsCollection"
@@ -183,9 +183,9 @@
 			</Border>
 
 			<HorizontalStackLayout Spacing="12">
-				<Button Command="{Binding CancelCommand}" Text="Îòìåíèòü" />
-				<Button Command="{Binding StagesCommand}" Text="Ýòàïû ïðîèçâîäñòâà" />
-				<Button Command="{Binding StartProductionCommand}" Text="Çàïóñòèòü â ïðîèçâîäñòâî" />
+				<Button Command="{Binding CancelCommand}" Text="ÐžÑ‚Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ" />
+				<Button Command="{Binding StagesCommand}" Text="Ð­Ñ‚Ð°Ð¿Ñ‹ Ð¿Ñ€Ð¾Ð¸Ð·Ð²Ð¾Ð´ÑÑ‚Ð²Ð°" />
+				<Button Command="{Binding StartProductionCommand}" Text="Ð—Ð°Ð¿ÑƒÑÑ‚Ð¸Ñ‚ÑŒ Ð² Ð¿Ñ€Ð¾Ð¸Ð·Ð²Ð¾Ð´ÑÑ‚Ð²Ð¾" />
 			</HorizontalStackLayout>
 		</VerticalStackLayout>
 	</ScrollView>

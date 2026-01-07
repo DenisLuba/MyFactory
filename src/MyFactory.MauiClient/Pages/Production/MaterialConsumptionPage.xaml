@@ -3,14 +3,14 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Production"
-	Title="Ñïèñàíèå ìàòåðèàëîâ"
+	Title="Ð¡Ð¿Ð¸ÑÐ°Ð½Ð¸Ðµ Ð¼Ð°Ñ‚ÐµÑ€Ð¸Ð°Ð»Ð¾Ð²"
 	x:DataType="view_model:MaterialConsumptionPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
 			<Label
 				FontAttributes="Bold"
 				FontSize="18"
-				Text="Ñïèñàíèå ìàòåðèàëîâ" />
+				Text="Ð¡Ð¿Ð¸ÑÐ°Ð½Ð¸Ðµ Ð¼Ð°Ñ‚ÐµÑ€Ð¸Ð°Ð»Ð¾Ð²" />
 			<Label
 				FontAttributes="Bold"
 				FontSize="16"
@@ -19,7 +19,7 @@
 				ColumnDefinitions="Auto,*"
 				ColumnSpacing="8"
 				RowDefinitions="Auto">
-				<Label FontAttributes="Bold" Text="Öåõ:" />
+				<Label FontAttributes="Bold" Text="Ð¦ÐµÑ…:" />
 				<Label Grid.Column="1" Text="{Binding DepartmentName}" />
 			</Grid>
 
@@ -28,7 +28,7 @@
 				ColumnSpacing="8"
 				RowDefinitions="Auto,Auto,Auto"
 				RowSpacing="6">
-				<Label FontAttributes="Bold" Text="Íåîáõîäèìî:" />
+				<Label FontAttributes="Bold" Text="ÐÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼Ð¾:" />
 				<Label
 					Grid.Column="1"
 					HorizontalTextAlignment="End"
@@ -36,7 +36,7 @@
 				<Label
 					Grid.Row="1"
 					FontAttributes="Bold"
-					Text="Äîñòóïíî íà ñêëàäàõ:" />
+					Text="Ð”Ð¾ÑÑ‚ÑƒÐ¿Ð½Ð¾ Ð½Ð° ÑÐºÐ»Ð°Ð´Ð°Ñ…:" />
 				<Label
 					Grid.Row="1"
 					Grid.Column="1"
@@ -45,7 +45,7 @@
 				<Label
 					Grid.Row="2"
 					FontAttributes="Bold"
-					Text="Íå õâàòàåò:" />
+					Text="ÐÐµ Ñ…Ð²Ð°Ñ‚Ð°ÐµÑ‚:" />
 				<Label
 					Grid.Row="2"
 					Grid.Column="1"
@@ -57,19 +57,19 @@
 				Padding="0,4"
 				ColumnDefinitions="*,Auto,Auto,Auto"
 				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Ñêëàä" />
+				<Label FontAttributes="Bold" Text="Ð¡ÐºÐ»Ð°Ð´" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"
-					Text="Åñòü" />
+					Text="Ð•ÑÑ‚ÑŒ" />
 				<Label
 					Grid.Column="2"
 					FontAttributes="Bold"
-					Text="Ñïèñàòü" />
+					Text="Ð¡Ð¿Ð¸ÑÐ°Ñ‚ÑŒ" />
 				<Label
 					Grid.Column="3"
 					FontAttributes="Bold"
-					Text="Îñòàíåòñÿ" />
+					Text="ÐžÑÑ‚Ð°Ð½ÐµÑ‚ÑÑ" />
 			</Grid>
 
 			<CollectionView
@@ -104,12 +104,12 @@
 
 			<Label
 				IsVisible="{Binding HasShortage}"
-				Text="Íåäîñòàòî÷íî ìàòåðèàëà"
+				Text="ÐÐµÐ´Ð¾ÑÑ‚Ð°Ñ‚Ð¾Ñ‡Ð½Ð¾ Ð¼Ð°Ñ‚ÐµÑ€Ð¸Ð°Ð»Ð°"
 				TextColor="Red" />
 
 			<HorizontalStackLayout Spacing="12">
-				<Button Command="{Binding CancelCommand}" Text="Îòìåíà" />
-				<Button Command="{Binding IssueCommand}" Text="Ñïèñàòü ìàòåðèàëû" />
+				<Button Command="{Binding CancelCommand}" Text="ÐžÑ‚Ð¼ÐµÐ½Ð°" />
+				<Button Command="{Binding IssueCommand}" Text="Ð¡Ð¿Ð¸ÑÐ°Ñ‚ÑŒ Ð¼Ð°Ñ‚ÐµÑ€Ð¸Ð°Ð»Ñ‹" />
 			</HorizontalStackLayout>
 		</VerticalStackLayout>
 	</ScrollView>

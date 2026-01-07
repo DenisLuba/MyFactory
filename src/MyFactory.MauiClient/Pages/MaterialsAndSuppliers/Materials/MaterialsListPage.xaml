@@ -3,35 +3,35 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Materials"
-	Title="Ìàòåðèàëû"
+	Title="ÐœÐ°Ñ‚ÐµÑ€Ð¸Ð°Ð»Ñ‹"
 	x:DataType="view_model:MaterialsListPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
 			<Grid ColumnDefinitions="*,*,Auto" ColumnSpacing="8">
-				<Entry Placeholder="Ïîèñê ïî òèïó ìàòåðèàëà" Text="{Binding MaterialTypeSearch}" />
+				<Entry Placeholder="ÐŸÐ¾Ð¸ÑÐº Ð¿Ð¾ Ñ‚Ð¸Ð¿Ñƒ Ð¼Ð°Ñ‚ÐµÑ€Ð¸Ð°Ð»Ð°" Text="{Binding MaterialTypeSearch}" />
 				<Entry
 					Grid.Column="1"
-					Placeholder="Ïîèñê ïî ìàòåðèàëó"
+					Placeholder="ÐŸÐ¾Ð¸ÑÐº Ð¿Ð¾ Ð¼Ð°Ñ‚ÐµÑ€Ð¸Ð°Ð»Ñƒ"
 					Text="{Binding MaterialNameSearch}" />
 				<Button
 					Grid.Column="2"
 					Command="{Binding AddCommand}"
-					Text="+ Äîáàâèòü" />
+					Text="+ Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ" />
 			</Grid>
 
 			<Grid
 				Padding="0,4"
 				ColumnDefinitions="*,*,*"
 				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="ÒÈÏ ÌÀÒÅÐÈÀËÀ" />
+				<Label FontAttributes="Bold" Text="Ð¢Ð˜ÐŸ ÐœÐÐ¢Ð•Ð Ð˜ÐÐ›Ð" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"
-					Text="ÌÀÒÅÐÈÀË" />
+					Text="ÐœÐÐ¢Ð•Ð Ð˜ÐÐ›" />
 				<Label
 					Grid.Column="2"
 					FontAttributes="Bold"
-					Text="ÎÑÒÀÒÎÊ" />
+					Text="ÐžÐ¡Ð¢ÐÐ¢ÐžÐš" />
 			</Grid>
 
 			<CollectionView
@@ -47,12 +47,12 @@
 										BackgroundColor="LightGray"
 										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=MaterialsListCollection}}"
 										CommandParameter="{Binding .}"
-										Text="Ðåäàêòèðîâàòü" />
+										Text="Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ" />
 									<SwipeItem
 										BackgroundColor="Tomato"
 										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=MaterialsListCollection}}"
 										CommandParameter="{Binding .}"
-										Text="Óäàëèòü" />
+										Text="Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ" />
 								</SwipeItems>
 							</SwipeView.RightItems>
 							<Grid

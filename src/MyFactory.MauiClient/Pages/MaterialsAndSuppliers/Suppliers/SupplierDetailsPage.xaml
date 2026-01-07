@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Suppliers"
-	Title="Êàðòî÷êà ïîñòàâùèêà"
+	Title="ÐšÐ°Ñ€Ñ‚Ð¾Ñ‡ÐºÐ° Ð¿Ð¾ÑÑ‚Ð°Ð²Ñ‰Ð¸ÐºÐ°"
 	x:DataType="view_model:SupplierDetailsPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
@@ -15,9 +15,9 @@
 			<Label Text="{Binding Contacts}" />
 
 			<HorizontalStackLayout Spacing="8">
-				<Button Command="{Binding EditCommand}" Text="Ðåäàêòèðîâàòü" />
-				<Button Command="{Binding AddPurchaseCommand}" Text="Äîáàâèòü çàêóïêó" />
-				<Button Command="{Binding CreateOrderCommand}" Text="Ñîçäàòü çàêàç" />
+				<Button Command="{Binding EditCommand}" Text="Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ" />
+				<Button Command="{Binding AddPurchaseCommand}" Text="Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ Ð·Ð°ÐºÑƒÐ¿ÐºÑƒ" />
+				<Button Command="{Binding CreateOrderCommand}" Text="Ð¡Ð¾Ð·Ð´Ð°Ñ‚ÑŒ Ð·Ð°ÐºÐ°Ð·" />
 			</HorizontalStackLayout>
 
 			<Border
@@ -25,31 +25,31 @@
 				Stroke="LightGray"
 				StrokeThickness="1">
 				<VerticalStackLayout Spacing="8">
-					<Label FontAttributes="Bold" Text="Èñòîðèÿ çàêóïîê" />
+					<Label FontAttributes="Bold" Text="Ð˜ÑÑ‚Ð¾Ñ€Ð¸Ñ Ð·Ð°ÐºÑƒÐ¿Ð¾Ðº" />
 					<Grid
 						Padding="0,4"
 						ColumnDefinitions="*,*,Auto,Auto,Auto"
 						ColumnSpacing="8">
-						<Label FontAttributes="Bold" Text="Òèï" />
+						<Label FontAttributes="Bold" Text="Ð¢Ð¸Ð¿" />
 						<Label
 							Grid.Column="1"
 							FontAttributes="Bold"
-							Text="Ìàòåðèàë" />
+							Text="ÐœÐ°Ñ‚ÐµÑ€Ð¸Ð°Ð»" />
 						<Label
 							Grid.Column="2"
 							FontAttributes="Bold"
 							HorizontalTextAlignment="End"
-							Text="Êîë-âî" />
+							Text="ÐšÐ¾Ð»-Ð²Ð¾" />
 						<Label
 							Grid.Column="3"
 							FontAttributes="Bold"
 							HorizontalTextAlignment="End"
-							Text="Öåíà" />
+							Text="Ð¦ÐµÐ½Ð°" />
 						<Label
 							Grid.Column="4"
 							FontAttributes="Bold"
 							HorizontalTextAlignment="End"
-							Text="Äàòà" />
+							Text="Ð”Ð°Ñ‚Ð°" />
 					</Grid>
 					<CollectionView ItemsSource="{Binding PurchaseHistory}" SelectionMode="None">
 						<CollectionView.ItemTemplate>

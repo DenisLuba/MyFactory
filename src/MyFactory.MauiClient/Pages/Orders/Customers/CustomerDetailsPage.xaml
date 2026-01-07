@@ -3,11 +3,11 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Orders.Customers"
-	Title="Êàðòî÷êà çàêàç÷èêà"
+	Title="ÐšÐ°Ñ€Ñ‚Ð¾Ñ‡ÐºÐ° Ð·Ð°ÐºÐ°Ð·Ñ‡Ð¸ÐºÐ°"
 	x:DataType="view_model:CustomerDetailsPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
-			<Button Command="{Binding BackCommand}" Text="Íàçàä" />
+			<Button Command="{Binding BackCommand}" Text="ÐÐ°Ð·Ð°Ð´" />
 
 			<Label
 				FontAttributes="Bold"
@@ -15,13 +15,13 @@
 				Text="{Binding Name}" />
 
 			<VerticalStackLayout Spacing="4">
-				<Label FontAttributes="Bold" Text="Êîíòàêòû:" />
+				<Label FontAttributes="Bold" Text="ÐšÐ¾Ð½Ñ‚Ð°ÐºÑ‚Ñ‹:" />
 				<Label Text="{Binding Phone}" />
 				<Label Text="{Binding Email}" />
 				<Label Text="{Binding Address}" />
 			</VerticalStackLayout>
 
-			<Label FontAttributes="Bold" Text="Èñòîðèÿ çàêàçîâ" />
+			<Label FontAttributes="Bold" Text="Ð˜ÑÑ‚Ð¾Ñ€Ð¸Ñ Ð·Ð°ÐºÐ°Ð·Ð¾Ð²" />
 			<CollectionView ItemsSource="{Binding Orders}" SelectionMode="None">
 				<CollectionView.ItemTemplate>
 					<DataTemplate>

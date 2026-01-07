@@ -51,7 +51,7 @@ public partial class MaterialsListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -95,7 +95,7 @@ public partial class MaterialsListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlertAsync("Удаление", "Деактивация материала пока не реализована", "OK");
+        await Shell.Current.DisplayAlert("Удаление", "Деактивация материала пока не реализована", "OK");
     }
 
     partial void OnMaterialTypeSearchChanged(string? value) => ApplyFilters();

@@ -109,7 +109,7 @@ public partial class MaterialDetailsEditPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -154,13 +154,13 @@ public partial class MaterialDetailsEditPageViewModel : ObservableObject
 
         if (string.IsNullOrWhiteSpace(Name))
         {
-            await Shell.Current.DisplayAlertAsync("Ошибка", "Укажите название материала", "OK");
+            await Shell.Current.DisplayAlert("Ошибка", "Укажите название материала", "OK");
             return;
         }
 
         if (_materialTypeId == Guid.Empty || _unitId == Guid.Empty)
         {
-            await Shell.Current.DisplayAlertAsync("Ошибка", "Недостаточно данных для обновления материала (неизвестны идентификаторы типа или единицы).", "OK");
+            await Shell.Current.DisplayAlert("Ошибка", "Недостаточно данных для обновления материала (неизвестны идентификаторы типа или единицы).", "OK");
             return;
         }
 
@@ -171,13 +171,13 @@ public partial class MaterialDetailsEditPageViewModel : ObservableObject
 
             var request = new UpdateMaterialRequest(Name.Trim(), _materialTypeId, _unitId, string.IsNullOrWhiteSpace(Color) ? null : Color.Trim());
             await _materialsService.UpdateAsync(MaterialId.Value, request);
-            await Shell.Current.DisplayAlertAsync("Успех", "Материал обновлен", "OK");
+            await Shell.Current.DisplayAlert("Успех", "Материал обновлен", "OK");
             await Shell.Current.GoToAsync("..", true);
         }
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
         }
         finally
         {

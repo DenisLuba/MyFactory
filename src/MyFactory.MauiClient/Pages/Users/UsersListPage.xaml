@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Users"
-	Title="Ïîëüçîâàòåëè"
+	Title="ÐŸÐ¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»Ð¸"
 	x:DataType="view_model:UsersListPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
@@ -13,7 +13,7 @@
 				RowSpacing="8">
 				<Entry
 					Grid.ColumnSpan="2"
-					Placeholder="Ïîèñê ïî ðîëè èëè ëîãèíó"
+					Placeholder="ÐŸÐ¾Ð¸ÑÐº Ð¿Ð¾ Ñ€Ð¾Ð»Ð¸ Ð¸Ð»Ð¸ Ð»Ð¾Ð³Ð¸Ð½Ñƒ"
 					Text="{Binding SearchText}" />
 				<Picker
 					Grid.Column="2"
@@ -24,31 +24,31 @@
 					Grid.Row="1"
 					FontAttributes="Bold"
 					FontSize="18"
-					Text="Ïîëüçîâàòåëè" />
+					Text="ÐŸÐ¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»Ð¸" />
 				<Button
 					Grid.Row="1"
 					Grid.Column="2"
 					Command="{Binding AddCommand}"
-					Text="Äîáàâèòü" />
+					Text="Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ" />
 			</Grid>
 
 			<Grid
 				Padding="0,4"
 				ColumnDefinitions="Auto,Auto,Auto,Auto"
 				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Ëîãèí" />
+				<Label FontAttributes="Bold" Text="Ð›Ð¾Ð³Ð¸Ð½" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"
-					Text="Ðîëü" />
+					Text="Ð Ð¾Ð»ÑŒ" />
 				<Label
 					Grid.Column="2"
 					FontAttributes="Bold"
-					Text="Ñòàòóñ" />
+					Text="Ð¡Ñ‚Ð°Ñ‚ÑƒÑ" />
 				<Label
 					Grid.Column="3"
 					FontAttributes="Bold"
-					Text="Ñîçäàí" />
+					Text="Ð¡Ð¾Ð·Ð´Ð°Ð½" />
 			</Grid>
 
 			<CollectionView
@@ -64,12 +64,12 @@
 										BackgroundColor="LightGray"
 										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=UsersCollection}}"
 										CommandParameter="{Binding .}"
-										Text="Ðåäàêòèðîâàòü" />
+										Text="Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ" />
 									<SwipeItem
 										BackgroundColor="Tomato"
 										Command="{Binding BindingContext.ToggleActiveCommand, Source={x:Reference Name=UsersCollection}}"
 										CommandParameter="{Binding .}"
-										Text="Çàáëîêèðîâàòü" />
+										Text="Ð—Ð°Ð±Ð»Ð¾ÐºÐ¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ" />
 								</SwipeItems>
 							</SwipeView.RightItems>
 							<Grid

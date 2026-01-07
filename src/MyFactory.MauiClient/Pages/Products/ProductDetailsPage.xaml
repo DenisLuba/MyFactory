@@ -3,14 +3,14 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Products"
-	Title="Êàðòî÷êà òîâàðà"
+	Title="ÐšÐ°Ñ€Ñ‚Ð¾Ñ‡ÐºÐ° Ñ‚Ð¾Ð²Ð°Ñ€Ð°"
 	x:DataType="view_model:ProductDetailsPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
 			<HorizontalStackLayout Spacing="8">
-				<Button Command="{Binding BackCommand}" Text="Íàçàä" />
-				<Button Command="{Binding EditCommand}" Text="Ðåäàêòèðîâàòü" />
-				<Button Command="{Binding DeleteCommand}" Text="Óäàëèòü" />
+				<Button Command="{Binding BackCommand}" Text="ÐÐ°Ð·Ð°Ð´" />
+				<Button Command="{Binding EditCommand}" Text="Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ" />
+				<Button Command="{Binding DeleteCommand}" Text="Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ" />
 			</HorizontalStackLayout>
 
 			<Label
@@ -23,12 +23,12 @@
 				ColumnSpacing="8"
 				RowDefinitions="Auto,Auto"
 				RowSpacing="8">
-				<Label FontAttributes="Bold" Text="Ïëàí ïîøèâà â ñìåíó:" />
+				<Label FontAttributes="Bold" Text="ÐŸÐ»Ð°Ð½ Ð¿Ð¾ÑˆÐ¸Ð²Ð° Ð² ÑÐ¼ÐµÐ½Ñƒ:" />
 				<Label Grid.Column="1" Text="{Binding PlanPerHour}" />
 				<Label
 					Grid.Row="1"
 					FontAttributes="Bold"
-					Text="Ñåáåñòîèìîñòü:" />
+					Text="Ð¡ÐµÐ±ÐµÑÑ‚Ð¾Ð¸Ð¼Ð¾ÑÑ‚ÑŒ:" />
 				<Label
 					Grid.Row="1"
 					Grid.Column="1"
@@ -40,18 +40,18 @@
 				Stroke="LightGray"
 				StrokeThickness="1">
 				<VerticalStackLayout Spacing="6">
-					<Label FontAttributes="Bold" Text="Ñåáåñòîèìîñòü" />
+					<Label FontAttributes="Bold" Text="Ð¡ÐµÐ±ÐµÑÑ‚Ð¾Ð¸Ð¼Ð¾ÑÑ‚ÑŒ" />
 					<Grid
 						ColumnDefinitions="Auto,*"
 						ColumnSpacing="8"
 						RowDefinitions="Auto,Auto"
 						RowSpacing="4">
-						<Label FontAttributes="Bold" Text="Ìàòåðèàëû:" />
+						<Label FontAttributes="Bold" Text="ÐœÐ°Ñ‚ÐµÑ€Ð¸Ð°Ð»Ñ‹:" />
 						<Label Grid.Column="1" Text="{Binding MaterialCost}" />
 						<Label
 							Grid.Row="1"
 							FontAttributes="Bold"
-							Text="Ïðîèçâîäñòâî:" />
+							Text="ÐŸÑ€Ð¾Ð¸Ð·Ð²Ð¾Ð´ÑÑ‚Ð²Ð¾:" />
 						<Label
 							Grid.Row="1"
 							Grid.Column="1"
@@ -65,22 +65,22 @@
 				Stroke="LightGray"
 				StrokeThickness="1">
 				<VerticalStackLayout Spacing="8">
-					<Label FontAttributes="Bold" Text="ÑÏÅÖÈÔÈÊÀÖÈß (BOM)" />
+					<Label FontAttributes="Bold" Text="Ð¡ÐŸÐ•Ð¦Ð˜Ð¤Ð˜ÐšÐÐ¦Ð˜Ð¯ (BOM)" />
 					<Grid
 						Padding="0,4"
 						ColumnDefinitions="*,Auto,Auto"
 						ColumnSpacing="8">
-						<Label FontAttributes="Bold" Text="Ìàòåðèàë" />
+						<Label FontAttributes="Bold" Text="ÐœÐ°Ñ‚ÐµÑ€Ð¸Ð°Ð»" />
 						<Label
 							Grid.Column="1"
 							FontAttributes="Bold"
 							HorizontalTextAlignment="End"
-							Text="Êîëè÷åñòâî" />
+							Text="ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾" />
 						<Label
 							Grid.Column="2"
 							FontAttributes="Bold"
 							HorizontalTextAlignment="End"
-							Text="Öåíà" />
+							Text="Ð¦ÐµÐ½Ð°" />
 					</Grid>
 					<CollectionView
 						x:Name="BomCollection"
@@ -113,37 +113,37 @@
 				Stroke="LightGray"
 				StrokeThickness="1">
 				<VerticalStackLayout Spacing="8">
-					<Label FontAttributes="Bold" Text="Ïðîèçâîäñòâåííûå çàòðàòû" />
+					<Label FontAttributes="Bold" Text="ÐŸÑ€Ð¾Ð¸Ð·Ð²Ð¾Ð´ÑÑ‚Ð²ÐµÐ½Ð½Ñ‹Ðµ Ð·Ð°Ñ‚Ñ€Ð°Ñ‚Ñ‹" />
 					<Grid
 						Padding="0,4"
 						ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto"
 						ColumnSpacing="8">
-						<Label FontAttributes="Bold" Text="Öåõ" />
+						<Label FontAttributes="Bold" Text="Ð¦ÐµÑ…" />
 						<Label
 							Grid.Column="1"
 							FontAttributes="Bold"
 							HorizontalTextAlignment="End"
-							Text="Ðàñêðîé" />
+							Text="Ð Ð°ÑÐºÑ€Ð¾Ð¹" />
 						<Label
 							Grid.Column="2"
 							FontAttributes="Bold"
 							HorizontalTextAlignment="End"
-							Text="Ïîøèâ" />
+							Text="ÐŸÐ¾ÑˆÐ¸Ð²" />
 						<Label
 							Grid.Column="3"
 							FontAttributes="Bold"
 							HorizontalTextAlignment="End"
-							Text="Óïàêîâêà" />
+							Text="Ð£Ð¿Ð°ÐºÐ¾Ð²ÐºÐ°" />
 						<Label
 							Grid.Column="4"
 							FontAttributes="Bold"
 							HorizontalTextAlignment="End"
-							Text="Ïðî÷åå" />
+							Text="ÐŸÑ€Ð¾Ñ‡ÐµÐµ" />
 						<Label
 							Grid.Column="5"
 							FontAttributes="Bold"
 							HorizontalTextAlignment="End"
-							Text="Âñåãî" />
+							Text="Ð’ÑÐµÐ³Ð¾" />
 					</Grid>
 					<CollectionView
 						x:Name="ProductionCostsCollection"
@@ -188,17 +188,17 @@
 				Stroke="LightGray"
 				StrokeThickness="1">
 				<VerticalStackLayout Spacing="8">
-					<Label FontAttributes="Bold" Text="Îñòàòêè íà ñêëàäàõ" />
+					<Label FontAttributes="Bold" Text="ÐžÑÑ‚Ð°Ñ‚ÐºÐ¸ Ð½Ð° ÑÐºÐ»Ð°Ð´Ð°Ñ…" />
 					<Grid
 						Padding="0,4"
 						ColumnDefinitions="*,Auto"
 						ColumnSpacing="8">
-						<Label FontAttributes="Bold" Text="Ñêëàä" />
+						<Label FontAttributes="Bold" Text="Ð¡ÐºÐ»Ð°Ð´" />
 						<Label
 							Grid.Column="1"
 							FontAttributes="Bold"
 							HorizontalTextAlignment="End"
-							Text="Äîñòóïíî" />
+							Text="Ð”Ð¾ÑÑ‚ÑƒÐ¿Ð½Ð¾" />
 					</Grid>
 					<CollectionView ItemsSource="{Binding Warehouses}" SelectionMode="None">
 						<CollectionView.ItemTemplate>

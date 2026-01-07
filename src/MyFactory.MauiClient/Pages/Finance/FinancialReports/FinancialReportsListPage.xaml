@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.FinancialReports"
-	Title="Ôèíàíñîâûå îò÷¸òû"
+	Title="Ð¤Ð¸Ð½Ð°Ð½ÑÐ¾Ð²Ñ‹Ðµ Ð¾Ñ‚Ñ‡Ñ‘Ñ‚Ñ‹"
 	x:DataType="view_model:FinancialReportsListPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
@@ -11,42 +11,42 @@
 				<Label
 					FontAttributes="Bold"
 					FontSize="18"
-					Text="Ôèíàíñîâûå îò÷¸òû ïî ìåñÿöàì" />
+					Text="Ð¤Ð¸Ð½Ð°Ð½ÑÐ¾Ð²Ñ‹Ðµ Ð¾Ñ‚Ñ‡Ñ‘Ñ‚Ñ‹ Ð¿Ð¾ Ð¼ÐµÑÑÑ†Ð°Ð¼" />
 				<Button
 					Grid.Column="1"
 					Command="{Binding CalculateCommand}"
-					Text="Ðàññ÷èòàòü ìåñÿö" />
+					Text="Ð Ð°ÑÑÑ‡Ð¸Ñ‚Ð°Ñ‚ÑŒ Ð¼ÐµÑÑÑ†" />
 			</Grid>
 
 			<Grid
 				Padding="0,4"
 				ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
 				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Ãîä" />
+				<Label FontAttributes="Bold" Text="Ð“Ð¾Ð´" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"
-					Text="Ìåñÿö" />
+					Text="ÐœÐµÑÑÑ†" />
 				<Label
 					Grid.Column="2"
 					FontAttributes="Bold"
-					Text="Äîõîä" />
+					Text="Ð”Ð¾Ñ…Ð¾Ð´" />
 				<Label
 					Grid.Column="3"
 					FontAttributes="Bold"
-					Text="Çàðïëàòà" />
+					Text="Ð—Ð°Ñ€Ð¿Ð»Ð°Ñ‚Ð°" />
 				<Label
 					Grid.Column="4"
 					FontAttributes="Bold"
-					Text="Ìàòåðèàëû" />
+					Text="ÐœÐ°Ñ‚ÐµÑ€Ð¸Ð°Ð»Ñ‹" />
 				<Label
 					Grid.Column="5"
 					FontAttributes="Bold"
-					Text="Ïðî÷åå" />
+					Text="ÐŸÑ€Ð¾Ñ‡ÐµÐµ" />
 				<Label
 					Grid.Column="6"
 					FontAttributes="Bold"
-					Text="Ïðèáûëü" />
+					Text="ÐŸÑ€Ð¸Ð±Ñ‹Ð»ÑŒ" />
 			</Grid>
 
 			<CollectionView

@@ -3,26 +3,26 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Organization.Positions"
-	Title="Êàðòî÷êà äîëæíîñòè"
+	Title="ÐšÐ°Ñ€Ñ‚Ð¾Ñ‡ÐºÐ° Ð´Ð¾Ð»Ð¶Ð½Ð¾ÑÑ‚Ð¸"
 	x:DataType="view_model:PositionDetailsPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
 			<Label
 				FontAttributes="Bold"
 				FontSize="18"
-				Text="Êàðòî÷êà äîëæíîñòè" />
+				Text="ÐšÐ°Ñ€Ñ‚Ð¾Ñ‡ÐºÐ° Ð´Ð¾Ð»Ð¶Ð½Ð¾ÑÑ‚Ð¸" />
 
 			<Grid
 				ColumnDefinitions="Auto,*"
 				ColumnSpacing="8"
 				RowDefinitions="Auto,Auto,Auto,Auto,Auto"
 				RowSpacing="8">
-				<Label FontAttributes="Bold" Text="Íàèìåíîâàíèå:" />
+				<Label FontAttributes="Bold" Text="ÐÐ°Ð¸Ð¼ÐµÐ½Ð¾Ð²Ð°Ð½Ð¸Ðµ:" />
 				<Entry Grid.Column="1" Text="{Binding Name}" />
 				<Label
 					Grid.Row="1"
 					FontAttributes="Bold"
-					Text="Êîä äîëæíîñòè:" />
+					Text="ÐšÐ¾Ð´ Ð´Ð¾Ð»Ð¶Ð½Ð¾ÑÑ‚Ð¸:" />
 				<Entry
 					Grid.Row="1"
 					Grid.Column="1"
@@ -30,7 +30,7 @@
 				<Label
 					Grid.Row="2"
 					FontAttributes="Bold"
-					Text="Öåõ:" />
+					Text="Ð¦ÐµÑ…:" />
 				<Picker
 					Grid.Row="2"
 					Grid.Column="1"
@@ -40,7 +40,7 @@
 				<Label
 					Grid.Row="3"
 					FontAttributes="Bold"
-					Text="Áàçîâàÿ ñòàâêà:" />
+					Text="Ð‘Ð°Ð·Ð¾Ð²Ð°Ñ ÑÑ‚Ð°Ð²ÐºÐ°:" />
 				<Entry
 					Grid.Row="3"
 					Grid.Column="1"
@@ -49,7 +49,7 @@
 				<Label
 					Grid.Row="4"
 					FontAttributes="Bold"
-					Text="Ïðåìèÿ ïî óìîë÷.:" />
+					Text="ÐŸÑ€ÐµÐ¼Ð¸Ñ Ð¿Ð¾ ÑƒÐ¼Ð¾Ð»Ñ‡.:" />
 				<Entry
 					Grid.Row="4"
 					Grid.Column="1"
@@ -58,24 +58,36 @@
 			</Grid>
 
 			<VerticalStackLayout Spacing="6">
-				<Label FontAttributes="Bold" Text="Ðàçðåøåííûå îïåðàöèè:" />
-				<CheckBox Content="Ðàñêðîé" IsChecked="{Binding CanCut}" />
-				<CheckBox Content="Ïîøèâ" IsChecked="{Binding CanSew}" />
-				<CheckBox Content="Óïàêîâêà" IsChecked="{Binding CanPackage}" />
-				<CheckBox Content="Ñêëàä" IsChecked="{Binding CanHandleMaterials}" />
+				<Label FontAttributes="Bold" Text="Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð½Ñ‹Ðµ Ð¾Ð¿ÐµÑ€Ð°Ñ†Ð¸Ð¸:" />
+				<HorizontalStackLayout Spacing="6">
+					<CheckBox IsChecked="{Binding CanCut}" />
+					<Label VerticalTextAlignment="Center" Text="Ð Ð°ÑÐºÑ€Ð¾Ð¹" />
+				</HorizontalStackLayout>
+				<HorizontalStackLayout Spacing="6">
+					<CheckBox IsChecked="{Binding CanSew}" />
+					<Label VerticalTextAlignment="Center" Text="ÐŸÐ¾ÑˆÐ¸Ð²" />
+				</HorizontalStackLayout>
+				<HorizontalStackLayout Spacing="6">
+					<CheckBox IsChecked="{Binding CanPackage}" />
+					<Label VerticalTextAlignment="Center" Text="Ð£Ð¿Ð°ÐºÐ¾Ð²ÐºÐ°" />
+				</HorizontalStackLayout>
+				<HorizontalStackLayout Spacing="6">
+					<CheckBox IsChecked="{Binding CanHandleMaterials}" />
+					<Label VerticalTextAlignment="Center" Text="Ð¡ÐºÐ»Ð°Ð´" />
+				</HorizontalStackLayout>
 			</VerticalStackLayout>
 
 			<HorizontalStackLayout Spacing="8" VerticalOptions="Center">
 				<Label
 					FontAttributes="Bold"
-					Text="Àêòóàëüíà:"
+					Text="ÐÐºÑ‚ÑƒÐ°Ð»ÑŒÐ½Ð°:"
 					VerticalOptions="Center" />
 				<Switch IsToggled="{Binding IsActive}" />
 			</HorizontalStackLayout>
 
 			<HorizontalStackLayout Spacing="12">
-				<Button Command="{Binding SaveCommand}" Text="Ñîõðàíèòü" />
-				<Button Command="{Binding CancelCommand}" Text="Îòìåíà" />
+				<Button Command="{Binding SaveCommand}" Text="Ð¡Ð¾Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒ" />
+				<Button Command="{Binding CancelCommand}" Text="ÐžÑ‚Ð¼ÐµÐ½Ð°" />
 			</HorizontalStackLayout>
 		</VerticalStackLayout>
 	</ScrollView>

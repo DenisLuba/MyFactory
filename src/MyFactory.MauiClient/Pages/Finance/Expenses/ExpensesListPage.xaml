@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Finance.Expenses"
-	Title="Ðàñõîäû"
+	Title="Ð Ð°ÑÑ…Ð¾Ð´Ñ‹"
 	x:DataType="view_model:ExpensesListPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
@@ -12,7 +12,7 @@
 				ColumnSpacing="8"
 				RowDefinitions="Auto,Auto"
 				RowSpacing="8">
-				<Label Text="Ïåðèîä:" VerticalTextAlignment="Center" />
+				<Label Text="ÐŸÐµÑ€Ð¸Ð¾Ð´:" VerticalTextAlignment="Center" />
 				<Picker
 					Grid.Column="1"
 					ItemsSource="{Binding Periods}"
@@ -20,10 +20,10 @@
 				<Button
 					Grid.Column="2"
 					Command="{Binding AddCommand}"
-					Text="Äîáàâèòü" />
+					Text="Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ" />
 				<Label
 					Grid.Row="1"
-					Text="Òèï:"
+					Text="Ð¢Ð¸Ð¿:"
 					VerticalTextAlignment="Center" />
 				<Picker
 					Grid.Row="1"
@@ -37,23 +37,23 @@
 				Padding="0,4"
 				ColumnDefinitions="Auto,Auto,*,Auto,Auto"
 				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Äàòà" />
+				<Label FontAttributes="Bold" Text="Ð”Ð°Ñ‚Ð°" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"
-					Text="Òèï" />
+					Text="Ð¢Ð¸Ð¿" />
 				<Label
 					Grid.Column="2"
 					FontAttributes="Bold"
-					Text="Îïèñàíèå" />
+					Text="ÐžÐ¿Ð¸ÑÐ°Ð½Ð¸Ðµ" />
 				<Label
 					Grid.Column="3"
 					FontAttributes="Bold"
-					Text="Ñóììà" />
+					Text="Ð¡ÑƒÐ¼Ð¼Ð°" />
 				<Label
 					Grid.Column="4"
 					FontAttributes="Bold"
-					Text="Àâòîð" />
+					Text="ÐÐ²Ñ‚Ð¾Ñ€" />
 			</Grid>
 
 			<CollectionView
@@ -69,12 +69,12 @@
 										BackgroundColor="LightGray"
 										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=ExpensesCollection}}"
 										CommandParameter="{Binding .}"
-										Text="Ðåäàêòèðîâàòü" />
+										Text="Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ" />
 									<SwipeItem
 										BackgroundColor="Tomato"
 										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=ExpensesCollection}}"
 										CommandParameter="{Binding .}"
-										Text="Óäàëèòü" />
+										Text="Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ" />
 								</SwipeItems>
 							</SwipeView.RightItems>
 							<Grid
@@ -99,7 +99,7 @@
 				Padding="0,6"
 				ColumnDefinitions="Auto,Auto,*,Auto,Auto"
 				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Èòîãî çà ïåðèîä:" />
+				<Label FontAttributes="Bold" Text="Ð˜Ñ‚Ð¾Ð³Ð¾ Ð·Ð° Ð¿ÐµÑ€Ð¸Ð¾Ð´:" />
 				<Label
 					Grid.Column="3"
 					FontAttributes="Bold"

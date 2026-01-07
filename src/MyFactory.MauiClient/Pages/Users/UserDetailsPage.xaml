@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Users"
-	Title="Êàðòî÷êà ïîëüçîâàòåëÿ"
+	Title="ÐšÐ°Ñ€Ñ‚Ð¾Ñ‡ÐºÐ° Ð¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»Ñ"
 	x:DataType="view_model:UserDetailsPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
@@ -17,7 +17,7 @@
 				ColumnSpacing="8"
 				RowDefinitions="Auto,Auto,Auto"
 				RowSpacing="8">
-				<Label FontAttributes="Bold" Text="Ðîëü:" />
+				<Label FontAttributes="Bold" Text="Ð Ð¾Ð»ÑŒ:" />
 				<Picker
 					Grid.Column="1"
 					ItemDisplayBinding="{Binding Name}"
@@ -26,18 +26,18 @@
 				<Label
 					Grid.Row="1"
 					FontAttributes="Bold"
-					Text="Ñòàòóñ:" />
+					Text="Ð¡Ñ‚Ð°Ñ‚ÑƒÑ:" />
 				<HorizontalStackLayout
 					Grid.Row="1"
 					Grid.Column="1"
 					Spacing="8">
-					<Label Text="Àêòèâåí" VerticalTextAlignment="Center" />
+					<Label Text="ÐÐºÑ‚Ð¸Ð²ÐµÐ½" VerticalTextAlignment="Center" />
 					<Switch IsToggled="{Binding IsActive}" />
 				</HorizontalStackLayout>
 				<Label
 					Grid.Row="2"
 					FontAttributes="Bold"
-					Text="Ñîçäàí:" />
+					Text="Ð¡Ð¾Ð·Ð´Ð°Ð½:" />
 				<Label
 					Grid.Row="2"
 					Grid.Column="1"
@@ -45,8 +45,8 @@
 			</Grid>
 
 			<HorizontalStackLayout Spacing="12">
-				<Button Command="{Binding SaveCommand}" Text="Ñîõðàíèòü" />
-				<Button Command="{Binding BlockCommand}" Text="Çàáëîêèðîâàòü" />
+				<Button Command="{Binding SaveCommand}" Text="Ð¡Ð¾Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒ" />
+				<Button Command="{Binding BlockCommand}" Text="Ð—Ð°Ð±Ð»Ð¾ÐºÐ¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ" />
 			</HorizontalStackLayout>
 		</VerticalStackLayout>
 	</ScrollView>

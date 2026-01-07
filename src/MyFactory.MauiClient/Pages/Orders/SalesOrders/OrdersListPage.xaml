@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Orders.SalesOrders"
-	Title="Çàêàçû"
+	Title="Ð—Ð°ÐºÐ°Ð·Ñ‹"
 	x:DataType="view_model:OrdersListPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
@@ -11,30 +11,30 @@
 				<Label
 					FontAttributes="Bold"
 					FontSize="18"
-					Text="Çàêàçû êëèåíòîâ" />
+					Text="Ð—Ð°ÐºÐ°Ð·Ñ‹ ÐºÐ»Ð¸ÐµÐ½Ñ‚Ð¾Ð²" />
 				<Button
 					Grid.Column="1"
 					Command="{Binding AddCommand}"
-					Text="Äîáàâèòü" />
+					Text="Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ" />
 			</Grid>
 
 			<Grid
 				Padding="0,4"
 				ColumnDefinitions="Auto,*,Auto,Auto"
 				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="¹ çàêàçà" />
+				<Label FontAttributes="Bold" Text="â„– Ð·Ð°ÐºÐ°Ð·Ð°" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"
-					Text="Çàêàç÷èê" />
+					Text="Ð—Ð°ÐºÐ°Ð·Ñ‡Ð¸Ðº" />
 				<Label
 					Grid.Column="2"
 					FontAttributes="Bold"
-					Text="Äàòà" />
+					Text="Ð”Ð°Ñ‚Ð°" />
 				<Label
 					Grid.Column="3"
 					FontAttributes="Bold"
-					Text="Ñòàòóñ" />
+					Text="Ð¡Ñ‚Ð°Ñ‚ÑƒÑ" />
 			</Grid>
 
 			<CollectionView
@@ -50,12 +50,12 @@
 										BackgroundColor="LightGray"
 										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=OrdersCollection}}"
 										CommandParameter="{Binding .}"
-										Text="Ðåäàêòèðîâàòü" />
+										Text="Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ" />
 									<SwipeItem
 										BackgroundColor="Tomato"
 										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=OrdersCollection}}"
 										CommandParameter="{Binding .}"
-										Text="Óäàëèòü" />
+										Text="Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ" />
 								</SwipeItems>
 							</SwipeView.RightItems>
 							<Grid

@@ -3,33 +3,33 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Products"
-	Title="Òîâàðû"
+	Title="Ð¢Ð¾Ð²Ð°Ñ€Ñ‹"
 	x:DataType="view_model:ProductsListPageViewModel">
 
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
 			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-				<Entry Placeholder="Ïîèñê ïî íàçâàíèþ" Text="{Binding SearchText}" />
+				<Entry Placeholder="ÐŸÐ¾Ð¸ÑÐº Ð¿Ð¾ Ð½Ð°Ð·Ð²Ð°Ð½Ð¸ÑŽ" Text="{Binding SearchText}" />
 				<Button
 					Grid.Column="1"
 					Command="{Binding AddCommand}"
-					Text="Äîáàâèòü" />
+					Text="Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ" />
 			</Grid>
 
 			<Grid
 				Padding="0,4"
 				ColumnDefinitions="*,*,Auto"
 				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Íàçâàíèå" />
+				<Label FontAttributes="Bold" Text="ÐÐ°Ð·Ð²Ð°Ð½Ð¸Ðµ" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"
-					Text="Êàòåãîðèÿ" />
+					Text="ÐšÐ°Ñ‚ÐµÐ³Ð¾Ñ€Ð¸Ñ" />
 				<Label
 					Grid.Column="2"
 					FontAttributes="Bold"
 					HorizontalTextAlignment="End"
-					Text="Ñåáåñòîèìîñòü" />
+					Text="Ð¡ÐµÐ±ÐµÑÑ‚Ð¾Ð¸Ð¼Ð¾ÑÑ‚ÑŒ" />
 			</Grid>
 
 			<CollectionView
@@ -45,12 +45,12 @@
 										BackgroundColor="LightGray"
 										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=ProductsCollection}}"
 										CommandParameter="{Binding .}"
-										Text="Ðåäàêòèðîâàòü" />
+										Text="Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ" />
 									<SwipeItem
 										BackgroundColor="Tomato"
 										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=ProductsCollection}}"
 										CommandParameter="{Binding .}"
-										Text="Óäàëèòü" />
+										Text="Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ" />
 								</SwipeItems>
 							</SwipeView.RightItems>
 							<Grid

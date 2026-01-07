@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Materials"
-	Title="Ðåäàêòèðîâàíèå ìàòåðèàëà"
+	Title="Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð¼Ð°Ñ‚ÐµÑ€Ð¸Ð°Ð»Ð°"
 	x:DataType="view_model:MaterialDetailsEditPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
@@ -12,17 +12,17 @@
 				ColumnSpacing="8"
 				RowDefinitions="Auto,Auto,Auto"
 				RowSpacing="8">
-				<Label FontAttributes="Bold" Text="Ìàòåðèàë:" />
+				<Label FontAttributes="Bold" Text="ÐœÐ°Ñ‚ÐµÑ€Ð¸Ð°Ð»:" />
 				<Entry
 					Grid.Column="1"
-					Placeholder="Íàçâàíèå"
+					Placeholder="ÐÐ°Ð·Ð²Ð°Ð½Ð¸Ðµ"
 					Text="{Binding Name}" />
 				<Label
 					Grid.Row="1"
 					FontAttributes="Bold"
-					Text="Òèï:" />
+					Text="Ð¢Ð¸Ð¿:" />
 				<Picker
-					Title="Òèï"
+					Title="Ð¢Ð¸Ð¿"
 					Grid.Row="1"
 					Grid.Column="1"
 					ItemsSource="{Binding MaterialTypes}"
@@ -30,17 +30,17 @@
 				<Label
 					Grid.Row="2"
 					FontAttributes="Bold"
-					Text="Öâåò:" />
+					Text="Ð¦Ð²ÐµÑ‚:" />
 				<Entry
 					Grid.Row="2"
 					Grid.Column="1"
-					Placeholder="Öâåò"
+					Placeholder="Ð¦Ð²ÐµÑ‚"
 					Text="{Binding Color}" />
 			</Grid>
 
 			<HorizontalStackLayout Spacing="8">
-				<Button Command="{Binding SaveCommand}" Text="Ñîõðàíèòü" />
-				<Button Command="{Binding CancelCommand}" Text="Îòìåíèòü" />
+				<Button Command="{Binding SaveCommand}" Text="Ð¡Ð¾Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒ" />
+				<Button Command="{Binding CancelCommand}" Text="ÐžÑ‚Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ" />
 			</HorizontalStackLayout>
 
 			<Border
@@ -48,27 +48,27 @@
 				Stroke="LightGray"
 				StrokeThickness="1">
 				<VerticalStackLayout Spacing="8">
-					<Label FontAttributes="Bold" Text="Èñòîðèÿ çàêóïîê" />
+					<Label FontAttributes="Bold" Text="Ð˜ÑÑ‚Ð¾Ñ€Ð¸Ñ Ð·Ð°ÐºÑƒÐ¿Ð¾Ðº" />
 					<Grid
 						Padding="0,4"
 						ColumnDefinitions="*,Auto,Auto,Auto"
 						ColumnSpacing="8">
-						<Label FontAttributes="Bold" Text="Ïîñòàâùèê" />
+						<Label FontAttributes="Bold" Text="ÐŸÐ¾ÑÑ‚Ð°Ð²Ñ‰Ð¸Ðº" />
 						<Label
 							Grid.Column="1"
 							FontAttributes="Bold"
 							HorizontalTextAlignment="End"
-							Text="Êîë-âî" />
+							Text="ÐšÐ¾Ð»-Ð²Ð¾" />
 						<Label
 							Grid.Column="2"
 							FontAttributes="Bold"
 							HorizontalTextAlignment="End"
-							Text="Öåíà" />
+							Text="Ð¦ÐµÐ½Ð°" />
 						<Label
 							Grid.Column="3"
 							FontAttributes="Bold"
 							HorizontalTextAlignment="End"
-							Text="Äàòà" />
+							Text="Ð”Ð°Ñ‚Ð°" />
 					</Grid>
 					<CollectionView
 						x:Name="PurchaseHistoryEditCollection"
@@ -78,7 +78,7 @@
 							<Button
 								Command="{Binding AddPurchaseRowCommand}"
 								HorizontalOptions="Start"
-								Text="Äîáàâèòü" />
+								Text="Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ" />
 						</CollectionView.Header>
 						<CollectionView.ItemTemplate>
 							<DataTemplate>

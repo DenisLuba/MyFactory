@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Warehouses"
-	Title="Ñêëàäû"
+	Title="Ð¡ÐºÐ»Ð°Ð´Ñ‹"
 	x:DataType="view_model:WarehousesListPageViewModel">
 	<ScrollView>
 		<VerticalStackLayout Padding="16" Spacing="12">
@@ -11,23 +11,23 @@
 				<Label
 					FontAttributes="Bold"
 					FontSize="18"
-					Text="Ñêëàäû" />
+					Text="Ð¡ÐºÐ»Ð°Ð´Ñ‹" />
 				<Button
 					Grid.Column="1"
 					Command="{Binding AddCommand}"
-					Text="Äîáàâèòü" />
+					Text="Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ" />
 			</Grid>
 
 			<Grid
 				Padding="0,4"
 				ColumnDefinitions="*,Auto"
 				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Íàçâàíèå" />
+				<Label FontAttributes="Bold" Text="ÐÐ°Ð·Ð²Ð°Ð½Ð¸Ðµ" />
 				<Label
 					Grid.Column="1"
 					FontAttributes="Bold"
 					HorizontalTextAlignment="End"
-					Text="Òèï" />
+					Text="Ð¢Ð¸Ð¿" />
 			</Grid>
 
 			<CollectionView
@@ -43,12 +43,12 @@
 										BackgroundColor="LightGray"
 										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=WarehousesCollection}}"
 										CommandParameter="{Binding .}"
-										Text="Ðåäàêòèðîâàòü" />
+										Text="Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ" />
 									<SwipeItem
 										BackgroundColor="Tomato"
 										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=WarehousesCollection}}"
 										CommandParameter="{Binding .}"
-										Text="Óäàëèòü" />
+										Text="Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ" />
 								</SwipeItems>
 							</SwipeView.RightItems>
 							<Grid
