@@ -4,10 +4,18 @@ namespace MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Materials;
 
 public partial class MaterialsListPage : ContentPage
 {
+    private readonly MaterialsListPageViewModel _viewModel;
+
     public MaterialsListPage(MaterialsListPageViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = viewModel;
+        BindingContext = _viewModel = viewModel;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _viewModel.LoadAsync();
     }
 }
 

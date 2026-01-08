@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.ApplicationModel;
 using MyFactory.MauiClient.Models.Materials;
 using MyFactory.MauiClient.Services.Materials;
 
@@ -30,11 +31,10 @@ public partial class MaterialsListPageViewModel : ObservableObject
     public MaterialsListPageViewModel(IMaterialsService materialsService)
     {
         _materialsService = materialsService;
-        _ = LoadAsync();
     }
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
             return;
@@ -44,7 +44,7 @@ public partial class MaterialsListPageViewModel : ObservableObject
             IsBusy = true;
             ErrorMessage = null;
 
-            var materials = await _materialsService.GetListAsync();
+            var materials = await _materialsService.GetListAsync(isActive: true);
             _allMaterials = materials?.Select(m => new MaterialItemViewModel(m)).ToList() ?? new();
             ApplyFilters();
         }
@@ -73,7 +73,7 @@ public partial class MaterialsListPageViewModel : ObservableObject
 
         await Shell.Current.GoToAsync("MaterialDetailsViewPage", new Dictionary<string, object>
         {
-            { "MaterialId", item.Id }
+            { "MaterialId", item.Id.ToString() }
         });
     }
 
@@ -85,7 +85,7 @@ public partial class MaterialsListPageViewModel : ObservableObject
 
         await Shell.Current.GoToAsync("MaterialDetailsEditPage", new Dictionary<string, object>
         {
-            { "MaterialId", item.Id }
+            { "MaterialId", item.Id.ToString() }
         });
     }
 
@@ -95,7 +95,27 @@ public partial class MaterialsListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlert("Удаление", "Деактивация материала пока не реализована", "OK");
+        var confirm = await Shell.Current.DisplayAlert("Удаление", "Вы уверены, что хотите деактивировать материал?", "Да", "Отмена");
+        if (!confirm)
+            return;
+
+        try
+        {
+            IsBusy = true;
+            await _materialsService.DeleteAsync(item.Id);
+
+            _allMaterials = _allMaterials.Where(m => m.Id != item.Id).ToList();
+            ApplyFilters();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     partial void OnMaterialTypeSearchChanged(string? value) => ApplyFilters();
@@ -119,9 +139,12 @@ public partial class MaterialsListPageViewModel : ObservableObject
 
         var result = query.ToList();
 
-        FilteredMaterials.Clear();
-        foreach (var item in result)
-            FilteredMaterials.Add(item);
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            FilteredMaterials.Clear();
+            foreach (var item in result)
+                FilteredMaterials.Add(item);
+        });
     }
 
     public partial class MaterialItemViewModel : ObservableObject

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Materials.UnitsPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Materials"
+	Title="Единицы материала"
+	x:DataType="view_model:UnitsPageViewModel">
+
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,*"
+		RowSpacing="12">
+		<HorizontalStackLayout Spacing="8">
+			<Button Command="{Binding AddCommand}" Text="Добавить" />
+			<Button
+				Command="{Binding SaveCommand}"
+				IsEnabled="{Binding IsChanged}"
+				IsVisible="{Binding IsChanged}"
+				Text="Сохранить" />
+		</HorizontalStackLayout>
+
+		<CollectionView
+			Grid.Row="1"
+			ItemsSource="{Binding Units}"
+			SelectionMode="None">
+			<CollectionView.Header>
+				<Grid
+					Padding="8,4"
+					ColumnDefinitions="*,*,Auto"
+					ColumnSpacing="8">
+					<Label FontAttributes="Bold" Text="Код" />
+					<Label
+						Grid.Column="1"
+						FontAttributes="Bold"
+						Text="Единицы" />
+					<Label
+						Grid.Column="2"
+						FontAttributes="Italic"
+						Text="" />
+				</Grid>
+			</CollectionView.Header>
+			<CollectionView.ItemTemplate>
+				<DataTemplate x:DataType="view_model:UnitsPageViewModel+EditableUnitModel">
+					<Grid
+						Padding="0,4"
+						ColumnDefinitions="*,*,Auto"
+						ColumnSpacing="8">
+						<Entry Placeholder="Код" Text="{Binding Code, Mode=TwoWay}" />
+						<Entry
+							Grid.Column="1"
+							Placeholder="Единицы"
+							Text="{Binding Name, Mode=TwoWay}" />
+						<Label
+							Grid.Column="2"
+							Padding="0,0,16,0"
+							FontAttributes="Italic"
+							Text="Удалить"
+							TextColor="Red">
+							<Label.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type view_model:UnitsPageViewModel}}, Path=DeleteCommand}" CommandParameter="{Binding .}" />
+							</Label.GestureRecognizers>
+						</Label>
+					</Grid>
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+		</CollectionView>
+	</Grid>
+</ContentPage>

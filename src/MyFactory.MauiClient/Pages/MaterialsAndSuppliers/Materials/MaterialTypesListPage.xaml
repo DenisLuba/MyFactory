@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Materials.MaterialTypesListPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:viewmodels="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Materials"
+	Title="Типы материалов"
+	x:DataType="viewmodels:MaterialTypesListPageViewModel">
+
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,*"
+		RowSpacing="12">
+
+		<!--  Buttons  -->
+		<HorizontalStackLayout Grid.Row="0">
+			<Button Command="{Binding AddCommand}" Text="Добавить" />
+			<Button
+				Command="{Binding SaveCommand}"
+				IsEnabled="{Binding IsChanged}"
+				IsVisible="{Binding IsChanged}"
+				Text="Сохранить" />
+		</HorizontalStackLayout>
+
+		<!--  List  -->
+		<CollectionView
+			Grid.Row="1"
+			ItemsSource="{Binding MaterialTypes}"
+			SelectedItem="{Binding SelectedMaterialType, Mode=TwoWay}"
+			SelectionMode="Single">
+
+			<CollectionView.ItemTemplate>
+				<DataTemplate x:DataType="viewmodels:MaterialTypesListPageViewModel+EditableMaterialTypeModel">
+					<Border>
+						<VerticalStackLayout>
+							<Entry
+								FontAttributes="Bold"
+								FontSize="16"
+								Text="{Binding Name, Mode=TwoWay}" />
+							<Entry
+								FontSize="13"
+								Text="{Binding Description, Mode=TwoWay}"
+								TextColor="Gray" />
+						</VerticalStackLayout>
+					</Border>
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+
+		</CollectionView>
+
+	</Grid>
+</ContentPage>

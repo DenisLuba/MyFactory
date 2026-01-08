@@ -5,60 +5,69 @@
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Materials"
 	Title="Материалы"
 	x:DataType="view_model:MaterialsListPageViewModel">
-	<ScrollView>
-		<VerticalStackLayout Padding="16" Spacing="12">
-			<Grid ColumnDefinitions="*,*,Auto" ColumnSpacing="8">
-				<Entry Placeholder="Поиск по типу материала" Text="{Binding MaterialTypeSearch}" />
-				<Entry
-					Grid.Column="1"
-					Placeholder="Поиск по материалу"
-					Text="{Binding MaterialNameSearch}" />
-				<Button
-					Grid.Column="2"
-					Command="{Binding AddCommand}"
-					Text="+ Добавить" />
-			</Grid>
 
-			<Grid
-				Padding="0,4"
-				ColumnDefinitions="*,*,*"
-				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="ТИП МАТЕРИАЛА" />
-				<Label
-					Grid.Column="1"
-					FontAttributes="Bold"
-					Text="МАТЕРИАЛ" />
-				<Label
-					Grid.Column="2"
-					FontAttributes="Bold"
-					Text="ОСТАТОК" />
-			</Grid>
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,Auto,*"
+		RowSpacing="12">
+		<Grid
+			Grid.Row="0"
+			ColumnDefinitions="*,*,Auto"
+			ColumnSpacing="8">
+			<Entry Placeholder="Поиск по типу материала" Text="{Binding MaterialTypeSearch}" />
+			<Entry
+				Grid.Column="1"
+				Placeholder="Поиск по материалу"
+				Text="{Binding MaterialNameSearch}" />
+			<Button
+				Grid.Column="2"
+				Command="{Binding AddCommand}"
+				Text="+ Добавить" />
+		</Grid>
 
+		<Grid
+			Grid.Row="1"
+			Padding="0,4"
+			ColumnDefinitions="*,*,*"
+			ColumnSpacing="8">
+			<Label FontAttributes="Bold" Text="ТИП МАТЕРИАЛА" />
+			<Label
+				Grid.Column="1"
+				FontAttributes="Bold"
+				Text="МАТЕРИАЛ" />
+			<Label
+				Grid.Column="2"
+				FontAttributes="Bold"
+				Text="ОСТАТОК" />
+		</Grid>
+		
+		<Border
+			Grid.Row="2">
 			<CollectionView
-				x:Name="MaterialsListCollection"
-				ItemsSource="{Binding FilteredMaterials}"
-				SelectionMode="None">
+			x:Name="MaterialsListCollection"
+			ItemsSource="{Binding FilteredMaterials}"
+			SelectionMode="None">
 				<CollectionView.ItemTemplate>
-					<DataTemplate>
+					<DataTemplate x:DataType="view_model:MaterialsListPageViewModel+MaterialItemViewModel">
 						<SwipeView>
 							<SwipeView.RightItems>
 								<SwipeItems Mode="Reveal">
 									<SwipeItem
-										BackgroundColor="LightGray"
-										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=MaterialsListCollection}}"
-										CommandParameter="{Binding .}"
-										Text="Редактировать" />
+									BackgroundColor="LightGray"
+									Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=MaterialsListCollection}}"
+									CommandParameter="{Binding .}"
+									Text="Редактировать" />
 									<SwipeItem
-										BackgroundColor="Tomato"
-										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=MaterialsListCollection}}"
-										CommandParameter="{Binding .}"
-										Text="Удалить" />
+									BackgroundColor="Tomato"
+									Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=MaterialsListCollection}}"
+									CommandParameter="{Binding .}"
+									Text="Удалить" />
 								</SwipeItems>
 							</SwipeView.RightItems>
 							<Grid
-								Padding="0,8"
-								ColumnDefinitions="*,*,*"
-								ColumnSpacing="8">
+							Padding="0,8"
+							ColumnDefinitions="*,*,*"
+							ColumnSpacing="8">
 								<Grid.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=MaterialsListCollection}}" CommandParameter="{Binding .}" />
 								</Grid.GestureRecognizers>
@@ -70,7 +79,8 @@
 					</DataTemplate>
 				</CollectionView.ItemTemplate>
 			</CollectionView>
-		</VerticalStackLayout>
-	</ScrollView>
+		</Border>
+
+	</Grid>
 </ContentPage>
 

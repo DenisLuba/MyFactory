@@ -1,5 +1,4 @@
 using System.Net.Http.Json;
-using System.Web;
 using MyFactory.MauiClient.Models.Materials;
 
 namespace MyFactory.MauiClient.Services.Materials;
@@ -15,42 +14,43 @@ public sealed class MaterialsService : IMaterialsService
 
     public async Task<IReadOnlyList<MaterialListItemResponse>?> GetListAsync(string? materialName = null, string? materialType = null, bool? isActive = null, Guid? warehouseId = null)
     {
-        var builder = new UriBuilder(new Uri(_httpClient.BaseAddress!, "api/materials"));
-        var query = HttpUtility.ParseQueryString(string.Empty);
+        var query = new List<string>();
         if (!string.IsNullOrWhiteSpace(materialName))
-        {
-            query["materialName"] = materialName;
-        }
+            query.Add($"materialName={Uri.EscapeDataString(materialName)}");
         if (!string.IsNullOrWhiteSpace(materialType))
-        {
-            query["materialType"] = materialType;
-        }
+            query.Add($"materialType={Uri.EscapeDataString(materialType)}");
         if (isActive.HasValue)
-        {
-            query["isActive"] = isActive.Value.ToString().ToLowerInvariant();
-        }
+            query.Add($"isActive={isActive.Value.ToString().ToLowerInvariant()}");
         if (warehouseId.HasValue)
-        {
-            query["warehouseId"] = warehouseId.Value.ToString();
-        }
+            query.Add($"warehouseId={warehouseId.Value}");
 
-        var queryString = query.ToString();
-        if (!string.IsNullOrEmpty(queryString))
-        {
-            builder.Query = queryString;
-        }
-
-        return await _httpClient.GetFromJsonAsync<List<MaterialListItemResponse>>(builder.Uri);
+        var path = "/api/materials" + (query.Count > 0 ? $"?{string.Join("&", query)}" : string.Empty);
+        return await _httpClient.GetFromJsonAsync<List<MaterialListItemResponse>>(path);
     }
 
     public async Task<MaterialDetailsResponse?> GetDetailsAsync(Guid id)
     {
-        return await _httpClient.GetFromJsonAsync<MaterialDetailsResponse>($"api/materials/{id}");
+        return await _httpClient.GetFromJsonAsync<MaterialDetailsResponse>($"/api/materials/{id}");
+    }
+
+    public async Task<Guid> CreateAsync(CreateMaterialRequest request, CancellationToken ct = default)
+    {
+        var response = await _httpClient.PostAsJsonAsync("/api/materials", request, ct);
+        response.EnsureSuccessStatusCode();
+
+        var body = await response.Content.ReadFromJsonAsync<CreateMaterialResponse>(cancellationToken: ct);
+        return body?.Id ?? throw new InvalidOperationException("Invalid create material response");
     }
 
     public async Task UpdateAsync(Guid id, UpdateMaterialRequest request)
     {
-        var response = await _httpClient.PutAsJsonAsync($"api/materials/{id}", request);
+        var response = await _httpClient.PutAsJsonAsync($"/api/materials/{id}", request);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task DeleteAsync(Guid id, CancellationToken ct = default)
+    {
+        var response = await _httpClient.DeleteAsync($"/api/materials/{id}", ct);
         response.EnsureSuccessStatusCode();
     }
 }

@@ -1,7 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using MyFactory.Application.Features.Materials.CreateMaterial;
 using MyFactory.Application.Features.Materials.GetMaterialDetails;
 using MyFactory.Application.Features.Materials.GetMaterials;
+using MyFactory.Application.Features.Materials.RemoveMaterial;
 using MyFactory.Application.Features.Materials.UpdateMaterial;
 using MyFactory.WebApi.Contracts.Materials;
 using MyFactory.WebApi.SwaggerExamples.Materials;
@@ -92,6 +94,21 @@ public class MaterialsController : ControllerBase
     }
 
     // -------------------------
+    //  CREATE
+    // -------------------------
+    [HttpPost]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(CreateMaterialResponse), StatusCodes.Status201Created)]
+    [SwaggerRequestExample(typeof(CreateMaterialRequest), typeof(CreateMaterialRequestExample))]
+    [SwaggerResponseExample(201, typeof(CreateMaterialResponseExample))]
+    public async Task<IActionResult> Create([FromBody] CreateMaterialRequest req)
+    {
+        var id = await _mediator.Send(new CreateMaterialCommand(req.Name, req.MaterialTypeId, req.UnitId, req.Color));
+        var response = new CreateMaterialResponse(id);
+        return CreatedAtAction(nameof(GetDetails), new { id }, response);
+    }
+
+    // -------------------------
     //  UPDATE
     // -------------------------
     [HttpPut("{id:guid}")]
@@ -109,6 +126,17 @@ public class MaterialsController : ControllerBase
             Color = req.Color
         });
 
+        return NoContent();
+    }
+
+    // -------------------------
+    //  REMOVE
+    // -------------------------
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Remove(Guid id)
+    {
+        await _mediator.Send(new RemoveMaterialCommand(id));
         return NoContent();
     }
 }

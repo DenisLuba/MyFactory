@@ -56,6 +56,13 @@ public class MaterialTypeEntity : BaseEntity
 		Name = name;
 		Description = description;
 	}
+
+	public void Update(string name, string? description)
+	{
+		Guard.AgainstNullOrWhiteSpace(name, "Material type name is required.");
+		Name = name;
+		Description = description;
+	}
 }
 
 public class UnitEntity : BaseEntity
@@ -67,6 +74,14 @@ public class UnitEntity : BaseEntity
 	public IReadOnlyCollection<MaterialEntity> Materials { get; private set; } = new List<MaterialEntity>();
 
 	public UnitEntity(string code, string name)
+	{
+		Guard.AgainstNullOrWhiteSpace(code, "Unit code is required.");
+		Guard.AgainstNullOrWhiteSpace(name, "Unit name is required.");
+		Code = code;
+		Name = name;
+	}
+
+	public void Update(string code, string name)
 	{
 		Guard.AgainstNullOrWhiteSpace(code, "Unit code is required.");
 		Guard.AgainstNullOrWhiteSpace(name, "Unit name is required.");

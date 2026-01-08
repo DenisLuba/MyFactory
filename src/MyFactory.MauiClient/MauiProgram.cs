@@ -27,6 +27,7 @@ using MyFactory.MauiClient.Services.ExpenceTypes;
 using MyFactory.MauiClient.Services.Finance;
 using MyFactory.MauiClient.Services.MaterialPurchaseOrders;
 using MyFactory.MauiClient.Services.Materials;
+using MyFactory.MauiClient.Services.MaterialTypes;
 using MyFactory.MauiClient.Services.PayrollRules;
 using MyFactory.MauiClient.Services.Positions;
 using MyFactory.MauiClient.Services.ProductionOrders;
@@ -34,6 +35,7 @@ using MyFactory.MauiClient.Services.Products;
 using MyFactory.MauiClient.Services.Reports;
 using MyFactory.MauiClient.Services.SalesOrders;
 using MyFactory.MauiClient.Services.Suppliers;
+using MyFactory.MauiClient.Services.Units;
 using MyFactory.MauiClient.Services.Users;
 using MyFactory.MauiClient.Services.Warehouses;
 using MyFactory.MauiClient.ViewModels.Authentication;
@@ -67,11 +69,27 @@ public static class MauiProgram
 
         builder.Services.AddSingleton(sp =>
         {
-            var httpClient = new HttpClient
+            var baseAddress = DeviceInfo.Platform == DevicePlatform.Android
+                ? new Uri("http://10.0.2.2:5237")
+                : new Uri("http://localhost:5237");
+
+            var handler = new HttpClientHandler
             {
-                BaseAddress = new Uri("http://localhost:5237")
+                ServerCertificateCustomValidationCallback = (request, cert, chain, errors) =>
+                {
+                    // Разрешаем dev-сертификат/HTTPS на localhost
+                    if (request?.RequestUri?.Host is "localhost" or "10.0.2.2")
+                        return true;
+
+                    return errors == System.Net.Security.SslPolicyErrors.None;
+                }
             };
-            return httpClient;
+
+            return new HttpClient(handler)
+            {
+                BaseAddress = baseAddress,
+                Timeout = TimeSpan.FromSeconds(100)
+            };
         });
 
         builder.AddMyFactoryServices();
@@ -106,6 +124,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<IFinanceService, FinanceService>();
         builder.Services.AddSingleton<IPayrollRulesService, PayrollRulesService>();
         builder.Services.AddSingleton<IReportsService, ReportsService>();
+        builder.Services.AddSingleton<IMaterialTypesService, MaterialTypesService>();
+        builder.Services.AddSingleton<IUnitsService, UnitsService>();
 
         return builder;
     }
@@ -153,6 +173,9 @@ public static class MauiProgram
         builder.Services.AddTransient<UsersListPageViewModel>();
         builder.Services.AddTransient<WarehousesListPageViewModel>();
         builder.Services.AddTransient<WarehouseStockPageViewModel>();
+        builder.Services.AddTransient<MaterialTypesListPageViewModel>();
+        builder.Services.AddTransient<MaterialTypeDetailsEditPageViewModel>();
+        builder.Services.AddTransient<UnitsPageViewModel>();
 
         return builder;
     }
@@ -200,6 +223,9 @@ public static class MauiProgram
         builder.Services.AddTransient<UsersListPage>();
         builder.Services.AddTransient<WarehousesListPage>();
         builder.Services.AddTransient<WarehouseStockPage>();
+        builder.Services.AddTransient<MaterialTypesListPage>();
+        builder.Services.AddTransient<MaterialTypeDetailsEditPage>();
+        builder.Services.AddTransient<UnitsPage>();
 
         return builder;
     }

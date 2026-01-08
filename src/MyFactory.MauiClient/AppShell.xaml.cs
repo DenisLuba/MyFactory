@@ -75,6 +75,9 @@ public partial class AppShell : Shell
 
 			(nameof(LoginPage), typeof(LoginPage)),
 			(nameof(PasswordResetPage), typeof(PasswordResetPage)),
+
+			(nameof(MaterialTypesListPage), typeof(MaterialTypesListPage)),
+			(nameof(MaterialTypeDetailsEditPage), typeof(MaterialTypeDetailsEditPage)),
 		};
 
 		foreach (var route in routes)

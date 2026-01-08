@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Materials.MaterialTypeDetailsEditPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:viewmodels="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Materials"
+	Title="Создать тип материала"
+	x:DataType="viewmodels:MaterialTypeDetailsEditPageViewModel">
+
+	<VerticalStackLayout Padding="16" Spacing="16">
+		<Label FontAttributes="Bold" Text="Тип материала" />
+		<Entry Placeholder="Тип материала" Text="{Binding Name, Mode=TwoWay}" />
+		<Label FontAttributes="Bold" Text="Описание" />
+		<Editor
+			AutoSize="TextChanges"
+			HeightRequest="100"
+			Placeholder="Описание"
+			Text="{Binding Description, Mode=TwoWay}" />
+		<HorizontalStackLayout Spacing="12">
+			<Button
+				Command="{Binding CreateCommand}"
+				IsEnabled="{Binding IsChanged}"
+				IsVisible="{Binding IsChanged}"
+				Text="Сохранить" />
+			<Button Command="{Binding CancelCommand}" Text="Отмена" />
+		</HorizontalStackLayout>
+	</VerticalStackLayout>
+
+</ContentPage>

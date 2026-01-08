@@ -25,6 +25,11 @@
             <ShellContent Title="Материалы — список" ContentTemplate="{DataTemplate materials:MaterialsListPage}" />
             <ShellContent Title="Карточка материала" ContentTemplate="{DataTemplate materials:MaterialDetailsViewPage}" />
             <ShellContent Title="Карточка материала (ред.)" ContentTemplate="{DataTemplate materials:MaterialDetailsEditPage}" />
+            <ShellContent Title="Единицы" ContentTemplate="{DataTemplate materials:UnitsPage}" />
+        </Tab>
+        <Tab Title="Типы материалов">
+            <ShellContent Title="Типы материалов — список" ContentTemplate="{DataTemplate materials:MaterialTypesListPage}" />
+            <ShellContent Title="Создать тип материала" ContentTemplate="{DataTemplate materials:MaterialTypeDetailsEditPage}" />
         </Tab>
         <Tab Title="Поставщики">
             <ShellContent Title="Поставщики — список" ContentTemplate="{DataTemplate suppliers:SuppliersListPage}" />

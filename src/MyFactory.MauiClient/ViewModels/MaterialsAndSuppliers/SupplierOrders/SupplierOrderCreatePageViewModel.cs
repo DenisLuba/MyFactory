@@ -12,8 +12,8 @@ using MyFactory.MauiClient.Services.Suppliers;
 
 namespace MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.SupplierOrders;
 
-[QueryProperty(nameof(SupplierId), "SupplierId")]
-[QueryProperty(nameof(MaterialId), "MaterialId")]
+[QueryProperty(nameof(SupplierIdParameter), "SupplierId")]
+[QueryProperty(nameof(MaterialIdParameter), "MaterialId")]
 public partial class SupplierOrderCreatePageViewModel : ObservableObject
 {
     private readonly IMaterialPurchaseOrdersService _ordersService;
@@ -24,7 +24,13 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
     private Guid? supplierId;
 
     [ObservableProperty]
+    private string? supplierIdParameter;
+
+    [ObservableProperty]
     private Guid? materialId;
+
+    [ObservableProperty]
+    private string? materialIdParameter;
 
     [ObservableProperty]
     private bool isBusy;
@@ -62,6 +68,11 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
         }
     }
 
+    partial void OnSupplierIdParameterChanged(string? value)
+    {
+        SupplierId = Guid.TryParse(value, out var id) ? id : null;
+    }
+
     partial void OnMaterialIdChanged(Guid? value)
     {
         if (value is not null)
@@ -79,6 +90,11 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
                 });
             }
         }
+    }
+
+    partial void OnMaterialIdParameterChanged(string? value)
+    {
+        MaterialId = Guid.TryParse(value, out var id) ? id : null;
     }
 
     [RelayCommand]

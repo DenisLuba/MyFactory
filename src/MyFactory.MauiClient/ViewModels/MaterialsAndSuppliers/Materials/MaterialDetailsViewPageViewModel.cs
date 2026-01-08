@@ -8,13 +8,16 @@ using MyFactory.MauiClient.Services.Materials;
 
 namespace MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Materials;
 
-[QueryProperty(nameof(MaterialId), "MaterialId")]
+[QueryProperty(nameof(MaterialIdParameter), "MaterialId")]
 public partial class MaterialDetailsViewPageViewModel : ObservableObject
 {
     private readonly IMaterialsService _materialsService;
 
     [ObservableProperty]
     private Guid? materialId;
+
+    [ObservableProperty]
+    private string? materialIdParameter;
 
     [ObservableProperty]
     private string? name;
@@ -46,6 +49,11 @@ public partial class MaterialDetailsViewPageViewModel : ObservableObject
     partial void OnMaterialIdChanged(Guid? value)
     {
         _ = LoadAsync();
+    }
+
+    partial void OnMaterialIdParameterChanged(string? value)
+    {
+        MaterialId = Guid.TryParse(value, out var id) ? id : null;
     }
 
     [RelayCommand]
@@ -99,14 +107,36 @@ public partial class MaterialDetailsViewPageViewModel : ObservableObject
 
         await Shell.Current.GoToAsync("MaterialDetailsEditPage", new Dictionary<string, object>
         {
-            { "MaterialId", MaterialId.Value }
+            { "MaterialId", MaterialId.Value.ToString() }
         });
     }
 
     [RelayCommand]
     private async Task DeleteAsync()
     {
-        await Shell.Current.DisplayAlert("Удаление", "Деактивация материала пока не реализована", "OK");
+        if (MaterialId is null)
+            return;
+
+        var confirm = await Shell.Current.DisplayAlert("Удаление", "Вы уверены, что хотите деактивировать материал?", "Да", "Отмена");
+        if (!confirm)
+            return;
+
+        try
+        {
+            IsBusy = true;
+            await _materialsService.DeleteAsync(MaterialId.Value);
+            await Shell.Current.DisplayAlert("Успех", "Материал деактивирован", "OK");
+            await Shell.Current.GoToAsync("..", true);
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     [RelayCommand]
@@ -117,7 +147,7 @@ public partial class MaterialDetailsViewPageViewModel : ObservableObject
 
         await Shell.Current.GoToAsync("SupplierOrderCreatePage", new Dictionary<string, object>
         {
-            { "MaterialId", MaterialId.Value }
+            { "MaterialId", MaterialId.Value.ToString() }
         });
     }
 

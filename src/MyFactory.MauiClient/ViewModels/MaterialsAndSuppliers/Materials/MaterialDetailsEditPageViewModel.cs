@@ -1,27 +1,39 @@
-using System;
-using System.Collections.ObjectModel;
-using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MyFactory.MauiClient.Models.Materials;
 using MyFactory.MauiClient.Models.Suppliers;
+using MyFactory.MauiClient.Models.Units;
 using MyFactory.MauiClient.Services.Materials;
+using MyFactory.MauiClient.Services.MaterialTypes;
 using MyFactory.MauiClient.Services.Suppliers;
+using MyFactory.MauiClient.Services.Units;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Input;
 
 namespace MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Materials;
 
-[QueryProperty(nameof(MaterialId), "MaterialId")]
+[QueryProperty(nameof(MaterialIdParameter), "MaterialId")]
 public partial class MaterialDetailsEditPageViewModel : ObservableObject
 {
     private readonly IMaterialsService _materialsService;
     private readonly ISuppliersService _suppliersService;
+    private readonly IMaterialTypesService _materialTypesService;
+    private readonly IUnitsService _unitsService;
 
     private Guid _materialTypeId = Guid.Empty;
     private Guid _unitId = Guid.Empty;
     private List<SupplierListItemResponse> _supplierOptions = new();
+    private Dictionary<string, Guid> _materialTypeLookup = new(StringComparer.OrdinalIgnoreCase);
+    private Dictionary<string, Guid> _unitLookup = new(StringComparer.OrdinalIgnoreCase);
 
     [ObservableProperty]
     private Guid? materialId;
+
+    [ObservableProperty]
+    private string? materialIdParameter;
 
     [ObservableProperty]
     private string? name;
@@ -33,24 +45,72 @@ public partial class MaterialDetailsEditPageViewModel : ObservableObject
     private string? selectedMaterialType;
 
     [ObservableProperty]
+    private string? selectedUnit;
+
+    [ObservableProperty]
+    private string? _unitCode;
+
+    [ObservableProperty]
     private bool isBusy;
 
     [ObservableProperty]
     private string? errorMessage;
 
     public ObservableCollection<string> MaterialTypes { get; } = new();
+    public ObservableCollection<string> Units { get; } = new();
     public ObservableCollection<EditablePurchaseItemViewModel> EditablePurchaseHistory { get; } = new();
 
-    public MaterialDetailsEditPageViewModel(IMaterialsService materialsService, ISuppliersService suppliersService)
+    public MaterialDetailsEditPageViewModel(
+        IMaterialsService materialsService,
+        ISuppliersService suppliersService,
+        IMaterialTypesService materialTypesService,
+        IUnitsService unitsService)
     {
         _materialsService = materialsService;
         _suppliersService = suppliersService;
+        _materialTypesService = materialTypesService;
+        _unitsService = unitsService;
         _ = LoadAsync();
     }
 
     partial void OnMaterialIdChanged(Guid? value)
     {
         _ = LoadAsync();
+    }
+
+    partial void OnMaterialIdParameterChanged(string? value)
+    {
+        MaterialId = Guid.TryParse(value, out var id) ? id : null;
+    }
+
+    partial void OnSelectedUnitChanged(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            _unitId = Guid.Empty;
+            UnitCode = null;
+            return;
+        }
+
+        UnitCode = value;
+        if (_unitLookup.TryGetValue(value, out var id))
+        {
+            _unitId = id;
+        }
+    }
+
+    partial void OnSelectedMaterialTypeChanged(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            _materialTypeId = Guid.Empty;
+            return;
+        }
+
+        if (_materialTypeLookup.TryGetValue(value, out var id))
+        {
+            _materialTypeId = id;
+        }
     }
 
     [RelayCommand]
@@ -66,6 +126,23 @@ public partial class MaterialDetailsEditPageViewModel : ObservableObject
 
             EditablePurchaseHistory.Clear();
             MaterialTypes.Clear();
+            Units.Clear();
+            _materialTypeLookup.Clear();
+            _unitLookup.Clear();
+
+            var units = await _unitsService.GetListAsync();
+            foreach (var unit in units ?? Array.Empty<UnitResponse>())
+            {
+                Units.Add(unit.Code);
+                _unitLookup[unit.Code] = unit.Id;
+            }
+
+            var materialTypes = await _materialTypesService.GetListAsync();
+            foreach (var type in materialTypes)
+            {
+                _materialTypeLookup[type.Name] = type.Id;
+                MaterialTypes.Add(type.Name);
+            }
 
             var suppliers = await _suppliersService.GetListAsync();
             var supplierOptions = suppliers?.ToList() ?? new List<SupplierListItemResponse>();
@@ -74,6 +151,7 @@ public partial class MaterialDetailsEditPageViewModel : ObservableObject
             if (MaterialId is null)
             {
                 SelectedMaterialType = null;
+                SelectedUnit = Units.FirstOrDefault();
                 Name = string.Empty;
                 Color = string.Empty;
                 return;
@@ -86,13 +164,10 @@ public partial class MaterialDetailsEditPageViewModel : ObservableObject
             Name = details.Name;
             SelectedMaterialType = details.MaterialType;
             Color = details.Color;
-            _materialTypeId = Guid.Empty;
-            _unitId = Guid.Empty;
-
-            if (!string.IsNullOrWhiteSpace(details.MaterialType))
-            {
-                MaterialTypes.Add(details.MaterialType);
-            }
+            SelectedUnit = Units.FirstOrDefault(u => u.Equals(details.UnitCode, StringComparison.OrdinalIgnoreCase));
+            _materialTypeId = _materialTypeLookup.GetValueOrDefault(details.MaterialType, Guid.Empty);
+            _unitId = SelectedUnit is not null && _unitLookup.TryGetValue(SelectedUnit, out var uId) ? uId : Guid.Empty;
+            UnitCode = SelectedUnit;
 
             foreach (var history in details.PurchaseHistory.OrderByDescending(p => p.PurchaseDate))
             {
@@ -149,9 +224,6 @@ public partial class MaterialDetailsEditPageViewModel : ObservableObject
     [RelayCommand]
     private async Task SaveAsync()
     {
-        if (MaterialId is null)
-            return;
-
         if (string.IsNullOrWhiteSpace(Name))
         {
             await Shell.Current.DisplayAlert("Ошибка", "Укажите название материала", "OK");
@@ -160,7 +232,7 @@ public partial class MaterialDetailsEditPageViewModel : ObservableObject
 
         if (_materialTypeId == Guid.Empty || _unitId == Guid.Empty)
         {
-            await Shell.Current.DisplayAlert("Ошибка", "Недостаточно данных для обновления материала (неизвестны идентификаторы типа или единицы).", "OK");
+            await Shell.Current.DisplayAlert("Ошибка", "Недостаточно данных для сохранения материала (неизвестны идентификаторы типа или единицы).", "OK");
             return;
         }
 
@@ -170,8 +242,20 @@ public partial class MaterialDetailsEditPageViewModel : ObservableObject
             ErrorMessage = null;
 
             var request = new UpdateMaterialRequest(Name.Trim(), _materialTypeId, _unitId, string.IsNullOrWhiteSpace(Color) ? null : Color.Trim());
-            await _materialsService.UpdateAsync(MaterialId.Value, request);
-            await Shell.Current.DisplayAlert("Успех", "Материал обновлен", "OK");
+
+            if (MaterialId is null)
+            {
+                var createRequest = new CreateMaterialRequest(request.Name, request.MaterialTypeId, request.UnitId, request.Color);
+                var newId = await _materialsService.CreateAsync(createRequest);
+                MaterialId = newId;
+                await Shell.Current.DisplayAlert("Успех", "Материал создан", "OK");
+            }
+            else
+            {
+                await _materialsService.UpdateAsync(MaterialId.Value, request);
+                await Shell.Current.DisplayAlert("Успех", "Материал обновлен", "OK");
+            }
+
             await Shell.Current.GoToAsync("..", true);
         }
         catch (Exception ex)
