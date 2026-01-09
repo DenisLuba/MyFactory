@@ -70,7 +70,7 @@ public partial class PayrollRulesListPageViewModel : ObservableObject
 
         await Shell.Current.GoToAsync(nameof(Pages.Finance.Payroll.PayrollRuleDetailsPage), new Dictionary<string, object>
         {
-            { "RuleId", rule.Id }
+            { "RuleId", rule.Id.ToString() }
         });
     }
 

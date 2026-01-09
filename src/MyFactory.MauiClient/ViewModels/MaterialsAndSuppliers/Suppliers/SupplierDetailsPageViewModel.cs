@@ -1,20 +1,22 @@
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MyFactory.MauiClient.Models.MaterialPurchaseOrders;
 using MyFactory.MauiClient.Models.Suppliers;
 using MyFactory.MauiClient.Services.Suppliers;
 
 namespace MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Suppliers;
 
-[QueryProperty(nameof(SupplierId), "SupplierId")]
+[QueryProperty(nameof(SupplierIdParameter), "SupplierId")]
 public partial class SupplierDetailsPageViewModel : ObservableObject
 {
     private readonly ISuppliersService _suppliersService;
 
     [ObservableProperty]
     private Guid? supplierId;
+
+    [ObservableProperty]
+    private string? supplierIdParameter;
 
     [ObservableProperty]
     private string? name;
@@ -31,7 +33,12 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
     [ObservableProperty]
     private string? errorMessage;
 
-    public ObservableCollection<SupplierPurchaseHistoryResponse> PurchaseHistory { get; } = new();
+    [ObservableProperty]
+    private SupplierPurchaseHistoryItemViewModel? selectedPurchase;
+
+    public bool HasSelection => SelectedPurchase is not null;
+
+    public ObservableCollection<SupplierPurchaseHistoryItemViewModel> PurchaseHistory { get; } = new();
 
     public SupplierDetailsPageViewModel(ISuppliersService suppliersService)
     {
@@ -45,8 +52,18 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
         _ = LoadAsync();
     }
 
+    partial void OnSupplierIdParameterChanged(string? value)
+    {
+        SupplierId = Guid.TryParse(value, out var id) ? id : null;
+    }
+
+    partial void OnSelectedPurchaseChanged(SupplierPurchaseHistoryItemViewModel? value)
+    {
+        OnPropertyChanged(nameof(HasSelection));
+    }
+
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
             return;
@@ -59,6 +76,7 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
             IsBusy = true;
             ErrorMessage = null;
             PurchaseHistory.Clear();
+            SelectedPurchase = null;
 
             var details = await _suppliersService.GetDetailsAsync(SupplierId.Value);
             if (details is null)
@@ -69,7 +87,7 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
             Contacts = string.Empty;
 
             foreach (var item in details.Purchases.OrderByDescending(p => p.Date))
-                PurchaseHistory.Add(item);
+                PurchaseHistory.Add(new SupplierPurchaseHistoryItemViewModel(item));
         }
         catch (Exception ex)
         {
@@ -100,6 +118,7 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
             ErrorMessage = null;
 
             await _suppliersService.UpdateAsync(SupplierId.Value, new UpdateSupplierRequest(newName.Trim(), string.IsNullOrWhiteSpace(newDescription) ? null : newDescription.Trim()));
+            IsBusy = false;
             await LoadAsync();
         }
         catch (Exception ex)
@@ -121,7 +140,7 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
 
         await Shell.Current.GoToAsync("SupplierOrderCreatePage", new Dictionary<string, object>
         {
-            { "SupplierId", SupplierId.Value }
+            { "SupplierId", SupplierId.Value.ToString() }
         });
     }
 
@@ -129,6 +148,54 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
     private async Task CreateOrderAsync()
     {
         await AddPurchaseAsync();
+    }
+
+    [RelayCommand]
+    private async Task EditOrderAsync()
+    {
+        if (SelectedPurchase is null)
+            return;
+
+        await Shell.Current.GoToAsync("SupplierOrderUpdatePage", new Dictionary<string, object>
+        {
+            { "PurchaseOrderId", SelectedPurchase.OrderId.ToString() },
+            { "SupplierId", SupplierId?.ToString() ?? string.Empty }
+        });
+    }
+
+    [RelayCommand]
+    private async Task BackAsync()
+    {
+        await Shell.Current.GoToAsync("..");
+    }
+
+    public sealed class SupplierPurchaseHistoryItemViewModel
+    {
+        public Guid OrderId { get; }
+        public string MaterialType { get; }
+        public string MaterialName { get; }
+        public decimal Qty { get; }
+        public decimal UnitPrice { get; }
+        public DateTime Date { get; }
+        public string StatusText { get; }
+
+        public SupplierPurchaseHistoryItemViewModel(SupplierPurchaseHistoryResponse source)
+        {
+            OrderId = source.OrderId;
+            MaterialType = source.MaterialType;
+            MaterialName = source.MaterialName;
+            Qty = source.Qty;
+            UnitPrice = source.UnitPrice;
+            Date = source.Date;
+            StatusText = source.Status switch
+            {
+                PurchaseOrderStatus.New => "Новый",
+                PurchaseOrderStatus.Confirmed => "Подтвержден",
+                PurchaseOrderStatus.Received => "Получен",
+                PurchaseOrderStatus.Cancelled => "Отменен",
+                _ => source.Status.ToString()
+            };
+        }
     }
 }
 

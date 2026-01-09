@@ -105,27 +105,27 @@ public static class MauiProgram
 
     private static MauiAppBuilder AddMyFactoryServices(this MauiAppBuilder builder)
     {
+        builder.Services.AddSingleton<IAdvancesService, AdvancesService>();
         builder.Services.AddSingleton<IAuthService, AuthService>();
         builder.Services.AddSingleton<ICustomersService, CustomersService>();
-        builder.Services.AddSingleton<ISalesOrdersService, SalesOrdersService>();
-        builder.Services.AddSingleton<IProductsService, ProductsService>();
-        builder.Services.AddSingleton<IMaterialsService, MaterialsService>();
-        builder.Services.AddSingleton<IMaterialPurchaseOrdersService, MaterialPurchaseOrdersService>();
-        builder.Services.AddSingleton<ISuppliersService, SuppliersService>();
-        builder.Services.AddSingleton<IWarehousesService, WarehousesService>();
-        builder.Services.AddSingleton<IProductionOrdersService, ProductionOrdersService>();
-        builder.Services.AddSingleton<IEmployeesService, EmployeesService>();
         builder.Services.AddSingleton<IDepartmentsService, DepartmentsService>();
-        builder.Services.AddSingleton<IPositionsService, PositionsService>();
-        builder.Services.AddSingleton<IUsersService, UsersService>();
-        builder.Services.AddSingleton<IExpenceTypesService, ExpenceTypesService>();
+        builder.Services.AddSingleton<IEmployeesService, EmployeesService>();
         builder.Services.AddSingleton<IExpencesService, ExpencesService>();
-        builder.Services.AddSingleton<IAdvancesService, AdvancesService>();
-        builder.Services.AddSingleton<IFinanceService, FinanceService>();
-        builder.Services.AddSingleton<IPayrollRulesService, PayrollRulesService>();
-        builder.Services.AddSingleton<IReportsService, ReportsService>();
+        builder.Services.AddSingleton<IExpenceTypesService, ExpenceTypesService>();
+        builder.Services.AddSingleton<IFinanceService, FinanceService>(); 
+        builder.Services.AddSingleton<IMaterialPurchaseOrdersService, MaterialPurchaseOrdersService>();
+        builder.Services.AddSingleton<IMaterialsService, MaterialsService>();
         builder.Services.AddSingleton<IMaterialTypesService, MaterialTypesService>();
+        builder.Services.AddSingleton<IPayrollRulesService, PayrollRulesService>();
+        builder.Services.AddSingleton<IPositionsService, PositionsService>();
+        builder.Services.AddSingleton<IProductionOrdersService, ProductionOrdersService>();
+        builder.Services.AddSingleton<IProductsService, ProductsService>();
+        builder.Services.AddSingleton<IReportsService, ReportsService>();
+        builder.Services.AddSingleton<ISalesOrdersService, SalesOrdersService>();
+        builder.Services.AddSingleton<ISuppliersService, SuppliersService>();
         builder.Services.AddSingleton<IUnitsService, UnitsService>();
+        builder.Services.AddSingleton<IUsersService, UsersService>();
+        builder.Services.AddSingleton<IWarehousesService, WarehousesService>();
 
         return builder;
     }
@@ -148,7 +148,13 @@ public static class MauiProgram
         builder.Services.AddTransient<MaterialDetailsEditPageViewModel>();
         builder.Services.AddTransient<MaterialDetailsViewPageViewModel>();
         builder.Services.AddTransient<MaterialsListPageViewModel>();
+        builder.Services.AddTransient<MaterialTypeDetailsEditPageViewModel>();
+        builder.Services.AddTransient<MaterialTypeDetailsViewPageViewModel>();
+        builder.Services.AddTransient<MaterialTypesListPageViewModel>();
+        builder.Services.AddTransient<UnitsPageViewModel>();
         builder.Services.AddTransient<SupplierOrderCreatePageViewModel>();
+        builder.Services.AddTransient<SupplierOrderUpdatePageViewModel>();
+        builder.Services.AddTransient<SupplierOrderCompletePageViewModel>();
         builder.Services.AddTransient<SupplierDetailsPageViewModel>();
         builder.Services.AddTransient<SuppliersListPageViewModel>();
         builder.Services.AddTransient<CustomerDetailsPageViewModel>();
@@ -173,9 +179,6 @@ public static class MauiProgram
         builder.Services.AddTransient<UsersListPageViewModel>();
         builder.Services.AddTransient<WarehousesListPageViewModel>();
         builder.Services.AddTransient<WarehouseStockPageViewModel>();
-        builder.Services.AddTransient<MaterialTypesListPageViewModel>();
-        builder.Services.AddTransient<MaterialTypeDetailsEditPageViewModel>();
-        builder.Services.AddTransient<UnitsPageViewModel>();
 
         return builder;
     }
@@ -198,7 +201,13 @@ public static class MauiProgram
         builder.Services.AddTransient<MaterialDetailsEditPage>();
         builder.Services.AddTransient<MaterialDetailsViewPage>();
         builder.Services.AddTransient<MaterialsListPage>();
+        builder.Services.AddTransient<MaterialTypeDetailsEditPage>();
+        builder.Services.AddTransient<MaterialTypeDetailsViewPage>();
+        builder.Services.AddTransient<MaterialTypesListPage>();
+        builder.Services.AddTransient<UnitsPage>();
         builder.Services.AddTransient<SupplierOrderCreatePage>();
+        builder.Services.AddTransient<SupplierOrderUpdatePage>();
+        builder.Services.AddTransient<SupplierOrderCompletePage>();
         builder.Services.AddTransient<SupplierDetailsPage>();
         builder.Services.AddTransient<SuppliersListPage>();
         builder.Services.AddTransient<CustomerDetailsPage>();
@@ -223,9 +232,6 @@ public static class MauiProgram
         builder.Services.AddTransient<UsersListPage>();
         builder.Services.AddTransient<WarehousesListPage>();
         builder.Services.AddTransient<WarehouseStockPage>();
-        builder.Services.AddTransient<MaterialTypesListPage>();
-        builder.Services.AddTransient<MaterialTypeDetailsEditPage>();
-        builder.Services.AddTransient<UnitsPage>();
 
         return builder;
     }

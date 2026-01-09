@@ -10,7 +10,7 @@ using MyFactory.MauiClient.Services.ProductionOrders;
 
 namespace MyFactory.MauiClient.ViewModels.Production;
 
-[QueryProperty(nameof(ProductionOrderId), "ProductionOrderId")]
+[QueryProperty(nameof(ProductionOrderIdParameter), "ProductionOrderId")]
 [QueryProperty(nameof(ProductionOrderNumber), "ProductionOrderNumber")]
 [QueryProperty(nameof(ProductInfo), "ProductInfo")]
 public partial class ProductionStagesPageViewModel : ObservableObject
@@ -19,6 +19,9 @@ public partial class ProductionStagesPageViewModel : ObservableObject
 
     [ObservableProperty]
     private Guid? productionOrderId;
+
+    [ObservableProperty]
+    private string? productionOrderIdParameter;
 
     [ObservableProperty]
     private string productionOrderNumber = string.Empty;
@@ -81,6 +84,11 @@ public partial class ProductionStagesPageViewModel : ObservableObject
     partial void OnProductionOrderIdChanged(Guid? value)
     {
         _ = LoadAsync();
+    }
+
+    partial void OnProductionOrderIdParameterChanged(string? value)
+    {
+        ProductionOrderId = Guid.TryParse(value, out var id) ? id : null;
     }
 
     [RelayCommand]

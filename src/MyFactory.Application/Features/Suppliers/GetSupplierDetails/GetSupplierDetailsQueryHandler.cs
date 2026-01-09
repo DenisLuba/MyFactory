@@ -51,11 +51,13 @@ public sealed class GetSupplierDetailsQueryHandler
                 t => t.Id,
                 (x, t) => new SupplierPurchaseHistoryDto
                 {
+                    OrderId = x.o.Id,
                     MaterialType = t.Name,
                     MaterialName = x.m.Name,
                     Qty = x.i.Qty,
                     UnitPrice = x.i.UnitPrice,
-                    Date = x.o.OrderDate
+                    Date = x.o.OrderDate,
+                    Status = x.o.Status
                 }
             )
             .OrderByDescending(x => x.Date)

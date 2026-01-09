@@ -80,7 +80,7 @@ public partial class EmployeesListPageViewModel : ObservableObject
 
         var parameters = new Dictionary<string, object>
         {
-            { "EmployeeId", item.Id }
+            { "EmployeeId", item.Id.ToString() }
         };
         await Shell.Current.GoToAsync(nameof(EmployeeDetailsPage), parameters);
     }

@@ -87,7 +87,7 @@ public partial class WarehousesListPageViewModel : ObservableObject
 
         await Shell.Current.GoToAsync(nameof(Pages.Warehouses.WarehouseStockPage), new Dictionary<string, object>
         {
-            { "WarehouseId", item.Id },
+            { "WarehouseId", item.Id.ToString() },
             { "WarehouseName", item.Name }
         });
     }

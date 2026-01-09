@@ -10,13 +10,16 @@ using MyFactory.MauiClient.Services.Departments;
 
 namespace MyFactory.MauiClient.ViewModels.Organization.Workshops;
 
-[QueryProperty(nameof(DepartmentId), "DepartmentId")]
+[QueryProperty(nameof(DepartmentIdParameter), "DepartmentId")]
 public partial class WorkshopDetailsPageViewModel : ObservableObject
 {
     private readonly IDepartmentsService _departmentsService;
 
     [ObservableProperty]
     private Guid? departmentId;
+
+    [ObservableProperty]
+    private string? departmentIdParameter;
 
     [ObservableProperty]
     private string name = string.Empty;
@@ -47,6 +50,11 @@ public partial class WorkshopDetailsPageViewModel : ObservableObject
     partial void OnDepartmentIdChanged(Guid? value)
     {
         _ = LoadAsync();
+    }
+
+    partial void OnDepartmentIdParameterChanged(string? value)
+    {
+        DepartmentId = Guid.TryParse(value, out var id) ? id : null;
     }
 
     [RelayCommand]

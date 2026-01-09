@@ -31,7 +31,7 @@ public partial class SuppliersListPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
             return;
@@ -71,6 +71,7 @@ public partial class SuppliersListPageViewModel : ObservableObject
             ErrorMessage = null;
 
             await _suppliersService.CreateAsync(new CreateSupplierRequest(name.Trim(), string.IsNullOrWhiteSpace(description) ? null : description.Trim()));
+            IsBusy = false;
             await LoadAsync();
         }
         catch (Exception ex)
@@ -92,7 +93,7 @@ public partial class SuppliersListPageViewModel : ObservableObject
 
         await Shell.Current.GoToAsync("SupplierDetailsPage", new Dictionary<string, object>
         {
-            { "SupplierId", supplier.Id }
+            { "SupplierId", supplier.Id.ToString() }
         });
     }
 

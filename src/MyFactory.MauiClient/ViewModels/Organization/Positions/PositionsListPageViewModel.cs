@@ -72,7 +72,7 @@ public partial class PositionsListPageViewModel : ObservableObject
 
         var parameters = new Dictionary<string, object>
         {
-            { "PositionId", item.Id }
+            { "PositionId", item.Id.ToString() }
         };
         await Shell.Current.GoToAsync(nameof(PositionDetailsPage), parameters);
     }

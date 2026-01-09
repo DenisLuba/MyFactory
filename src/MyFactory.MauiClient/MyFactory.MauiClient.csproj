@@ -81,6 +81,12 @@
 	  <MauiXaml Update="Pages\MaterialsAndSuppliers\Materials\UnitsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\MaterialsAndSuppliers\SupplierOrders\SupplierOrderUpdatePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\MaterialsAndSuppliers\SupplierOrders\SupplierOrderCompletePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 	
 </Project>

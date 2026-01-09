@@ -53,11 +53,13 @@ public class SuppliersController : ControllerBase
             dto.Description,
             dto.Purchases
                 .Select(p => new SupplierPurchaseHistoryResponse(
+                    p.OrderId,
                     p.MaterialType,
                     p.MaterialName,
                     p.Qty,
                     p.UnitPrice,
-                    p.Date))
+                    p.Date,
+                    p.Status))
                 .ToList());
         return Ok(response);
     }

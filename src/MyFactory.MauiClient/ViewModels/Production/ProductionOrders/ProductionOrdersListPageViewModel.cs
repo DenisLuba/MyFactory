@@ -92,7 +92,7 @@ public partial class ProductionOrdersListPageViewModel : ObservableObject
 
         var parameters = new Dictionary<string, object>
         {
-            { "ProductionOrderId", item.Id }
+            { "ProductionOrderId", item.Id.ToString() }
         };
         await Shell.Current.GoToAsync(nameof(ProductionOrderCreatePage), parameters);
     }
@@ -105,7 +105,7 @@ public partial class ProductionOrdersListPageViewModel : ObservableObject
 
         var parameters = new Dictionary<string, object>
         {
-            { "ProductionOrderId", item.Id },
+            { "ProductionOrderId", item.Id.ToString() },
             { "ProductionOrderNumber", item.ProductionOrderNumber },
             { "ProductInfo", item.ProductName }
         };
@@ -141,7 +141,7 @@ public partial class ProductionOrdersListPageViewModel : ObservableObject
 
         var parameters = new Dictionary<string, object>
         {
-            { "ProductionOrderId", item.Id }
+            { "ProductionOrderId", item.Id.ToString() }
         };
         await Shell.Current.GoToAsync(nameof(ProductionOrderCreatePage), parameters);
     }

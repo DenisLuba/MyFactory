@@ -6,9 +6,9 @@ using MyFactory.MauiClient.Services.Finance;
 
 namespace MyFactory.MauiClient.ViewModels.Finance.Payroll;
 
-[QueryProperty(nameof(EmployeeId), "EmployeeId")]
-[QueryProperty(nameof(Year), "Year")]
-[QueryProperty(nameof(Month), "Month")]
+[QueryProperty(nameof(EmployeeIdParameter), "EmployeeId")]
+[QueryProperty(nameof(YearParameter), "Year")]
+[QueryProperty(nameof(MonthParameter), "Month")]
 [QueryProperty(nameof(EmployeeName), "EmployeeName")]
 public partial class PayrollDailyBreakdownPageViewModel : ObservableObject
 {
@@ -24,10 +24,19 @@ public partial class PayrollDailyBreakdownPageViewModel : ObservableObject
     private Guid employeeId;
 
     [ObservableProperty]
+    private string? employeeIdParameter;
+
+    [ObservableProperty]
     private int year;
 
     [ObservableProperty]
+    private string? yearParameter;
+
+    [ObservableProperty]
     private int month;
+
+    [ObservableProperty]
+    private string? monthParameter;
 
     [ObservableProperty]
     private string employeeName = string.Empty;
@@ -83,14 +92,29 @@ public partial class PayrollDailyBreakdownPageViewModel : ObservableObject
         _ = LoadAsync();
     }
 
+    partial void OnEmployeeIdParameterChanged(string? value)
+    {
+        EmployeeId = Guid.TryParse(value, out var id) ? id : Guid.Empty;
+    }
+
     partial void OnYearChanged(int value)
     {
         _ = LoadAsync();
     }
 
+    partial void OnYearParameterChanged(string? value)
+    {
+        Year = int.TryParse(value, out var year) ? year : 0;
+    }
+
     partial void OnMonthChanged(int value)
     {
         _ = LoadAsync();
+    }
+
+    partial void OnMonthParameterChanged(string? value)
+    {
+        Month = int.TryParse(value, out var month) ? month : 0;
     }
 
     partial void OnFromDateChanged(DateTime value)

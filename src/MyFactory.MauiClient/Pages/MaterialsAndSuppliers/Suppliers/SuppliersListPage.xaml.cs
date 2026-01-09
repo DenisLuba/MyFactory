@@ -9,5 +9,14 @@ public partial class SuppliersListPage : ContentPage
         InitializeComponent();
         BindingContext = viewModel;
     }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        if (BindingContext is SuppliersListPageViewModel viewModel)
+        {
+            await viewModel.LoadAsync();
+        }
+    }
 }
 

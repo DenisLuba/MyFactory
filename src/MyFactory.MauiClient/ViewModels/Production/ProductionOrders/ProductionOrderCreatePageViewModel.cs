@@ -19,7 +19,7 @@ using MyFactory.MauiClient.Services.SalesOrders;
 
 namespace MyFactory.MauiClient.ViewModels.Production.ProductionOrders;
 
-[QueryProperty(nameof(ProductionOrderId), "ProductionOrderId")]
+[QueryProperty(nameof(ProductionOrderIdParameter), "ProductionOrderId")]
 public partial class ProductionOrderCreatePageViewModel : ObservableObject
 {
     private readonly IProductionOrdersService _productionOrdersService;
@@ -29,6 +29,9 @@ public partial class ProductionOrderCreatePageViewModel : ObservableObject
 
     [ObservableProperty]
     private Guid? productionOrderId;
+
+    [ObservableProperty]
+    private string? productionOrderIdParameter;
 
     [ObservableProperty]
     private string productionOrderNumber = string.Empty;
@@ -76,6 +79,11 @@ public partial class ProductionOrderCreatePageViewModel : ObservableObject
     partial void OnProductionOrderIdChanged(Guid? value)
     {
         _ = LoadAsync();
+    }
+
+    partial void OnProductionOrderIdParameterChanged(string? value)
+    {
+        ProductionOrderId = Guid.TryParse(value, out var id) ? id : null;
     }
 
     [RelayCommand]
@@ -166,7 +174,7 @@ public partial class ProductionOrderCreatePageViewModel : ObservableObject
 
         var parameters = new Dictionary<string, object>
         {
-            { "ProductionOrderId", ProductionOrderId.Value },
+            { "ProductionOrderId", ProductionOrderId.Value.ToString() },
             { "ProductionOrderNumber", ProductionOrderNumber },
             { "ProductInfo", SelectedProduct?.Name ?? string.Empty }
         };
@@ -216,8 +224,8 @@ public partial class ProductionOrderCreatePageViewModel : ObservableObject
 
         var parameters = new Dictionary<string, object>
         {
-            { "ProductionOrderId", ProductionOrderId.Value },
-            { "MaterialId", material.MaterialId },
+            { "ProductionOrderId", ProductionOrderId.Value.ToString() },
+            { "MaterialId", material.MaterialId.ToString() },
             { "MaterialName", material.Name }
         };
         await Shell.Current.GoToAsync(nameof(MaterialConsumptionPage), parameters);

@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MyFactory.MauiClient.Models.Advances;
@@ -71,10 +72,14 @@ public partial class CashAdvancesListPageViewModel : ObservableObject
             return;
         }
 
-        await Shell.Current.GoToAsync(nameof(Pages.Finance.Expenses.CashAdvanceDetailsPage), new Dictionary<string, object>
+        var json = JsonSerializer.Serialize(item);
+
+        var parameter = new Dictionary<string, object>
         {
-            { "AdvanceItem", item }
-        });
+            { "CashAdvanceJson", json }
+        };
+
+        await Shell.Current.GoToAsync(nameof(Pages.Finance.Expenses.CashAdvanceDetailsPage), parameter);
     }
 
     [RelayCommand]

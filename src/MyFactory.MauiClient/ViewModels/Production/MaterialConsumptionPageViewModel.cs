@@ -11,8 +11,8 @@ using MyFactory.MauiClient.Services.ProductionOrders;
 
 namespace MyFactory.MauiClient.ViewModels.Production;
 
-[QueryProperty(nameof(ProductionOrderId), "ProductionOrderId")]
-[QueryProperty(nameof(MaterialId), "MaterialId")]
+[QueryProperty(nameof(ProductionOrderIdParameter), "ProductionOrderId")]
+[QueryProperty(nameof(MaterialIdParameter), "MaterialId")]
 [QueryProperty(nameof(MaterialName), "MaterialName")]
 public partial class MaterialConsumptionPageViewModel : ObservableObject
 {
@@ -22,7 +22,13 @@ public partial class MaterialConsumptionPageViewModel : ObservableObject
     private Guid? productionOrderId;
 
     [ObservableProperty]
+    private string? productionOrderIdParameter;
+
+    [ObservableProperty]
     private Guid? materialId;
+
+    [ObservableProperty]
+    private string? materialIdParameter;
 
     [ObservableProperty]
     private string materialName = string.Empty;
@@ -61,9 +67,19 @@ public partial class MaterialConsumptionPageViewModel : ObservableObject
         _ = LoadAsync();
     }
 
+    partial void OnProductionOrderIdParameterChanged(string? value)
+    {
+        ProductionOrderId = Guid.TryParse(value, out var id) ? id : null;
+    }
+
     partial void OnMaterialIdChanged(Guid? value)
     {
         _ = LoadAsync();
+    }
+
+    partial void OnMaterialIdParameterChanged(string? value)
+    {
+        MaterialId = Guid.TryParse(value, out var id) ? id : null;
     }
 
     [RelayCommand]

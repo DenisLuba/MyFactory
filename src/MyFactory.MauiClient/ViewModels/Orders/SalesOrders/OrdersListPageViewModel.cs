@@ -105,7 +105,7 @@ public partial class OrdersListPageViewModel : ObservableObject
 
         var parameters = new Dictionary<string, object>
         {
-            { "OrderId", item.Id }
+            { "OrderId", item.Id.ToString() }
         };
 
         await Shell.Current.GoToAsync(nameof(OrderDetailsPage), parameters);

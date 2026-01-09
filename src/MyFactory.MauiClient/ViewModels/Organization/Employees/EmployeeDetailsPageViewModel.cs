@@ -12,13 +12,16 @@ using MyFactory.MauiClient.Services.Employees;
 
 namespace MyFactory.MauiClient.ViewModels.Organization.Employees;
 
-[QueryProperty(nameof(EmployeeId), "EmployeeId")]
+[QueryProperty(nameof(EmployeeIdParameter), "EmployeeId")]
 public partial class EmployeeDetailsPageViewModel : ObservableObject
 {
     private readonly IEmployeesService _employeesService;
 
     [ObservableProperty]
     private Guid? employeeId;
+
+    [ObservableProperty]
+    private string? employeeIdParameter;
 
     [ObservableProperty]
     private string fullName = string.Empty;
@@ -62,6 +65,11 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
     partial void OnEmployeeIdChanged(Guid? value)
     {
         _ = LoadAsync();
+    }
+
+    partial void OnEmployeeIdParameterChanged(string? value)
+    {
+        EmployeeId = Guid.TryParse(value, out var id) ? id : null;
     }
 
     partial void OnTimesheetPeriodChanged(DateTime value)
@@ -179,7 +187,7 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
 
         var parameters = new Dictionary<string, object>
         {
-            { "ProductionOrderId", assignment.ProductionOrderId }
+            { "ProductionOrderId", assignment.ProductionOrderId.ToString() }
         };
         await Shell.Current.GoToAsync(nameof(ProductionOrderCreatePage), parameters);
     }

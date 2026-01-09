@@ -7,7 +7,8 @@ using MyFactory.MauiClient.Services.Advances;
 
 namespace MyFactory.MauiClient.ViewModels.Finance.Expenses;
 
-[QueryProperty(nameof(AdvanceItem), "AdvanceItem")]
+
+[QueryProperty(nameof(CashAdvanceJsonParameter), "CashAdvanceJson")]
 public partial class CashAdvanceDetailsPageViewModel : ObservableObject
 {
     private readonly IAdvancesService _advancesService;
@@ -20,6 +21,9 @@ public partial class CashAdvanceDetailsPageViewModel : ObservableObject
 
     [ObservableProperty]
     private CashAdvanceListItemResponse? advanceItem;
+
+    [ObservableProperty]
+    private string? cashAdvanceJsonParameter;
 
     [ObservableProperty]
     private string title = "Карточка аванса";
@@ -73,6 +77,23 @@ public partial class CashAdvanceDetailsPageViewModel : ObservableObject
         ReturnedAmount = value.ReturnedAmount;
         Balance = value.Balance;
         Status = value.IsClosed ? "Закрыт" : "Открыт";
+    }
+
+    partial void OnCashAdvanceJsonParameterChanged(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return;
+        }
+        try
+        {
+            var advance = System.Text.Json.JsonSerializer.Deserialize<CashAdvanceListItemResponse>(value);
+            AdvanceItem = advance;
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Ошибка при загрузке данных аванса: {ex.Message}";
+        }
     }
 
     [RelayCommand]

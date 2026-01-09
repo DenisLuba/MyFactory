@@ -9,13 +9,16 @@ using MyFactory.MauiClient.Services.Customers;
 
 namespace MyFactory.MauiClient.ViewModels.Orders.Customers;
 
-[QueryProperty(nameof(CustomerId), "CustomerId")]
+[QueryProperty(nameof(CustomerIdParameter), "CustomerId")]
 public partial class CustomerDetailsPageViewModel : ObservableObject
 {
     private readonly ICustomersService _customersService;
 
     [ObservableProperty]
     private Guid? customerId;
+
+    [ObservableProperty]
+    private string? customerIdParameter;
 
     [ObservableProperty]
     private bool isBusy;
@@ -46,6 +49,11 @@ public partial class CustomerDetailsPageViewModel : ObservableObject
     partial void OnCustomerIdChanged(Guid? value)
     {
         _ = LoadAsync();
+    }
+
+    partial void OnCustomerIdParameterChanged(string? value)
+    {
+        CustomerId = Guid.TryParse(value, out var id) ? id : null;
     }
 
     [RelayCommand]

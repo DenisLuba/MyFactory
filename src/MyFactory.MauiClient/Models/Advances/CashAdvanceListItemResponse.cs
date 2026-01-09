@@ -9,3 +9,4 @@ public record CashAdvanceListItemResponse(
     decimal ReturnedAmount,
     decimal Balance,
     bool IsClosed);
+

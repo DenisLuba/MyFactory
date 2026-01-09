@@ -170,9 +170,9 @@ public partial class PayrollAccrualsPageViewModel : ObservableObject
         var date = FromDate;
         await Shell.Current.GoToAsync(nameof(Pages.Finance.Payroll.PayrollDailyBreakdownPage), new Dictionary<string, object>
         {
-            { "EmployeeId", accrual.EmployeeId },
-            { "Year", date.Year },
-            { "Month", date.Month },
+            { "EmployeeId", accrual.EmployeeId.ToString() },
+            { "Year", date.Year.ToString() },
+            { "Month", date.Month.ToString() },
             { "EmployeeName", accrual.EmployeeName }
         });
     }

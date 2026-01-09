@@ -3,10 +3,12 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Suppliers"
-	xmlns:models="clr-namespace:MyFactory.MauiClient.Models.Suppliers"
 	Title="Карточка поставщика"
 	x:DataType="view_model:SupplierDetailsPageViewModel">
-	<Grid Padding="16" RowDefinitions="Auto,Auto,Auto,Auto,*" RowSpacing="12">
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,Auto,Auto,Auto,*"
+		RowSpacing="12">
 		<Label
 			FontAttributes="Bold"
 			FontSize="20"
@@ -15,9 +17,15 @@
 		<Label Grid.Row="2" Text="{Binding Contacts}" />
 
 		<HorizontalStackLayout Grid.Row="3" Spacing="8">
-			<Button Command="{Binding EditCommand}" Text="Редактировать" />
-			<Button Command="{Binding AddPurchaseCommand}" Text="Добавить закупку" />
+			<Button Command="{Binding EditCommand}" Text="Редактировать поставщика" />
 			<Button Command="{Binding CreateOrderCommand}" Text="Создать заказ" />
+			<Button Command="{Binding AddPurchaseCommand}" Text="Добавить закупку" />
+			<Button
+				Command="{Binding EditOrderCommand}"
+				IsEnabled="{Binding HasSelection}"
+				IsVisible="{Binding HasSelection}"
+				Text="Редактировать" />
+			<Button Command="{Binding BackCommand}" Text="Назад" />
 		</HorizontalStackLayout>
 
 		<Border
@@ -25,39 +33,51 @@
 			Padding="8"
 			Stroke="LightGray"
 			StrokeThickness="1">
-			<VerticalStackLayout Spacing="8">
+			<Grid RowDefinitions="Auto,*" RowSpacing="8">
 				<Label FontAttributes="Bold" Text="История закупок" />
-				<Grid
-					Padding="0,4"
-					ColumnDefinitions="*,*,Auto,Auto,Auto"
-					ColumnSpacing="8">
-					<Label FontAttributes="Bold" Text="Тип" />
-					<Label
-						Grid.Column="1"
-						FontAttributes="Bold"
-						Text="Материал" />
-					<Label
-						Grid.Column="2"
-						FontAttributes="Bold"
-						HorizontalTextAlignment="End"
-						Text="Кол-во" />
-					<Label
-						Grid.Column="3"
-						FontAttributes="Bold"
-						HorizontalTextAlignment="End"
-						Text="Цена" />
-					<Label
-						Grid.Column="4"
-						FontAttributes="Bold"
-						HorizontalTextAlignment="End"
-						Text="Дата" />
-				</Grid>
-				<CollectionView ItemsSource="{Binding PurchaseHistory}" SelectionMode="None">
+
+				<CollectionView
+					Grid.Row="1"
+					ItemsSource="{Binding PurchaseHistory}"
+					SelectedItem="{Binding SelectedPurchase, Mode=TwoWay}"
+					SelectionMode="Single">
+					<CollectionView.Header>
+						<Grid
+							Padding="0,4"
+							ColumnDefinitions="1.2*,1.2*,0.8*,0.8*,0.9*,0.9*"
+							ColumnSpacing="8">
+							<Label FontAttributes="Bold" Text="Тип" />
+							<Label
+								Grid.Column="1"
+								FontAttributes="Bold"
+								Text="Материал" />
+							<Label
+								Grid.Column="2"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="Кол-во" />
+							<Label
+								Grid.Column="3"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="Цена" />
+							<Label
+								Grid.Column="4"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="Статус" />
+							<Label
+								Grid.Column="5"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="Дата" />
+						</Grid>
+					</CollectionView.Header>
 					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="models:SupplierPurchaseHistoryResponse">
+						<DataTemplate x:DataType="view_model:SupplierDetailsPageViewModel+SupplierPurchaseHistoryItemViewModel">
 							<Grid
 								Padding="0,6"
-								ColumnDefinitions="*,*,Auto,Auto,Auto"
+								ColumnDefinitions="1.2*,1.2*,0.8*,0.8*,0.9*,0.9*"
 								ColumnSpacing="8">
 								<Label Text="{Binding MaterialType}" />
 								<Label Grid.Column="1" Text="{Binding MaterialName}" />
@@ -72,12 +92,16 @@
 								<Label
 									Grid.Column="4"
 									HorizontalTextAlignment="End"
-									Text="{Binding Date}" />
+									Text="{Binding StatusText}" />
+								<Label
+									Grid.Column="5"
+									HorizontalTextAlignment="End"
+									Text="{Binding Date, StringFormat='{0:d}'}" />
 							</Grid>
 						</DataTemplate>
 					</CollectionView.ItemTemplate>
 				</CollectionView>
-			</VerticalStackLayout>
+			</Grid>
 		</Border>
 	</Grid>
 </ContentPage>

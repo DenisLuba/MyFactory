@@ -12,7 +12,7 @@ using MyFactory.MauiClient.Services.Positions;
 
 namespace MyFactory.MauiClient.ViewModels.Organization.Positions;
 
-[QueryProperty(nameof(PositionId), "PositionId")]
+[QueryProperty(nameof(PositionIdParameter), "PositionId")]
 public partial class PositionDetailsPageViewModel : ObservableObject
 {
     private readonly IPositionsService _positionsService;
@@ -20,6 +20,9 @@ public partial class PositionDetailsPageViewModel : ObservableObject
 
     [ObservableProperty]
     private Guid? positionId;
+
+    [ObservableProperty]
+    private string? positionIdParameter;
 
     [ObservableProperty]
     private string name = string.Empty;
@@ -72,6 +75,11 @@ public partial class PositionDetailsPageViewModel : ObservableObject
     partial void OnPositionIdChanged(Guid? value)
     {
         _ = LoadAsync();
+    }
+
+    partial void OnPositionIdParameterChanged(string? value)
+    {
+        PositionId = Guid.TryParse(value, out var id) ? id : null;
     }
 
     [RelayCommand]

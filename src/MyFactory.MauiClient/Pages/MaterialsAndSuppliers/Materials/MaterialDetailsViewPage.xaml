@@ -2,11 +2,14 @@
 	x:Class="MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Materials.MaterialDetailsViewPage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Materials"
 	xmlns:models="clr-namespace:MyFactory.MauiClient.Models.Materials"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Materials"
 	Title="Карточка материала"
 	x:DataType="view_model:MaterialDetailsViewPageViewModel">
-	<Grid Padding="16" RowDefinitions="Auto,Auto,*,*" RowSpacing="12">
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,Auto,*,*"
+		RowSpacing="12">
 		<Grid
 			ColumnDefinitions="Auto,*"
 			ColumnSpacing="8"

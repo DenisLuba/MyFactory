@@ -5,8 +5,8 @@ using MyFactory.MauiClient.Services.Reports;
 
 namespace MyFactory.MauiClient.ViewModels.Finance.FinancialReports;
 
-[QueryProperty(nameof(Year), "Year")]
-[QueryProperty(nameof(Month), "Month")]
+[QueryProperty(nameof(YearParameter), "Year")]
+[QueryProperty(nameof(MonthParameter), "Month")]
 public partial class MonthlyReportDetailsPageViewModel : ObservableObject
 {
     private readonly IReportsService _reportsService;
@@ -21,7 +21,13 @@ public partial class MonthlyReportDetailsPageViewModel : ObservableObject
     private int year;
 
     [ObservableProperty]
+    private string? yearParameter;
+
+    [ObservableProperty]
     private int month;
+
+    [ObservableProperty]
+    private string? monthParameter;
 
     [ObservableProperty]
     private string title = string.Empty;
@@ -60,9 +66,19 @@ public partial class MonthlyReportDetailsPageViewModel : ObservableObject
         _ = LoadAsync();
     }
 
+    partial void OnYearParameterChanged(string? value)
+    {
+        Year = int.TryParse(value, out var year) ? year : 0;
+    }
+
     partial void OnMonthChanged(int value)
     {
         _ = LoadAsync();
+    }
+
+    partial void OnMonthParameterChanged(string? value)
+    {
+        Month = int.TryParse(value, out var month) ? month : 0;
     }
 
     [RelayCommand]

@@ -57,7 +57,7 @@ public partial class MaterialDetailsViewPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
             return;
@@ -162,7 +162,7 @@ public partial class MaterialDetailsViewPageViewModel : ObservableObject
     {
         await Shell.Current.GoToAsync("SupplierDetailsPage", new Dictionary<string, object>
         {
-            { "SupplierId", supplierId }
+            { "SupplierId", supplierId.ToString() }
         });
     }
 }

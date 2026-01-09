@@ -10,7 +10,7 @@ using MyFactory.MauiClient.Services.Warehouses;
 
 namespace MyFactory.MauiClient.ViewModels.Warehouses;
 
-[QueryProperty(nameof(WarehouseId), "WarehouseId")]
+[QueryProperty(nameof(WarehouseIdParameter), "WarehouseId")]
 [QueryProperty(nameof(WarehouseName), "WarehouseName")]
 public partial class WarehouseStockPageViewModel : ObservableObject
 {
@@ -18,6 +18,9 @@ public partial class WarehouseStockPageViewModel : ObservableObject
 
     [ObservableProperty]
     private Guid? warehouseId;
+
+    [ObservableProperty]
+    private string? warehouseIdParameter;
 
     [ObservableProperty]
     private string? warehouseName;
@@ -39,6 +42,11 @@ public partial class WarehouseStockPageViewModel : ObservableObject
     partial void OnWarehouseIdChanged(Guid? value)
     {
         _ = LoadAsync();
+    }
+
+    partial void OnWarehouseIdParameterChanged(string? value)
+    {
+        WarehouseId = Guid.TryParse(value, out var id) ? id : null;
     }
 
     [RelayCommand]

@@ -1,3 +1,5 @@
+using MyFactory.Domain.Entities.Materials;
+
 namespace MyFactory.Application.DTOs.Suppliers;
 
 public sealed record SupplierDetailsDto

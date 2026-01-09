@@ -79,8 +79,8 @@ public partial class FinancialReportsListPageViewModel : ObservableObject
 
         await Shell.Current.GoToAsync(nameof(Pages.Finance.FinancialReports.MonthlyReportDetailsPage), new Dictionary<string, object>
         {
-            { "Year", report.Year },
-            { "Month", report.Month }
+            { "Year", report.Year.ToString() },
+            { "Month", report.Month.ToString() }
         });
     }
 }

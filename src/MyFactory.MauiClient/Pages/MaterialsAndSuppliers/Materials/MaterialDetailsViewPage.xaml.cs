@@ -9,5 +9,14 @@ public partial class MaterialDetailsViewPage : ContentPage
         InitializeComponent();
         BindingContext = viewModel;
     }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        if (BindingContext is MaterialDetailsViewPageViewModel vm)
+        {
+            await vm.LoadAsync();
+        }
+    }
 }
 
