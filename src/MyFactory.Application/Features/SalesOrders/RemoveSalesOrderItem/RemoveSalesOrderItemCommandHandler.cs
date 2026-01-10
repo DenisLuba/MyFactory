@@ -22,7 +22,7 @@ public sealed class RemoveSalesOrderItemCommandHandler : IRequestHandler<RemoveS
         var order = await _db.SalesOrders.FirstOrDefaultAsync(x => x.Id == item.SalesOrderId, cancellationToken)
             ?? throw new NotFoundException("Sales order not found");
         if (order.Status != SalesOrderStatus.New)
-            throw new DomainException("Only new orders can be modified.");
+            throw new DomainApplicationException("Only new orders can be modified.");
         _db.SalesOrderItems.Remove(item);
         await _db.SaveChangesAsync(cancellationToken);
     }

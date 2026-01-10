@@ -20,7 +20,7 @@ public sealed class UpdateProductionStageEmployeeCommandHandler : IRequestHandle
         var po = await _db.ProductionOrders.FirstOrDefaultAsync(x => x.Id == request.ProductionOrderId, cancellationToken)
             ?? throw new NotFoundException("Production order not found");
         if (po.Status != request.Stage)
-            throw new DomainException("Cannot update operation: stage does not match order status.");
+            throw new DomainApplicationException("Cannot update operation: stage does not match order status.");
         if (request.Stage == ProductionOrderStatus.Cutting)
         {
             var op = await _db.CuttingOperations.FirstOrDefaultAsync(x => x.Id == request.OperationId, cancellationToken)
@@ -28,7 +28,7 @@ public sealed class UpdateProductionStageEmployeeCommandHandler : IRequestHandle
             // Удаляем старую операцию
             _db.CuttingOperations.Remove(op);
             if (po.QtyCut - op.QtyCut + request.Qty > po.QtyPlanned)
-                throw new DomainException("Cannot cut more than planned.");
+                throw new DomainApplicationException("Cannot cut more than planned.");
             var newOp = new CuttingOperationEntity(request.ProductionOrderId, request.EmployeeId, request.QtyPlanned, request.Qty, request.Date);
             // Добавляем новую операцию
             _db.CuttingOperations.Add(newOp);
@@ -45,7 +45,7 @@ public sealed class UpdateProductionStageEmployeeCommandHandler : IRequestHandle
             // Удаляем старую операцию
             _db.SewingOperations.Remove(op);
             if (po.QtySewn - op.QtySewn + request.Qty > po.QtyCut)
-                throw new DomainException("Cannot sew more than cut.");
+                throw new DomainApplicationException("Cannot sew more than cut.");
             var newOp = new SewingOperationEntity(request.ProductionOrderId, request.EmployeeId, request.QtyPlanned, request.Qty, request.HoursWorked!.Value, request.Date);
             // Добавляем новую операцию
             _db.SewingOperations.Add(newOp);
@@ -62,7 +62,7 @@ public sealed class UpdateProductionStageEmployeeCommandHandler : IRequestHandle
             // Удаляем старую операцию
             _db.PackagingOperations.Remove(op);
             if (po.QtyPacked - op.QtyPacked + request.Qty > po.QtySewn)
-                throw new DomainException("Cannot pack more than sewn.");
+                throw new DomainApplicationException("Cannot pack more than sewn.");
             var newOp = new PackagingOperationEntity(request.ProductionOrderId, request.EmployeeId, request.QtyPlanned, request.Qty, request.Date);
             // Добавляем новую операцию
             _db.PackagingOperations.Add(newOp);
@@ -74,7 +74,7 @@ public sealed class UpdateProductionStageEmployeeCommandHandler : IRequestHandle
         }
         else
         {
-            throw new DomainException("Invalid stage for operation.");
+            throw new DomainApplicationException("Invalid stage for operation.");
         }
         await _db.SaveChangesAsync(cancellationToken);
     }

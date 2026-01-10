@@ -32,7 +32,7 @@ public sealed class IssueMaterialsToProductionCommandHandler
             ?? throw new NotFoundException("Production order not found");
 
         if (po.Status != ProductionOrderStatus.New)
-            throw new DomainException("Materials can be issued only for NEW production orders.");
+            throw new DomainApplicationException("Materials can be issued only for NEW production orders.");
 
         // 2. SalesOrderItem -> Product
         var soi = await _db.SalesOrderItems
@@ -60,7 +60,7 @@ public sealed class IssueMaterialsToProductionCommandHandler
 
             if (issuedQty != required.RequiredQty)
             {
-                throw new DomainException(
+                throw new DomainApplicationException(
                     $"Invalid issued quantity for material {required.MaterialId}. " +
                     $"Required: {required.RequiredQty}, Issued: {issuedQty}");
             }
@@ -76,7 +76,7 @@ public sealed class IssueMaterialsToProductionCommandHandler
                     cancellationToken);
 
             if (stock is null || stock.Qty < line.Qty)
-                throw new DomainException("Not enough material in warehouse.");
+                throw new DomainApplicationException("Not enough material in warehouse.");
         }
 
         // 6. Группируем по складам -> одно перемещение = один склад

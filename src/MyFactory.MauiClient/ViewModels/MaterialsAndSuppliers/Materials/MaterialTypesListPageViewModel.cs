@@ -25,6 +25,7 @@ public partial class MaterialTypesListPageViewModel : ObservableObject
     public ICommand RefreshCommand { get; }
     public ICommand SaveCommand { get; }
     public ICommand SelectCommand { get; }
+    public ICommand DeleteCommand { get; }
 
     public MaterialTypesListPageViewModel(IMaterialTypesService service)
     {
@@ -33,6 +34,7 @@ public partial class MaterialTypesListPageViewModel : ObservableObject
         RefreshCommand = new AsyncRelayCommand(LoadAsync);
         SaveCommand = new AsyncRelayCommand(OnSaveAsync, () => IsChanged);
         SelectCommand = new RelayCommand<EditableMaterialTypeModel?>(OnSelect);
+        DeleteCommand = new AsyncRelayCommand<EditableMaterialTypeModel?>(OnDelete);
     }
 
     partial void OnIsChangedChanged(bool value)
@@ -57,6 +59,27 @@ public partial class MaterialTypesListPageViewModel : ObservableObject
     private void OnSelect(EditableMaterialTypeModel? model)
     {
         SelectedMaterialType = model;
+    }
+
+    private async Task OnDelete(EditableMaterialTypeModel? model)
+    {
+        if(model is not null)
+        {
+            try
+            {
+                var agree = await Shell.Current.DisplayAlert("Delete Material Type", $"Вы уверены, что хотите удалить тип материала? '{model.Name}'?", "Да", "Отмена");
+                if (agree)
+                {
+                    await _service.DeleteAsync(model.Id);
+                    await LoadAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error", $"Не удалось удалить тип материала: {ex.Message}\n(сообщение сервера)", "OK");
+                return;
+            }
+        }            
     }
 
     private void OnMaterialTypeChanged()

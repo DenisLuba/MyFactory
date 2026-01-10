@@ -33,7 +33,7 @@ public sealed class UpdateDepartmentCommandHandler
                     cancellationToken);
 
             if (codeExists)
-                throw new DomainException("Department with the same code already exists.");
+                throw new DomainApplicationException("Department with the same code already exists.");
         }
 
         department.Update(

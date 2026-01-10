@@ -61,7 +61,8 @@
 							<Grid
 								Padding="0,8"
 								ColumnDefinitions="*,Auto,Auto,Auto"
-								ColumnSpacing="8">
+								ColumnSpacing="8"
+								Style="{StaticResource SelectableItemGridStyle}">
 								<Grid.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=CustomersCollection}}" CommandParameter="{Binding .}" />
 								</Grid.GestureRecognizers>

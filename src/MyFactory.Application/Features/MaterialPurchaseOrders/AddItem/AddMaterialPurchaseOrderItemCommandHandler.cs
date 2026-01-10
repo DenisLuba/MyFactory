@@ -37,7 +37,7 @@ public sealed class AddMaterialPurchaseOrderItemCommandHandler
         throw new NotFoundException("Material not found");
 
     if (material.Unit is null)
-        throw new DomainException("Material has no unit");
+        throw new DomainApplicationException("Material has no unit");
 
     var item = new MaterialPurchaseOrderItemEntity(
         purchaseOrderId: order.Id,

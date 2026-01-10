@@ -40,34 +40,34 @@
 				FontAttributes="Bold"
 				Text="ОСТАТОК" />
 		</Grid>
-		
-		<Border
-			Grid.Row="2">
+
+		<Border Grid.Row="2">
 			<CollectionView
-			x:Name="MaterialsListCollection"
-			ItemsSource="{Binding FilteredMaterials}"
-			SelectionMode="None">
+				x:Name="MaterialsListCollection"
+				ItemsSource="{Binding FilteredMaterials}"
+				SelectionMode="None">
 				<CollectionView.ItemTemplate>
 					<DataTemplate x:DataType="view_model:MaterialsListPageViewModel+MaterialItemViewModel">
 						<SwipeView>
 							<SwipeView.RightItems>
 								<SwipeItems Mode="Reveal">
 									<SwipeItem
-									BackgroundColor="LightGray"
-									Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=MaterialsListCollection}}"
-									CommandParameter="{Binding .}"
-									Text="Редактировать" />
+										BackgroundColor="LightGray"
+										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=MaterialsListCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Редактировать" />
 									<SwipeItem
-									BackgroundColor="Tomato"
-									Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=MaterialsListCollection}}"
-									CommandParameter="{Binding .}"
-									Text="Удалить" />
+										BackgroundColor="Tomato"
+										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=MaterialsListCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Удалить" />
 								</SwipeItems>
 							</SwipeView.RightItems>
 							<Grid
-							Padding="0,8"
-							ColumnDefinitions="*,*,*"
-							ColumnSpacing="8">
+								Padding="0,8"
+								ColumnDefinitions="*,*,*"
+								ColumnSpacing="8"
+								Style="{StaticResource SelectableItemGridStyle}">
 								<Grid.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=MaterialsListCollection}}" CommandParameter="{Binding .}" />
 								</Grid.GestureRecognizers>

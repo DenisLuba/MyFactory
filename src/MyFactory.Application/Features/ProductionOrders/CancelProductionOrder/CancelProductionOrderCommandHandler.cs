@@ -20,7 +20,7 @@ public sealed class CancelProductionOrderCommandHandler : IRequestHandler<Cancel
         var po = await _db.ProductionOrders.FirstOrDefaultAsync(x => x.Id == request.ProductionOrderId, cancellationToken)
             ?? throw new NotFoundException("Production order not found");
         if (po.Status == ProductionOrderStatus.Finished)
-            throw new DomainException("Cannot cancel a finished order.");
+            throw new DomainApplicationException("Cannot cancel a finished order.");
         po.CancelOrder();
         await _db.SaveChangesAsync(cancellationToken);
     }

@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using System.Web;
 using MyFactory.MauiClient.Models.Positions;
+using MyFactory.MauiClient.Services.Common;
 
 namespace MyFactory.MauiClient.Services.Positions;
 
@@ -51,13 +52,13 @@ public sealed class PositionsService : IPositionsService
     public async Task<CreatePositionResponse?> CreateAsync(CreatePositionRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/positions", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CreatePositionResponse>();
     }
 
     public async Task UpdateAsync(Guid id, UpdatePositionRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/positions/{id}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 }

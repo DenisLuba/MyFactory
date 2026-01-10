@@ -37,14 +37,14 @@
 				</Setter>
 			</Style>
 
-			<!-- implicit default -->
-			<Style TargetType="CollectionView" BasedOn="{StaticResource BaseCollectionViewStyle}" />
+			<!--  implicit default  -->
+			<Style BasedOn="{StaticResource BaseCollectionViewStyle}" TargetType="CollectionView" />
 
-			<!-- keyed horizontal -->
+			<!--  keyed horizontal  -->
 			<Style
 				x:Key="HorizontalCollectionViewStyle"
-				TargetType="CollectionView"
-				BasedOn="{StaticResource BaseCollectionViewStyle}">
+				BasedOn="{StaticResource BaseCollectionViewStyle}"
+				TargetType="CollectionView">
 				<Setter Property="ItemsLayout">
 					<Setter.Value>
 						<LinearItemsLayout ItemSpacing="12" Orientation="Horizontal" />
@@ -53,14 +53,35 @@
 			</Style>
 
 			<Style TargetType="Button">
-				<Setter Property="CornerRadius" Value="28" />
-				<Setter Property="Padding" Value="20,12,20,12" />
+				<Setter Property="CornerRadius" Value="20" />
+				<Setter Property="Padding" Value="16,8,16,8" />
 				<Setter Property="HorizontalOptions" Value="Center" />
 				<Setter Property="TextColor" Value="{AppThemeBinding Light=White, Dark=Black}" />
 				<Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#3B65C9, Dark=#60A5FA}" />
-				<Setter Property="FontSize" Value="16" />
+				<Setter Property="FontSize" Value="14" />
 				<Setter Property="FontAttributes" Value="Bold" />
 				<Setter Property="TextTransform" Value="Uppercase" />
+			</Style>
+
+			<Style x:Key="SelectableItemGridStyle" TargetType="Grid">
+				<Setter Property="VisualStateManager.VisualStateGroups">
+					<Setter.Value>
+						<VisualStateGroupList>
+							<VisualStateGroup Name="CommonStates">
+								<VisualState Name="Normal">
+									<VisualState.Setters>
+										<Setter Property="Background" Value="Transparent" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState Name="Selected">
+									<VisualState.Setters>
+										<Setter Property="Background" Value="#1A76a9fa" />
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateGroupList>
+					</Setter.Value>
+				</Setter>
 			</Style>
 
 		</ResourceDictionary>

@@ -24,6 +24,7 @@
 
 		<!--  List  -->
 		<CollectionView
+			x:Name="MaterialTypesCollection"
 			Grid.Row="1"
 			ItemsSource="{Binding MaterialTypes}"
 			SelectedItem="{Binding SelectedMaterialType, Mode=TwoWay}"
@@ -33,10 +34,24 @@
 				<DataTemplate x:DataType="viewmodels:MaterialTypesListPageViewModel+EditableMaterialTypeModel">
 					<Border>
 						<VerticalStackLayout>
-							<Entry
-								FontAttributes="Bold"
-								FontSize="16"
-								Text="{Binding Name, Mode=TwoWay}" />
+							<Grid ColumnDefinitions="*, Auto">
+								<Entry
+									FontAttributes="Bold"
+									FontSize="16"
+									Text="{Binding Name, Mode=TwoWay}" />
+								<Label
+									Grid.Column="1"
+									Margin="10,0,10,0"
+									FontAttributes="Italic"
+									Text="Удалить"
+									TextColor="Tomato"
+									VerticalTextAlignment="Center">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=MaterialTypesCollection}}" CommandParameter="{Binding .}" />
+									</Label.GestureRecognizers>
+								</Label>
+							</Grid>
+
 							<Entry
 								FontSize="13"
 								Text="{Binding Description, Mode=TwoWay}"

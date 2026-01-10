@@ -25,7 +25,7 @@ public sealed class DeactivateMaterialTypeCommandHandler : IRequestHandler<Deact
             .AnyAsync(x => x.MaterialTypeId == entity.Id, cancellationToken);
 
         if (hasMaterials)
-            throw new DomainException("Cannot delete material type while materials reference it.");
+            throw new DomainApplicationException("Cannot delete material type while materials reference it.");
 
         _db.MaterialTypes.Remove(entity);
         await _db.SaveChangesAsync(cancellationToken);

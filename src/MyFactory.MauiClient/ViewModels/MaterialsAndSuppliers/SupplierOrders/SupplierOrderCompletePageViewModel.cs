@@ -32,6 +32,9 @@ public partial class SupplierOrderCompletePageViewModel : ObservableObject
     private string? materialName;
 
     [ObservableProperty]
+    private Guid? currentItemId;
+
+    [ObservableProperty]
     private decimal totalQty;
 
     [ObservableProperty]
@@ -156,13 +159,34 @@ public partial class SupplierOrderCompletePageViewModel : ObservableObject
             return;
         }
 
+        if (RemainingQty != 0)
+        {
+            await Shell.Current.DisplayAlert("Ошибка", "Распределите все количество по складам", "OK");
+            return;
+        }
+
         var targetWh = distinctWh.First();
 
         try
         {
             IsBusy = true;
             ErrorMessage = null;
-            await _ordersService.ReceiveAsync(PurchaseOrderId.Value, new ReceiveMaterialPurchaseOrderRequest(targetWh, Guid.Empty));
+            if (CurrentItemId is null)
+                throw new InvalidOperationException("Неизвестна позиция заказа");
+
+            var allocations = Lines
+                .Where(l => l.Warehouse is not null && l.Qty > 0)
+                .Select(l => new ReceiveMaterialPurchaseOrderAllocationRequest(l.Warehouse!.Id, l.Qty))
+                .ToList();
+
+            var request = new ReceiveMaterialPurchaseOrderRequest(
+                ReceivedByUserId: Guid.Empty,
+                Items: new List<ReceiveMaterialPurchaseOrderItemRequest>
+                {
+                    new(CurrentItemId.Value, allocations)
+                });
+
+            await _ordersService.ReceiveAsync(PurchaseOrderId.Value, request);
             await Shell.Current.DisplayAlert("Готово", "Заказ завершен", "OK");
             await Shell.Current.GoToAsync("..", true);
         }

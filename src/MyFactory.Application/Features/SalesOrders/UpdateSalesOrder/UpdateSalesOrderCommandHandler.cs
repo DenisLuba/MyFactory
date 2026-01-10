@@ -21,7 +21,7 @@ public sealed class UpdateSalesOrderCommandHandler : IRequestHandler<UpdateSales
             ?? throw new NotFoundException("Sales order not found");
 
         if (order.Status != SalesOrderStatus.New)
-            throw new DomainException("Only new orders can be updated.");
+            throw new DomainApplicationException("Only new orders can be updated.");
 
         order.Update(request.CustomerId, request.OrderDate);
         await _db.SaveChangesAsync(cancellationToken);

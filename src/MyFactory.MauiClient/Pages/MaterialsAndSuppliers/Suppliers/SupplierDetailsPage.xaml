@@ -7,7 +7,7 @@
 	x:DataType="view_model:SupplierDetailsPageViewModel">
 	<Grid
 		Padding="16"
-		RowDefinitions="Auto,Auto,Auto,Auto,*"
+		RowDefinitions="Auto,Auto,Auto,Auto,Auto,*"
 		RowSpacing="12">
 		<Label
 			FontAttributes="Bold"
@@ -16,20 +16,52 @@
 		<Label Grid.Row="1" Text="{Binding Description}" />
 		<Label Grid.Row="2" Text="{Binding Contacts}" />
 
-		<HorizontalStackLayout Grid.Row="3" Spacing="8">
+		<HorizontalStackLayout Grid.Row="3" Spacing="12">
 			<Button Command="{Binding EditCommand}" Text="Редактировать поставщика" />
-			<Button Command="{Binding CreateOrderCommand}" Text="Создать заказ" />
 			<Button Command="{Binding AddPurchaseCommand}" Text="Добавить закупку" />
 			<Button
 				Command="{Binding EditOrderCommand}"
 				IsEnabled="{Binding HasSelection}"
 				IsVisible="{Binding HasSelection}"
-				Text="Редактировать" />
-			<Button Command="{Binding BackCommand}" Text="Назад" />
+				Text="Редактировать заказ" />
+			<Button
+				Command="{Binding DeleteOrderCommand}"
+				IsEnabled="{Binding HasSelection}"
+				IsVisible="{Binding HasSelection}"
+				Text="Удалить заказ" />
+			<Button
+				Command="{Binding BackCommand}"
+				HorizontalOptions="End"
+				Text="Назад" />
 		</HorizontalStackLayout>
 
-		<Border
+		<Grid
 			Grid.Row="4"
+			ColumnDefinitions="*,*,*,Auto,Auto"
+			ColumnSpacing="8">
+			<Entry Placeholder="Поиск по типу материала" Text="{Binding MaterialTypeFilter, Mode=TwoWay}" />
+			<Entry
+				Grid.Column="1"
+				Placeholder="Поиск по материалу"
+				Text="{Binding MaterialNameFilter, Mode=TwoWay}" />
+			<Picker
+				Title="Статус"
+				Grid.Column="2"
+				ItemsSource="{Binding StatusOptions}"
+				SelectedItem="{Binding SelectedStatus, Mode=TwoWay}" />
+			<VerticalStackLayout Grid.Column="3">
+				<Label Text="От" />
+				<DatePicker Date="{Binding FromDateFilter, Mode=TwoWay}" Format="dd.MM.yyyy" />
+			</VerticalStackLayout>
+			<VerticalStackLayout Grid.Column="4">
+				<Label Text="До" />
+				<DatePicker Date="{Binding ToDateFilter, Mode=TwoWay}" Format="dd.MM.yyyy" />
+			</VerticalStackLayout>
+
+		</Grid>
+
+		<Border
+			Grid.Row="5"
 			Padding="8"
 			Stroke="LightGray"
 			StrokeThickness="1">
@@ -78,7 +110,8 @@
 							<Grid
 								Padding="0,6"
 								ColumnDefinitions="1.2*,1.2*,0.8*,0.8*,0.9*,0.9*"
-								ColumnSpacing="8">
+								ColumnSpacing="8"
+								Style="{StaticResource SelectableItemGridStyle}">
 								<Label Text="{Binding MaterialType}" />
 								<Label Grid.Column="1" Text="{Binding MaterialName}" />
 								<Label

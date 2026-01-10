@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using MyFactory.MauiClient.Models.MaterialTypes;
+using MyFactory.MauiClient.Services.Common;
 
 namespace MyFactory.MauiClient.Services.MaterialTypes;
 
@@ -34,7 +35,7 @@ public sealed class MaterialTypesService : IMaterialTypesService
     public async Task<Guid> CreateAsync(CreateMaterialTypeRequest request, CancellationToken ct = default)
     {
         var response = await _httpClient.PostAsJsonAsync(BaseRoute, request, ct);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync(ct);
 
         var body = await response.Content
             .ReadFromJsonAsync<CreateMaterialTypeResponse>(cancellationToken: ct);
@@ -46,12 +47,12 @@ public sealed class MaterialTypesService : IMaterialTypesService
     public async Task UpdateAsync(Guid id, UpdateMaterialTypeRequest request, CancellationToken ct = default)
     {
         var response = await _httpClient.PutAsJsonAsync($"{BaseRoute}/{id}", request, ct);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync(ct);
     }
 
     public async Task DeleteAsync(Guid id, CancellationToken ct = default)
     {
         var response = await _httpClient.DeleteAsync($"{BaseRoute}/{id}", ct);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync(ct);
     }
 }

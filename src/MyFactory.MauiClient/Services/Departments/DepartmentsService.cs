@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using MyFactory.MauiClient.Models.Departments;
+using MyFactory.MauiClient.Services.Common;
 
 namespace MyFactory.MauiClient.Services.Departments;
 
@@ -26,25 +27,25 @@ public sealed class DepartmentsService : IDepartmentsService
     public async Task<CreateDepartmentResponse?> CreateAsync(CreateDepartmentRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/departments", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CreateDepartmentResponse>();
     }
 
     public async Task UpdateAsync(Guid id, UpdateDepartmentRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/departments/{id}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task ActivateAsync(Guid id)
     {
         var response = await _httpClient.PostAsync($"api/departments/{id}/activate", null);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task DeactivateAsync(Guid id)
     {
         var response = await _httpClient.PostAsync($"api/departments/{id}/deactivate", null);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 }

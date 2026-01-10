@@ -22,7 +22,7 @@ public sealed class CreateCashAdvanceExpenseCommandHandler : IRequestHandler<Cre
             ?? throw new NotFoundException("Cash advance not found");
 
         if (advance.Status == CashAdvanceStatus.Returned)
-            throw new DomainException("Cash advance is closed.");
+            throw new DomainApplicationException("Cash advance is closed.");
 
         var entity = new CashAdvanceExpenseEntity(
             request.CashAdvanceId,

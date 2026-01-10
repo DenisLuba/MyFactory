@@ -20,7 +20,7 @@ public sealed class RemoveProductionStageEmployeeCommandHandler : IRequestHandle
         var po = await _db.ProductionOrders.FirstOrDefaultAsync(x => x.Id == request.ProductionOrderId, cancellationToken)
             ?? throw new NotFoundException("Production order not found");
         if (po.Status != request.Stage)
-            throw new DomainException("Stage does not match production order status.");
+            throw new DomainApplicationException("Stage does not match production order status.");
 
         //ProductionStage stage;
         //int stageQty;

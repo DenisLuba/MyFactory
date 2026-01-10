@@ -32,7 +32,7 @@ public sealed class CalculateMonthlyFinancialReportCommandHandler
                 cancellationToken);
 
         if (existing != null && existing.Status == MonthlyReportStatus.Closed)
-            throw new DomainException("Monthly report is closed and cannot be recalculated.");
+            throw new DomainApplicationException("Monthly report is closed and cannot be recalculated.");
 
         var (totalRevenue, payroll, materials, other) = await CalculateAggregates(request.Year, request.Month, cancellationToken);
         var profit = totalRevenue - payroll - materials - other;

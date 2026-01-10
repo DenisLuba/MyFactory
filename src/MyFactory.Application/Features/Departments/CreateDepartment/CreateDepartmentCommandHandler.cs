@@ -25,7 +25,7 @@ public sealed class CreateDepartmentCommandHandler
                 .AnyAsync(x => x.Code == request.Code, cancellationToken);
 
             if (codeExists)
-                throw new DomainException("Department with the same code already exists.");
+                throw new DomainApplicationException("Department with the same code already exists.");
         }
 
         var department = new DepartmentEntity(

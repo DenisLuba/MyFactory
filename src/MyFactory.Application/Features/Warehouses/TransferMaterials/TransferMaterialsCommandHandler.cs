@@ -51,7 +51,7 @@ public sealed class TransferMaterialsCommandHandler
                     x => x.WarehouseId == request.FromWarehouseId &&
                          x.MaterialId == item.MaterialId,
                     cancellationToken)
-                ?? throw new DomainException("Material not found in source warehouse.");
+                ?? throw new DomainApplicationException("Material not found in source warehouse.");
 
             fromStock.RemoveQty(item.Qty);
 

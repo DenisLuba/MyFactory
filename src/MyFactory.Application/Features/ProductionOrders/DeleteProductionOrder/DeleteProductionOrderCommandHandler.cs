@@ -20,7 +20,7 @@ public sealed class DeleteProductionOrderCommandHandler : IRequestHandler<Delete
         var po = await _db.ProductionOrders.FirstOrDefaultAsync(x => x.Id == request.ProductionOrderId, cancellationToken)
             ?? throw new NotFoundException("Production order not found");
         if (po.Status != ProductionOrderStatus.New)
-            throw new DomainException("Only new production orders can be deleted.");
+            throw new DomainApplicationException("Only new production orders can be deleted.");
         _db.ProductionOrders.Remove(po);
         await _db.SaveChangesAsync(cancellationToken);
     }

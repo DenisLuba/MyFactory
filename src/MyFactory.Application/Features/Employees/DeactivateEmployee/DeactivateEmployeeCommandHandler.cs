@@ -26,7 +26,7 @@ public sealed class DeactivateEmployeeCommandHandler
         if (!employee.IsActive)
             return;
         if (request.FiredAt < employee.HiredAt)
-            throw new DomainException("Fired date cannot be earlier than hired date");
+            throw new DomainApplicationException("Fired date cannot be earlier than hired date");
 
         employee.Fire(request.FiredAt);
 

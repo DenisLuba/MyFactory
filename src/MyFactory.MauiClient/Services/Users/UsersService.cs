@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using MyFactory.MauiClient.Models.Users;
+using MyFactory.MauiClient.Services.Common;
 
 namespace MyFactory.MauiClient.Services.Users;
 
@@ -20,20 +21,20 @@ public sealed class UsersService : IUsersService
     public async Task<CreateRoleResponse?> CreateRoleAsync(CreateRoleRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/users/roles", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CreateRoleResponse>();
     }
 
     public async Task UpdateRoleAsync(Guid roleId, UpdateRoleRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/users/roles/{roleId}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task DeactivateRoleAsync(Guid roleId)
     {
         var response = await _httpClient.DeleteAsync($"api/users/roles/{roleId}");
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task<IReadOnlyList<UserListItemResponse>?> GetUsersAsync(Guid? roleId = null, string? roleName = null)
@@ -53,19 +54,19 @@ public sealed class UsersService : IUsersService
     public async Task<CreateUserResponse?> CreateUserAsync(CreateUserRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/users", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CreateUserResponse>();
     }
 
     public async Task UpdateUserAsync(Guid id, UpdateUserRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/users/{id}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task DeactivateUserAsync(Guid id)
     {
         var response = await _httpClient.PostAsync($"api/users/{id}/deactivate", null);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MyFactory.Application;
+using MyFactory.Application.Common.Exceptions;
 using MyFactory.Infrastructure.Common;
 using MyFactory.Infrastructure.Extensions;
 using MyFactory.Infrastructure.Persistence;
@@ -49,12 +50,24 @@ app.UseExceptionHandler(errorApp =>
     errorApp.Run(async context =>
     {
         var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
-        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+        (int status, string title, string? detail) = exception switch
+        {
+            NotFoundException ex => (StatusCodes.Status404NotFound, "Not Found", ex.Message),
+            ValidationException ex => (StatusCodes.Status400BadRequest, "Validation Failed", ex.Message),
+            DomainApplicationException ex => (StatusCodes.Status409Conflict, "Domain Error", ex.Message),
+            _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred", exception?.Message ?? "Internal Server Error")
+        };
+
+        context.Response.StatusCode = status;
         context.Response.ContentType = "application/problem+json";
-        await Results.Problem(
-            title: "An unexpected error occurred",
-            statusCode: StatusCodes.Status500InternalServerError,
-            detail: exception?.Message).ExecuteAsync(context);
+
+        var problem = Results.Problem(
+            title: title,
+            statusCode: status,
+            detail: detail);
+
+        await problem.ExecuteAsync(context);
     });
 });
 

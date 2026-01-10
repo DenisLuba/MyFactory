@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using MyFactory.MauiClient.Models.Warehouses;
+using MyFactory.MauiClient.Services.Common;
 
 namespace MyFactory.MauiClient.Services.Warehouses;
 
@@ -31,49 +32,49 @@ public sealed class WarehousesService : IWarehousesService
     public async Task<CreateWarehouseResponse?> CreateAsync(CreateWarehouseRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/warehouses", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CreateWarehouseResponse>();
     }
 
     public async Task UpdateAsync(Guid id, UpdateWarehouseRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/warehouses/{id}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task DeactivateAsync(Guid id)
     {
         var response = await _httpClient.DeleteAsync($"api/warehouses/{id}");
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task AddMaterialAsync(Guid warehouseId, AddMaterialToWarehouseRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/warehouses/{warehouseId}/materials", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task RemoveMaterialAsync(Guid warehouseId, Guid materialId)
     {
         var response = await _httpClient.DeleteAsync($"api/warehouses/{warehouseId}/materials/{materialId}");
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task UpdateMaterialQtyAsync(Guid warehouseId, Guid materialId, UpdateWarehouseMaterialQtyRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/warehouses/{warehouseId}/materials/{materialId}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task TransferMaterialsAsync(TransferMaterialsRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/warehouses/materials/transfer", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task TransferProductsAsync(TransferProductsRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/warehouses/products/transfer", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 }

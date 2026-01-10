@@ -20,7 +20,7 @@ public sealed class AddSalesOrderItemCommandHandler : IRequestHandler<AddSalesOr
         var order = await _db.SalesOrders.FirstOrDefaultAsync(x => x.Id == request.OrderId, cancellationToken)
             ?? throw new NotFoundException("Sales order not found");
         if (order.Status != SalesOrderStatus.New)
-            throw new DomainException("Only new orders can be modified.");
+            throw new DomainApplicationException("Only new orders can be modified.");
         // Check if product exists
         var product = await _db.Products.FirstOrDefaultAsync(x => x.Id == request.ProductId, cancellationToken)
             ?? throw new NotFoundException("Product not found");

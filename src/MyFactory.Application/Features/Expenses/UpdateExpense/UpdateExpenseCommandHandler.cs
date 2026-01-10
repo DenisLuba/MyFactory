@@ -23,14 +23,14 @@ public sealed class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseC
             ?? throw new NotFoundException("Expense not found");
 
         if (entity.CreatedBy != _currentUser.UserId)
-            throw new DomainException("Only the creator can update this expense.");
+            throw new DomainApplicationException("Only the creator can update this expense.");
 
         var typeExists = await _db.ExpenseTypes
             .AsNoTracking()
             .AnyAsync(x => x.Id == request.ExpenseTypeId, cancellationToken);
 
         if (!typeExists)
-            throw new DomainException("Expense type not found.");
+            throw new DomainApplicationException("Expense type not found.");
 
         entity.Update(request.ExpenseTypeId, request.ExpenseDate, request.Amount, request.Description);
         await _db.SaveChangesAsync(cancellationToken);

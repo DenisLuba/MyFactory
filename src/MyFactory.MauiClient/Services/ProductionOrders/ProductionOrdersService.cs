@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using MyFactory.MauiClient.Models.ProductionOrders;
+using MyFactory.MauiClient.Services.Common;
 
 namespace MyFactory.MauiClient.Services.ProductionOrders;
 
@@ -30,38 +31,38 @@ public sealed class ProductionOrdersService : IProductionOrdersService
     public async Task<CreateProductionOrderResponse?> CreateAsync(CreateProductionOrderRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/production-orders", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CreateProductionOrderResponse>();
     }
 
     public async Task UpdateAsync(Guid id, UpdateProductionOrderRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/production-orders/{id}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task DeleteAsync(Guid id)
     {
         var response = await _httpClient.DeleteAsync($"api/production-orders/{id}");
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task CancelAsync(Guid id)
     {
         var response = await _httpClient.PostAsync($"api/production-orders/{id}/cancel", null);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task StartStageAsync(Guid id, StartProductionStageRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/production-orders/{id}/start-stage", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task CompleteStageAsync(Guid id, CompleteProductionStageRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/production-orders/{id}/complete-stage", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task<IReadOnlyList<ProductionOrderMaterialResponse>?> GetMaterialsAsync(Guid id)
@@ -77,7 +78,7 @@ public sealed class ProductionOrdersService : IProductionOrdersService
     public async Task IssueMaterialsAsync(Guid id, IssueMaterialsToProductionRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/production-orders/{id}/materials/issue", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task<IReadOnlyList<ProductionStageSummaryResponse>?> GetStagesAsync(Guid id)
@@ -93,25 +94,25 @@ public sealed class ProductionOrdersService : IProductionOrdersService
     public async Task AddStageEmployeeAsync(Guid id, ProductionOrderStatus stage, AddProductionStageEmployeeRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/production-orders/{id}/stages/{stage}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task UpdateStageEmployeeAsync(Guid id, ProductionOrderStatus stage, Guid operationId, UpdateProductionStageEmployeeRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/production-orders/{id}/stages/{stage}/employees/{operationId}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task RemoveStageEmployeeAsync(Guid id, ProductionOrderStatus stage, Guid operationId)
     {
         var response = await _httpClient.DeleteAsync($"api/production-orders/{id}/stages/{stage}/employees/{operationId}");
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task ShipAsync(Guid id, ShipFinishedGoodsRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/production-orders/{id}/ship", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task<IReadOnlyList<ProductionOrderShipmentResponse>?> GetShipmentsAsync(Guid id)

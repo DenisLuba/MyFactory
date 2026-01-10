@@ -40,7 +40,7 @@ public sealed class TransferProductsCommandHandler
                     x => x.WarehouseId == request.FromWarehouseId &&
                          x.ProductId == item.ProductId,
                     cancellationToken)
-                ?? throw new DomainException("Product not found in source warehouse.");
+                ?? throw new DomainApplicationException("Product not found in source warehouse.");
 
             fromStock.RemoveQty(item.Qty);
 

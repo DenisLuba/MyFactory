@@ -25,7 +25,7 @@ public sealed class UpdateMaterialTypeCommandHandler : IRequestHandler<UpdateMat
             .AnyAsync(x => x.Id != request.Id && x.Name == request.Name, cancellationToken);
 
         if (nameTaken)
-            throw new DomainException("Material type with the same name already exists.");
+            throw new DomainApplicationException("Material type with the same name already exists.");
 
         entity.Update(request.Name, request.Description);
 

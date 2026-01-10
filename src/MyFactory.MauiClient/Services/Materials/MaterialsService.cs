@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using MyFactory.MauiClient.Models.Materials;
+using MyFactory.MauiClient.Services.Common;
 
 namespace MyFactory.MauiClient.Services.Materials;
 
@@ -36,7 +37,7 @@ public sealed class MaterialsService : IMaterialsService
     public async Task<Guid> CreateAsync(CreateMaterialRequest request, CancellationToken ct = default)
     {
         var response = await _httpClient.PostAsJsonAsync("/api/materials", request, ct);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync(ct);
 
         var body = await response.Content.ReadFromJsonAsync<CreateMaterialResponse>(cancellationToken: ct);
         return body?.Id ?? throw new InvalidOperationException("Invalid create material response");
@@ -45,12 +46,12 @@ public sealed class MaterialsService : IMaterialsService
     public async Task UpdateAsync(Guid id, UpdateMaterialRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"/api/materials/{id}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task DeleteAsync(Guid id, CancellationToken ct = default)
     {
         var response = await _httpClient.DeleteAsync($"/api/materials/{id}", ct);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync(ct);
     }
 }

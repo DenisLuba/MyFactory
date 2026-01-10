@@ -25,7 +25,7 @@ public sealed class AddTimesheetEntryCommandHandler
             ?? throw new NotFoundException("Employee not found");
 
         if (!employee.IsActive)
-            throw new DomainException("Cannot add timesheet entry for inactive employee.");
+            throw new DomainApplicationException("Cannot add timesheet entry for inactive employee.");
 
         var position = await _db.Positions
             .AsNoTracking()
@@ -38,7 +38,7 @@ public sealed class AddTimesheetEntryCommandHandler
             cancellationToken);
 
         if (exists)
-            throw new DomainException("Timesheet entry for this date already exists.");
+            throw new DomainApplicationException("Timesheet entry for this date already exists.");
 
         var entry = new TimesheetEntity(
             employee.Id,

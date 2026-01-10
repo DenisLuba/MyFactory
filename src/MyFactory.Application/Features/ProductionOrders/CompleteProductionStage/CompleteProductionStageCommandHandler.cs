@@ -32,7 +32,7 @@ public sealed class CompleteProductionStageCommandHandler : IRequestHandler<Comp
                 po.StartPackaging();
                 break;
             default:
-                throw new DomainException("Invalid stage for completion.");
+                throw new DomainApplicationException("Invalid stage for completion.");
         }
         await _db.SaveChangesAsync(cancellationToken);
     }

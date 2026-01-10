@@ -23,7 +23,7 @@ public sealed class DeleteExpenseCommandHandler : IRequestHandler<DeleteExpenseC
             ?? throw new NotFoundException("Expense not found");
 
         if (entity.CreatedBy != _currentUser.UserId)
-            throw new DomainException("Only the creator can delete this expense.");
+            throw new DomainApplicationException("Only the creator can delete this expense.");
 
         _db.Expenses.Remove(entity);
         await _db.SaveChangesAsync(cancellationToken);

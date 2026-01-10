@@ -23,7 +23,7 @@ public sealed class CreateMaterialTypeCommandHandler
             .AnyAsync(x => x.Name == request.Name, cancellationToken);
 
         if (exists)
-            throw new DomainException("Material type with the same name already exists.");
+            throw new DomainApplicationException("Material type with the same name already exists.");
 
         var entity = new MaterialTypeEntity(request.Name, request.Description);
         _db.MaterialTypes.Add(entity);

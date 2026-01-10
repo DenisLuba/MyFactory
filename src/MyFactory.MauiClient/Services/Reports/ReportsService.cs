@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using MyFactory.MauiClient.Models.Reports;
+using MyFactory.MauiClient.Services.Common;
 
 namespace MyFactory.MauiClient.Services.Reports;
 
@@ -25,25 +26,25 @@ public sealed class ReportsService : IReportsService
     public async Task<CalculateMonthlyFinancialReportResponse?> CalculateAsync(CalculateMonthlyFinancialReportRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/reports/monthly/calculate", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CalculateMonthlyFinancialReportResponse>();
     }
 
     public async Task RecalculateAsync(RecalculateMonthlyFinancialReportRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/reports/monthly/recalculate", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task ApproveAsync(ApproveMonthlyFinancialReportRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/reports/monthly/approve", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task CloseAsync(CloseMonthlyFinancialReportRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/reports/monthly/close", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 }

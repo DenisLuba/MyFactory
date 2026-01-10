@@ -47,7 +47,10 @@
 									Text="Удалить" />
 							</SwipeItems>
 						</SwipeView.RightItems>
-						<Grid Padding="0,8" ColumnDefinitions="*">
+						<Grid
+							Padding="0,8"
+							ColumnDefinitions="*"
+							Style="{StaticResource SelectableItemGridStyle}">
 							<Grid.GestureRecognizers>
 								<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=SuppliersCollection}}" CommandParameter="{Binding .}" />
 							</Grid.GestureRecognizers>

@@ -22,8 +22,7 @@ public sealed class RemoveMaterialCommandHandler : IRequestHandler<RemoveMateria
         if (material is null)
             throw new NotFoundException($"Material with Id {request.MaterialId} not found");
 
-        material.Deactivate();
-
+        _db.Materials.Remove(material);
         await _db.SaveChangesAsync(cancellationToken);
     }
 }

@@ -20,10 +20,10 @@ public sealed class StartSalesOrderCommandHandler : IRequestHandler<StartSalesOr
         var order = await _db.SalesOrders.FirstOrDefaultAsync(x => x.Id == request.OrderId, cancellationToken)
             ?? throw new NotFoundException("Sales order not found");
         if (order.Status != SalesOrderStatus.New)
-            throw new DomainException("Only new orders can be started.");
+            throw new DomainApplicationException("Only new orders can be started.");
         var hasItems = await _db.SalesOrderItems.AnyAsync(x => x.SalesOrderId == request.OrderId, cancellationToken);
         if (!hasItems)
-            throw new DomainException("Order must have at least one item to start.");
+            throw new DomainApplicationException("Order must have at least one item to start.");
         order.Confirm();
         await _db.SaveChangesAsync(cancellationToken);
     }

@@ -31,7 +31,7 @@ public sealed class ShipFinishedGoodsCommandHandler
 
         if (po.Status != ProductionOrderStatus.Packaging &&
             po.Status != ProductionOrderStatus.Finished)
-            throw new DomainException("Finished goods cannot be shipped at this stage.");
+            throw new DomainApplicationException("Finished goods cannot be shipped at this stage.");
 
         var soi = await _db.SalesOrderItems
             .AsNoTracking()
@@ -45,10 +45,10 @@ public sealed class ShipFinishedGoodsCommandHandler
                 x.WarehouseId == request.FromWarehouseId &&
                 x.ProductId == productId,
                 cancellationToken)
-            ?? throw new DomainException("Finished goods stock not found.");
+            ?? throw new DomainApplicationException("Finished goods stock not found.");
 
         if (stock.Qty < request.Qty)
-            throw new DomainException("Not enough finished goods in stock.");
+            throw new DomainApplicationException("Not enough finished goods in stock.");
 
         var movement = new FinishedGoodsMovementEntity(
             request.FromWarehouseId,

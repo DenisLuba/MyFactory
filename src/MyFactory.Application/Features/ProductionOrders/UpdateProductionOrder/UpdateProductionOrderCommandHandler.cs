@@ -20,7 +20,7 @@ public sealed class UpdateProductionOrderCommandHandler : IRequestHandler<Update
         var po = await _db.ProductionOrders.FirstOrDefaultAsync(x => x.Id == request.ProductionOrderId, cancellationToken)
             ?? throw new NotFoundException("Production order not found");
         if (po.Status != ProductionOrderStatus.New)
-            throw new DomainException("Only new production orders can be updated.");
+            throw new DomainApplicationException("Only new production orders can be updated.");
         po.Update(request.DepartmentId, request.QtyPlanned);
         await _db.SaveChangesAsync(cancellationToken);
     }

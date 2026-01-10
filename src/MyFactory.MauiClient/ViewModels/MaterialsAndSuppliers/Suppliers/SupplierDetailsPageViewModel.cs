@@ -1,9 +1,11 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MyFactory.MauiClient.Models.MaterialPurchaseOrders;
 using MyFactory.MauiClient.Models.Suppliers;
+using MyFactory.MauiClient.Services.MaterialPurchaseOrders;
 using MyFactory.MauiClient.Services.Suppliers;
+using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Suppliers;
 
@@ -11,6 +13,7 @@ namespace MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Suppliers;
 public partial class SupplierDetailsPageViewModel : ObservableObject
 {
     private readonly ISuppliersService _suppliersService;
+    private readonly IMaterialPurchaseOrdersService _materialPurchaseOrdersService;
 
     [ObservableProperty]
     private Guid? supplierId;
@@ -34,16 +37,41 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
     private string? errorMessage;
 
     [ObservableProperty]
+    private string? materialTypeFilter;
+
+    [ObservableProperty]
+    private string? materialNameFilter;
+
+    public ObservableCollection<string> StatusOptions { get; } = new();
+
+    [ObservableProperty]
+    private string? selectedStatus;
+
+    [ObservableProperty]
+    private DateTime? fromDateFilter;
+
+    [ObservableProperty]
+    private DateTime? toDateFilter;
+
+    [ObservableProperty]
     private SupplierPurchaseHistoryItemViewModel? selectedPurchase;
 
     public bool HasSelection => SelectedPurchase is not null;
 
     public ObservableCollection<SupplierPurchaseHistoryItemViewModel> PurchaseHistory { get; } = new();
 
-    public SupplierDetailsPageViewModel(ISuppliersService suppliersService)
+    private List<SupplierPurchaseHistoryItemViewModel> _allPurchases = new();
+
+    public SupplierDetailsPageViewModel(ISuppliersService suppliersService, IMaterialPurchaseOrdersService materialPurchaseOrdersService)
     {
         _suppliersService = suppliersService;
+        _materialPurchaseOrdersService = materialPurchaseOrdersService;
         Contacts = string.Empty;
+        StatusOptions.Add("Все");
+        StatusOptions.Add("Новый");
+        StatusOptions.Add("Подтвержден");
+        StatusOptions.Add("Получен");
+        StatusOptions.Add("Отменен");
         _ = LoadAsync();
     }
 
@@ -62,6 +90,16 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
         OnPropertyChanged(nameof(HasSelection));
     }
 
+    partial void OnMaterialTypeFilterChanged(string? value) => ApplyFilter();
+
+    partial void OnMaterialNameFilterChanged(string? value) => ApplyFilter();
+
+    partial void OnSelectedStatusChanged(string? value) => ApplyFilter();
+
+    partial void OnFromDateFilterChanged(DateTime? value) => ApplyFilter();
+
+    partial void OnToDateFilterChanged(DateTime? value) => ApplyFilter();
+
     [RelayCommand]
     public async Task LoadAsync()
     {
@@ -76,7 +114,9 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
             IsBusy = true;
             ErrorMessage = null;
             PurchaseHistory.Clear();
+            _allPurchases.Clear();
             SelectedPurchase = null;
+            SelectedStatus = StatusOptions.FirstOrDefault();
 
             var details = await _suppliersService.GetDetailsAsync(SupplierId.Value);
             if (details is null)
@@ -87,7 +127,9 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
             Contacts = string.Empty;
 
             foreach (var item in details.Purchases.OrderByDescending(p => p.Date))
-                PurchaseHistory.Add(new SupplierPurchaseHistoryItemViewModel(item));
+                _allPurchases.Add(new SupplierPurchaseHistoryItemViewModel(item));
+
+            ApplyFilter();
         }
         catch (Exception ex)
         {
@@ -145,12 +187,6 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task CreateOrderAsync()
-    {
-        await AddPurchaseAsync();
-    }
-
-    [RelayCommand]
     private async Task EditOrderAsync()
     {
         if (SelectedPurchase is null)
@@ -164,9 +200,87 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task DeleteOrderAsync()
+    {
+        if (SelectedPurchase is null)
+            return;
+        var confirm = await Shell.Current.DisplayAlert("Подтвердите удаление", "Вы уверены, что хотите удалить этот заказ?", "Да", "Нет");
+        if (!confirm)
+            return;
+        try
+        {
+            IsBusy = true;
+            ErrorMessage = null;
+
+            await _materialPurchaseOrdersService.CancelAsync(SelectedPurchase.OrderId);
+
+            IsBusy = false;
+            await LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
     private async Task BackAsync()
     {
         await Shell.Current.GoToAsync("..");
+    }
+
+    private void ApplyFilter()
+    {
+        PurchaseHistory.Clear();
+
+        var typeFilter = MaterialTypeFilter?.Trim();
+        var nameFilter = MaterialNameFilter?.Trim();
+        var statusFilter = SelectedStatus?.Trim();
+        if (string.Equals(statusFilter, "Все", StringComparison.InvariantCultureIgnoreCase))
+            statusFilter = null;
+        var fromDate = FromDateFilter?.Date;
+        var toDate = ToDateFilter?.Date;
+
+        foreach (var item in _allPurchases)
+        {
+            if (!MatchesFilter(item, typeFilter, nameFilter, statusFilter, fromDate, toDate))
+                continue;
+
+            PurchaseHistory.Add(item);
+        }
+    }
+
+    private static bool MatchesFilter(
+        SupplierPurchaseHistoryItemViewModel item,
+        string? typeFilter,
+        string? nameFilter,
+        string? statusFilter,
+        DateTime? fromDate,
+        DateTime? toDate)
+    {
+        var comparison = StringComparison.InvariantCultureIgnoreCase;
+
+        if (!string.IsNullOrWhiteSpace(typeFilter) && item.MaterialType?.Contains(typeFilter, comparison) != true)
+            return false;
+
+        if (!string.IsNullOrWhiteSpace(nameFilter) && item.MaterialName?.Contains(nameFilter, comparison) != true)
+            return false;
+
+        if (!string.IsNullOrWhiteSpace(statusFilter) && !string.Equals(item.StatusText, statusFilter, comparison))
+            return false;
+
+        if (fromDate.HasValue && item.Date.Date < fromDate.Value)
+            return false;
+
+        if (toDate.HasValue && item.Date.Date > toDate.Value)
+            return false;
+
+        return true;
     }
 
     public sealed class SupplierPurchaseHistoryItemViewModel

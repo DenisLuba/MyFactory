@@ -33,7 +33,7 @@ public sealed class CreatePositionCommandHandler
                 cancellationToken);
 
             if (codeExists)
-                throw new DomainException("Position with the same code already exists.");
+                throw new DomainApplicationException("Position with the same code already exists.");
         }
 
         var position = new PositionEntity(

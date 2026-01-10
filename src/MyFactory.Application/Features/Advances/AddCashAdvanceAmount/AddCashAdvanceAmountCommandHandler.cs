@@ -18,14 +18,14 @@ public sealed class AddCashAdvanceAmountCommandHandler : IRequestHandler<AddCash
     public async Task Handle(AddCashAdvanceAmountCommand request, CancellationToken cancellationToken)
     {
         if (request.Amount <= 0)
-            throw new DomainException("Amount must be greater than zero.");
+            throw new DomainApplicationException("Amount must be greater than zero.");
 
         var advance = await _db.CashAdvances
             .FirstOrDefaultAsync(x => x.Id == request.CashAdvanceId, cancellationToken)
             ?? throw new NotFoundException("Cash advance not found");
 
         if (advance.Status == CashAdvanceStatus.Returned)
-            throw new DomainException("Cash advance is closed.");
+            throw new DomainApplicationException("Cash advance is closed.");
 
         advance.Amount += request.Amount;
 

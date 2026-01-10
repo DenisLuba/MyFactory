@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using MyFactory.Application.Common.Interfaces;
 using MyFactory.Application.Common.Exceptions;
+using MyFactory.Application.Common.Interfaces;
 using MyFactory.Domain.Entities.Inventory;
 
 namespace MyFactory.Application.Features.MaterialPurchaseOrders.Receive;
@@ -28,56 +28,82 @@ public sealed class ReceiveMaterialPurchaseOrderCommandHandler
         if (order is null)
             throw new NotFoundException("Purchase order not found");
 
-        // 1. Меняем статус заказа
-        order.Receive();
+        var orderItems = order.MaterialPurchaseItems.ToDictionary(i => i.Id);
 
-        // 2. Создаём движение (приход на склад)
-        var movement = new InventoryMovementEntity(
-            movementType: InventoryMovementType.Receipt,
-            fromWarehouseId: null,
-            toWarehouseId: request.WarehouseId,
-            toDepartmentId: null,
-            productionOrderId: null,
-            createdBy: _currentUser.UserId
-        );
+        // validate items coverage
+        if (request.Items.Count != orderItems.Count)
+            throw new DomainApplicationException("All order items must be allocated to complete receipt.");
 
-        _db.InventoryMovements.Add(movement);
-
-        // 3. Для каждого item — движение + обновление склада
-        foreach (var item in order.MaterialPurchaseItems)
+        foreach (var reqItem in request.Items)
         {
-            // 3.1 Movement item
-            var movementItem = new InventoryMovementItemEntity(
-                movementId: movement.Id,
-                materialId: item.MaterialId,
-                qty: item.Qty,
-                unitCost: item.UnitPrice
-            );
+            if (!orderItems.TryGetValue(reqItem.ItemId, out var orderItem))
+                throw new NotFoundException($"Order item {reqItem.ItemId} not found in order");
 
-            _db.InventoryMovementItems.Add(movementItem);
+            var allocated = reqItem.Allocations.Sum(a => a.Qty);
+            if (allocated != orderItem.Qty)
+                throw new DomainApplicationException("Allocated quantity must equal ordered quantity for each item.");
+        }
 
-            // 3.2 Обновление склада
-            var stock = await _db.WarehouseMaterials
-                .FirstOrDefaultAsync(
-                    wm => wm.WarehouseId == request.WarehouseId
-                    && wm.MaterialId == item.MaterialId,
-                    cancellationToken);
+        var createdBy = request.ReceivedByUserId != Guid.Empty
+            ? request.ReceivedByUserId
+            : _currentUser.UserId;
 
-            if (stock is null)
+        var movements = new Dictionary<Guid, InventoryMovementEntity>();
+
+        foreach (var reqItem in request.Items)
+        {
+            var orderItem = orderItems[reqItem.ItemId];
+
+            foreach (var alloc in reqItem.Allocations)
             {
-                stock = new WarehouseMaterialEntity(
-                    warehouseId: request.WarehouseId,
-                    materialId: item.MaterialId,
-                    qty: item.Qty
+                if (!movements.TryGetValue(alloc.WarehouseId, out var movement))
+                {
+                    movement = new InventoryMovementEntity(
+                        movementType: InventoryMovementType.Receipt,
+                        fromWarehouseId: null,
+                        toWarehouseId: alloc.WarehouseId,
+                        toDepartmentId: null,
+                        productionOrderId: null,
+                        createdBy: createdBy);
+
+                    _db.InventoryMovements.Add(movement);
+                    movements[alloc.WarehouseId] = movement;
+                }
+
+                var movementItem = new InventoryMovementItemEntity(
+                    movementId: movement.Id,
+                    materialId: orderItem.MaterialId,
+                    qty: alloc.Qty,
+                    unitCost: orderItem.UnitPrice
                 );
 
-                _db.WarehouseMaterials.Add(stock);
-            }
-            else
-            {
-                stock.AddQty(item.Qty);
+                _db.InventoryMovementItems.Add(movementItem);
+
+                var stock = await _db.WarehouseMaterials
+                    .FirstOrDefaultAsync(
+                        wm => wm.WarehouseId == alloc.WarehouseId
+                        && wm.MaterialId == orderItem.MaterialId,
+                        cancellationToken);
+
+                if (stock is null)
+                {
+                    stock = new WarehouseMaterialEntity(
+                        warehouseId: alloc.WarehouseId,
+                        materialId: orderItem.MaterialId,
+                        qty: alloc.Qty
+                    );
+
+                    _db.WarehouseMaterials.Add(stock);
+                }
+                else
+                {
+                    stock.AddQty(alloc.Qty);
+                }
             }
         }
+
+        // Set order status after successful allocations
+        order.Receive();
 
         await _db.SaveChangesAsync(cancellationToken);
     }

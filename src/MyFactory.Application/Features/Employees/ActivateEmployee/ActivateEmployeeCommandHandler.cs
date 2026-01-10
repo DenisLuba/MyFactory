@@ -27,7 +27,7 @@ public sealed class ActivateEmployeeCommandHandler
             return;
 
         if (employee.FiredAt.HasValue && request.HiredAt < employee.FiredAt.Value)
-            throw new DomainException("Rehire date cannot be earlier than fired date.");
+            throw new DomainApplicationException("Rehire date cannot be earlier than fired date.");
 
         employee.Rehire(request.HiredAt);
 

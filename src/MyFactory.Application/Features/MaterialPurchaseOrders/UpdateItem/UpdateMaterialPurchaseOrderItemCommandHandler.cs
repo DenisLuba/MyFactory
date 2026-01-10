@@ -25,7 +25,7 @@ public sealed class UpdateMaterialPurchaseOrderItemCommandHandler
             throw new NotFoundException("Purchase order item not found");
 
         if (item.MaterialPurchaseOrder is null)
-            throw new DomainException("Purchase order for item not loaded");
+            throw new DomainApplicationException("Purchase order for item not loaded");
 
         item.UpdateQty(request.Qty, item.MaterialPurchaseOrder);
         item.UpdateUnitPrice(request.UnitPrice, item.MaterialPurchaseOrder);

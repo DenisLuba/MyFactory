@@ -89,8 +89,18 @@ public class MaterialPurchaseOrdersController : ControllerBase
         await _mediator.Send(new ReceiveMaterialPurchaseOrderCommand
         {
             PurchaseOrderId = purchaseOrderId,
-            WarehouseId = req.WarehouseId,
-            ReceivedByUserId = req.ReceivedByUserId
+            ReceivedByUserId = req.ReceivedByUserId,
+            Items = (req.Items ?? Array.Empty<ReceiveMaterialPurchaseOrderItemRequest>())
+                .Select(i => new ReceiveMaterialPurchaseOrderItem
+                {
+                    ItemId = i.ItemId,
+                    Allocations = i.Allocations
+                        .Select(a => new ReceiveMaterialPurchaseOrderAllocation
+                        {
+                            WarehouseId = a.WarehouseId,
+                            Qty = a.Qty
+                        }).ToList()
+                }).ToList()
         });
 
         return NoContent();

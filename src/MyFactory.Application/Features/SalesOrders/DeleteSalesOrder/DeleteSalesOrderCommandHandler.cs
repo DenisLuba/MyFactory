@@ -21,7 +21,7 @@ public sealed class DeleteSalesOrderCommandHandler : IRequestHandler<DeleteSales
             ?? throw new NotFoundException("Sales order not found");
 
         if (order.Status != SalesOrderStatus.New)
-            throw new DomainException("Only new orders can be deleted.");
+            throw new DomainApplicationException("Only new orders can be deleted.");
 
         var items = await _db.SalesOrderItems.Where(x => x.SalesOrderId == request.OrderId).ToListAsync(cancellationToken);
         _db.SalesOrderItems.RemoveRange(items);

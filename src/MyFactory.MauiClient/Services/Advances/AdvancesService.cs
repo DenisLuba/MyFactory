@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Json;
 using MyFactory.MauiClient.Models.Advances;
+using MyFactory.MauiClient.Services.Common;
 
 namespace MyFactory.MauiClient.Services.Advances;
 
@@ -45,33 +46,33 @@ public sealed class AdvancesService : IAdvancesService
     public async Task<CreateCashAdvanceResponse?> IssueAsync(CreateCashAdvanceRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/advances/issue", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CreateCashAdvanceResponse>();
     }
 
     public async Task AddAmountAsync(Guid cashAdvanceId, AddCashAdvanceAmountRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/advances/{cashAdvanceId}/amount", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task<CreateCashAdvanceExpenseResponse?> AddExpenseAsync(Guid cashAdvanceId, CreateCashAdvanceExpenseRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/advances/{cashAdvanceId}/expenses", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CreateCashAdvanceExpenseResponse>();
     }
 
     public async Task<CreateCashAdvanceReturnResponse?> AddReturnAsync(Guid cashAdvanceId, CreateCashAdvanceReturnRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/advances/{cashAdvanceId}/returns", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CreateCashAdvanceReturnResponse>();
     }
 
     public async Task CloseAsync(Guid cashAdvanceId)
     {
         var response = await _httpClient.PostAsync($"api/advances/{cashAdvanceId}/close", null);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 }

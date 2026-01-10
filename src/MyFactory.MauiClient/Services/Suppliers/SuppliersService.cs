@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using MyFactory.MauiClient.Models.Suppliers;
+using MyFactory.MauiClient.Services.Common;
 
 namespace MyFactory.MauiClient.Services.Suppliers;
 
@@ -29,19 +30,19 @@ public sealed class SuppliersService : ISuppliersService
     public async Task<CreateSupplierResponse?> CreateAsync(CreateSupplierRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/suppliers", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CreateSupplierResponse>();
     }
 
     public async Task UpdateAsync(Guid id, UpdateSupplierRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/suppliers/{id}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task DeleteAsync(Guid id)
     {
         var response = await _httpClient.DeleteAsync($"api/suppliers/{id}");
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 }

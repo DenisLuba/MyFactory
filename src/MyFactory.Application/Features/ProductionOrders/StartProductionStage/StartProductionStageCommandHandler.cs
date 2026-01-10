@@ -37,7 +37,7 @@ public sealed class StartProductionStageCommandHandler
                 break;
 
             default:
-                throw new DomainException(
+                throw new DomainApplicationException(
                     $"Cannot start stage {request.TargetStatus} from status {po.Status}");
         }
 

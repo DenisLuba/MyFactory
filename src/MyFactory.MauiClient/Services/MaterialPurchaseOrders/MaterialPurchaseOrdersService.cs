@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using MyFactory.MauiClient.Models.MaterialPurchaseOrders;
+using MyFactory.MauiClient.Services.Common;
 
 namespace MyFactory.MauiClient.Services.MaterialPurchaseOrders;
 
@@ -15,26 +16,26 @@ public sealed class MaterialPurchaseOrdersService : IMaterialPurchaseOrdersServi
     public async Task<CreateMaterialPurchaseOrderResponse?> CreateAsync(CreateMaterialPurchaseOrderRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/material-purchase-orders", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CreateMaterialPurchaseOrderResponse>();
     }
 
     public async Task AddItemAsync(Guid purchaseOrderId, AddMaterialPurchaseOrderItemRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/material-purchase-orders/{purchaseOrderId}/items", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task ConfirmAsync(Guid purchaseOrderId)
     {
         var response = await _httpClient.PostAsync($"api/material-purchase-orders/{purchaseOrderId}/confirm", null);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task ReceiveAsync(Guid purchaseOrderId, ReceiveMaterialPurchaseOrderRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/material-purchase-orders/{purchaseOrderId}/receive", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task<IReadOnlyList<SupplierPurchaseOrderListItemResponse>?> GetBySupplierAsync(Guid supplierId)
@@ -52,18 +53,18 @@ public sealed class MaterialPurchaseOrdersService : IMaterialPurchaseOrdersServi
     public async Task UpdateItemAsync(Guid itemId, UpdateMaterialPurchaseOrderItemRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/material-purchase-orders/items/{itemId}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task RemoveItemAsync(Guid itemId)
     {
         var response = await _httpClient.DeleteAsync($"api/material-purchase-orders/items/{itemId}");
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task CancelAsync(Guid purchaseOrderId)
     {
         var response = await _httpClient.PostAsync($"api/material-purchase-orders/{purchaseOrderId}/cancel", null);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 }

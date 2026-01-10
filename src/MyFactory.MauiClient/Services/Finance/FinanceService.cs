@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Net.Http.Json;
 using System.Web;
 using MyFactory.MauiClient.Models.Finance;
+using MyFactory.MauiClient.Services.Common;
 
 namespace MyFactory.MauiClient.Services.Finance;
 
@@ -47,25 +48,25 @@ public sealed class FinanceService : IFinanceService
     public async Task CalculateDailyAccrualAsync(CalculateDailyPayrollAccrualRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/finance/payroll/accruals/calculate/daily", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task CalculatePeriodAccrualsAsync(CalculatePayrollAccrualsForPeriodRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/finance/payroll/accruals/calculate/period", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task AdjustAccrualAsync(Guid accrualId, AdjustPayrollAccrualRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/finance/payroll/accruals/{accrualId}/adjust", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task<CreatePayrollPaymentResponse?> CreatePayrollPaymentAsync(CreatePayrollPaymentRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/finance/payroll/payments", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CreatePayrollPaymentResponse>();
     }
 }

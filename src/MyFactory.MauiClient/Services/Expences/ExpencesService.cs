@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Net.Http.Json;
 using System.Web;
 using MyFactory.MauiClient.Models.Expences;
+using MyFactory.MauiClient.Services.Common;
 
 namespace MyFactory.MauiClient.Services.Expences;
 
@@ -31,19 +32,19 @@ public sealed class ExpencesService : IExpencesService
     public async Task<CreateExpenseResponse?> CreateAsync(CreateExpenseRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/expences", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CreateExpenseResponse>();
     }
 
     public async Task UpdateAsync(Guid id, UpdateExpenseRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/expences/{id}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task DeleteAsync(Guid id)
     {
         var response = await _httpClient.DeleteAsync($"api/expences/{id}");
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 }

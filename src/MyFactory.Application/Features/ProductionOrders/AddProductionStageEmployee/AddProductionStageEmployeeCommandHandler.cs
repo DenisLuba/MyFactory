@@ -20,7 +20,7 @@ public sealed class AddProductionStageEmployeeCommandHandler : IRequestHandler<A
         var po = await _db.ProductionOrders.FirstOrDefaultAsync(x => x.Id == request.ProductionOrderId, cancellationToken)
             ?? throw new NotFoundException("Production order not found");
         if (po.Status != request.Stage)
-            throw new DomainException("Cannot add operation: stage does not match order status.");
+            throw new DomainApplicationException("Cannot add operation: stage does not match order status.");
 
         //var stageQty = request.QtyCompleted;
         //var stage = MapStage(request.Stage);
@@ -29,7 +29,7 @@ public sealed class AddProductionStageEmployeeCommandHandler : IRequestHandler<A
         if (request.Stage == ProductionOrderStatus.Cutting)
         {
             if (po.QtyCut + request.QtyCompleted > po.QtyPlanned)
-                throw new DomainException("Cannot cut more than planned.");
+                throw new DomainApplicationException("Cannot cut more than planned.");
             var op = new CuttingOperationEntity(request.ProductionOrderId, request.EmployeeId, request.QtyPlanned, request.QtyCompleted, request.Date);
             _db.CuttingOperations.Add(op);
             po.AddCut(request.QtyCompleted);
@@ -37,7 +37,7 @@ public sealed class AddProductionStageEmployeeCommandHandler : IRequestHandler<A
         else if (request.Stage == ProductionOrderStatus.Sewing)
         {
             if (po.QtySewn + request.QtyCompleted > po.QtyCut)
-                throw new DomainException("Cannot sew more than cut.");
+                throw new DomainApplicationException("Cannot sew more than cut.");
             var op = new SewingOperationEntity(request.ProductionOrderId, request.EmployeeId, request.QtyPlanned, request.QtyCompleted, request.HoursWorked!.Value, request.Date);
             _db.SewingOperations.Add(op);
             po.AddSewn(request.QtyCompleted);
@@ -45,14 +45,14 @@ public sealed class AddProductionStageEmployeeCommandHandler : IRequestHandler<A
         else if (request.Stage == ProductionOrderStatus.Packaging)
         {
             if (po.QtyPacked + request.QtyCompleted > po.QtySewn)
-                throw new DomainException("Cannot pack more than sewn.");
+                throw new DomainApplicationException("Cannot pack more than sewn.");
             var op = new PackagingOperationEntity(request.ProductionOrderId, request.EmployeeId, request.QtyPlanned, request.QtyCompleted, request.Date);
             _db.PackagingOperations.Add(op);
             po.AddPacked(request.QtyCompleted);
         }
         else
         {
-            throw new DomainException("Invalid stage for operation.");
+            throw new DomainApplicationException("Invalid stage for operation.");
         }
 
         //var departmentId = po.DepartmentId;

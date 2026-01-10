@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using System.Web;
 using MyFactory.MauiClient.Models.Employees;
+using MyFactory.MauiClient.Services.Common;
 
 namespace MyFactory.MauiClient.Services.Employees;
 
@@ -45,26 +46,26 @@ public sealed class EmployeesService : IEmployeesService
     public async Task<CreateEmployeeResponse?> CreateAsync(CreateEmployeeRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/employees", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CreateEmployeeResponse>();
     }
 
     public async Task UpdateAsync(Guid id, UpdateEmployeeRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/employees/{id}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task ActivateAsync(Guid id, ActivateEmployeeRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/employees/{id}/activate", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task DeactivateAsync(Guid id, DeactivateEmployeeRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/employees/{id}/deactivate", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task<IReadOnlyList<EmployeeProductionAssignmentResponse>?> GetAssignmentsAsync(Guid id)
@@ -103,19 +104,19 @@ public sealed class EmployeesService : IEmployeesService
     public async Task<AddTimesheetEntryResponse?> AddTimesheetEntryAsync(Guid id, AddTimesheetEntryRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/employees/{id}/timesheet", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<AddTimesheetEntryResponse>();
     }
 
     public async Task UpdateTimesheetEntryAsync(Guid entryId, UpdateTimesheetEntryRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/employees/timesheet/{entryId}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task RemoveTimesheetEntryAsync(Guid entryId)
     {
         var response = await _httpClient.DeleteAsync($"api/employees/timesheet/{entryId}");
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 }

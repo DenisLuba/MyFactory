@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using MyFactory.MauiClient.Models.Products;
+using MyFactory.MauiClient.Services.Common;
 
 namespace MyFactory.MauiClient.Services.Products;
 
@@ -32,39 +33,39 @@ public sealed class ProductsService : IProductsService
     public async Task<CreateProductResponse?> CreateAsync(CreateProductRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/products", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CreateProductResponse>();
     }
 
     public async Task UpdateAsync(Guid id, UpdateProductRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/products/{id}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task<AddProductMaterialResponse?> AddMaterialAsync(Guid productId, AddProductMaterialRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/products/{productId}/materials", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<AddProductMaterialResponse>();
     }
 
     public async Task UpdateMaterialAsync(Guid productMaterialId, UpdateProductMaterialRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/products/materials/{productMaterialId}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task RemoveMaterialAsync(Guid productMaterialId)
     {
         var response = await _httpClient.DeleteAsync($"api/products/materials/{productMaterialId}");
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task SetProductionCostsAsync(Guid productId, SetProductProductionCostsRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/products/{productId}/production-costs", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task<IReadOnlyList<ProductImageFileResponse>?> GetImagesAsync(Guid productId)
@@ -93,13 +94,13 @@ public sealed class ProductsService : IProductsService
         };
 
         using var response = await _httpClient.PostAsync($"api/products/{productId}/images", form, cancellationToken);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync(cancellationToken);
         return await response.Content.ReadFromJsonAsync<Guid>(cancellationToken: cancellationToken);
     }
 
     public async Task DeleteImageAsync(Guid imageId)
     {
         var response = await _httpClient.DeleteAsync($"api/products/images/{imageId}");
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 }

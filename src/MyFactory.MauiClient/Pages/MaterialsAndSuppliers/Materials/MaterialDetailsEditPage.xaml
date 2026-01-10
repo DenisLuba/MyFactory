@@ -107,7 +107,8 @@
 							<Grid
 								Padding="0,6"
 								ColumnDefinitions="*,120,80,120"
-								ColumnSpacing="8">
+								ColumnSpacing="8"
+								Style="{StaticResource SelectableItemGridStyle}">
 								<Grid.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding BindingContext.EditPurchaseCommand, Source={x:Reference Name=PurchaseHistoryEditCollection}}" CommandParameter="{Binding .}" />
 								</Grid.GestureRecognizers>
@@ -115,15 +116,16 @@
 									ItemDisplayBinding="{Binding Name}"
 									ItemsSource="{Binding SupplierOptions}"
 									SelectedItem="{Binding Supplier}" />
-								<HorizontalStackLayout Grid.Column="1" HorizontalOptions="End" Spacing="4">
+								<HorizontalStackLayout
+									Grid.Column="1"
+									HorizontalOptions="End"
+									Spacing="4">
 									<Entry
-										WidthRequest="80"
 										HorizontalTextAlignment="End"
 										Keyboard="Numeric"
-										Text="{Binding Qty}" />
-									<Label
-										VerticalTextAlignment="Center"
-										Text="{Binding BindingContext.UnitCode, Source={x:Reference Name=PurchaseHistoryEditCollection}}" />
+										Text="{Binding Qty}"
+										WidthRequest="80" />
+									<Label Text="{Binding BindingContext.UnitCode, Source={x:Reference Name=PurchaseHistoryEditCollection}}" VerticalTextAlignment="Center" />
 								</HorizontalStackLayout>
 								<Entry
 									Grid.Column="2"

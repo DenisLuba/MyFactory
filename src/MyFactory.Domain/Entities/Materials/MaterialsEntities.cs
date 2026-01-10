@@ -189,7 +189,7 @@ public class MaterialPurchaseOrderEntity : AuditableEntity
     public void EnsureEditable()
     {
         if (Status == PurchaseOrderStatus.Received || Status == PurchaseOrderStatus.Cancelled)
-            throw new DomainException("Only new orders can be modified.");
+            throw new DomainException("Only new or confirmed orders can be modified.");
     }
 
     public static MaterialPurchaseOrderEntity Create(Guid supplierId, DateTime orderDate)

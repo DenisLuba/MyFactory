@@ -25,7 +25,7 @@ public sealed class UpdateExpenseTypeCommandHandler : IRequestHandler<UpdateExpe
             .AnyAsync(x => x.Id != request.Id && x.Name == request.Name, cancellationToken);
 
         if (nameTaken)
-            throw new DomainException("Expense type with the same name already exists.");
+            throw new DomainApplicationException("Expense type with the same name already exists.");
 
         entity.Update(request.Name, request.Description);
         await _db.SaveChangesAsync(cancellationToken);

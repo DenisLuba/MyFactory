@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using MyFactory.MauiClient.Models.PayrollRules;
+using MyFactory.MauiClient.Services.Common;
 
 namespace MyFactory.MauiClient.Services.PayrollRules;
 
@@ -25,19 +26,19 @@ public sealed class PayrollRulesService : IPayrollRulesService
     public async Task<CreatePayrollRuleResponse?> CreateAsync(CreatePayrollRuleRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/payroll-rules", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CreatePayrollRuleResponse>();
     }
 
     public async Task UpdateAsync(Guid id, UpdatePayrollRuleRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/payroll-rules/{id}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task DeleteAsync(Guid id)
     {
         var response = await _httpClient.DeleteAsync($"api/payroll-rules/{id}");
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 }

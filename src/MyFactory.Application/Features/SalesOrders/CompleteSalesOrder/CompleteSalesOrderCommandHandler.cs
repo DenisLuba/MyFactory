@@ -22,7 +22,7 @@ public sealed class CompleteSalesOrderCommandHandler : IRequestHandler<CompleteS
         var order = await _db.SalesOrders.FirstOrDefaultAsync(x => x.Id == request.OrderId, cancellationToken)
             ?? throw new NotFoundException("Sales order not found");
         if (order.Status != SalesOrderStatus.Confirmed)
-            throw new DomainException("Only confirmed orders can be completed.");
+            throw new DomainApplicationException("Only confirmed orders can be completed.");
         var orderedQty = await _db.SalesOrderItems.Where(x => x.SalesOrderId == request.OrderId).SumAsync(x => x.QtyOrdered, cancellationToken);
         var shippedQty = await 
         (
@@ -38,7 +38,7 @@ public sealed class CompleteSalesOrderCommandHandler : IRequestHandler<CompleteS
         ).SumAsync(cancellationToken);
 
         if (shippedQty < orderedQty)
-            throw new DomainException("Cannot complete order: not all items shipped.");
+            throw new DomainApplicationException("Cannot complete order: not all items shipped.");
         order.Fulfill();
         await _db.SaveChangesAsync(cancellationToken);
     }

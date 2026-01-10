@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using MyFactory.MauiClient.Models.Customers;
+using MyFactory.MauiClient.Services.Common;
 
 namespace MyFactory.MauiClient.Services.Customers;
 
@@ -30,19 +31,19 @@ public sealed class CustomersService : ICustomersService
     public async Task<CreateCustomerResponse?> CreateAsync(CreateCustomerRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/customers", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
         return await response.Content.ReadFromJsonAsync<CreateCustomerResponse>();
     }
 
     public async Task UpdateAsync(Guid id, UpdateCustomerRequest request)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/customers/{id}", request);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 
     public async Task DeactivateAsync(Guid id)
     {
         var response = await _httpClient.DeleteAsync($"api/customers/{id}");
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithProblemAsync();
     }
 }

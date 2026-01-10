@@ -27,7 +27,7 @@ public sealed class RecalculateMonthlyFinancialReportCommandHandler
             ?? throw new NotFoundException("Monthly financial report not found");
 
         if (report.Status == MonthlyReportStatus.Closed)
-            throw new DomainException("Monthly report is closed and cannot be recalculated.");
+            throw new DomainApplicationException("Monthly report is closed and cannot be recalculated.");
 
         var (revenue, payroll, materials, other) = await CalculateAggregates(request.Year, request.Month, cancellationToken);
 
