@@ -29,7 +29,7 @@
 			<Entry
 				IsPassword="True"
 				Placeholder="Повторите пароль"
-				ReturnCommand="{Binding NavigateBackCommand}"
+				ReturnCommand="{Binding RegisterCommand}"
 				Text="{Binding ConfirmPassword}" />
 			<Button Command="{Binding RegisterCommand}" Text="Зарегистрироваться" />
 			<ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />

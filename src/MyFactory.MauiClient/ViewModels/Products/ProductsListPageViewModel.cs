@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MyFactory.MauiClient.Models.Products;
 using MyFactory.MauiClient.Services.Products;
+using MyFactory.MauiClient.Pages.Products;
 
 namespace MyFactory.MauiClient.ViewModels.Products;
 
@@ -60,7 +61,7 @@ public partial class ProductsListPageViewModel : ObservableObject
     [RelayCommand]
     private async Task AddAsync()
     {
-        await Shell.Current.GoToAsync("ProductEditPage");
+        await Shell.Current.GoToAsync(nameof(ProductEditPage));
     }
 
     [RelayCommand]
@@ -69,9 +70,9 @@ public partial class ProductsListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.GoToAsync("ProductDetailsPage", new Dictionary<string, object>
+        await Shell.Current.GoToAsync(nameof(ProductDetailsPage), new Dictionary<string, object>
         {
-            { "ProductId", item.Id }
+            { "ProductId", item.Id.ToString() }
         });
     }
 
@@ -81,9 +82,9 @@ public partial class ProductsListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.GoToAsync("ProductEditPage", new Dictionary<string, object>
+        await Shell.Current.GoToAsync(nameof(ProductEditPage), new Dictionary<string, object>
         {
-            { "ProductId", item.Id }
+            { "ProductId", item.Id.ToString() }
         });
     }
 

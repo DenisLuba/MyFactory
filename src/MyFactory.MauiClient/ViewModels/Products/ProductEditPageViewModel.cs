@@ -11,7 +11,7 @@ using MyFactory.MauiClient.Services.Products;
 
 namespace MyFactory.MauiClient.ViewModels.Products;
 
-[QueryProperty(nameof(ProductId), "ProductId")]
+[QueryProperty(nameof(ProductIdParameter), "ProductId")]
 public partial class ProductEditPageViewModel : ObservableObject
 {
     private readonly IProductsService _productsService;
@@ -19,6 +19,9 @@ public partial class ProductEditPageViewModel : ObservableObject
 
     [ObservableProperty]
     private Guid? productId;
+
+    [ObservableProperty]
+    private string? productIdParameter;
 
     [ObservableProperty]
     private string? name;
@@ -47,6 +50,11 @@ public partial class ProductEditPageViewModel : ObservableObject
     partial void OnProductIdChanged(Guid? value)
     {
         _ = LoadAsync();
+    }
+
+    partial void OnProductIdParameterChanged(string? value)
+    {
+        ProductId = Guid.TryParse(value, out var id) ? id : null;
     }
 
     [RelayCommand]

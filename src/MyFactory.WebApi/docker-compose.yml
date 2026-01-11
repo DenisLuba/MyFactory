@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16
+    container_name: pg-local
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: qwerty!23
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    restart: unless-stopped
+
+  webapi:
+    image: delubis/myfactory-webapi:latest
+    container_name: myfactory-webapi
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:80
+      ConnectionStrings__Default: Host=db;Port=5432;Database=mydb;Username=admin;Password=qwerty!23;
+    depends_on:
+      - db
+    ports:
+      - "5000:80"
+    restart: unless-stopped
+
+volumes:
+  pgdata:

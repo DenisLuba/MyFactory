@@ -70,8 +70,8 @@ public static class MauiProgram
         builder.Services.AddSingleton(sp =>
         {
             var baseAddress = DeviceInfo.Platform == DevicePlatform.Android
-                ? new Uri("http://10.0.2.2:5237")
-                : new Uri("http://localhost:5237");
+                ? new Uri("http://10.0.2.2:5000")
+                : new Uri("http://localhost:5000");
 
             var handler = new HttpClientHandler
             {
