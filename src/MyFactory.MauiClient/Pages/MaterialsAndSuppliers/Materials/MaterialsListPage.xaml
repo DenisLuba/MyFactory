@@ -8,7 +8,7 @@
 
 	<Grid
 		Padding="16"
-		RowDefinitions="Auto,Auto,*"
+		RowDefinitions="Auto,*"
 		RowSpacing="12">
 		<Grid
 			Grid.Row="0"
@@ -25,27 +25,29 @@
 				Text="+ Добавить" />
 		</Grid>
 
-		<Grid
-			Grid.Row="1"
-			Padding="0,4"
-			ColumnDefinitions="*,*,*"
-			ColumnSpacing="8">
-			<Label FontAttributes="Bold" Text="ТИП МАТЕРИАЛА" />
-			<Label
-				Grid.Column="1"
-				FontAttributes="Bold"
-				Text="МАТЕРИАЛ" />
-			<Label
-				Grid.Column="2"
-				FontAttributes="Bold"
-				Text="ОСТАТОК" />
-		</Grid>
 
-		<Border Grid.Row="2">
+
+		<Border Grid.Row="1">
 			<CollectionView
 				x:Name="MaterialsListCollection"
 				ItemsSource="{Binding FilteredMaterials}"
 				SelectionMode="None">
+				<CollectionView.Header>
+					<Grid
+						Padding="0,4"
+						ColumnDefinitions="0.25*,0.6*,0.15*"
+						ColumnSpacing="8">
+						<Label FontAttributes="Bold" Text="Тип материала" />
+						<Label
+							Grid.Column="1"
+							FontAttributes="Bold"
+							Text="Материал" />
+						<Label
+							Grid.Column="2"
+							FontAttributes="Bold"
+							Text="Остаток" />
+					</Grid>
+				</CollectionView.Header>
 				<CollectionView.ItemTemplate>
 					<DataTemplate x:DataType="view_model:MaterialsListPageViewModel+MaterialItemViewModel">
 						<SwipeView>
@@ -65,7 +67,7 @@
 							</SwipeView.RightItems>
 							<Grid
 								Padding="0,8"
-								ColumnDefinitions="*,*,*"
+								ColumnDefinitions="0.25*,0.6*,0.15*"
 								ColumnSpacing="8"
 								Style="{StaticResource SelectableItemGridStyle}">
 								<Grid.GestureRecognizers>

@@ -1,10 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-	x:Class="MyFactory.MauiClient.Pages.Authentication.LoginPage"
+	x:Class="MyFactory.MauiClient.Pages.Authentication.RegisterPage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Authentication"
-	Title="Вход"
-	x:DataType="view_model:LoginPageViewModel"
+	Title="Регистрация"
+	x:DataType="view_model:RegisterPageViewModel"
 	NavigationPage.HasBackButton="False">
 	<ScrollView>
 		<VerticalStackLayout
@@ -15,25 +16,28 @@
 				FontAttributes="Bold"
 				FontSize="24"
 				HorizontalTextAlignment="Center"
-				Text="Вход" />
+				Text="Регистрация" />
 			<Entry
-				Keyboard="Email"
 				Placeholder="Логин"
 				ReturnType="Next"
-				Text="{Binding Login}" />
+				Text="{Binding Username}" />
 			<Entry
 				IsPassword="True"
 				Placeholder="Пароль"
-				ReturnCommand="{Binding LoginCommand}"
+				ReturnType="Next"
 				Text="{Binding Password}" />
-			<Button Command="{Binding LoginCommand}" Text="Войти" />
-			<Button Command="{Binding NavigateToRegisterCommand}" Text="Регистрация" />
+			<Entry
+				IsPassword="True"
+				Placeholder="Повторите пароль"
+				ReturnCommand="{Binding NavigateBackCommand}"
+				Text="{Binding ConfirmPassword}" />
+			<Button Command="{Binding RegisterCommand}" Text="Зарегистрироваться" />
 			<ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
 			<Label
 				HorizontalTextAlignment="Center"
 				Text="{Binding ErrorMessage}"
 				TextColor="Red" />
-			<!--<Button Command="{Binding NavigateToPasswordResetCommand}" Text="Сбросить пароль?" />-->
+			<Button Command="{Binding NavigateBackCommand}" Text="Назад" />
 		</VerticalStackLayout>
 	</ScrollView>
 </ContentPage>

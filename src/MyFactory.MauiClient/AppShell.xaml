@@ -1,119 +1,80 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Shell
-    x:Class="MyFactory.MauiClient.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:customers="clr-namespace:MyFactory.MauiClient.Pages.Orders.Customers"
-    xmlns:employees="clr-namespace:MyFactory.MauiClient.Pages.Organization.Employees"
-    xmlns:expenses="clr-namespace:MyFactory.MauiClient.Pages.Finance.Expenses"
-    xmlns:financialReports="clr-namespace:MyFactory.MauiClient.Pages.Finance.FinancialReports"
-    xmlns:materials="clr-namespace:MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Materials"
-    xmlns:payroll="clr-namespace:MyFactory.MauiClient.Pages.Finance.Payroll"
-    xmlns:positions="clr-namespace:MyFactory.MauiClient.Pages.Organization.Positions"
-    xmlns:production="clr-namespace:MyFactory.MauiClient.Pages.Production"
-    xmlns:productionOrders="clr-namespace:MyFactory.MauiClient.Pages.Production.ProductionOrders"
-    xmlns:products="clr-namespace:MyFactory.MauiClient.Pages.Products"
-    xmlns:salesOrders="clr-namespace:MyFactory.MauiClient.Pages.Orders.SalesOrders"
-    xmlns:supplierOrders="clr-namespace:MyFactory.MauiClient.Pages.MaterialsAndSuppliers.SupplierOrders"
-    xmlns:suppliers="clr-namespace:MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Suppliers"
-    xmlns:users="clr-namespace:MyFactory.MauiClient.Pages.Users"
-    xmlns:warehouses="clr-namespace:MyFactory.MauiClient.Pages.Warehouses"
-    xmlns:workshops="clr-namespace:MyFactory.MauiClient.Pages.Organization.Workshops">
+	x:Class="MyFactory.MauiClient.AppShell"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:customers="clr-namespace:MyFactory.MauiClient.Pages.Orders.Customers"
+	xmlns:employees="clr-namespace:MyFactory.MauiClient.Pages.Organization.Employees"
+	xmlns:expenses="clr-namespace:MyFactory.MauiClient.Pages.Finance.Expenses"
+	xmlns:financialReports="clr-namespace:MyFactory.MauiClient.Pages.Finance.FinancialReports"
+	xmlns:materials="clr-namespace:MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Materials"
+	xmlns:payroll="clr-namespace:MyFactory.MauiClient.Pages.Finance.Payroll"
+	xmlns:positions="clr-namespace:MyFactory.MauiClient.Pages.Organization.Positions"
+	xmlns:production="clr-namespace:MyFactory.MauiClient.Pages.Production"
+	xmlns:productionOrders="clr-namespace:MyFactory.MauiClient.Pages.Production.ProductionOrders"
+	xmlns:products="clr-namespace:MyFactory.MauiClient.Pages.Products"
+	xmlns:salesOrders="clr-namespace:MyFactory.MauiClient.Pages.Orders.SalesOrders"
+	xmlns:supplierOrders="clr-namespace:MyFactory.MauiClient.Pages.MaterialsAndSuppliers.SupplierOrders"
+	xmlns:suppliers="clr-namespace:MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Suppliers"
+	xmlns:users="clr-namespace:MyFactory.MauiClient.Pages.Users"
+	xmlns:warehouses="clr-namespace:MyFactory.MauiClient.Pages.Warehouses"
+	xmlns:workshops="clr-namespace:MyFactory.MauiClient.Pages.Organization.Workshops">
 
-    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems" Title="Материалы и поставщики">
-        <Tab Title="Материалы">
-            <ShellContent Title="Материалы — список" ContentTemplate="{DataTemplate materials:MaterialsListPage}" />
-            <ShellContent Title="Карточка материала" ContentTemplate="{DataTemplate materials:MaterialDetailsViewPage}" />
-            <ShellContent Title="Карточка материала (ред.)" ContentTemplate="{DataTemplate materials:MaterialDetailsEditPage}" />
-            <ShellContent Title="Единицы" ContentTemplate="{DataTemplate materials:UnitsPage}" />
-        </Tab>
-        <Tab Title="Типы материалов">
-            <ShellContent Title="Типы материалов — список" ContentTemplate="{DataTemplate materials:MaterialTypesListPage}" />
-            <ShellContent Title="Создать тип материала" ContentTemplate="{DataTemplate materials:MaterialTypeDetailsEditPage}" />
-        </Tab>
-        <Tab Title="Поставщики">
-            <ShellContent Title="Поставщики — список" ContentTemplate="{DataTemplate suppliers:SuppliersListPage}" />
-            <ShellContent Title="Карточка поставщика" ContentTemplate="{DataTemplate suppliers:SupplierDetailsPage}" />
-        </Tab>
-        <Tab Title="Заказы">
-            <ShellContent Title="Создание заказа поставщику" ContentTemplate="{DataTemplate supplierOrders:SupplierOrderCreatePage}" />
-        </Tab>
-    </FlyoutItem>
+	<FlyoutItem Title="Материалы и поставщики" Route="materials">
+		<Tab Title="Материалы">
+			<ShellContent Title="Материалы" ContentTemplate="{DataTemplate materials:MaterialsListPage}" />
+			<ShellContent Title="Единицы измерения" ContentTemplate="{DataTemplate materials:UnitsPage}" />
+			<ShellContent Title="Типы материалов" ContentTemplate="{DataTemplate materials:MaterialTypesListPage}" />
+		</Tab>
+		<ShellContent Title="Поставщики и закупки" ContentTemplate="{DataTemplate suppliers:SuppliersListPage}" />
+		<ShellContent
+			ContentTemplate="{DataTemplate suppliers:SupplierDetailsPage}"
+			IsVisible="False"
+			Route="supplier" />
+	</FlyoutItem>
 
-    <FlyoutItem Title="Товары">
-        <ShellContent Title="Товары — список" ContentTemplate="{DataTemplate products:ProductsListPage}" />
-        <ShellContent Title="Карточка товара" ContentTemplate="{DataTemplate products:ProductDetailsPage}" />
-        <ShellContent Title="Редактирование товара" ContentTemplate="{DataTemplate products:ProductEditPage}" />
-    </FlyoutItem>
+	<FlyoutItem Title="Товары">
+		<ShellContent Title="Товары" ContentTemplate="{DataTemplate products:ProductsListPage}" />
+	</FlyoutItem>
 
-    <FlyoutItem Title="Склады">
-        <ShellContent Title="Список складов" ContentTemplate="{DataTemplate warehouses:WarehousesListPage}" />
-        <ShellContent Title="Остатки склада" ContentTemplate="{DataTemplate warehouses:WarehouseStockPage}" />
-    </FlyoutItem>
+	<FlyoutItem Title="Склады">
+		<ShellContent Title="Список складов" ContentTemplate="{DataTemplate warehouses:WarehousesListPage}" />
+		<ShellContent Title="Остатки склада" ContentTemplate="{DataTemplate warehouses:WarehouseStockPage}" />
+	</FlyoutItem>
 
-    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems" Title="Заказы">
-        <Tab Title="Заказы">
-            <ShellContent Title="Заказы — список" ContentTemplate="{DataTemplate salesOrders:OrdersListPage}" />
-            <ShellContent Title="Карточка заказа" ContentTemplate="{DataTemplate salesOrders:OrderDetailsPage}" />
-        </Tab>
-        <Tab Title="Заказчики">
-            <ShellContent Title="Заказчики — список" ContentTemplate="{DataTemplate customers:CustomersListPage}" />
-            <ShellContent Title="Карточка заказчика" ContentTemplate="{DataTemplate customers:CustomerDetailsPage}" />
-        </Tab>
-    </FlyoutItem>
+	<FlyoutItem Title="Заказы клиентов">
+		<ShellContent Title="Заказы клиентов" ContentTemplate="{DataTemplate salesOrders:OrdersListPage}" />
+		<ShellContent Title="Заказчики" ContentTemplate="{DataTemplate customers:CustomersListPage}" />
+	</FlyoutItem>
 
-    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems" Title="Производство">
-        <Tab Title="Производство">
-            <ShellContent Title="Список производственных заказов" ContentTemplate="{DataTemplate productionOrders:ProductionOrdersListPage}" />
-            <ShellContent Title="Создание производственного заказа" ContentTemplate="{DataTemplate productionOrders:ProductionOrderCreatePage}" />
-        </Tab>
-        <Tab Title="Материалы">
-            <ShellContent Title="Списание материалов" ContentTemplate="{DataTemplate production:MaterialConsumptionPage}" />
-        </Tab>
-        <Tab Title="Этапы">
-            <ShellContent Title="Этапы производства" ContentTemplate="{DataTemplate production:ProductionStagesPage}" />
-        </Tab>
-    </FlyoutItem>
+	<FlyoutItem Title="Производство">
+		<ShellContent Title="Список производственных заказов" ContentTemplate="{DataTemplate productionOrders:ProductionOrdersListPage}" />
+		<ShellContent Title="Списание материалов" ContentTemplate="{DataTemplate production:MaterialConsumptionPage}" />
+		<ShellContent Title="Этапы производства" ContentTemplate="{DataTemplate production:ProductionStagesPage}" />
+	</FlyoutItem>
 
-    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems" Title="Организация">
-        <Tab Title="Сотрудники">
-            <ShellContent Title="Сотрудники — список" ContentTemplate="{DataTemplate employees:EmployeesListPage}" />
-            <ShellContent Title="Карточка сотрудника" ContentTemplate="{DataTemplate employees:EmployeeDetailsPage}" />
-        </Tab>
-        <Tab Title="Участки">
-            <ShellContent Title="Участки" ContentTemplate="{DataTemplate workshops:WorkshopsListPage}" />
-            <ShellContent Title="Карточка участка" ContentTemplate="{DataTemplate workshops:WorkshopDetailsPage}" />
-        </Tab>
-        <Tab Title="Должности">
-            <ShellContent Title="Должности" ContentTemplate="{DataTemplate positions:PositionsListPage}" />
-            <ShellContent Title="Карточка должности" ContentTemplate="{DataTemplate positions:PositionDetailsPage}" />
-        </Tab>
-    </FlyoutItem>
+	<FlyoutItem Title="Организация">
+		<ShellContent Title="Сотрудники" ContentTemplate="{DataTemplate employees:EmployeesListPage}" />
+		<ShellContent Title="Участки" ContentTemplate="{DataTemplate workshops:WorkshopsListPage}" />
+		<ShellContent Title="Должности" ContentTemplate="{DataTemplate positions:PositionsListPage}" />
+	</FlyoutItem>
 
-    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems" Title="Финансы">
-        <Tab Title="Зарплата">
-            <ShellContent Title="Начисления зарплаты" ContentTemplate="{DataTemplate payroll:PayrollAccrualsPage}" />
-            <ShellContent Title="Детализация по дням" ContentTemplate="{DataTemplate payroll:PayrollDailyBreakdownPage}" />
-            <ShellContent Title="Правила расчёта зарплаты" ContentTemplate="{DataTemplate payroll:PayrollRulesListPage}" />
-            <ShellContent Title="Карточка правила" ContentTemplate="{DataTemplate payroll:PayrollRuleDetailsPage}" />
-        </Tab>
-        <Tab Title="Расходы">
-            <ShellContent Title="Категории расходов" ContentTemplate="{DataTemplate expenses:ExpenseCategoriesPage}" />
-            <ShellContent Title="Расходы" ContentTemplate="{DataTemplate expenses:ExpensesListPage}" />
-            <ShellContent Title="Подотчетные авансы" ContentTemplate="{DataTemplate expenses:CashAdvancesListPage}" />
-            <ShellContent Title="Карточка аванса" ContentTemplate="{DataTemplate expenses:CashAdvanceDetailsPage}" />
-            <ShellContent Title="Создание аванса" ContentTemplate="{DataTemplate expenses:CashAdvanceCreatePage}" />
-        </Tab>
-        <Tab Title="Отчеты">
-            <ShellContent Title="Список финансовых отчётов" ContentTemplate="{DataTemplate financialReports:FinancialReportsListPage}" />
-            <ShellContent Title="Карточка месячного отчёта" ContentTemplate="{DataTemplate financialReports:MonthlyReportDetailsPage}" />
-        </Tab>
-    </FlyoutItem>
+	<FlyoutItem Title="Финансы">
+		<Tab Title="Зарплата">
+			<ShellContent Title="Начисления зарплаты" ContentTemplate="{DataTemplate payroll:PayrollAccrualsPage}" />
+			<ShellContent Title="Детализация по дням" ContentTemplate="{DataTemplate payroll:PayrollDailyBreakdownPage}" />
+			<ShellContent Title="Правила расчёта зарплаты" ContentTemplate="{DataTemplate payroll:PayrollRulesListPage}" />
+		</Tab>
+		<Tab Title="Расходы">
+			<ShellContent Title="Категории расходов" ContentTemplate="{DataTemplate expenses:ExpenseCategoriesPage}" />
+			<ShellContent Title="Расходы" ContentTemplate="{DataTemplate expenses:ExpensesListPage}" />
+		</Tab>
+		<ShellContent Title="Финансовые отчеты" ContentTemplate="{DataTemplate financialReports:FinancialReportsListPage}" />
+	</FlyoutItem>
 
-    <FlyoutItem Title="Пользователи">
-        <ShellContent Title="Пользователи" ContentTemplate="{DataTemplate users:UsersListPage}" />
-        <ShellContent Title="Карточка пользователя" ContentTemplate="{DataTemplate users:UserDetailsPage}" />
-        <ShellContent Title="Роли" ContentTemplate="{DataTemplate users:RolesPage}" />
-    </FlyoutItem>
+	<FlyoutItem Title="Пользователи">
+		<ShellContent Title="Пользователи" ContentTemplate="{DataTemplate users:UsersListPage}" />
+		<ShellContent Title="Роли" ContentTemplate="{DataTemplate users:RolesPage}" />
+	</FlyoutItem>
 
 </Shell>

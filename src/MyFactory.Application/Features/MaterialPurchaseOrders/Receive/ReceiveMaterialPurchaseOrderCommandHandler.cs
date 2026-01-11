@@ -48,6 +48,9 @@ public sealed class ReceiveMaterialPurchaseOrderCommandHandler
             ? request.ReceivedByUserId
             : _currentUser.UserId;
 
+        if (createdBy == Guid.Empty)
+            throw new DomainApplicationException("ReceivedByUserId is required.");
+
         var movements = new Dictionary<Guid, InventoryMovementEntity>();
 
         foreach (var reqItem in request.Items)

@@ -20,12 +20,10 @@
 				Text="+" />
 			<Button
 				Grid.Column="2"
-				Command="{Binding RemoveOrderCommand}"
+				Command="{Binding RemoveSelectedCommand}"
+				IsEnabled="{Binding HasSelectedItems}"
+				IsVisible="{Binding HasSelectedItems}"
 				Text="-" />
-			<Button
-				Grid.Column="3"
-				Command="{Binding CompleteCommand}"
-				Text="Завершить заказ" />
 		</Grid>
 
 		<Grid
@@ -57,13 +55,15 @@
 			x:Name="SupplierOrderItemsCollection"
 			Grid.Row="2"
 			ItemsSource="{Binding Items}"
-			SelectionMode="None">
+			SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
+			SelectionMode="Multiple">
 			<CollectionView.ItemTemplate>
 				<DataTemplate x:DataType="view_model:SupplierOrderCreatePageViewModel+OrderItemViewModel">
 					<Grid
 						Padding="0,6"
 						ColumnDefinitions="*,*,*,*,Auto"
-						ColumnSpacing="8">
+						ColumnSpacing="8"
+						Style="{StaticResource SelectableItemGridStyle}">
 						<Picker
 							ItemDisplayBinding="{Binding Name}"
 							ItemsSource="{Binding BindingContext.SupplierOptions, Source={x:Reference Name=SupplierOrderItemsCollection}}"

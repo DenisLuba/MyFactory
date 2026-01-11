@@ -133,6 +133,7 @@ public static class MauiProgram
     private static MauiAppBuilder AddViewModelsServices(this MauiAppBuilder builder)
     {
         builder.Services.AddTransient<LoginPageViewModel>();
+        builder.Services.AddTransient<RegisterPageViewModel>();
         builder.Services.AddTransient<PasswordResetPageViewModel>();
         builder.Services.AddTransient<CashAdvanceCreatePageViewModel>();
         builder.Services.AddTransient<CashAdvanceDetailsPageViewModel>();
@@ -186,6 +187,7 @@ public static class MauiProgram
     private static MauiAppBuilder AddPagesServices(this MauiAppBuilder builder)
     {
         builder.Services.AddTransient<LoginPage>();
+        builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddTransient<PasswordResetPage>();
         builder.Services.AddTransient<CashAdvanceCreatePage>();
         builder.Services.AddTransient<CashAdvanceDetailsPage>();

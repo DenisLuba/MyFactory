@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MyFactory.MauiClient.Models.MaterialPurchaseOrders;
@@ -38,6 +39,17 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
     [ObservableProperty]
     private string? errorMessage;
 
+    [ObservableProperty]
+    private ObservableCollection<object?> _selectedItems = new();
+
+    partial void OnSelectedItemsChanged(ObservableCollection<object?> value)
+    {
+        HasSelectedItems = !HasSelectedItems;
+    }
+
+    [ObservableProperty]
+    private bool _hasSelectedItems;
+
     public ObservableCollection<SupplierListItemResponse> SupplierOptions { get; } = new();
     public ObservableCollection<string> MaterialTypeOptions { get; } = new();
     public ObservableCollection<MaterialListItemResponse> MaterialOptions { get; } = new();
@@ -54,8 +66,12 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
         _ordersService = ordersService;
         _suppliersService = suppliersService;
         _materialsService = materialsService;
+
+        SelectedItems.CollectionChanged += OnSelectedItemsChanged;
+
         _ = LoadAsync();
     }
+
 
     partial void OnSupplierIdChanged(Guid? value)
     {
@@ -221,9 +237,34 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void RemoveSelected()
+    {
+        if (SelectedItems.Count == 0)
+            return;
+
+        var toRemove = SelectedItems.OfType<OrderItemViewModel>().ToList();
+        foreach (var item in toRemove)
+        {
+            Items.Remove(item);
+        }
+
+        SelectedItems.Clear();
+    }
+
+    [RelayCommand]
     private async Task BackAsync()
     {
         await Shell.Current.GoToAsync("..", true);
+    }
+
+    private void OnSelectedItemsChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        UpdateHasSelectedItems();
+    }
+
+    private void UpdateHasSelectedItems()
+    {
+        HasSelectedItems = SelectedItems.Count > 0;
     }
 
     public partial class OrderItemViewModel : ObservableObject

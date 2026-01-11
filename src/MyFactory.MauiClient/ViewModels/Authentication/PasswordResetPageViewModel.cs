@@ -35,6 +35,9 @@ public partial class PasswordResetPageViewModel : ObservableObject
         ErrorMessage = null;
         try
         {
+
+            //  TODO: Implement password reset logic here
+
             await Task.Delay(300); // Simulate call
             Message = "—сылка дл€ сброса отправлена";
         }

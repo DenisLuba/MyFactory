@@ -4,73 +4,133 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.SupplierOrders"
+	x:Name="Page"
 	Title="Завершение заказа"
-	x:DataType="view_model:SupplierOrderCompletePageViewModel">
-	<Grid
-		Padding="16"
-		RowDefinitions="Auto,Auto,*,Auto"
-		RowSpacing="12">
+	x:DataType="view_model:SupplierOrderCompletePageViewModel"
+	BindingContext="view_model:SupplierOrderCompletePageViewModel">
+	<Grid RowDefinitions="Auto,*,Auto" RowSpacing="12">
 		<Label
+			Margin="12"
 			FontAttributes="Bold"
-			FontSize="18"
+			FontSize="Large"
 			Text="Завершение заказа" />
 
-		<VerticalStackLayout Grid.Row="1" Spacing="4">
-			<Label Text="{Binding MaterialType}" />
-			<Label Text="{Binding MaterialName}" />
-			<Label>
-				<Label.FormattedText>
-					<FormattedString>
-						<Span Text="Количество: " />
-						<Span Text="{Binding TotalQty}" />
-						<Span Text=" " />
-						<Span Text="{Binding UnitCode}" />
-					</FormattedString>
-				</Label.FormattedText>
-			</Label>
-			<Label Text="{Binding RemainingQty}" TextColor="{Binding RemainingColor}" />
-		</VerticalStackLayout>
+		<Border
+			Grid.Row="1"
+			Margin="8"
+			Padding="8">
+			<CollectionView ItemsSource="{Binding Items}" SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="view_model:SupplierOrderCompletePageViewModel+PurchaseOrderItemViewModel">
+						<Border Margin="0,0,0,12" Padding="8">
+							<Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
+								<Grid ColumnDefinitions="*,Auto">
+									<VerticalStackLayout Spacing="4">
+										<Label>
+											<Label.FormattedText>
+												<FormattedString>
+													<Span FontAttributes="Bold" Text="Тип материала: " />
+													<Span Text="{Binding MaterialType}" />
+												</FormattedString>
+											</Label.FormattedText>
+										</Label>
+										<Label>
+											<Label.FormattedText>
+												<FormattedString>
+													<Span FontAttributes="Bold" Text="Материал: " />
+													<Span Text="{Binding MaterialName}" />
+												</FormattedString>
+											</Label.FormattedText>
+										</Label>
+										<Label>
+											<Label.FormattedText>
+												<FormattedString>
+													<Span FontAttributes="Bold" Text="Общее количество: " />
+													<Span Text="{Binding TotalQty}" />
+													<Span Text=" " />
+													<Span Text="{Binding UnitCode}" />
+												</FormattedString>
+											</Label.FormattedText>
+										</Label>
+										<Label>
+											<Label.FormattedText>
+												<FormattedString>
+													<Span FontAttributes="Bold" Text="Осталось: " />
+													<Span Text="{Binding RemainingQty}" TextColor="{Binding RemainingColor}" />
+													<Span Text=" " />
+													<Span Text="{Binding UnitCode}" />
+												</FormattedString>
+											</Label.FormattedText>
+										</Label>
+									</VerticalStackLayout>
+									<Button
+										Grid.Column="1"
+										Command="{Binding Source={RelativeSource AncestorType={x:Type view_model:SupplierOrderCompletePageViewModel}}, Path=AddLineCommand}"
+										CommandParameter="{Binding .}"
+										Text="Добавить склад"
+										VerticalOptions="Center" />
+								</Grid>
 
-		<CollectionView
-			x:Name="LinesCollection"
+								<Border Grid.Row="2" Padding="8">
+									<CollectionView
+										x:Name="LinesCollection"
+										ItemsSource="{Binding Lines}"
+										SelectionMode="None">
+										<CollectionView.Header>
+											<Grid
+												Padding="0,4"
+												ColumnDefinitions="1.2*,0.4*,0.15*"
+												ColumnSpacing="8">
+												<Label FontAttributes="Bold" Text="Склад" />
+												<Label
+													Grid.Column="1"
+													FontAttributes="Bold"
+													HorizontalTextAlignment="End"
+													Text="Количество" />
+												<Label
+													Grid.Column="2"
+													FontAttributes="Bold"
+													HorizontalTextAlignment="End"
+													Text="Ед." />
+											</Grid>
+										</CollectionView.Header>
+										<CollectionView.ItemTemplate>
+											<DataTemplate x:DataType="view_model:SupplierOrderCompletePageViewModel+ReceiveLineViewModel">
+												<Grid
+													Padding="0,6"
+													ColumnDefinitions="1.2*,0.4*,0.15*"
+													ColumnSpacing="8">
+													<Picker
+														ItemDisplayBinding="{Binding Name}"
+														ItemsSource="{Binding BindingContext.Warehouses, Source={x:Reference Page}}"
+														SelectedItem="{Binding Warehouse}" />
+													<Entry
+														Grid.Column="1"
+														HorizontalTextAlignment="End"
+														Keyboard="Numeric"
+														Text="{Binding Qty}" />
+													<Label
+														Grid.Column="2"
+														FontAttributes="Italic"
+														HorizontalOptions="End"
+														Text="{Binding UnitCode, Source={RelativeSource AncestorType={x:Type view_model:SupplierOrderCompletePageViewModel+PurchaseOrderItemViewModel}}}"
+														VerticalTextAlignment="Center" />
+												</Grid>
+											</DataTemplate>
+										</CollectionView.ItemTemplate>
+									</CollectionView>
+								</Border>
+							</Grid>
+						</Border>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</Border>
+
+		<HorizontalStackLayout
 			Grid.Row="2"
-			ItemsSource="{Binding Lines}"
-			SelectionMode="None">
-			<CollectionView.Header>
-				<Grid
-					Padding="0,4"
-					ColumnDefinitions="1.2*,0.8*"
-					ColumnSpacing="8">
-					<Label FontAttributes="Bold" Text="Склад" />
-					<Label
-						Grid.Column="1"
-						FontAttributes="Bold"
-						HorizontalTextAlignment="End"
-						Text="Количество" />
-				</Grid>
-			</CollectionView.Header>
-			<CollectionView.ItemTemplate>
-				<DataTemplate x:DataType="view_model:SupplierOrderCompletePageViewModel+ReceiveLineViewModel">
-					<Grid
-						Padding="0,6"
-						ColumnDefinitions="1.2*,0.8*"
-						ColumnSpacing="8">
-						<Picker
-							ItemDisplayBinding="{Binding Name}"
-							ItemsSource="{Binding BindingContext.Warehouses, Source={x:Reference Name=LinesCollection}}"
-							SelectedItem="{Binding Warehouse}" />
-						<Entry
-							Grid.Column="1"
-							HorizontalTextAlignment="End"
-							Keyboard="Numeric"
-							Text="{Binding Qty}" />
-					</Grid>
-				</DataTemplate>
-			</CollectionView.ItemTemplate>
-		</CollectionView>
-
-		<HorizontalStackLayout Grid.Row="3" Spacing="8">
-			<Button Command="{Binding AddLineCommand}" Text="+" />
+			Padding="8"
+			Spacing="8">
 			<Button Command="{Binding CompleteCommand}" Text="Завершить" />
 			<Button Command="{Binding BackCommand}" Text="Назад" />
 		</HorizontalStackLayout>

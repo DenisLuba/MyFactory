@@ -66,6 +66,7 @@ public sealed class JwtTokenService : IJwtTokenService
         return new TokenResult(accessToken, newRefreshToken, expiresAt, existing.UserId);
     }
 
+
     private string CreateAccessToken(UserEntity user, DateTime expiresAt)
     {
         var claims = new List<Claim>
@@ -73,6 +74,12 @@ public sealed class JwtTokenService : IJwtTokenService
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new(JwtRegisteredClaimNames.UniqueName, user.Username),
         };
+
+        var roleName = _db.Roles.AsNoTracking().Where(r => r.Id == user.RoleId).Select(r => r.Name).FirstOrDefault();
+        if (!string.IsNullOrWhiteSpace(roleName))
+        {
+            claims.Add(new Claim(ClaimTypes.Role, roleName));
+        }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Key));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

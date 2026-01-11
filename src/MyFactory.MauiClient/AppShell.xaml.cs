@@ -27,6 +27,7 @@ public partial class AppShell : Shell
         var routes = new (string Name, Type PageType)[]
         {
             (nameof(LoginPage), typeof(LoginPage)),
+            (nameof(RegisterPage), typeof(RegisterPage)),
             (nameof(PasswordResetPage), typeof(PasswordResetPage)),
             (nameof(CashAdvanceCreatePage), typeof(CashAdvanceCreatePage)),
             (nameof(CashAdvanceDetailsPage), typeof(CashAdvanceDetailsPage)),

@@ -39,8 +39,7 @@
 						Padding="0,4"
 						ColumnDefinitions="2*,1.2*,1.6*,1*,1*"
 						ColumnSpacing="8">
-						<Label 
-							FontAttributes="Bold" Text="Поставщик" />
+						<Label FontAttributes="Bold" Text="Поставщик" />
 						<Label
 							Grid.Column="1"
 							FontAttributes="Bold"

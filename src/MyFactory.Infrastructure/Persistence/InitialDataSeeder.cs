@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using MyFactory.Application.Common.Interfaces;
 using MyFactory.Domain.Entities.Finance;
 using MyFactory.Domain.Entities.Inventory;
 using MyFactory.Domain.Entities.Materials;
@@ -10,16 +11,17 @@ using MyFactory.Domain.Entities.Security;
 using MyFactory.Infrastructure.Common;
 
 namespace MyFactory.Infrastructure.Persistence;
-
 public class InitialDataSeeder
 {
     private readonly ApplicationDbContext _db;
     private readonly Settings _settings;
+    private readonly IPasswordHasher _passwordHasher;
 
-    public InitialDataSeeder(ApplicationDbContext db, IOptions<Settings> settings)
+    public InitialDataSeeder(ApplicationDbContext db, IOptions<Settings> settings, IPasswordHasher passwordHasher)
     {
         _db = db;
         _settings = settings.Value;
+        _passwordHasher = passwordHasher;
     }
 
     public async Task SeedAsync(CancellationToken cancellationToken = default)
@@ -44,7 +46,7 @@ public class InitialDataSeeder
 
     private async Task SeedRolesAsync(CancellationToken cancellationToken)
     {
-        var roles = new[] { "Admin", "Manager" };
+        var roles = new[] { "Admin", "Manager", "User" };
 
         foreach (var name in roles)
         {
@@ -69,8 +71,8 @@ public class InitialDataSeeder
         if (adminRoleId == Guid.Empty)
             return; // role not seeded
 
-        // Password hash is placeholder; replace with real hash when auth is implemented
-        _db.Users.Add(new UserEntity(adminUsername, "admin", adminRoleId));
+        var hashedPassword = await _passwordHasher.HashAsync("qwerty!23", cancellationToken);
+        _db.Users.Add(new UserEntity(adminUsername, hashedPassword, adminRoleId));
     }
 
     private async Task SeedUnitsAsync(CancellationToken cancellationToken)

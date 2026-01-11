@@ -68,7 +68,7 @@
 					<CollectionView.Header>
 						<Grid
 							Padding="0,4"
-							ColumnDefinitions="*,100"
+							ColumnDefinitions="1*,0.1*,0.02*"
 							ColumnSpacing="8">
 							<Label FontAttributes="Bold" Text="Склад" />
 							<Label
@@ -82,7 +82,7 @@
 						<DataTemplate x:DataType="models:WarehouseQtyResponse">
 							<Grid
 								Padding="0,6"
-								ColumnDefinitions="*,100"
+								ColumnDefinitions="1*,0.1*,0.02*"
 								ColumnSpacing="8">
 								<Label Text="{Binding WarehouseName}" />
 								<Label
@@ -115,7 +115,7 @@
 					<CollectionView.Header>
 						<Grid
 							Padding="0,4"
-							ColumnDefinitions="*,100,100,160"
+							ColumnDefinitions="4*,1*,1*,1.6*,0.1*"
 							ColumnSpacing="8">
 							<Label FontAttributes="Bold" Text="Поставщик" />
 							<Label
@@ -139,7 +139,7 @@
 						<DataTemplate x:DataType="models:MaterialPurchaseHistoryItemResponse">
 							<Grid
 								Padding="0,6"
-								ColumnDefinitions="*,100,100,160"
+								ColumnDefinitions="4*,1*,1*,1.6*,0.1*"
 								ColumnSpacing="8">
 								<Grid.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding BindingContext.OpenSupplierCommand, Source={x:Reference Name=PurchaseHistoryCollection}}" CommandParameter="{Binding SupplierId}" />

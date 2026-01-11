@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MyFactory.MauiClient.Models.Auth;
+using MyFactory.MauiClient.Pages.Authentication;
+using MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Materials;
 using MyFactory.MauiClient.Services.Auth;
 
 namespace MyFactory.MauiClient.ViewModels.Authentication;
@@ -8,9 +10,12 @@ namespace MyFactory.MauiClient.ViewModels.Authentication;
 public partial class LoginPageViewModel : ObservableObject
 {
     private readonly IAuthService _authService;
+    private readonly IServiceProvider _serviceProvider;
+
+    private readonly Window? window;
 
     [ObservableProperty]
-    private string email = string.Empty;
+    private string login = string.Empty;
 
     [ObservableProperty]
     private string password = string.Empty;
@@ -21,9 +26,14 @@ public partial class LoginPageViewModel : ObservableObject
     [ObservableProperty]
     private string? errorMessage;
 
-    public LoginPageViewModel(IAuthService authService)
+    public LoginPageViewModel(IAuthService authService, IServiceProvider serviceProvider)
     {
         _authService = authService;
+        _serviceProvider = serviceProvider;
+
+        window = Application.Current?.Windows.Count > 0
+            ? Application.Current.Windows[0]
+            : null;
     }
 
     [RelayCommand]
@@ -34,7 +44,7 @@ public partial class LoginPageViewModel : ObservableObject
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
+        if (string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(Password))
         {
             ErrorMessage = "Введите логин и пароль";
             return;
@@ -44,14 +54,40 @@ public partial class LoginPageViewModel : ObservableObject
         ErrorMessage = null;
         try
         {
-            var request = new LoginRequest(Email.Trim(), Password);
+            var request = new LoginRequest(Login.Trim(), Password);
             await _authService.LoginAsync(request);
-            await Shell.Current.DisplayAlert("Успех", "Вход выполнен", "ОК");
+
+            var currentWindow = (Application.Current?.Windows.Count > 0)
+                ? Application.Current.Windows[0]
+                : null;
+
+            if (Shell.Current is not null)
+            {
+                await Shell.Current.DisplayAlert("Успех", "Вход выполнен", "ОК");
+                await Shell.Current.GoToAsync(nameof(MaterialsListPage));
+            }
+            else if (currentWindow is not null)
+            {
+                await (currentWindow.Page?.DisplayAlert("Успех", "Вход выполнен", "ОК") ?? Task.CompletedTask);
+                currentWindow.Page = new AppShell();
+            }
         }
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+
+            var currentWindow = (Application.Current?.Windows.Count > 0)
+                ? Application.Current.Windows[0]
+                : null;
+
+            if (currentWindow?.Page is not null)
+            {
+                await currentWindow.Page.DisplayAlert("Ошибка", ex.Message, "ОК");
+            }
+            else if (Shell.Current is not null)
+            {
+                await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+            }
         }
         finally
         {
@@ -62,7 +98,42 @@ public partial class LoginPageViewModel : ObservableObject
     [RelayCommand]
     private async Task NavigateToPasswordResetAsync()
     {
-        await Shell.Current.GoToAsync(nameof(Pages.Authentication.PasswordResetPage));
+        if (Shell.Current is not null)
+        {
+            await Shell.Current.GoToAsync(nameof(RegisterPage));
+        }
+        else if (window?.Page is NavigationPage nav)
+        {
+            var viewModel = _serviceProvider.GetRequiredService<PasswordResetPageViewModel>();
+            await nav.PushAsync(new PasswordResetPage(viewModel));
+        }
+    }
+
+    [RelayCommand]
+    private async Task NavigateToRegisterAsync()
+    {
+        var currentWindow = (Application.Current?.Windows.Count > 0)
+            ? Application.Current.Windows[0]
+            : null;
+
+        if (Shell.Current is not null)
+        {
+            await Shell.Current.GoToAsync(nameof(RegisterPage));
+            return;
+        }
+
+        if (currentWindow?.Page is NavigationPage nav)
+        {
+            var viewModel = _serviceProvider.GetRequiredService<RegisterPageViewModel>();
+            await nav.PushAsync(new RegisterPage(viewModel));
+            return;
+        }
+
+        if (currentWindow is not null)
+        {
+            var viewModel = _serviceProvider.GetRequiredService<RegisterPageViewModel>();
+            currentWindow.Page = new NavigationPage(new RegisterPage(viewModel));
+        }
     }
 }
 
