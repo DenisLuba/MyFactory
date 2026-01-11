@@ -175,7 +175,7 @@ public partial class SupplierOrderCompletePageViewModel : ObservableObject
             IsBusy = true;
             ErrorMessage = null;
 
-            var receiverId = CurrentUserId ?? _authService.CurrentUserId ?? Guid.NewGuid();
+            var receiverId = CurrentUserId ?? _authService.CurrentUserId ?? throw new InvalidOperationException("Не удалось получить Id пользователя");
 
             var request = new ReceiveMaterialPurchaseOrderRequest(
                 ReceivedByUserId: receiverId,

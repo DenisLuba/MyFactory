@@ -44,12 +44,19 @@ public sealed class ReceiveMaterialPurchaseOrderCommandHandler
                 throw new DomainApplicationException("Allocated quantity must equal ordered quantity for each item.");
         }
 
-        var createdBy = request.ReceivedByUserId != Guid.Empty
-            ? request.ReceivedByUserId
-            : _currentUser.UserId;
+        var createdBy = _currentUser.UserId != Guid.Empty
+            ? _currentUser.UserId
+            : request.ReceivedByUserId;
 
         if (createdBy == Guid.Empty)
             throw new DomainApplicationException("ReceivedByUserId is required.");
+
+        var userExists = await _db.Users
+            .AsNoTracking()
+            .AnyAsync(u => u.Id == createdBy, cancellationToken);
+
+        if (!userExists)
+            throw new DomainApplicationException($"User {createdBy} not found.");
 
         var movements = new Dictionary<Guid, InventoryMovementEntity>();
 
