@@ -4,10 +4,20 @@ namespace MyFactory.MauiClient.Pages.MaterialsAndSuppliers.SupplierOrders;
 
 public partial class SupplierOrderCreatePage : ContentPage
 {
+    private SupplierOrderCreatePageViewModel _viewModel;
+
     public SupplierOrderCreatePage(SupplierOrderCreatePageViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = viewModel;
+        BindingContext = _viewModel = viewModel;
+    }
+
+    protected override async void OnAppearing()
+    {
+        if (_viewModel is SupplierOrderCreatePageViewModel)
+        {
+            await _viewModel.LoadAsync();
+        }
     }
 }
 

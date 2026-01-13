@@ -10,30 +10,41 @@
 		Padding="16"
 		RowDefinitions="Auto,*,Auto"
 		RowSpacing="12">
-		<Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
-			<Label
-				FontAttributes="Bold"
-				FontSize="18"
-				Text="Редактирование заказа" />
-			<Button
-				Grid.Column="1"
-				Command="{Binding AddItemCommand}"
-				Text="+" />
-			<Button
-				Grid.Column="2"
-				Command="{Binding DeleteOrderCommand}"
-				Text="Удалить заказ" />
-			<Button
-				Grid.Column="3"
-				Command="{Binding CompleteCommand}"
-				Text="Завершить заказ" />
-		</Grid>
+		<VerticalStackLayout>
+			<Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+				<Label
+					FontAttributes="Bold"
+					FontSize="18"
+					Text="Редактирование заказа" />
+				<Button
+					Grid.Column="1"
+					Command="{Binding DeleteOrderCommand}"
+					Text="Удалить заказ" />
+				<Button
+					Grid.Column="2"
+					Command="{Binding CompleteCommand}"
+					Text="Завершить заказ" />
+			</Grid>
+			<Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+				<Button
+					Grid.Column="1"
+					Command="{Binding AddItemCommand}"
+					Text="+" />
+				<Button
+					Grid.Column="2"
+					Command="{Binding RemoveItemCommand}"
+					IsEnabled="{Binding HasSelectedItems}"
+					IsVisible="{Binding HasSelectedItems}"
+					Text="-" />
+			</Grid>
+		</VerticalStackLayout>
 
 		<Border Grid.Row="1" VerticalOptions="Fill">
 			<CollectionView
 				x:Name="SupplierOrderItemsCollection"
 				ItemsSource="{Binding Items}"
-				SelectionMode="None">
+				SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
+				SelectionMode="Multiple">
 				<CollectionView.Header>
 					<Grid
 						Padding="0,4"

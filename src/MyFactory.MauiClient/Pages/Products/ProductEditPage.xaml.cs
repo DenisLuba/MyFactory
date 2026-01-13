@@ -4,10 +4,20 @@ namespace MyFactory.MauiClient.Pages.Products;
 
 public partial class ProductEditPage : ContentPage
 {
+    private ProductEditPageViewModel _viewModel;
+
     public ProductEditPage(ProductEditPageViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = viewModel;
+        BindingContext = _viewModel = viewModel;
+    }
+
+    protected override async void OnAppearing()
+    {
+        if (_viewModel is ProductEditPageViewModel)
+        {
+            await _viewModel.LoadAsync();
+        }
     }
 }
 

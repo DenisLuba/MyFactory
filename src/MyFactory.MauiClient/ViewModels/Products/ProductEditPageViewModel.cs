@@ -58,7 +58,7 @@ public partial class ProductEditPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
             return;
@@ -120,7 +120,7 @@ public partial class ProductEditPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlert("пїЅпїЅпїЅпїЅпїЅпїЅ", ex.Message, "OK");
         }
         finally
         {
@@ -149,7 +149,7 @@ public partial class ProductEditPageViewModel : ObservableObject
 
         if (string.IsNullOrWhiteSpace(Name))
         {
-            await Shell.Current.DisplayAlert("Ошибка", "Укажите название", "OK");
+            await Shell.Current.DisplayAlert("пїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
             return;
         }
 
@@ -173,7 +173,7 @@ public partial class ProductEditPageViewModel : ObservableObject
                     PlanPerHour: plan));
 
                 if (createResponse is null)
-                    throw new InvalidOperationException("Не удалось создать товар");
+                    throw new InvalidOperationException("пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ");
 
                 ProductId = createResponse.Id;
             }
@@ -207,13 +207,13 @@ public partial class ProductEditPageViewModel : ObservableObject
                 }
             }
 
-            await Shell.Current.DisplayAlert("Успех", "Сохранено", "OK");
+            await Shell.Current.DisplayAlert("пїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
             await Shell.Current.GoToAsync("..", true);
         }
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlert("пїЅпїЅпїЅпїЅпїЅпїЅ", ex.Message, "OK");
         }
         finally
         {

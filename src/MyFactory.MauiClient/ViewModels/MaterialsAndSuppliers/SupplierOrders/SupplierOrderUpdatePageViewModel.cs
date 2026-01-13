@@ -45,6 +45,17 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
     [ObservableProperty]
     private string? errorMessage;
 
+    [ObservableProperty]
+    private bool hasSelectedItems;
+
+    [ObservableProperty]
+    private ObservableCollection<object?> selectedItems = [];
+
+    partial void OnSelectedItemsChanged(ObservableCollection<object?> selectedItems)
+    {
+        HasSelected = !HasSelected;
+    }
+
     public ObservableCollection<SupplierListItemResponse> SupplierOptions { get; } = new();
     public ObservableCollection<string> MaterialTypeOptions { get; } = new();
     public ObservableCollection<MaterialListItemResponse> MaterialOptions { get; } = new();
@@ -110,7 +121,7 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
             return;

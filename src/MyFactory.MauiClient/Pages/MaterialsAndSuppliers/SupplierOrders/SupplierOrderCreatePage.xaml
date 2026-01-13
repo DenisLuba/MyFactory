@@ -7,7 +7,7 @@
 	x:DataType="view_model:SupplierOrderCreatePageViewModel">
 	<Grid
 		Padding="16"
-		RowDefinitions="Auto,Auto,*,Auto"
+		RowDefinitions="Auto,*,Auto"
 		RowSpacing="12">
 		<Grid ColumnDefinitions="*,Auto, Auto, Auto" ColumnSpacing="8">
 			<Label
@@ -25,73 +25,74 @@
 				IsVisible="{Binding HasSelectedItems}"
 				Text="-" />
 		</Grid>
-
-		<Grid
-			Grid.Row="1"
-			Padding="0,4"
-			ColumnDefinitions="*,*,*,*,Auto"
-			ColumnSpacing="8">
-			<Label FontAttributes="Bold" Text="Поставщик" />
-			<Label
-				Grid.Column="1"
-				FontAttributes="Bold"
-				Text="Тип" />
-			<Label
-				Grid.Column="2"
-				FontAttributes="Bold"
-				Text="Материал" />
-			<Label
-				Grid.Column="3"
-				FontAttributes="Bold"
-				Text="Количество" />
-			<Label
-				Grid.Column="4"
-				FontAttributes="Bold"
-				HorizontalTextAlignment="End"
-				Text="Цена" />
-		</Grid>
-
-		<CollectionView
-			x:Name="SupplierOrderItemsCollection"
-			Grid.Row="2"
-			ItemsSource="{Binding Items}"
-			SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
-			SelectionMode="Multiple">
-			<CollectionView.ItemTemplate>
-				<DataTemplate x:DataType="view_model:SupplierOrderCreatePageViewModel+OrderItemViewModel">
+	
+		<Border Grid.Row="1">
+			<CollectionView
+				x:Name="SupplierOrderItemsCollection"
+				ItemsSource="{Binding Items}"
+				SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
+				SelectionMode="Multiple">
+				<CollectionView.Header>
 					<Grid
-						Padding="0,6"
+						Padding="0,4"
 						ColumnDefinitions="*,*,*,*,Auto"
-						ColumnSpacing="8"
-						Style="{StaticResource SelectableItemGridStyle}">
-						<Picker
-							ItemDisplayBinding="{Binding Name}"
-							ItemsSource="{Binding BindingContext.SupplierOptions, Source={x:Reference Name=SupplierOrderItemsCollection}}"
-							SelectedItem="{Binding Supplier}" />
-						<Picker
+						ColumnSpacing="8">
+						<Label FontAttributes="Bold" Text="Поставщик" />
+						<Label
 							Grid.Column="1"
-							ItemsSource="{Binding BindingContext.MaterialTypeOptions, Source={x:Reference Name=SupplierOrderItemsCollection}}"
-							SelectedItem="{Binding MaterialType}" />
-						<Picker
+							FontAttributes="Bold"
+							Text="Тип" />
+						<Label
 							Grid.Column="2"
-							ItemDisplayBinding="{Binding Name}"
-							ItemsSource="{Binding BindingContext.MaterialOptions, Source={x:Reference Name=SupplierOrderItemsCollection}}"
-							SelectedItem="{Binding Material}" />
-						<Entry
+							FontAttributes="Bold"
+							Text="Материал" />
+						<Label
 							Grid.Column="3"
-							Keyboard="Numeric"
-							Text="{Binding Qty}" />
-						<Entry
+							FontAttributes="Bold"
+							Text="Количество" />
+						<Label
 							Grid.Column="4"
+							FontAttributes="Bold"
 							HorizontalTextAlignment="End"
-							Keyboard="Numeric"
-							Text="{Binding Price}" />
+							Text="Цена" />
 					</Grid>
-				</DataTemplate>
-			</CollectionView.ItemTemplate>
-		</CollectionView>
-
-		<HorizontalStackLayout Grid.Row="3" Spacing="8">
+				</CollectionView.Header>
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="view_model:SupplierOrderCreatePageViewModel+OrderItemViewModel">
+						<Grid
+							Padding="0,6"
+							ColumnDefinitions="*,*,*,*,Auto"
+							ColumnSpacing="8"
+							Style="{StaticResource SelectableItemGridStyle}">
+							<Picker
+								ItemDisplayBinding="{Binding Name}"
+								ItemsSource="{Binding BindingContext.SupplierOptions, Source={x:Reference Name=SupplierOrderItemsCollection}}"
+								SelectedItem="{Binding Supplier}" />
+							<Picker
+								Grid.Column="1"
+								ItemsSource="{Binding BindingContext.MaterialTypeOptions, Source={x:Reference Name=SupplierOrderItemsCollection}}"
+								SelectedItem="{Binding MaterialType}" />
+							<Picker
+								Grid.Column="2"
+								ItemDisplayBinding="{Binding Name}"
+								ItemsSource="{Binding BindingContext.MaterialOptions, Source={x:Reference Name=SupplierOrderItemsCollection}}"
+								SelectedItem="{Binding Material}" />
+							<Entry
+								Grid.Column="3"
+								Keyboard="Numeric"
+								Text="{Binding Qty}" />
+							<Entry
+								Grid.Column="4"
+								HorizontalTextAlignment="End"
+								Keyboard="Numeric"
+								Text="{Binding Price}" />
+						</Grid>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>	
+		</Border>
+	
+		<HorizontalStackLayout Grid.Row="2" Spacing="8">
 			<Button Command="{Binding SaveCommand}" Text="Сохранить" />
 			<Button Command="{Binding PrintCommand}" Text="Печать" />
 			<Button Command="{Binding BackCommand}" Text="Назад" />

@@ -69,7 +69,8 @@
 					<CollectionView
 						x:Name="BomEditCollection"
 						ItemsSource="{Binding EditableBom}"
-						SelectionMode="None">
+						SelectedItems="{Binding SelectedMaterials, Mode=TwoWay}"
+						SelectionMode="Multiple">
 						<CollectionView.Header>
 							<Grid
 								Padding="0,4"
@@ -127,7 +128,8 @@
 						x:Name="ProductionCostsEditCollection"
 						Grid.Row="2"
 						ItemsSource="{Binding EditableProductionCosts}"
-						SelectionMode="None">
+						SelectedItems="{Binding SelectedDepartments, Mode=TwoWay}"
+						SelectionMode="Multiple">
 						<CollectionView.Header>
 							<Grid
 								Padding="0,4"

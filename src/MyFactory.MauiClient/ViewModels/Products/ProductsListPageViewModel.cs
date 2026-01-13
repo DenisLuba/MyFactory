@@ -33,7 +33,7 @@ public partial class ProductsListPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
             return;
@@ -50,7 +50,7 @@ public partial class ProductsListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlert("пїЅпїЅпїЅпїЅпїЅпїЅ", ex.Message, "OK");
         }
         finally
         {
@@ -94,7 +94,7 @@ public partial class ProductsListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlert("Удаление", "Удаление товара не реализовано", "OK");
+        await Shell.Current.DisplayAlert("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
     }
 
     partial void OnSearchTextChanged(string? value) => ApplyFilter();

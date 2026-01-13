@@ -71,8 +71,7 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
 
         _ = LoadAsync();
     }
-
-
+    
     partial void OnSupplierIdChanged(Guid? value)
     {
         if (value is not null)
@@ -114,7 +113,7 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
             return;
@@ -156,7 +155,7 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlert("пїЅпїЅпїЅпїЅпїЅпїЅ", ex.Message, "OK");
         }
         finally
         {
@@ -186,14 +185,14 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
 
         if (Items.Count == 0)
         {
-            await Shell.Current.DisplayAlert("Ошибка", "Добавьте хотя бы одну позицию", "OK");
+            await Shell.Current.DisplayAlert("пїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
             return;
         }
 
         var supplier = Items.First().Supplier;
         if (supplier is null)
         {
-            await Shell.Current.DisplayAlert("Ошибка", "Выберите поставщика", "OK");
+            await Shell.Current.DisplayAlert("пїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
             return;
         }
 
@@ -204,7 +203,7 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
 
             var createResponse = await _ordersService.CreateAsync(new CreateMaterialPurchaseOrderRequest(supplier.Id, DateTime.UtcNow));
             if (createResponse is null)
-                throw new InvalidOperationException("Не удалось создать заказ");
+                throw new InvalidOperationException("пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ");
 
             foreach (var item in Items)
             {
@@ -216,13 +215,13 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
             }
 
             await _ordersService.ConfirmAsync(createResponse.Id);
-            await Shell.Current.DisplayAlert("Успех", "Заказ сохранен", "OK");
+            await Shell.Current.DisplayAlert("пїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
             await Shell.Current.GoToAsync("..", true);
         }
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlert("пїЅпїЅпїЅпїЅпїЅпїЅ", ex.Message, "OK");
         }
         finally
         {
@@ -233,7 +232,7 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
     [RelayCommand]
     private async Task PrintAsync()
     {
-        await Shell.Current.DisplayAlert("Печать", "Функция печати недоступна", "OK");
+        await Shell.Current.DisplayAlert("пїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
     }
 
     [RelayCommand]
