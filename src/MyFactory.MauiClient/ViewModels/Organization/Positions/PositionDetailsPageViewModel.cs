@@ -123,7 +123,7 @@ public partial class PositionDetailsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -136,7 +136,7 @@ public partial class PositionDetailsPageViewModel : ObservableObject
     {
         if (string.IsNullOrWhiteSpace(Name) || SelectedDepartment is null)
         {
-            await Shell.Current.DisplayAlert("Ошибка", "Укажите название и цех", "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", "Укажите название и цех", "OK");
             return;
         }
 
@@ -167,12 +167,12 @@ public partial class PositionDetailsPageViewModel : ObservableObject
                 await _positionsService.UpdateAsync(PositionId.Value, request);
             }
 
-            await Shell.Current.DisplayAlert("Готово", "Сохранено", "OK");
+            await Shell.Current.DisplayAlertAsync("Готово", "Сохранено", "OK");
             await Shell.Current.GoToAsync("..", true);
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {

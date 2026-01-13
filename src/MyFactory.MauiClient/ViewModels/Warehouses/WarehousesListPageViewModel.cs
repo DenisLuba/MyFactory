@@ -47,7 +47,7 @@ public partial class WarehousesListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -58,7 +58,7 @@ public partial class WarehousesListPageViewModel : ObservableObject
     [RelayCommand]
     private async Task AddAsync()
     {
-        await Shell.Current.DisplayAlert("Действие", "Создание склада не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("Действие", "Создание склада не реализовано", "OK");
     }
 
     [RelayCommand]
@@ -67,7 +67,7 @@ public partial class WarehousesListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlert("Действие", "Редактирование склада не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("Действие", "Редактирование склада не реализовано", "OK");
     }
 
     [RelayCommand]
@@ -76,7 +76,7 @@ public partial class WarehousesListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlert("Действие", "Удаление склада не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("Действие", "Удаление склада не реализовано", "OK");
     }
 
     [RelayCommand]

@@ -116,7 +116,7 @@ public partial class SupplierOrderCompletePageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -152,7 +152,7 @@ public partial class SupplierOrderCompletePageViewModel : ObservableObject
         {
             if (item.RemainingQty != 0)
             {
-                await Shell.Current.DisplayAlert("Ошибка", "Распределите все количества по складам", "OK");
+                await Shell.Current.DisplayAlertAsync("Ошибка", "Распределите все количества по складам", "OK");
                 return;
             }
 
@@ -163,7 +163,7 @@ public partial class SupplierOrderCompletePageViewModel : ObservableObject
 
             if (allocations.Count == 0)
             {
-                await Shell.Current.DisplayAlert("Ошибка", "Укажите распределение по складам", "OK");
+                await Shell.Current.DisplayAlertAsync("Ошибка", "Укажите распределение по складам", "OK");
                 return;
             }
 
@@ -182,7 +182,7 @@ public partial class SupplierOrderCompletePageViewModel : ObservableObject
                 Items: itemsWithAllocations);
 
             await _ordersService.ReceiveAsync(PurchaseOrderId.Value, request);
-            await Shell.Current.DisplayAlert("Готово", "Заказ завершен", "OK");
+            await Shell.Current.DisplayAlertAsync("Готово", "Заказ завершен", "OK");
             //if (SupplierId is not null)
             //{
             //    var parameters = new Dictionary<string, object>
@@ -199,7 +199,7 @@ public partial class SupplierOrderCompletePageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {

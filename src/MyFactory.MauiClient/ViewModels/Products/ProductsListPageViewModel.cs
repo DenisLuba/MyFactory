@@ -50,7 +50,7 @@ public partial class ProductsListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("������", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("������", ex.Message, "OK");
         }
         finally
         {
@@ -94,7 +94,7 @@ public partial class ProductsListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlert("��������", "�������� ������ �� �����������", "OK");
+        await Shell.Current.DisplayAlertAsync("��������", "�������� ������ �� �����������", "OK");
     }
 
     partial void OnSearchTextChanged(string? value) => ApplyFilter();

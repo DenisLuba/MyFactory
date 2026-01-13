@@ -134,7 +134,7 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -166,7 +166,7 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -204,7 +204,7 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
     {
         if (SelectedPurchase is null)
             return;
-        var confirm = await Shell.Current.DisplayAlert("Подтвердите удаление", "Вы уверены, что хотите удалить этот заказ?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlertAsync("Подтвердите удаление", "Вы уверены, что хотите удалить этот заказ?", "Да", "Нет");
         if (!confirm)
             return;
         try
@@ -220,7 +220,7 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {

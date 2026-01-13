@@ -50,7 +50,7 @@ public partial class CashAdvancesListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
         }
         finally
         {
@@ -96,7 +96,7 @@ public partial class CashAdvancesListPageViewModel : ObservableObject
             return;
         }
 
-        var confirm = await Shell.Current.DisplayAlert("Закрыть аванс", "Закрыть аванс?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlertAsync("Закрыть аванс", "Закрыть аванс?", "Да", "Нет");
         if (!confirm)
         {
             return;
@@ -109,7 +109,7 @@ public partial class CashAdvancesListPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
         }
     }
 }

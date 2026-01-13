@@ -46,7 +46,7 @@ public partial class PayrollRulesListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
         }
         finally
         {
@@ -82,7 +82,7 @@ public partial class PayrollRulesListPageViewModel : ObservableObject
             return;
         }
 
-        var confirm = await Shell.Current.DisplayAlert("Удалить правило", "Удалить выбранное правило?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlertAsync("Удалить правило", "Удалить выбранное правило?", "Да", "Нет");
         if (!confirm)
         {
             return;
@@ -95,7 +95,7 @@ public partial class PayrollRulesListPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
         }
     }
 }

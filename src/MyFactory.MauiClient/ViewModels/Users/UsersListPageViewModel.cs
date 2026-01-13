@@ -65,7 +65,7 @@ public partial class UsersListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -107,7 +107,7 @@ public partial class UsersListPageViewModel : ObservableObject
             return;
         }
 
-        var confirm = await Shell.Current.DisplayAlert("Блокировка", $"Заблокировать пользователя {user.Username}?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlertAsync("Блокировка", $"Заблокировать пользователя {user.Username}?", "Да", "Нет");
         if (!confirm)
         {
             return;
@@ -124,7 +124,7 @@ public partial class UsersListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {

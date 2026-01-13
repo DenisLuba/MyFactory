@@ -102,7 +102,7 @@ public partial class OrderDetailsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -119,13 +119,13 @@ public partial class OrderDetailsPageViewModel : ObservableObject
     [RelayCommand]
     private async Task ProductionAsync()
     {
-        await Shell.Current.DisplayAlert("Инфо", "Переход в производство не реализован", "OK");
+        await Shell.Current.DisplayAlertAsync("Инфо", "Переход в производство не реализован", "OK");
     }
 
     [RelayCommand]
     private async Task AddItemAsync()
     {
-        await Shell.Current.DisplayAlert("Инфо", "Добавление позиции не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("Инфо", "Добавление позиции не реализовано", "OK");
     }
 
     [RelayCommand]
@@ -134,7 +134,7 @@ public partial class OrderDetailsPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlert("Инфо", "Редактирование позиции не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("Инфо", "Редактирование позиции не реализовано", "OK");
     }
 
     [RelayCommand]
@@ -143,7 +143,7 @@ public partial class OrderDetailsPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlert("Инфо", "Удаление позиции не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("Инфо", "Удаление позиции не реализовано", "OK");
     }
 
     [RelayCommand]
@@ -152,7 +152,7 @@ public partial class OrderDetailsPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlert("Инфо", "Переход к товару не реализован", "OK");
+        await Shell.Current.DisplayAlertAsync("Инфо", "Переход к товару не реализован", "OK");
     }
 
     public sealed class OrderItemViewModel

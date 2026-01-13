@@ -46,7 +46,7 @@ public partial class FinancialReportsListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
         }
         finally
         {
@@ -65,7 +65,7 @@ public partial class FinancialReportsListPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
         }
     }
 

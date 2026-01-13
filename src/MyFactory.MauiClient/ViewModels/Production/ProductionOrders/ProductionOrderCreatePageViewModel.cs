@@ -149,7 +149,7 @@ public partial class ProductionOrderCreatePageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -168,7 +168,7 @@ public partial class ProductionOrderCreatePageViewModel : ObservableObject
     {
         if (ProductionOrderId is null)
         {
-            await Shell.Current.DisplayAlert("Инфо", "Сначала сохраните производственный заказ", "OK");
+            await Shell.Current.DisplayAlertAsync("Инфо", "Сначала сохраните производственный заказ", "OK");
             return;
         }
 
@@ -186,7 +186,7 @@ public partial class ProductionOrderCreatePageViewModel : ObservableObject
     {
         if (ProductionOrderId is null)
         {
-            await Shell.Current.DisplayAlert("Инфо", "Сначала сохраните производственный заказ", "OK");
+            await Shell.Current.DisplayAlertAsync("Инфо", "Сначала сохраните производственный заказ", "OK");
             return;
         }
 
@@ -195,11 +195,11 @@ public partial class ProductionOrderCreatePageViewModel : ObservableObject
             IsBusy = true;
             await _productionOrdersService.StartStageAsync(ProductionOrderId.Value, new StartProductionStageRequest(ProductionOrderStatus.Cutting));
             await LoadAsync();
-            await Shell.Current.DisplayAlert("Готово", "Производство запущено", "OK");
+            await Shell.Current.DisplayAlertAsync("Готово", "Производство запущено", "OK");
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -213,7 +213,7 @@ public partial class ProductionOrderCreatePageViewModel : ObservableObject
         if (material is null)
             return;
 
-        await Shell.Current.DisplayAlert("Инфо", "Создание закупки пока не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("Инфо", "Создание закупки пока не реализовано", "OK");
     }
 
     [RelayCommand]

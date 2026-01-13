@@ -170,7 +170,7 @@ public partial class PayrollDailyBreakdownPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
         }
         finally
         {
@@ -188,7 +188,7 @@ public partial class PayrollDailyBreakdownPageViewModel : ObservableObject
 
         if (!decimal.TryParse(PayoutAmount, out var amount) || amount <= 0)
         {
-            await Shell.Current.DisplayAlert("Ошибка", "Введите сумму", "ОК");
+            await Shell.Current.DisplayAlertAsync("Ошибка", "Введите сумму", "ОК");
             return;
         }
 
@@ -201,7 +201,7 @@ public partial class PayrollDailyBreakdownPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
         }
     }
 }

@@ -86,7 +86,7 @@ public partial class RegisterPageViewModel : ObservableObject
 
             if (window?.Page is not null)
             {
-                await window.Page.DisplayAlert("Ошибка", ex.Message, "ОК");
+                await window.Page.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
             }
         }
         finally

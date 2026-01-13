@@ -101,7 +101,7 @@ public partial class ProductDetailsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("������", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("������", ex.Message, "OK");
         }
         finally
         {
@@ -130,7 +130,7 @@ public partial class ProductDetailsPageViewModel : ObservableObject
     [RelayCommand]
     private async Task DeleteAsync()
     {
-        await Shell.Current.DisplayAlert("��������", "�������� ������ �� �����������", "OK");
+        await Shell.Current.DisplayAlertAsync("��������", "�������� ������ �� �����������", "OK");
     }
 
     public sealed class BomItemViewModel

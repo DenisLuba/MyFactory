@@ -40,15 +40,10 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
     private string? errorMessage;
 
     [ObservableProperty]
-    private ObservableCollection<object?> _selectedItems = new();
-
-    partial void OnSelectedItemsChanged(ObservableCollection<object?> value)
-    {
-        HasSelectedItems = !HasSelectedItems;
-    }
+    private ObservableCollection<object?> selectedItems = [];
 
     [ObservableProperty]
-    private bool _hasSelectedItems;
+    private bool hasSelectedItems;
 
     public ObservableCollection<SupplierListItemResponse> SupplierOptions { get; } = new();
     public ObservableCollection<string> MaterialTypeOptions { get; } = new();
@@ -67,11 +62,14 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
         _suppliersService = suppliersService;
         _materialsService = materialsService;
 
-        SelectedItems.CollectionChanged += OnSelectedItemsChanged;
-
         _ = LoadAsync();
     }
-    
+
+    partial void OnSelectedItemsChanged(ObservableCollection<object?> value)
+    {
+        HasSelectedItems = value.Count > 0;
+    }
+
     partial void OnSupplierIdChanged(Guid? value)
     {
         if (value is not null)
@@ -155,7 +153,7 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("������", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("������", ex.Message, "OK");
         }
         finally
         {
@@ -185,14 +183,14 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
 
         if (Items.Count == 0)
         {
-            await Shell.Current.DisplayAlert("������", "�������� ���� �� ���� �������", "OK");
+            await Shell.Current.DisplayAlertAsync("������", "�������� ���� �� ���� �������", "OK");
             return;
         }
 
         var supplier = Items.First().Supplier;
         if (supplier is null)
         {
-            await Shell.Current.DisplayAlert("������", "�������� ����������", "OK");
+            await Shell.Current.DisplayAlertAsync("������", "�������� ����������", "OK");
             return;
         }
 
@@ -215,13 +213,13 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
             }
 
             await _ordersService.ConfirmAsync(createResponse.Id);
-            await Shell.Current.DisplayAlert("�����", "����� ��������", "OK");
+            await Shell.Current.DisplayAlertAsync("�����", "����� ��������", "OK");
             await Shell.Current.GoToAsync("..", true);
         }
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("������", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("������", ex.Message, "OK");
         }
         finally
         {
@@ -232,7 +230,7 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
     [RelayCommand]
     private async Task PrintAsync()
     {
-        await Shell.Current.DisplayAlert("������", "������� ������ ����������", "OK");
+        await Shell.Current.DisplayAlertAsync("������", "������� ������ ����������", "OK");
     }
 
     [RelayCommand]

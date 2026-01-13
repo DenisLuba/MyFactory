@@ -53,7 +53,7 @@ public partial class OrdersListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -64,7 +64,7 @@ public partial class OrdersListPageViewModel : ObservableObject
     [RelayCommand]
     private async Task AddAsync()
     {
-        await Shell.Current.DisplayAlert("Инфо", "Создание заказа не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("Инфо", "Создание заказа не реализовано", "OK");
     }
 
     [RelayCommand]
@@ -73,7 +73,7 @@ public partial class OrdersListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlert("Инфо", "Редактирование заказа не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("Инфо", "Редактирование заказа не реализовано", "OK");
     }
 
     [RelayCommand]
@@ -82,7 +82,7 @@ public partial class OrdersListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        var confirm = await Shell.Current.DisplayAlert("Удалить", $"Удалить заказ {item.OrderNumber}?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlertAsync("Удалить", $"Удалить заказ {item.OrderNumber}?", "Да", "Нет");
         if (!confirm)
             return;
 
@@ -93,7 +93,7 @@ public partial class OrdersListPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
     }
 

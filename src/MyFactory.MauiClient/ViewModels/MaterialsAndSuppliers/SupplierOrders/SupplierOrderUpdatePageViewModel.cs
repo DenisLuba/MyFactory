@@ -51,9 +51,9 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<object?> selectedItems = [];
 
-    partial void OnSelectedItemsChanged(ObservableCollection<object?> selectedItems)
+    partial void OnSelectedItemsChanged(ObservableCollection<object?> value)
     {
-        HasSelected = !HasSelected;
+        HasSelectedItems = value.Count > 0;
     }
 
     public ObservableCollection<SupplierListItemResponse> SupplierOptions { get; } = new();
@@ -187,7 +187,7 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -217,14 +217,14 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
 
         if (Items.Count == 0)
         {
-            await Shell.Current.DisplayAlert("Ошибка", "Добавьте хотя бы одну позицию", "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", "Добавьте хотя бы одну позицию", "OK");
             return;
         }
 
         var supplier = Items.First().Supplier;
         if (supplier is null)
         {
-            await Shell.Current.DisplayAlert("Ошибка", "Выберите поставщика", "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", "Выберите поставщика", "OK");
             return;
         }
 
@@ -264,13 +264,13 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
             }
 
             await _ordersService.ConfirmAsync(orderId);
-            await Shell.Current.DisplayAlert("Успех", "Заказ сохранен", "OK");
+            await Shell.Current.DisplayAlertAsync("Успех", "Заказ сохранен", "OK");
             await Shell.Current.GoToAsync("..", true);
         }
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -279,12 +279,27 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void RemoveSelected()
+    {
+        if (SelectedItems.Count == 0)
+            return;
+
+        var toRemove = SelectedItems.OfType<OrderItemViewModel>().ToList();
+        foreach (var item in toRemove)
+        {
+            Items.Remove(item);
+        }
+
+        SelectedItems.Clear();
+    }
+
+    [RelayCommand]
     private async Task DeleteOrderAsync()
     {
         if (PurchaseOrderId is null)
             return;
 
-        var confirm = await Shell.Current.DisplayAlert("Удалить", "Удалить заказ?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlertAsync("Удалить", "Удалить заказ?", "Да", "Нет");
         if (!confirm)
             return;
 
@@ -292,12 +307,12 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
         {
             IsBusy = true;
             await _ordersService.CancelAsync(PurchaseOrderId.Value);
-            await Shell.Current.DisplayAlert("Готово", "Заказ удален", "OK");
+            await Shell.Current.DisplayAlertAsync("Готово", "Заказ удален", "OK");
             await Shell.Current.GoToAsync("..", true);
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -320,7 +335,7 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
     [RelayCommand]
     private async Task PrintAsync()
     {
-        await Shell.Current.DisplayAlert("Печать", "Функция печати недоступна", "OK");
+        await Shell.Current.DisplayAlertAsync("Печать", "Функция печати недоступна", "OK");
     }
 
     [RelayCommand]

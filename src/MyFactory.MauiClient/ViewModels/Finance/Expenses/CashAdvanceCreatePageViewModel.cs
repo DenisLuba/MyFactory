@@ -56,7 +56,7 @@ public partial class CashAdvanceCreatePageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
         }
     }
 
@@ -65,13 +65,13 @@ public partial class CashAdvanceCreatePageViewModel : ObservableObject
     {
         if (SelectedEmployee is null)
         {
-            await Shell.Current.DisplayAlert("Сотрудник", "Выберите сотрудника", "ОК");
+            await Shell.Current.DisplayAlertAsync("Сотрудник", "Выберите сотрудника", "ОК");
             return;
         }
 
         if (!decimal.TryParse(Amount, out var amountValue) || amountValue <= 0)
         {
-            await Shell.Current.DisplayAlert("Сумма", "Введите корректную сумму", "ОК");
+            await Shell.Current.DisplayAlertAsync("Сумма", "Введите корректную сумму", "ОК");
             return;
         }
 
@@ -83,7 +83,7 @@ public partial class CashAdvanceCreatePageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
         }
     }
 

@@ -80,7 +80,7 @@ public partial class WorkshopDetailsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -93,7 +93,7 @@ public partial class WorkshopDetailsPageViewModel : ObservableObject
     {
         if (string.IsNullOrWhiteSpace(Name))
         {
-            await Shell.Current.DisplayAlert("Ошибка", "Укажите наименование", "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", "Укажите наименование", "OK");
             return;
         }
 
@@ -112,12 +112,12 @@ public partial class WorkshopDetailsPageViewModel : ObservableObject
                 await _departmentsService.UpdateAsync(DepartmentId.Value, request);
             }
 
-            await Shell.Current.DisplayAlert("Готово", "Сохранено", "OK");
+            await Shell.Current.DisplayAlertAsync("Готово", "Сохранено", "OK");
             await Shell.Current.GoToAsync("..", true);
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {

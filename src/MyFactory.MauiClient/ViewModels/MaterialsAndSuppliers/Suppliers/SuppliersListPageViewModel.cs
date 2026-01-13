@@ -48,7 +48,7 @@ public partial class SuppliersListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -77,7 +77,7 @@ public partial class SuppliersListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -118,7 +118,7 @@ public partial class SuppliersListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -132,7 +132,7 @@ public partial class SuppliersListPageViewModel : ObservableObject
         if (supplier is null)
             return;
 
-        var confirm = await Shell.Current.DisplayAlert("Удаление", $"Удалить поставщика {supplier.Name}?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlertAsync("Удаление", $"Удалить поставщика {supplier.Name}?", "Да", "Нет");
         if (!confirm)
             return;
 
@@ -147,7 +147,7 @@ public partial class SuppliersListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {

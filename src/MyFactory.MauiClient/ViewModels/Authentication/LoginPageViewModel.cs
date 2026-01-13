@@ -63,12 +63,12 @@ public partial class LoginPageViewModel : ObservableObject
 
             if (Shell.Current is not null)
             {
-                await Shell.Current.DisplayAlert("Успех", "Вход выполнен", "ОК");
+                await Shell.Current.DisplayAlertAsync("Успех", "Вход выполнен", "ОК");
                 await Shell.Current.GoToAsync(nameof(MaterialsListPage));
             }
             else if (currentWindow is not null)
             {
-                await (currentWindow.Page?.DisplayAlert("Успех", "Вход выполнен", "ОК") ?? Task.CompletedTask);
+                await (currentWindow.Page?.DisplayAlertAsync("Успех", "Вход выполнен", "ОК") ?? Task.CompletedTask);
                 currentWindow.Page = new AppShell();
             }
         }
@@ -82,11 +82,11 @@ public partial class LoginPageViewModel : ObservableObject
 
             if (currentWindow?.Page is not null)
             {
-                await currentWindow.Page.DisplayAlert("Ошибка", ex.Message, "ОК");
+                await currentWindow.Page.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
             }
             else if (Shell.Current is not null)
             {
-                await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+                await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
             }
         }
         finally

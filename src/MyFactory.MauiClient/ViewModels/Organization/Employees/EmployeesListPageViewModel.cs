@@ -58,7 +58,7 @@ public partial class EmployeesListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -94,7 +94,7 @@ public partial class EmployeesListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        var confirm = await Shell.Current.DisplayAlert("Деактивировать", $"Деактивировать сотрудника {item.FullName}?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlertAsync("Деактивировать", $"Деактивировать сотрудника {item.FullName}?", "Да", "Нет");
         if (!confirm)
             return;
 
@@ -106,7 +106,7 @@ public partial class EmployeesListPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
     }
 

@@ -70,7 +70,7 @@ public partial class UnitsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -160,7 +160,7 @@ public partial class UnitsPageViewModel : ObservableObject
         if (validationErrors.Count > 0)
         {
             IsChanged = true;
-            await Shell.Current.DisplayAlert("Ошибка", string.Join("\n", validationErrors.Distinct()), "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", string.Join("\n", validationErrors.Distinct()), "OK");
             return false;
         }
 
@@ -198,7 +198,7 @@ public partial class UnitsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
             return false;
         }
         finally
@@ -212,7 +212,7 @@ public partial class UnitsPageViewModel : ObservableObject
         if (unit is null)
             return;
 
-        var confirm = await Shell.Current.DisplayAlert("Подтверждение", "Вы уверены, что хотите удалить запись?", "Да", "Отмена");
+        var confirm = await Shell.Current.DisplayAlertAsync("Подтверждение", "Вы уверены, что хотите удалить запись?", "Да", "Отмена");
         if (!confirm)
             return;
 
@@ -231,7 +231,7 @@ public partial class UnitsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {

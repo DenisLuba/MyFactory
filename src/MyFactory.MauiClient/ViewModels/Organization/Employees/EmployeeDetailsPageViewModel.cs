@@ -106,7 +106,7 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -143,7 +143,7 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
     [RelayCommand]
     private async Task EditAsync()
     {
-        await Shell.Current.DisplayAlert("Инфо", "Редактирование сотрудника недоступно в этой версии", "OK");
+        await Shell.Current.DisplayAlertAsync("Инфо", "Редактирование сотрудника недоступно в этой версии", "OK");
     }
 
     [RelayCommand]
@@ -152,7 +152,7 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
         if (EmployeeId is null)
             return;
 
-        var confirm = await Shell.Current.DisplayAlert("Деактивировать", "Деактивировать сотрудника?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlertAsync("Деактивировать", "Деактивировать сотрудника?", "Да", "Нет");
         if (!confirm)
             return;
 
@@ -163,20 +163,20 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
     }
 
     [RelayCommand]
     private async Task AccrualsAsync()
     {
-        await Shell.Current.DisplayAlert("Инфо", "Переход к начислениям пока не реализован", "OK");
+        await Shell.Current.DisplayAlertAsync("Инфо", "Переход к начислениям пока не реализован", "OK");
     }
 
     [RelayCommand]
     private async Task PaymentsAsync()
     {
-        await Shell.Current.DisplayAlert("Инфо", "Переход к выплатам пока не реализован", "OK");
+        await Shell.Current.DisplayAlertAsync("Инфо", "Переход к выплатам пока не реализован", "OK");
     }
 
     [RelayCommand]
@@ -214,7 +214,7 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {

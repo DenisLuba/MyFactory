@@ -47,14 +47,14 @@ public partial class MaterialTypeDetailsEditPageViewModel : ObservableObject
     {
         if (string.IsNullOrWhiteSpace(Name))
         {
-            await Shell.Current.DisplayAlert("Ошибка", "Поле 'Тип материала' обязательно для заполнения.", "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", "Поле 'Тип материала' обязательно для заполнения.", "OK");
             return;
         }
 
         var existing = (await _service.GetListAsync()).Any(x => x.Name.Trim().Equals(Name.Trim(), StringComparison.OrdinalIgnoreCase));
         if (existing)
         {
-            await Shell.Current.DisplayAlert("Ошибка", $"Тип материала '{Name}' уже существует.", "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", $"Тип материала '{Name}' уже существует.", "OK");
             return;
         }
 

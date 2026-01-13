@@ -112,7 +112,7 @@ public partial class MaterialConsumptionPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -146,7 +146,7 @@ public partial class MaterialConsumptionPageViewModel : ObservableObject
 
         if (!issueLines.Any())
         {
-            await Shell.Current.DisplayAlert("Ошибка", "Укажите количество для списания", "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", "Укажите количество для списания", "OK");
             return;
         }
 
@@ -154,12 +154,12 @@ public partial class MaterialConsumptionPageViewModel : ObservableObject
         {
             IsBusy = true;
             await _productionOrdersService.IssueMaterialsAsync(ProductionOrderId.Value, new IssueMaterialsToProductionRequest(issueLines));
-            await Shell.Current.DisplayAlert("Готово", "Материалы списаны", "OK");
+            await Shell.Current.DisplayAlertAsync("Готово", "Материалы списаны", "OK");
             await Shell.Current.GoToAsync("..", true);
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {

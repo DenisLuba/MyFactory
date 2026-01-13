@@ -67,7 +67,7 @@ public partial class MaterialTypesListPageViewModel : ObservableObject
         {
             try
             {
-                var agree = await Shell.Current.DisplayAlert("Delete Material Type", $"Вы уверены, что хотите удалить тип материала? '{model.Name}'?", "Да", "Отмена");
+                var agree = await Shell.Current.DisplayAlertAsync("Delete Material Type", $"Вы уверены, что хотите удалить тип материала? '{model.Name}'?", "Да", "Отмена");
                 if (agree)
                 {
                     await _service.DeleteAsync(model.Id);
@@ -76,7 +76,7 @@ public partial class MaterialTypesListPageViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"Не удалось удалить тип материала: {ex.Message}\n(сообщение сервера)", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", $"Не удалось удалить тип материала: {ex.Message}\n(сообщение сервера)", "OK");
                 return;
             }
         }            

@@ -49,7 +49,7 @@ public partial class RolesPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -80,7 +80,7 @@ public partial class RolesPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -113,7 +113,7 @@ public partial class RolesPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -129,7 +129,7 @@ public partial class RolesPageViewModel : ObservableObject
             return;
         }
 
-        var confirm = await Shell.Current.DisplayAlert("Удаление", $"Удалить роль '{role.Name}'?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlertAsync("Удаление", $"Удалить роль '{role.Name}'?", "Да", "Нет");
         if (!confirm)
         {
             return;
@@ -146,7 +146,7 @@ public partial class RolesPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {

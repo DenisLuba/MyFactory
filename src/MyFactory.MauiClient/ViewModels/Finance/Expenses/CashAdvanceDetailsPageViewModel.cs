@@ -106,7 +106,7 @@ public partial class CashAdvanceDetailsPageViewModel : ObservableObject
 
         if (!decimal.TryParse(AdditionalAmount, out var amount) || amount <= 0)
         {
-            await Shell.Current.DisplayAlert("Îøèáêà", "Ââåäèòå ñóììó", "ÎÊ");
+            await Shell.Current.DisplayAlertAsync("Îøèáêà", "Ââåäèòå ñóììó", "ÎÊ");
             return;
         }
 
@@ -120,7 +120,7 @@ public partial class CashAdvanceDetailsPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Îøèáêà", ex.Message, "ÎÊ");
+            await Shell.Current.DisplayAlertAsync("Îøèáêà", ex.Message, "ÎÊ");
         }
     }
 
@@ -134,7 +134,7 @@ public partial class CashAdvanceDetailsPageViewModel : ObservableObject
 
         if (!decimal.TryParse(ReturnAmount, out var amount) || amount <= 0)
         {
-            await Shell.Current.DisplayAlert("Îøèáêà", "Ââåäèòå ñóììó", "ÎÊ");
+            await Shell.Current.DisplayAlertAsync("Îøèáêà", "Ââåäèòå ñóììó", "ÎÊ");
             return;
         }
 
@@ -148,7 +148,7 @@ public partial class CashAdvanceDetailsPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Îøèáêà", ex.Message, "ÎÊ");
+            await Shell.Current.DisplayAlertAsync("Îøèáêà", ex.Message, "ÎÊ");
         }
     }
 
@@ -177,7 +177,7 @@ public partial class CashAdvanceDetailsPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Îøèáêà", ex.Message, "ÎÊ");
+            await Shell.Current.DisplayAlertAsync("Îøèáêà", ex.Message, "ÎÊ");
         }
     }
 }

@@ -46,7 +46,7 @@ public partial class ExpenseCategoriesPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
         }
         finally
         {
@@ -71,7 +71,7 @@ public partial class ExpenseCategoriesPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
         }
     }
 
@@ -97,7 +97,7 @@ public partial class ExpenseCategoriesPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
         }
     }
 
@@ -109,7 +109,7 @@ public partial class ExpenseCategoriesPageViewModel : ObservableObject
             return;
         }
 
-        var confirm = await Shell.Current.DisplayAlert("Удаление", "Удалить тип расходов?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlertAsync("Удаление", "Удалить тип расходов?", "Да", "Нет");
         if (!confirm)
         {
             return;
@@ -122,7 +122,7 @@ public partial class ExpenseCategoriesPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "ОК");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
         }
     }
 }

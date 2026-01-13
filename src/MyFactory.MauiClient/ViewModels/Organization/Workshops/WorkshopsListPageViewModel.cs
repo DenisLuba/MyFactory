@@ -50,7 +50,7 @@ public partial class WorkshopsListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -86,7 +86,7 @@ public partial class WorkshopsListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        var confirm = await Shell.Current.DisplayAlert("Деактивировать", $"Деактивировать участок {item.Name}?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlertAsync("Деактивировать", $"Деактивировать участок {item.Name}?", "Да", "Нет");
         if (!confirm)
             return;
 
@@ -98,7 +98,7 @@ public partial class WorkshopsListPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
     }
 

@@ -51,7 +51,7 @@ public partial class MaterialsListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -95,7 +95,7 @@ public partial class MaterialsListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        var confirm = await Shell.Current.DisplayAlert("Удаление", "Вы уверены, что хотите деактивировать материал?", "Да", "Отмена");
+        var confirm = await Shell.Current.DisplayAlertAsync("Удаление", "Вы уверены, что хотите деактивировать материал?", "Да", "Отмена");
         if (!confirm)
             return;
 
@@ -110,7 +110,7 @@ public partial class MaterialsListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {

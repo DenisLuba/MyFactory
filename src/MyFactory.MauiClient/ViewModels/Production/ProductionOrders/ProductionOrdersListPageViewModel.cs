@@ -70,7 +70,7 @@ public partial class ProductionOrdersListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -118,7 +118,7 @@ public partial class ProductionOrdersListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        var confirm = await Shell.Current.DisplayAlert("Удалить", $"Удалить ПЗ {item.ProductionOrderNumber}?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlertAsync("Удалить", $"Удалить ПЗ {item.ProductionOrderNumber}?", "Да", "Нет");
         if (!confirm)
             return;
 
@@ -129,7 +129,7 @@ public partial class ProductionOrdersListPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
     }
 

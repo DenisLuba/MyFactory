@@ -35,6 +35,18 @@ public partial class ProductEditPageViewModel : ObservableObject
     [ObservableProperty]
     private string? errorMessage;
 
+    [ObservableProperty]
+    private bool areMaterialsSelected;
+
+    [ObservableProperty]
+    private bool areDepartmentsSelected;
+
+    [ObservableProperty]
+    private ObservableCollection<object> selectedMaterials = [];
+
+    [ObservableProperty]
+    private ObservableCollection<object> selectedDepartments = [];
+
     public ObservableCollection<MaterialOptionViewModel> MaterialOptions { get; } = new();
     public ObservableCollection<DepartmentOptionViewModel> DepartmentOptions { get; } = new();
     public ObservableCollection<BomEditItemViewModel> EditableBom { get; } = new();
@@ -45,6 +57,16 @@ public partial class ProductEditPageViewModel : ObservableObject
         _productsService = productsService;
         _materialsService = materialsService;
         _ = LoadAsync();
+    }
+
+    partial void OnSelectedMaterialsChanged(ObservableCollection<object> value)
+    {
+        AreMaterialsSelected = value.Count > 0;
+    }
+
+    partial void OnSelectedDepartmentsChanged(ObservableCollection<object> value)
+    {
+        AreDepartmentsSelected = value.Count > 0;
     }
 
     partial void OnProductIdChanged(Guid? value)
@@ -120,7 +142,7 @@ public partial class ProductEditPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("������", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -142,6 +164,44 @@ public partial class ProductEditPageViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void RemoveMaterials()
+    {
+        foreach (var item in SelectedMaterials.Cast<BomEditItemViewModel>().ToList())
+        {
+            if (EditableBom.Contains(item))
+            {
+                EditableBom.Remove(item);
+            }
+        }
+    }
+
+    [RelayCommand]
+    private Task AddDepartmentAsync()
+    {
+        var option = DepartmentOptions.FirstOrDefault();
+        EditableProductionCosts.Add(new ProductionCostEditViewModel(option)
+        {
+            Cutting = 0,
+            Sewing = 0,
+            Packaging = 0,
+            Other = 0
+        });
+        return Task.CompletedTask;
+    }
+
+    [RelayCommand]
+    private void RemoveDepartments()
+    {
+        foreach (var item in SelectedDepartments.Cast<ProductionCostEditViewModel>().ToList())
+        {
+            if (EditableProductionCosts.Contains(item))
+            {
+                EditableProductionCosts.Remove(item);
+            }
+        }
+    }
+
+    [RelayCommand]
     private async Task SaveAsync()
     {
         if (IsBusy)
@@ -149,7 +209,7 @@ public partial class ProductEditPageViewModel : ObservableObject
 
         if (string.IsNullOrWhiteSpace(Name))
         {
-            await Shell.Current.DisplayAlert("������", "������� ��������", "OK");
+            await Shell.Current.DisplayAlertAsync("������", "������� ��������", "OK");
             return;
         }
 
@@ -207,13 +267,13 @@ public partial class ProductEditPageViewModel : ObservableObject
                 }
             }
 
-            await Shell.Current.DisplayAlert("�����", "���������", "OK");
+            await Shell.Current.DisplayAlertAsync("�����", "���������", "OK");
             await Shell.Current.GoToAsync("..", true);
         }
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("������", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("������", ex.Message, "OK");
         }
         finally
         {

@@ -135,7 +135,7 @@ public partial class ProductionStagesPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -174,19 +174,19 @@ public partial class ProductionStagesPageViewModel : ObservableObject
     [RelayCommand]
     private async Task AddCuttingEmployeeAsync()
     {
-        await Shell.Current.DisplayAlert("Инфо", "Добавление сотрудника пока не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("Инфо", "Добавление сотрудника пока не реализовано", "OK");
     }
 
     [RelayCommand]
     private async Task AddSewingEmployeeAsync()
     {
-        await Shell.Current.DisplayAlert("Инфо", "Добавление сотрудника пока не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("Инфо", "Добавление сотрудника пока не реализовано", "OK");
     }
 
     [RelayCommand]
     private async Task AddPackagingEmployeeAsync()
     {
-        await Shell.Current.DisplayAlert("Инфо", "Добавление сотрудника пока не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("Инфо", "Добавление сотрудника пока не реализовано", "OK");
     }
 
     [RelayCommand]
@@ -195,7 +195,7 @@ public partial class ProductionStagesPageViewModel : ObservableObject
         if (employee is null)
             return;
 
-        await Shell.Current.DisplayAlert("Инфо", "Редактирование пока не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("Инфо", "Редактирование пока не реализовано", "OK");
     }
 
     [RelayCommand]
@@ -204,7 +204,7 @@ public partial class ProductionStagesPageViewModel : ObservableObject
         if (employee is null)
             return;
 
-        await Shell.Current.DisplayAlert("Инфо", "Удаление пока не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("Инфо", "Удаление пока не реализовано", "OK");
     }
 
     public sealed partial class StageEmployeeViewModel : ObservableObject

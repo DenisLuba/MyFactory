@@ -184,7 +184,7 @@ public partial class MaterialDetailsEditPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -226,13 +226,13 @@ public partial class MaterialDetailsEditPageViewModel : ObservableObject
     {
         if (string.IsNullOrWhiteSpace(Name))
         {
-            await Shell.Current.DisplayAlert("Ошибка", "Укажите название материала", "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", "Укажите название материала", "OK");
             return;
         }
 
         if (_materialTypeId == Guid.Empty || _unitId == Guid.Empty)
         {
-            await Shell.Current.DisplayAlert("Ошибка", "Недостаточно данных для сохранения материала (неизвестны идентификаторы типа или единицы).", "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", "Недостаточно данных для сохранения материала (неизвестны идентификаторы типа или единицы).", "OK");
             return;
         }
 
@@ -248,12 +248,12 @@ public partial class MaterialDetailsEditPageViewModel : ObservableObject
                 var createRequest = new CreateMaterialRequest(request.Name, request.MaterialTypeId, request.UnitId, request.Color);
                 var newId = await _materialsService.CreateAsync(createRequest);
                 MaterialId = newId;
-                await Shell.Current.DisplayAlert("Успех", "Материал создан", "OK");
+                await Shell.Current.DisplayAlertAsync("Успех", "Материал создан", "OK");
             }
             else
             {
                 await _materialsService.UpdateAsync(MaterialId.Value, request);
-                await Shell.Current.DisplayAlert("Успех", "Материал обновлен", "OK");
+                await Shell.Current.DisplayAlertAsync("Успех", "Материал обновлен", "OK");
             }
 
             await Shell.Current.GoToAsync("..", true);
@@ -261,7 +261,7 @@ public partial class MaterialDetailsEditPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlert("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
