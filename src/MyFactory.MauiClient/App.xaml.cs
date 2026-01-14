@@ -1,11 +1,7 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using MyFactory.MauiClient.Pages.Authentication;
 using MyFactory.MauiClient.Services.Auth;
-using MyFactory.MauiClient.ViewModels.Authentication;
+using System.Diagnostics;
 
 namespace MyFactory.MauiClient;
 

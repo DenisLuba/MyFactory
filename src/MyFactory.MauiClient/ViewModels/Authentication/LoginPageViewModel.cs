@@ -18,7 +18,7 @@ public partial class LoginPageViewModel : ObservableObject
     private string login = string.Empty;
 
     [ObservableProperty]
-    private string password = string.Empty;
+    private string _password = string.Empty;
 
     [ObservableProperty]
     private bool isBusy;

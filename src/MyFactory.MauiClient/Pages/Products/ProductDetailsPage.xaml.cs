@@ -16,7 +16,7 @@ public partial class ProductDetailsPage : ContentPage
     {
         if (_viewModel is ProductDetailsPageViewModel)
         {
-            _viewModel.LoadAsync();
+            await _viewModel.LoadAsync();
         }
     }
 }

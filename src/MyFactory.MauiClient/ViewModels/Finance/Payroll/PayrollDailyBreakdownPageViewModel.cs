@@ -149,8 +149,8 @@ public partial class PayrollDailyBreakdownPageViewModel : ObservableObject
 
             EmployeeName = details.EmployeeName;
             Position = details.PositionName;
-            fromDate = new DateTime(Year, Month, 1);
-            toDate = fromDate.AddMonths(1).AddDays(-1);
+            FromDate = new DateTime(Year, Month, 1);
+            ToDate = FromDate.AddMonths(1).AddDays(-1);
             TotalBaseAmount = details.TotalBaseAmount;
             TotalPremiumAmount = details.TotalPremiumAmount;
             TotalAmount = details.TotalAmount;

@@ -101,7 +101,7 @@ public partial class WarehouseStockPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task TransferCommandAsync()
+    private async Task TransferAsync()
     {
         await Shell.Current.DisplayAlertAsync("Действие", "Перемещение не реализовано", "OK");
     }

@@ -60,47 +60,54 @@ namespace MyFactory.MauiClient;
 
 public static class MauiProgram
 {
+    private const string host = "109.195.195.69";
+
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
-            .UseMauiCommunityToolkit();
-
-        builder.Services.AddSingleton(sp =>
-        {
-            var baseAddress = DeviceInfo.Platform == DevicePlatform.Android
-                ? new Uri("http://10.0.2.2:5237")
-                : new Uri("http://localhost:5237");
-
-            var handler = new HttpClientHandler
+            .UseMauiCommunityToolkit()
+            .ConfigureFonts(fonts =>
             {
-                ServerCertificateCustomValidationCallback = (request, cert, chain, errors) =>
-                {
-                    // Разрешаем dev-сертификат/HTTPS на localhost
-                    if (request?.RequestUri?.Host is "localhost" or "10.0.2.2")
-                        return true;
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            });
 
-                    return errors == System.Net.Security.SslPolicyErrors.None;
-                }
-            };
+#if DEBUG
+		builder.Logging.AddDebug();
+#endif
 
-            return new HttpClient(handler)
-            {
-                BaseAddress = baseAddress,
-                Timeout = TimeSpan.FromSeconds(100)
-            };
-        });
+        builder.Services.AddSingleton(CreateHttpClient());
 
         builder.AddMyFactoryServices();
         builder.AddViewModelsServices();
         builder.AddPagesServices();
 
-#if DEBUG
-        builder.Logging.AddDebug();
-#endif
-
         return builder.Build();
+    }
+    
+
+    private static HttpClient CreateHttpClient()
+    {
+        var baseAddress = new Uri($"http://{host}:5000");
+
+        var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+            {
+                if (message?.RequestUri?.Host is host or "localhost" or "10.0.2.2")
+                    return true;
+
+                return errors == System.Net.Security.SslPolicyErrors.None;
+            }
+        };
+       
+        return new HttpClient(handler)
+        {
+            BaseAddress = baseAddress,
+            Timeout = TimeSpan.FromSeconds(100)
+        };
     }
 
     private static MauiAppBuilder AddMyFactoryServices(this MauiAppBuilder builder)
@@ -112,7 +119,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IEmployeesService, EmployeesService>();
         builder.Services.AddSingleton<IExpencesService, ExpencesService>();
         builder.Services.AddSingleton<IExpenceTypesService, ExpenceTypesService>();
-        builder.Services.AddSingleton<IFinanceService, FinanceService>(); 
+        builder.Services.AddSingleton<IFinanceService, FinanceService>();
         builder.Services.AddSingleton<IMaterialPurchaseOrdersService, MaterialPurchaseOrdersService>();
         builder.Services.AddSingleton<IMaterialsService, MaterialsService>();
         builder.Services.AddSingleton<IMaterialTypesService, MaterialTypesService>();

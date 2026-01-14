@@ -16,16 +16,16 @@ using MyFactory.MauiClient.Pages.Products;
 using MyFactory.MauiClient.Pages.Users;
 using MyFactory.MauiClient.Pages.Warehouses;
 
-namespace MyFactory.MauiClient;
-
-public partial class AppShell : Shell
+namespace MyFactory.MauiClient
 {
-    public AppShell()
+    public partial class AppShell : Shell
     {
-        InitializeComponent();
-
-        var routes = new (string Name, Type PageType)[]
+        public AppShell()
         {
+            InitializeComponent();
+
+            var routes = new (string Name, Type PageType)[]
+            {
             (nameof(LoginPage), typeof(LoginPage)),
             (nameof(RegisterPage), typeof(RegisterPage)),
             (nameof(PasswordResetPage), typeof(PasswordResetPage)),
@@ -75,11 +75,12 @@ public partial class AppShell : Shell
             (nameof(WarehousesListPage), typeof(WarehousesListPage)),
             (nameof(WarehouseStockPage), typeof(WarehouseStockPage)),
 
-        };
+            };
 
-        foreach (var (Name, PageType) in routes)
-        {
-            Routing.RegisterRoute(Name, PageType);
+            foreach (var (Name, PageType) in routes)
+            {
+                Routing.RegisterRoute(Name, PageType);
+            }
         }
     }
 }
