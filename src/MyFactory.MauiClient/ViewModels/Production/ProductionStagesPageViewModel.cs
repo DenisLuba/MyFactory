@@ -135,7 +135,7 @@ public partial class ProductionStagesPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("пїЅпїЅпїЅпїЅпїЅпїЅ", ex.Message, "OK");
         }
         finally
         {
@@ -157,12 +157,12 @@ public partial class ProductionStagesPageViewModel : ObservableObject
 
     private void RecalculateTotals()
     {
-        cuttingAssignedTotal = CuttingEmployees.Sum(e => e.Assigned);
-        cuttingCompletedTotal = CuttingEmployees.Sum(e => e.Completed);
-        sewingAssignedTotal = SewingEmployees.Sum(e => e.Assigned);
-        sewingCompletedTotal = SewingEmployees.Sum(e => e.Completed);
-        packagingAssignedTotal = PackagingEmployees.Sum(e => e.Assigned);
-        packagingCompletedTotal = PackagingEmployees.Sum(e => e.Completed);
+        CuttingAssignedTotal = CuttingEmployees.Sum(e => e.Assigned);
+        CuttingCompletedTotal = CuttingEmployees.Sum(e => e.Completed);
+        SewingAssignedTotal = SewingEmployees.Sum(e => e.Assigned);
+        SewingCompletedTotal = SewingEmployees.Sum(e => e.Completed);
+        PackagingAssignedTotal = PackagingEmployees.Sum(e => e.Assigned);
+        PackagingCompletedTotal = PackagingEmployees.Sum(e => e.Completed);
         OnPropertyChanged(nameof(CuttingAssignedTotal));
         OnPropertyChanged(nameof(CuttingCompletedTotal));
         OnPropertyChanged(nameof(SewingAssignedTotal));
@@ -174,19 +174,19 @@ public partial class ProductionStagesPageViewModel : ObservableObject
     [RelayCommand]
     private async Task AddCuttingEmployeeAsync()
     {
-        await Shell.Current.DisplayAlertAsync("Инфо", "Добавление сотрудника пока не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("пїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
     }
 
     [RelayCommand]
     private async Task AddSewingEmployeeAsync()
     {
-        await Shell.Current.DisplayAlertAsync("Инфо", "Добавление сотрудника пока не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("пїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
     }
 
     [RelayCommand]
     private async Task AddPackagingEmployeeAsync()
     {
-        await Shell.Current.DisplayAlertAsync("Инфо", "Добавление сотрудника пока не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("пїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
     }
 
     [RelayCommand]
@@ -195,7 +195,7 @@ public partial class ProductionStagesPageViewModel : ObservableObject
         if (employee is null)
             return;
 
-        await Shell.Current.DisplayAlertAsync("Инфо", "Редактирование пока не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("пїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
     }
 
     [RelayCommand]
@@ -204,7 +204,7 @@ public partial class ProductionStagesPageViewModel : ObservableObject
         if (employee is null)
             return;
 
-        await Shell.Current.DisplayAlertAsync("Инфо", "Удаление пока не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("пїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
     }
 
     public sealed partial class StageEmployeeViewModel : ObservableObject
