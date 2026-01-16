@@ -40,70 +40,72 @@
 		</VerticalStackLayout>
 
 		<Border Grid.Row="1" VerticalOptions="Fill">
-			<CollectionView
-				x:Name="SupplierOrderItemsCollection"
-				ItemsSource="{Binding Items}"
-				SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
-				SelectionMode="Multiple">
-				<CollectionView.Header>
-					<Grid
-						Padding="0,4"
-						ColumnDefinitions="2*,1.2*,1.6*,1*,1*"
-						ColumnSpacing="8">
-						<Label FontAttributes="Bold" Text="Поставщик" />
-						<Label
-							Grid.Column="1"
-							FontAttributes="Bold"
-							Text="Тип" />
-						<Label
-							Grid.Column="2"
-							FontAttributes="Bold"
-							Text="Материал" />
-						<Label
-							Grid.Column="3"
-							FontAttributes="Bold"
-							Text="Количество" />
-						<Label
-							Grid.Column="4"
-							FontAttributes="Bold"
-							HorizontalTextAlignment="End"
-							Text="Цена" />
-					</Grid>
-				</CollectionView.Header>
-				<CollectionView.ItemTemplate>
-					<DataTemplate x:DataType="view_model:SupplierOrderUpdatePageViewModel+OrderItemViewModel">
-						<Grid
-							Padding="0,6"
-							ColumnDefinitions="2*,1.2*,1.6*,1*,1*"
-							ColumnSpacing="8"
-							Style="{StaticResource SelectableItemGridStyle}">
-							<Label
-								FontAttributes="Italic"
-								Text="{Binding Supplier.Name}"
-								VerticalTextAlignment="Center" />
-							<Label
-								Grid.Column="1"
-								FontAttributes="Italic"
-								Text="{Binding MaterialType}"
-								VerticalTextAlignment="Center" />
-							<Label
-								Grid.Column="2"
-								FontAttributes="Italic"
-								Text="{Binding Material.Name}"
-								VerticalTextAlignment="Center" />
-							<Entry
-								Grid.Column="3"
-								Keyboard="Numeric"
-								Text="{Binding Qty}" />
-							<Entry
-								Grid.Column="4"
-								HorizontalTextAlignment="End"
-								Keyboard="Numeric"
-								Text="{Binding Price}" />
-						</Grid>
-					</DataTemplate>
-				</CollectionView.ItemTemplate>
-			</CollectionView>
+			<Grid RowDefinitions="Auto,*" RowSpacing="8">
+				<Grid
+					Padding="0,4"
+					ColumnDefinitions="2*,1.2*,1.6*,1*,1*"
+					ColumnSpacing="8">
+					<Label FontAttributes="Bold" Text="Поставщик" />
+					<Label
+						Grid.Column="1"
+						FontAttributes="Bold"
+						Text="Тип" />
+					<Label
+						Grid.Column="2"
+						FontAttributes="Bold"
+						Text="Материал" />
+					<Label
+						Grid.Column="3"
+						FontAttributes="Bold"
+						Text="Количество" />
+					<Label
+						Grid.Column="4"
+						FontAttributes="Bold"
+						HorizontalTextAlignment="End"
+						Text="Цена" />
+				</Grid>
+
+				<CollectionView
+					Grid.Row="1"
+					x:Name="SupplierOrderItemsCollection"
+					ItemsSource="{Binding Items}"
+					SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
+					SelectionMode="Multiple">
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="view_model:SupplierOrderUpdatePageViewModel+OrderItemViewModel">
+							<Grid
+								Padding="32,0,6,0"
+								ColumnDefinitions="2*,1.2*,1.6*,1*,1*"
+								ColumnSpacing="8"
+								Style="{StaticResource SelectableItemGridStyle}">
+								<Label
+									FontAttributes="Italic"
+									Text="{Binding Supplier.Name}"
+									VerticalTextAlignment="Center" />
+								<Label
+									Grid.Column="1"
+									FontAttributes="Italic"
+									Text="{Binding MaterialType}"
+									VerticalTextAlignment="Center" />
+								<Label
+									Grid.Column="2"
+									FontAttributes="Italic"
+									Text="{Binding Material.Name}"
+									VerticalTextAlignment="Center" />
+								<Entry
+									Grid.Column="3"
+									Keyboard="Numeric"
+									Text="{Binding Qty}" />
+								<Entry
+									Grid.Column="4"
+									HorizontalTextAlignment="End"
+									Keyboard="Numeric"
+									Text="{Binding Price}" />
+							</Grid>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+			</Grid>
 		</Border>
 
 		<HorizontalStackLayout Grid.Row="2" Spacing="8">

@@ -8,6 +8,7 @@ using MyFactory.MauiClient.Services.MaterialPurchaseOrders;
 using MyFactory.MauiClient.Services.Materials;
 using MyFactory.MauiClient.Services.Suppliers;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 
 namespace MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.SupplierOrders;
@@ -51,11 +52,6 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<object?> selectedItems = [];
 
-    partial void OnSelectedItemsChanged(ObservableCollection<object?> value)
-    {
-        HasSelectedItems = value.Count > 0;
-    }
-
     public ObservableCollection<SupplierListItemResponse> SupplierOptions { get; } = new();
     public ObservableCollection<string> MaterialTypeOptions { get; } = new();
     public ObservableCollection<MaterialListItemResponse> MaterialOptions { get; } = new();
@@ -72,7 +68,27 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
         _ordersService = ordersService;
         _suppliersService = suppliersService;
         _materialsService = materialsService;
+        SubscribeSelectionCollection();
         _ = LoadAsync();
+    }
+
+    private void SubscribeSelectionCollection()
+    {
+        SelectedItems.CollectionChanged += SelectedItemsCollectionChanged;
+        HasSelectedItems = SelectedItems.Count > 0;
+    }
+
+    partial void OnSelectedItemsChanging(ObservableCollection<object?> value)
+    {
+        if (SelectedItems is not null)
+            SelectedItems.CollectionChanged -= SelectedItemsCollectionChanged;
+    }
+
+    partial void OnSelectedItemsChanged(ObservableCollection<object?> value)
+    {
+        if (value is not null)
+            value.CollectionChanged += SelectedItemsCollectionChanged;
+        HasSelectedItems = value?.Count > 0;
     }
 
     partial void OnSupplierIdChanged(Guid? value)
@@ -291,6 +307,11 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
         }
 
         SelectedItems.Clear();
+    }
+
+    private void SelectedItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        HasSelectedItems = SelectedItems.Count > 0;
     }
 
     [RelayCommand]

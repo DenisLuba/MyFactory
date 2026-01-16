@@ -71,9 +71,10 @@
 			Padding="8"
 			Stroke="LightGray"
 			StrokeThickness="1">
-			<VerticalStackLayout Spacing="8">
+			<Grid RowDefinitions="Auto,Auto,*" Spacing="8">
 				<Label FontAttributes="Bold" Text="СПЕЦИФИКАЦИЯ (BOM)" />
 				<Grid
+					Grid.Row="1"
 					Padding="0,4"
 					ColumnDefinitions="*,Auto,Auto"
 					ColumnSpacing="8">
@@ -90,6 +91,7 @@
 						Text="Цена" />
 				</Grid>
 				<CollectionView
+					Grid.Row="2"
 					x:Name="BomCollection"
 					ItemsSource="{Binding Bom}"
 					SelectionMode="None">
@@ -112,7 +114,7 @@
 						</DataTemplate>
 					</CollectionView.ItemTemplate>
 				</CollectionView>
-			</VerticalStackLayout>
+			</Grid>
 		</Border>
 
 		<Border
@@ -120,7 +122,7 @@
 			Padding="8"
 			Stroke="LightGray"
 			StrokeThickness="1">
-			<VerticalStackLayout Spacing="8">
+			<Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
 				<Label FontAttributes="Bold" Text="Производственные затраты" />
 				<Grid
 					Padding="0,4"
@@ -154,6 +156,7 @@
 						Text="Всего" />
 				</Grid>
 				<CollectionView
+					Grid.Row="1"
 					x:Name="ProductionCostsCollection"
 					ItemsSource="{Binding ProductionCosts}"
 					SelectionMode="None">
@@ -188,7 +191,7 @@
 						</DataTemplate>
 					</CollectionView.ItemTemplate>
 				</CollectionView>
-			</VerticalStackLayout>
+			</Grid>
 		</Border>
 
 		<Border
@@ -196,9 +199,10 @@
 			Padding="8"
 			Stroke="LightGray"
 			StrokeThickness="1">
-			<VerticalStackLayout Spacing="8">
+			<Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
 				<Label FontAttributes="Bold" Text="Остатки на складах" />
 				<Grid
+					Grid.Row="1"
 					Padding="0,4"
 					ColumnDefinitions="*,Auto"
 					ColumnSpacing="8">
@@ -209,7 +213,7 @@
 						HorizontalTextAlignment="End"
 						Text="Доступно" />
 				</Grid>
-				<CollectionView ItemsSource="{Binding Warehouses}" SelectionMode="None">
+				<CollectionView Grid.Row="2" ItemsSource="{Binding Warehouses}" SelectionMode="None">
 					<CollectionView.ItemTemplate>
 						<DataTemplate>
 							<Grid
@@ -225,7 +229,7 @@
 						</DataTemplate>
 					</CollectionView.ItemTemplate>
 				</CollectionView>
-			</VerticalStackLayout>
+			</Grid>
 		</Border>
 	</Grid>
 </ContentPage>

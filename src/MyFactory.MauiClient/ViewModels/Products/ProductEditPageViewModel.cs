@@ -1,6 +1,7 @@
 using Microsoft.Maui.Controls;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -42,10 +43,10 @@ public partial class ProductEditPageViewModel : ObservableObject
     private bool areDepartmentsSelected;
 
     [ObservableProperty]
-    private ObservableCollection<object> selectedMaterials = [];
+    private ObservableCollection<object?> selectedMaterials = [];
 
     [ObservableProperty]
-    private ObservableCollection<object> selectedDepartments = [];
+    private ObservableCollection<object?> selectedDepartments = [];
 
     public ObservableCollection<MaterialOptionViewModel> MaterialOptions { get; } = new();
     public ObservableCollection<DepartmentOptionViewModel> DepartmentOptions { get; } = new();
@@ -56,17 +57,56 @@ public partial class ProductEditPageViewModel : ObservableObject
     {
         _productsService = productsService;
         _materialsService = materialsService;
+        SubscribeSelectionCollections();
         _ = LoadAsync();
     }
 
-    partial void OnSelectedMaterialsChanged(ObservableCollection<object> value)
+    private void SubscribeSelectionCollections()
     {
-        AreMaterialsSelected = value.Count > 0;
+        SelectedMaterials.CollectionChanged += SelectedMaterialsCollectionChanged;
+        SelectedDepartments.CollectionChanged += SelectedDepartmentsCollectionChanged;
+        AreMaterialsSelected = SelectedMaterials.Count > 0;
+        AreDepartmentsSelected = SelectedDepartments.Count > 0;
     }
 
-    partial void OnSelectedDepartmentsChanged(ObservableCollection<object> value)
+    partial void OnSelectedMaterialsChanging(ObservableCollection<object?> value)
     {
-        AreDepartmentsSelected = value.Count > 0;
+        // отписываемся от старой коллекции
+        if (SelectedMaterials is not null)
+            SelectedMaterials.CollectionChanged -= SelectedMaterialsCollectionChanged;
+    }
+
+    partial void OnSelectedMaterialsChanged(ObservableCollection<object?> value)
+    {
+        // подписываемся на новую коллекцию
+        if (value is not null)
+            value.CollectionChanged += SelectedMaterialsCollectionChanged;
+        AreMaterialsSelected = value?.Count > 0;
+    }
+
+    partial void OnSelectedDepartmentsChanging(ObservableCollection<object?> value)
+    {
+        // отписываемся от старой коллекции
+        if (SelectedDepartments is not null)
+            SelectedDepartments.CollectionChanged -= SelectedDepartmentsCollectionChanged;
+    }
+
+    partial void OnSelectedDepartmentsChanged(ObservableCollection<object?> value)
+    {
+        // подписываемся на новую коллекцию
+        if (value is not null)
+            value.CollectionChanged += SelectedDepartmentsCollectionChanged;
+        AreDepartmentsSelected = value?.Count > 0;
+    }
+
+    private void SelectedMaterialsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        AreMaterialsSelected = SelectedMaterials.Count > 0;
+    }
+
+    private void SelectedDepartmentsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        AreDepartmentsSelected = SelectedDepartments.Count > 0;
     }
 
     partial void OnProductIdChanged(Guid? value)

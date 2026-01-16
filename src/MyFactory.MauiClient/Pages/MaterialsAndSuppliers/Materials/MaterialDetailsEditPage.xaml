@@ -70,76 +70,76 @@
 						Text="Добавить" />
 				</Grid>
 
-				<CollectionView
-					x:Name="PurchaseHistoryEditCollection"
-					Grid.Row="1"
-					ItemsSource="{Binding EditablePurchaseHistory}"
-					SelectionMode="None">
-					<CollectionView.Header>
+				<Grid Grid.Row="1" RowDefinitions="Auto,*" RowSpacing="8">
+					<Grid
+						Padding="0,4"
+						ColumnDefinitions="*,120,80,120"
+						ColumnSpacing="8">
 
-						<Grid
-							Padding="0,4"
-							ColumnDefinitions="*,120,80,120"
-							ColumnSpacing="8">
+						<Label FontAttributes="Bold" Text="Поставщик" />
+						<Label
+							Grid.Column="1"
+							FontAttributes="Bold"
+							HorizontalTextAlignment="End"
+							Text="Кол-во" />
+						<Label
+							Grid.Column="2"
+							FontAttributes="Bold"
+							HorizontalTextAlignment="End"
+							Text="Цена" />
+						<Label
+							Grid.Column="3"
+							FontAttributes="Bold"
+							HorizontalTextAlignment="End"
+							Text="Дата" />
+					</Grid>
 
-							<Label FontAttributes="Bold" Text="Поставщик" />
-							<Label
-								Grid.Column="1"
-								FontAttributes="Bold"
-								HorizontalTextAlignment="End"
-								Text="Кол-во" />
-							<Label
-								Grid.Column="2"
-								FontAttributes="Bold"
-								HorizontalTextAlignment="End"
-								Text="Цена" />
-							<Label
-								Grid.Column="3"
-								FontAttributes="Bold"
-								HorizontalTextAlignment="End"
-								Text="Дата" />
-						</Grid>
-					</CollectionView.Header>
+					<CollectionView
+						x:Name="PurchaseHistoryEditCollection"
+						Grid.Row="1"
+						ItemsSource="{Binding EditablePurchaseHistory}"
+						SelectionMode="None">
 
-					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="view_model:MaterialDetailsEditPageViewModel+EditablePurchaseItemViewModel">
+						<CollectionView.ItemTemplate>
+							<DataTemplate x:DataType="view_model:MaterialDetailsEditPageViewModel+EditablePurchaseItemViewModel">
 
-							<Grid
-								Padding="0,6"
-								ColumnDefinitions="*,120,80,120"
-								ColumnSpacing="8"
-								Style="{StaticResource SelectableItemGridStyle}">
-								<Grid.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding BindingContext.EditPurchaseCommand, Source={x:Reference Name=PurchaseHistoryEditCollection}}" CommandParameter="{Binding .}" />
-								</Grid.GestureRecognizers>
-								<Picker
-									ItemDisplayBinding="{Binding Name}"
-									ItemsSource="{Binding SupplierOptions}"
-									SelectedItem="{Binding Supplier}" />
-								<HorizontalStackLayout
-									Grid.Column="1"
-									HorizontalOptions="End"
-									Spacing="4">
+								<Grid
+									Padding="0,6"
+									ColumnDefinitions="*,120,80,120"
+									ColumnSpacing="8"
+									Style="{StaticResource SelectableItemGridStyle}">
+									<Grid.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding BindingContext.EditPurchaseCommand, Source={x:Reference Name=PurchaseHistoryEditCollection}}" CommandParameter="{Binding .}" />
+									</Grid.GestureRecognizers>
+									<Picker
+										ItemDisplayBinding="{Binding Name}"
+										ItemsSource="{Binding SupplierOptions}"
+										SelectedItem="{Binding Supplier}" />
+									<HorizontalStackLayout
+										Grid.Column="1"
+										HorizontalOptions="End"
+										Spacing="4">
+										<Entry
+											HorizontalTextAlignment="End"
+											Keyboard="Numeric"
+											Text="{Binding Qty}"
+											WidthRequest="80" />
+										<Label Text="{Binding BindingContext.UnitCode, Source={x:Reference Name=PurchaseHistoryEditCollection}}" VerticalTextAlignment="Center" />
+									</HorizontalStackLayout>
 									<Entry
+										Grid.Column="2"
 										HorizontalTextAlignment="End"
 										Keyboard="Numeric"
-										Text="{Binding Qty}"
-										WidthRequest="80" />
-									<Label Text="{Binding BindingContext.UnitCode, Source={x:Reference Name=PurchaseHistoryEditCollection}}" VerticalTextAlignment="Center" />
-								</HorizontalStackLayout>
-								<Entry
-									Grid.Column="2"
-									HorizontalTextAlignment="End"
-									Keyboard="Numeric"
-									Text="{Binding UnitPrice}" />
-								<DatePicker
-									Grid.Column="3"
-									Date="{Binding PurchaseDate}"
-									HorizontalOptions="End" />
+										Text="{Binding UnitPrice}" />
+									<DatePicker
+										Grid.Column="3"
+										Date="{Binding PurchaseDate}"
+										HorizontalOptions="End" />
 							</Grid>
 						</DataTemplate>
 					</CollectionView.ItemTemplate>
-				</CollectionView>
+					</CollectionView>
+				</Grid>
 			</Grid>
 		</Border>
 

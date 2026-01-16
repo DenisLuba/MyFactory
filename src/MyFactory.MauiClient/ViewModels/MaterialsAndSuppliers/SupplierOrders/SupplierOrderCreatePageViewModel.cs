@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -62,12 +63,27 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
         _suppliersService = suppliersService;
         _materialsService = materialsService;
 
+        SubscribeSelectionCollection();
         _ = LoadAsync();
+    }
+
+    private void SubscribeSelectionCollection()
+    {
+        SelectedItems.CollectionChanged += SelectedItemsCollectionChanged;
+        HasSelectedItems = SelectedItems.Count > 0;
+    }
+
+    partial void OnSelectedItemsChanging(ObservableCollection<object?> value)
+    {
+        if (SelectedItems is not null)
+            SelectedItems.CollectionChanged -= SelectedItemsCollectionChanged;
     }
 
     partial void OnSelectedItemsChanged(ObservableCollection<object?> value)
     {
-        HasSelectedItems = value.Count > 0;
+        if (value is not null)
+            value.CollectionChanged += SelectedItemsCollectionChanged;
+        HasSelectedItems = value?.Count > 0;
     }
 
     partial void OnSupplierIdChanged(Guid? value)
@@ -254,12 +270,7 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
         await Shell.Current.GoToAsync("..", true);
     }
 
-    private void OnSelectedItemsChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-    {
-        UpdateHasSelectedItems();
-    }
-
-    private void UpdateHasSelectedItems()
+    private void SelectedItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         HasSelectedItems = SelectedItems.Count > 0;
     }

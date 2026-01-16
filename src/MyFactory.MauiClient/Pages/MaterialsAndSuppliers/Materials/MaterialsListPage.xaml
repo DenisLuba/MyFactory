@@ -25,62 +25,62 @@
 				Text="+ Добавить" />
 		</Grid>
 
-
-
 		<Border Grid.Row="1">
-			<CollectionView
-				x:Name="MaterialsListCollection"
-				ItemsSource="{Binding FilteredMaterials}"
-				SelectionMode="None">
-				<CollectionView.Header>
-					<Grid
-						Padding="0,4"
-						ColumnDefinitions="0.25*,0.6*,0.15*"
-						ColumnSpacing="8">
-						<Label FontAttributes="Bold" Text="Тип материала" />
-						<Label
-							Grid.Column="1"
-							FontAttributes="Bold"
-							Text="Материал" />
-						<Label
-							Grid.Column="2"
-							FontAttributes="Bold"
-							Text="Остаток" />
-					</Grid>
-				</CollectionView.Header>
-				<CollectionView.ItemTemplate>
-					<DataTemplate x:DataType="view_model:MaterialsListPageViewModel+MaterialItemViewModel">
-						<SwipeView>
-							<SwipeView.RightItems>
-								<SwipeItems Mode="Reveal">
-									<SwipeItem
-										BackgroundColor="LightGray"
-										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=MaterialsListCollection}}"
-										CommandParameter="{Binding .}"
-										Text="Редактировать" />
-									<SwipeItem
-										BackgroundColor="Tomato"
-										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=MaterialsListCollection}}"
-										CommandParameter="{Binding .}"
-										Text="Удалить" />
-								</SwipeItems>
-							</SwipeView.RightItems>
-							<Grid
-								Padding="0,8"
-								ColumnDefinitions="0.25*,0.6*,0.15*"
-								ColumnSpacing="8"
-								Style="{StaticResource SelectableItemGridStyle}">
-								<Grid.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=MaterialsListCollection}}" CommandParameter="{Binding .}" />
-								</Grid.GestureRecognizers>
-								<Label Text="{Binding MaterialTypeName}" />
-								<Label Grid.Column="1" Text="{Binding MaterialName}" />
-								<Label Grid.Column="2" Text="{Binding TotalQty}" />
-							</Grid>
-						</SwipeView>
-					</DataTemplate>
-				</CollectionView.ItemTemplate>
-			</CollectionView>
+			<Grid RowDefinitions="Auto,*" RowSpacing="8">
+				<Grid
+					Padding="0,4"
+					ColumnDefinitions="0.25*,0.6*,0.15*"
+					ColumnSpacing="8">
+					<Label FontAttributes="Bold" Text="Тип материала" />
+					<Label
+						Grid.Column="1"
+						FontAttributes="Bold"
+						Text="Материал" />
+					<Label
+						Grid.Column="2"
+						FontAttributes="Bold"
+						Text="Остаток" />
+				</Grid>
+
+				<CollectionView
+					Grid.Row="1"
+					x:Name="MaterialsListCollection"
+					ItemsSource="{Binding FilteredMaterials}"
+					SelectionMode="None">
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="view_model:MaterialsListPageViewModel+MaterialItemViewModel">
+							<SwipeView>
+								<SwipeView.RightItems>
+									<SwipeItems Mode="Reveal">
+										<SwipeItem
+											BackgroundColor="LightGray"
+											Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=MaterialsListCollection}}"
+											CommandParameter="{Binding .}"
+											Text="Редактировать" />
+										<SwipeItem
+											BackgroundColor="Tomato"
+											Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=MaterialsListCollection}}"
+											CommandParameter="{Binding .}"
+											Text="Удалить" />
+									</SwipeItems>
+								</SwipeView.RightItems>
+								<Grid
+									Padding="0,8"
+									ColumnDefinitions="0.25*,0.6*,0.15*"
+									ColumnSpacing="8"
+									Style="{StaticResource SelectableItemGridStyle}">
+									<Grid.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=MaterialsListCollection}}" CommandParameter="{Binding .}" />
+									</Grid.GestureRecognizers>
+									<Label Text="{Binding MaterialTypeName}" />
+									<Label Grid.Column="1" Text="{Binding MaterialName}" />
+									<Label Grid.Column="2" Text="{Binding TotalQty}" />
+								</Grid>
+							</SwipeView>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+			</Grid>
 		</Border>
 
 	</Grid>
