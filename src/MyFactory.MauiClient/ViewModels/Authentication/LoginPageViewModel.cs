@@ -46,7 +46,7 @@ public partial class LoginPageViewModel : ObservableObject
 
         if (string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(Password))
         {
-            ErrorMessage = "Введите логин и пароль";
+            ErrorMessage = "Р›РѕРіРёРЅ Рё РїР°СЂРѕР»СЊ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ Р·Р°РїРѕР»РЅРµРЅС‹.";
             return;
         }
 
@@ -63,12 +63,10 @@ public partial class LoginPageViewModel : ObservableObject
 
             if (Shell.Current is not null)
             {
-                await Shell.Current.DisplayAlertAsync("Успех", "Вход выполнен", "ОК");
                 await Shell.Current.GoToAsync(nameof(MaterialsListPage));
             }
             else if (currentWindow is not null)
             {
-                await (currentWindow.Page?.DisplayAlertAsync("Успех", "Вход выполнен", "ОК") ?? Task.CompletedTask);
                 currentWindow.Page = new AppShell();
             }
         }
@@ -82,11 +80,11 @@ public partial class LoginPageViewModel : ObservableObject
 
             if (currentWindow?.Page is not null)
             {
-                await currentWindow.Page.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
+                await currentWindow.Page.DisplayAlertAsync("РћС€РёР±РєР°!", ex.Message, "РћРє");
             }
             else if (Shell.Current is not null)
             {
-                await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "ОК");
+                await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°!", ex.Message, "РћРє");
             }
         }
         finally

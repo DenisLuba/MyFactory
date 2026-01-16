@@ -50,7 +50,7 @@ public partial class WarehouseStockPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
             return;
@@ -80,7 +80,7 @@ public partial class WarehouseStockPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("пїЅпїЅпїЅпїЅпїЅпїЅ", ex.Message, "OK");
         }
         finally
         {
@@ -97,13 +97,13 @@ public partial class WarehouseStockPageViewModel : ObservableObject
     [RelayCommand]
     private async Task AddItemAsync()
     {
-        await Shell.Current.DisplayAlertAsync("Действие", "Добавление позиции не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
     }
 
     [RelayCommand]
     private async Task TransferAsync()
     {
-        await Shell.Current.DisplayAlertAsync("Действие", "Перемещение не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
     }
 
     [RelayCommand]
@@ -112,7 +112,7 @@ public partial class WarehouseStockPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlertAsync("Действие", "Редактирование количества не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
     }
 
     [RelayCommand]
@@ -121,7 +121,7 @@ public partial class WarehouseStockPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlertAsync("Действие", "Удаление позиции не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
     }
 
     [RelayCommand]
@@ -130,7 +130,7 @@ public partial class WarehouseStockPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlertAsync("Действие", "Открытие карточки не реализовано", "OK");
+        await Shell.Current.DisplayAlertAsync("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
     }
 
     public sealed class StockItemViewModel

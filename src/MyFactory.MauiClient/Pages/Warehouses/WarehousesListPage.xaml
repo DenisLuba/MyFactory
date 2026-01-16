@@ -5,70 +5,90 @@
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Warehouses"
 	Title="Склады"
 	x:DataType="view_model:WarehousesListPageViewModel">
-	<ScrollView>
-		<VerticalStackLayout Padding="16" Spacing="12">
-			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-				<Label
-					FontAttributes="Bold"
-					FontSize="18"
-					Text="Склады" />
-				<Button
-					Grid.Column="1"
-					Command="{Binding AddCommand}"
-					Text="Добавить" />
-			</Grid>
 
-			<Grid
-				Padding="0,4"
-				ColumnDefinitions="*,Auto"
-				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Название" />
-				<Label
-					Grid.Column="1"
-					FontAttributes="Bold"
-					HorizontalTextAlignment="End"
-					Text="Тип" />
-			</Grid>
+	<Grid Padding="16" RowSpacing="12" RowDefinitions="Auto,*,Auto">
+		
+		<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+			<Label
+				FontAttributes="Bold"
+				FontSize="18"
+				Text="Склады" />
+			<Button
+				Grid.Column="1"
+				Command="{Binding AddCommand}"
+				Text="Добавить" />
+		</Grid>
 
-			<CollectionView
-				x:Name="WarehousesCollection"
-				ItemsSource="{Binding Warehouses}"
-				SelectionMode="None">
-				<CollectionView.ItemTemplate>
-					<DataTemplate>
-						<SwipeView>
-							<SwipeView.RightItems>
-								<SwipeItems Mode="Reveal">
-									<SwipeItem
-										BackgroundColor="LightGray"
-										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=WarehousesCollection}}"
-										CommandParameter="{Binding .}"
-										Text="Редактировать" />
-									<SwipeItem
-										BackgroundColor="Tomato"
-										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=WarehousesCollection}}"
-										CommandParameter="{Binding .}"
-										Text="Удалить" />
-								</SwipeItems>
-							</SwipeView.RightItems>
-							<Grid
-								Padding="0,8"
-								ColumnDefinitions="*,Auto"
-								ColumnSpacing="8">
-								<Grid.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding BindingContext.OpenStockCommand, Source={x:Reference Name=WarehousesCollection}}" CommandParameter="{Binding .}" />
-								</Grid.GestureRecognizers>
-								<Label Text="{Binding Name}" />
-								<Label
-									Grid.Column="1"
-									HorizontalTextAlignment="End"
-									Text="{Binding Type}" />
-							</Grid>
-						</SwipeView>
-					</DataTemplate>
-				</CollectionView.ItemTemplate>
-			</CollectionView>
-		</VerticalStackLayout>
-	</ScrollView>
+		<ActivityIndicator Grid.Row="1" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+		<Border Grid.Row="1">
+			<Grid RowDefinitions="Auto,*" RowSpacing="8">
+				<Grid
+					Padding="0,16"
+					ColumnDefinitions="4.5*,3*,2*,0.5*"
+					ColumnSpacing="8">
+					<Label FontAttributes="Bold" Text="Название" />
+					<Label
+						Grid.Column="1"
+						FontAttributes="Bold"
+						HorizontalTextAlignment="End"
+						Text="Тип" />
+				</Grid>
+
+				<CollectionView
+					Grid.Row="1"
+					x:Name="WarehousesCollection"
+					ItemsSource="{Binding Warehouses}"
+					SelectionMode="None">
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="view_model:WarehousesListPageViewModel+WarehouseItemViewModel">
+							<SwipeView>
+								<SwipeView.RightItems>
+									<SwipeItems Mode="Reveal">
+										<SwipeItem
+											BackgroundColor="LightGray"
+											Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=WarehousesCollection}}"
+											CommandParameter="{Binding .}"
+											Text="Редактировать" />
+										<SwipeItem
+											BackgroundColor="Tomato"
+											Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=WarehousesCollection}}"
+											CommandParameter="{Binding .}"
+											Text="Удалить" />
+									</SwipeItems>
+								</SwipeView.RightItems>
+								<Grid
+									Padding="0,8"
+									ColumnDefinitions="4.5*,3*,2*,0.5*"
+									ColumnSpacing="8">
+									<Grid.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding BindingContext.OpenStockCommand, Source={x:Reference Name=WarehousesCollection}}" CommandParameter="{Binding .}" />
+									</Grid.GestureRecognizers>
+									<Label Text="{Binding Name}" />
+									<Label
+										Grid.Column="1"
+										HorizontalTextAlignment="End"
+										Text="{Binding Type}" />
+									<Label
+										Grid.Column="2"
+										VerticalTextAlignment="Center"
+										HorizontalTextAlignment="End"
+										Text="Удалить"
+										TextColor="Tomato"
+										FontAttributes="Italic">
+										<Label.GestureRecognizers>
+											<TapGestureRecognizer
+												Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=WarehousesCollection}}"
+												CommandParameter="{Binding .}" />	
+										</Label.GestureRecognizers>
+									</Label>
+								</Grid>
+							</SwipeView>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+			</Grid>
+		</Border>
+	</Grid>
 </ContentPage>
 

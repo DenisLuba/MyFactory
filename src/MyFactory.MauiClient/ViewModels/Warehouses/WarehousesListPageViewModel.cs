@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -21,6 +22,7 @@ public partial class WarehousesListPageViewModel : ObservableObject
     [ObservableProperty]
     private string? errorMessage;
 
+    // [ObservableProperty]
     public ObservableCollection<WarehouseItemViewModel> Warehouses { get; } = new();
 
     public WarehousesListPageViewModel(IWarehousesService warehousesService)
@@ -28,9 +30,9 @@ public partial class WarehousesListPageViewModel : ObservableObject
         _warehousesService = warehousesService;
         _ = LoadAsync();
     }
-
+    
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
             return;
@@ -41,13 +43,13 @@ public partial class WarehousesListPageViewModel : ObservableObject
             ErrorMessage = null;
 
             var items = await _warehousesService.GetListAsync();
-            _all = items?.Select(WarehouseItemViewModel.FromResponse).ToList() ?? new();
+            _all = items?.Where(w => w.IsActive).Select(WarehouseItemViewModel.FromResponse).ToList() ?? new();
             RefreshCollection();
         }
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°!", ex.Message, "OK");
         }
         finally
         {
@@ -58,7 +60,40 @@ public partial class WarehousesListPageViewModel : ObservableObject
     [RelayCommand]
     private async Task AddAsync()
     {
-        await Shell.Current.DisplayAlertAsync("Действие", "Создание склада не реализовано", "OK");
+        if (IsBusy)
+            return;
+
+        var name = await Shell.Current.DisplayPromptAsync("РќРѕРІС‹Р№ СЃРєР»Р°Рґ", "Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ СЃРєР»Р°РґР°", initialValue: string.Empty, maxLength: 200);
+        if (string.IsNullOrWhiteSpace(name))
+            return;
+
+        var typeOptions = Enum.GetValues<WarehouseType>().Select(t => t.ToString()).ToArray();
+        var selectedType = await Shell.Current.DisplayActionSheetAsync("РўРёРї СЃРєР»Р°РґР°", "РћС‚РјРµРЅР°", null, typeOptions);
+        if (string.IsNullOrWhiteSpace(selectedType) || selectedType == "РћС‚РјРµРЅР°")
+            return;
+
+        if (!Enum.TryParse<WarehouseType>(selectedType, out var type))
+            return;
+
+        try
+        {
+            IsBusy = true;
+            var createResponse = await _warehousesService.CreateAsync(new CreateWarehouseRequest(name.Trim(), type))
+                ?? throw new InvalidOperationException("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СЃРєР»Р°Рґ");
+
+            IsBusy = false;
+
+            await LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°!", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     [RelayCommand]
@@ -67,7 +102,37 @@ public partial class WarehousesListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlertAsync("Действие", "Редактирование склада не реализовано", "OK");
+        if (IsBusy)
+            return;
+
+        var name = await Shell.Current.DisplayPromptAsync("Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ СЃРєР»Р°Рґ", "РќР°Р·РІР°РЅРёРµ", initialValue: item.Name, maxLength: 200);
+        if (string.IsNullOrWhiteSpace(name))
+            return;
+
+        var typeOptions = Enum.GetValues<WarehouseType>().Select(t => t.ToString()).ToArray();
+        var selectedType = await Shell.Current.DisplayActionSheetAsync("РўРёРї СЃРєР»Р°РґР°", "РћС‚РјРµРЅР°", null, typeOptions);
+        if (string.IsNullOrWhiteSpace(selectedType) || selectedType == "РћС‚РјРµРЅР°")
+            return;
+
+        if (!Enum.TryParse<WarehouseType>(selectedType, out var type))
+            return;
+
+        try
+        {
+            IsBusy = true;
+            await _warehousesService.UpdateAsync(item.Id, new UpdateWarehouseRequest(name.Trim(), type));
+            IsBusy = false;
+            await LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°!", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     [RelayCommand]
@@ -76,7 +141,29 @@ public partial class WarehousesListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlertAsync("Действие", "Удаление склада не реализовано", "OK");
+        if (IsBusy)
+            return;
+
+        var confirm = await Shell.Current.DisplayAlertAsync("РЈРґР°Р»РёС‚СЊ", $"Р”РµР°РєС‚РёРІРёСЂРѕРІР°С‚СЊ СЃРєР»Р°Рґ '{item.Name}'?", "Р”Р°", "РќРµС‚");
+        if (!confirm)
+            return;
+
+        try
+        {
+            IsBusy = true;
+            await _warehousesService.DeactivateAsync(item.Id);
+            IsBusy = false;
+            await LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°!", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     [RelayCommand]
