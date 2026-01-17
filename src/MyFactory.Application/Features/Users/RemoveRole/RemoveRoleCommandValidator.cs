@@ -2,9 +2,9 @@ using FluentValidation;
 
 namespace MyFactory.Application.Features.Users.DeactivateRole;
 
-public sealed class DeactivateRoleCommandValidator : AbstractValidator<DeactivateRoleCommand>
+public sealed class RemoveRoleCommandValidator : AbstractValidator<RemoveRoleCommand>
 {
-    public DeactivateRoleCommandValidator()
+    public RemoveRoleCommandValidator()
     {
         RuleFor(x => x.RoleId)
             .NotEmpty();

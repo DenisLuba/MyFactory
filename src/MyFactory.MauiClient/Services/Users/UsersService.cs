@@ -31,7 +31,7 @@ public sealed class UsersService : IUsersService
         await response.EnsureSuccessWithProblemAsync();
     }
 
-    public async Task DeactivateRoleAsync(Guid roleId)
+    public async Task RemoveRoleAsync(Guid roleId)
     {
         var response = await _httpClient.DeleteAsync($"api/users/roles/{roleId}");
         await response.EnsureSuccessWithProblemAsync();

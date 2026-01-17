@@ -65,9 +65,9 @@ public class UsersController : ControllerBase
 
     [HttpDelete("roles/{roleId:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> DeactivateRole(Guid roleId)
+    public async Task<IActionResult> RemoveRole(Guid roleId)
     {
-        await _mediator.Send(new DeactivateRoleCommand(roleId));
+        await _mediator.Send(new RemoveRoleCommand(roleId));
         return Ok();
     }
 

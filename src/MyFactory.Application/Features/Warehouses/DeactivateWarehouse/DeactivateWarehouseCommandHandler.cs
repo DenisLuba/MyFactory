@@ -26,7 +26,7 @@ public sealed class DeactivateWarehouseCommandHandler
             ?? throw new NotFoundException(
                 $"Warehouse with Id {request.WarehouseId} not found");
 
-        _db.Warehouses.Remove(warehouse);
+        warehouse.Deactivate();
 
         await _db.SaveChangesAsync(cancellationToken);
     }

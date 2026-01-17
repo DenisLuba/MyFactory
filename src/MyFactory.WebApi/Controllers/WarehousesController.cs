@@ -1,10 +1,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using MyFactory.Application.Features.Warehouses.ActivateWarehouse;
 using MyFactory.Application.Features.Warehouses.AddMaterialToWarehouse;
 using MyFactory.Application.Features.Warehouses.GetWarehouseInfo;
 using MyFactory.Application.Features.Warehouses.GetWarehouses;
 using MyFactory.Application.Features.Warehouses.GetWarehouseStock;
 using MyFactory.Application.Features.Warehouses.RemoveMaterialFromWarehouse;
+using MyFactory.Application.Features.Warehouses.RemoveWarehouse;
 using MyFactory.Application.Features.Warehouses.TransferMaterials;
 using MyFactory.Application.Features.Warehouses.TransferProducts;
 using MyFactory.Application.Features.Warehouses.UpdateWarehouseMaterialQty;
@@ -97,6 +99,17 @@ public class WarehousesController : ControllerBase
     }
 
     // -------------------------
+    //  ACTIVATE
+    // -------------------------
+    [HttpPut("{id:guid}/activate")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Activate(Guid id)
+    {
+        await _mediator.Send(new ActivateWarehouseCommand(id));
+        return Ok();
+    }
+
+    // -------------------------
     //  DEACTIVATE
     // -------------------------
     [HttpDelete("{id:guid}")]
@@ -104,6 +117,17 @@ public class WarehousesController : ControllerBase
     public async Task<IActionResult> Deactivate(Guid id)
     {
         await _mediator.Send(new DeactivateWarehouseCommand(id));
+        return Ok();
+    }
+
+    // -------------------------
+    //  REMOVE
+    // -------------------------
+    [HttpDelete("{id:guid}/remove")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Remove(Guid id)
+    {
+        await _mediator.Send(new RemoveWarehouseCommand(id));
         return Ok();
     }
 

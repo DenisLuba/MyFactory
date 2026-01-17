@@ -140,7 +140,7 @@ public partial class RolesPageViewModel : ObservableObject
             IsBusy = true;
             ErrorMessage = null;
 
-            await _usersService.DeactivateRoleAsync(role.Id);
+            await _usersService.RemoveRoleAsync(role.Id);
             Roles.Remove(role);
         }
         catch (Exception ex)

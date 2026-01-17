@@ -32,7 +32,7 @@
 					Text="+" />
 				<Button
 					Grid.Column="2"
-					Command="{Binding RemoveItemCommand}"
+					Command="{Binding RemoveSelectedCommand}"
 					IsEnabled="{Binding HasSelectedItems}"
 					IsVisible="{Binding HasSelectedItems}"
 					Text="-" />
@@ -66,8 +66,8 @@
 				</Grid>
 
 				<CollectionView
-					Grid.Row="1"
 					x:Name="SupplierOrderItemsCollection"
+					Grid.Row="1"
 					ItemsSource="{Binding Items}"
 					SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
 					SelectionMode="Multiple">

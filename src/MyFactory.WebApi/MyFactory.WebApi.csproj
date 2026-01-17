@@ -25,9 +25,4 @@
     <ProjectReference Include="..\MyFactory.Infrastructure\MyFactory.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="MIddlewares\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

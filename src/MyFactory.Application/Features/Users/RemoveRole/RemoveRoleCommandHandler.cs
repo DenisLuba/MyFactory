@@ -4,16 +4,16 @@ using MyFactory.Application.Common.Interfaces;
 
 namespace MyFactory.Application.Features.Users.DeactivateRole;
 
-public sealed class DeactivateRoleCommandHandler : IRequestHandler<DeactivateRoleCommand>
+public sealed class RemoveRoleCommandHandler : IRequestHandler<RemoveRoleCommand>
 {
     private readonly IApplicationDbContext _context;
 
-    public DeactivateRoleCommandHandler(IApplicationDbContext context)
+    public RemoveRoleCommandHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task Handle(DeactivateRoleCommand request, CancellationToken cancellationToken)
+    public async Task Handle(RemoveRoleCommand request, CancellationToken cancellationToken)
     {
         var role = await _context.Roles
             .FirstOrDefaultAsync(r => r.Id == request.RoleId, cancellationToken);

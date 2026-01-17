@@ -4,6 +4,7 @@ using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MyFactory.MauiClient.Models.Materials;
+using MyFactory.MauiClient.Pages.Warehouses;
 using MyFactory.MauiClient.Services.Materials;
 
 namespace MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Materials;
@@ -163,6 +164,15 @@ public partial class MaterialDetailsViewPageViewModel : ObservableObject
         await Shell.Current.GoToAsync("SupplierDetailsPage", new Dictionary<string, object>
         {
             { "SupplierId", supplierId.ToString() }
+        });
+    }
+
+    [RelayCommand]
+    private async Task OpenWarehouseAsync(Guid warehouseId)
+    {
+        await Shell.Current.GoToAsync(nameof(WarehouseStockPage), new Dictionary<string, object>
+        {
+            { "WarehouseId", warehouseId.ToString() }
         });
     }
 }

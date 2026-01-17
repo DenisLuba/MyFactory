@@ -42,9 +42,22 @@ public sealed class WarehousesService : IWarehousesService
         await response.EnsureSuccessWithProblemAsync();
     }
 
+    public async Task ActivateAsync(Guid id)
+    {
+        var response = await _httpClient.PutAsync($"api/warehouses/{id}/activate", null);
+        await response.EnsureSuccessWithProblemAsync();
+
+    }
+
     public async Task DeactivateAsync(Guid id)
     {
         var response = await _httpClient.DeleteAsync($"api/warehouses/{id}");
+        await response.EnsureSuccessWithProblemAsync();
+    }
+
+    public async Task RemoveAsync(Guid id)
+    {
+        var response = await _httpClient.DeleteAsync($"api/warehouses/{id}/remove");
         await response.EnsureSuccessWithProblemAsync();
     }
 

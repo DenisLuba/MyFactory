@@ -6,7 +6,10 @@
 	Title="Остатки склада"
 	x:DataType="view_model:WarehouseStockPageViewModel">
 
-	<Grid Padding="16" RowSpacing="12" RowDefinitions="Auto,*,Auto">
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,*,Auto"
+		RowSpacing="12">
 
 		<Grid
 			ColumnDefinitions="Auto,*,Auto"
@@ -38,10 +41,10 @@
 						HorizontalTextAlignment="End"
 						Text="Количество" />
 				</Grid>
-	
+
 				<CollectionView
-					Grid.Row="1"
 					x:Name="StockCollection"
+					Grid.Row="1"
 					ItemsSource="{Binding StockItems}"
 					SelectionMode="None">
 					<CollectionView.ItemTemplate>
@@ -81,7 +84,10 @@
 			</Grid>
 		</Border>
 
-		<Button Grid.Row="2" Command="{Binding TransferCommand}" Text="Переместить" />
+		<Button
+			Grid.Row="2"
+			Command="{Binding TransferCommand}"
+			Text="Переместить" />
 	</Grid>
 </ContentPage>
 

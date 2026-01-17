@@ -71,7 +71,7 @@
 			Padding="8"
 			Stroke="LightGray"
 			StrokeThickness="1">
-			<Grid RowDefinitions="Auto,Auto,*" Spacing="8">
+			<Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
 				<Label FontAttributes="Bold" Text="СПЕЦИФИКАЦИЯ (BOM)" />
 				<Grid
 					Grid.Row="1"
@@ -91,8 +91,8 @@
 						Text="Цена" />
 				</Grid>
 				<CollectionView
-					Grid.Row="2"
 					x:Name="BomCollection"
+					Grid.Row="2"
 					ItemsSource="{Binding Bom}"
 					SelectionMode="None">
 					<CollectionView.ItemTemplate>
@@ -156,8 +156,8 @@
 						Text="Всего" />
 				</Grid>
 				<CollectionView
-					Grid.Row="1"
 					x:Name="ProductionCostsCollection"
+					Grid.Row="1"
 					ItemsSource="{Binding ProductionCosts}"
 					SelectionMode="None">
 					<CollectionView.ItemTemplate>
@@ -213,7 +213,10 @@
 						HorizontalTextAlignment="End"
 						Text="Доступно" />
 				</Grid>
-				<CollectionView Grid.Row="2" ItemsSource="{Binding Warehouses}" SelectionMode="None">
+				<CollectionView
+					Grid.Row="2"
+					ItemsSource="{Binding Warehouses}"
+					SelectionMode="None">
 					<CollectionView.ItemTemplate>
 						<DataTemplate>
 							<Grid

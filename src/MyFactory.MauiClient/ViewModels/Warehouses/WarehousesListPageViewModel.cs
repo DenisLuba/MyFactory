@@ -42,8 +42,8 @@ public partial class WarehousesListPageViewModel : ObservableObject
             IsBusy = true;
             ErrorMessage = null;
 
-            var items = await _warehousesService.GetListAsync();
-            _all = items?.Where(w => w.IsActive).Select(WarehouseItemViewModel.FromResponse).ToList() ?? new();
+            var items = await _warehousesService.GetListAsync(includeInactive: true);
+            _all = items?.Select(WarehouseItemViewModel.FromResponse).ToList() ?? new();
             RefreshCollection();
         }
         catch (Exception ex)
@@ -136,7 +136,7 @@ public partial class WarehousesListPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task DeleteAsync(WarehouseItemViewModel? item)
+    private async Task ActivateAsync(WarehouseItemViewModel? item)
     {
         if (item is null)
             return;
@@ -144,7 +144,39 @@ public partial class WarehousesListPageViewModel : ObservableObject
         if (IsBusy)
             return;
 
-        var confirm = await Shell.Current.DisplayAlertAsync("Удалить", $"Деактивировать склад '{item.Name}'?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlertAsync("Активировать", $"Активировать склад '{item.Name}'?", "Да", "Нет");
+
+        if (!confirm)
+            return;
+
+        try
+        {
+            IsBusy = true;
+            await _warehousesService.ActivateAsync(item.Id);
+            IsBusy = false;
+            await LoadAsync();
+        }
+        catch(Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            await Shell.Current.DisplayAlertAsync("Ошибка!", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task DeactivateAsync(WarehouseItemViewModel? item)
+    {
+        if (item is null)
+            return;
+
+        if (IsBusy)
+            return;
+
+        var confirm = await Shell.Current.DisplayAlertAsync("Деактивировать", $"Деактивировать склад '{item.Name}'?", "Да", "Нет");
         if (!confirm)
             return;
 
@@ -186,11 +218,15 @@ public partial class WarehousesListPageViewModel : ObservableObject
             Warehouses.Add(item);
     }
 
-    public sealed record WarehouseItemViewModel(Guid Id, string Name, string Type)
+    public sealed record WarehouseItemViewModel(Guid Id, string Name, string Type, bool IsActive)
     {
+        public string Status => IsActive ? "Активен" : "Неактивен";
+        public string ActionLabel => IsActive ? "Деактивировать" : "Активировать";
+        public bool IsInactive => !IsActive;
+
         public static WarehouseItemViewModel FromResponse(WarehouseListItemResponse response)
         {
-            return new WarehouseItemViewModel(response.Id, response.Name, response.Type.ToString());
+            return new WarehouseItemViewModel(response.Id, response.Name, response.Type.ToString(), response.IsActive);
         }
     }
 }

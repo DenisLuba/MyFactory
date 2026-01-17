@@ -90,7 +90,9 @@ public static class MauiProgram
 
     private static HttpClient CreateHttpClient()
     {
-        var baseAddress = new Uri($"http://{host}:5000");
+        //var baseAddress = new Uri($"http://{host}:5000");
+
+        var baseAddress = new Uri("http://localhost:5237");
 
         var handler = new HttpClientHandler
         {
