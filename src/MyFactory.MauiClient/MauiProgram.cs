@@ -189,6 +189,7 @@ public static class MauiProgram
         builder.Services.AddTransient<UsersListPageViewModel>();
         builder.Services.AddTransient<WarehousesListPageViewModel>();
         builder.Services.AddTransient<WarehouseStockPageViewModel>();
+        builder.Services.AddTransient<TransferFromWarehousePageViewModel>();
 
         return builder;
     }
@@ -243,6 +244,7 @@ public static class MauiProgram
         builder.Services.AddTransient<UsersListPage>();
         builder.Services.AddTransient<WarehousesListPage>();
         builder.Services.AddTransient<WarehouseStockPage>();
+        builder.Services.AddTransient<TransferFromWarehousePage>();
 
         return builder;
     }

@@ -45,7 +45,15 @@ public class ProductsController : ControllerBase
     {
         var dtos = await _mediator.Send(new GetProductsQuery(search, sortBy, sortDesc));
         var response = dtos
-            .Select(x => new ProductListItemResponse(x.Id, x.Name, x.CostPrice))
+            .Select(x => new ProductListItemResponse(
+                x.Id,
+                x.Sku,
+                x.Name,
+                x.Status,
+                x.Description,
+                x.PlanPerHour,
+                x.Version,
+                x.CostPrice))
             .ToList();
         return Ok(response);
     }
@@ -61,8 +69,12 @@ public class ProductsController : ControllerBase
         var dto = await _mediator.Send(new GetProductDetailsQuery(id));
         var response = new ProductDetailsResponse(
             dto.Id,
+            dto.Sku,
             dto.Name,
             dto.PlanPerHour,
+            dto.Description,
+            dto.Version,
+            dto.Status,
             dto.MaterialsCost,
             dto.ProductionCost,
             dto.TotalCost,
@@ -101,7 +113,9 @@ public class ProductsController : ControllerBase
             req.Sku,
             req.Name,
             req.Status,
-            req.PlanPerHour));
+            req.PlanPerHour,
+            req.Description,
+            req.Version));
         return Created(string.Empty, new CreateProductResponse(id));
     }
 
@@ -118,7 +132,9 @@ public class ProductsController : ControllerBase
             id,
             req.Name,
             req.PlanPerHour,
-            req.Status));
+            req.Status,
+            req.Description,
+            req.Version));
         return NoContent();
     }
 

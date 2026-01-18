@@ -26,7 +26,9 @@ public sealed class UpdateProductCommandHandler
         product.Update(
             name: request.Name,
             planPerHour: request.PlanPerHour,
-            status: request.Status
+            status: request.Status,
+            description: request.Description,
+            version: request.Version
         );
 
         await _db.SaveChangesAsync(cancellationToken);

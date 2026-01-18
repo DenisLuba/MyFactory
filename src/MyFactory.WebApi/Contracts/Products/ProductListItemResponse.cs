@@ -1,3 +1,11 @@
 namespace MyFactory.WebApi.Contracts.Products;
 
-public record ProductListItemResponse(Guid Id, string Name, decimal CostPrice);
+public record ProductListItemResponse(
+    Guid Id,
+    string Sku,
+    string Name,
+    ProductStatus Status,
+    string? Description,
+    int? PlanPerHour,
+    int? Version,
+    decimal CostPrice);

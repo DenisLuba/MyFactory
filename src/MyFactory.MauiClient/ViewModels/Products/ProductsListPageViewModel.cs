@@ -29,7 +29,6 @@ public partial class ProductsListPageViewModel : ObservableObject
     public ProductsListPageViewModel(IProductsService productsService)
     {
         _productsService = productsService;
-        _ = LoadAsync();
     }
 
     [RelayCommand]
@@ -50,7 +49,7 @@ public partial class ProductsListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("������", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка!", ex.Message, "OK");
         }
         finally
         {
@@ -117,15 +116,25 @@ public partial class ProductsListPageViewModel : ObservableObject
     public sealed class ProductItemViewModel
     {
         public Guid Id { get; }
+        public string Sku { get; }
         public string Name { get; }
         public string Category { get; }
+        public string Status { get; }
+        public string? Description { get; }
+        public int? PlanPerHour { get; }
+        public int? Version { get; }
         public decimal CostPrice { get; }
 
         public ProductItemViewModel(ProductListItemResponse response)
         {
             Id = response.Id;
+            Sku = response.Sku;
             Name = response.Name;
             Category = string.Empty;
+            Status = response.Status.ToString();
+            Description = response.Description;
+            PlanPerHour = response.PlanPerHour;
+            Version = response.Version;
             CostPrice = response.CostPrice;
         }
     }

@@ -7,5 +7,7 @@ public sealed record UpdateProductCommand(
     Guid ProductId,
     string Name,
     int? PlanPerHour,
-    ProductStatus Status
+    ProductStatus Status,
+    string? Description,
+    int? Version
 ) : IRequest<Guid>;

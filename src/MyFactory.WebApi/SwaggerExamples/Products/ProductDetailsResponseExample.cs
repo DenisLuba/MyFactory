@@ -1,4 +1,5 @@
 using MyFactory.WebApi.Contracts.Products;
+using MyFactory.Domain.Entities.Products;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace MyFactory.WebApi.SwaggerExamples.Products;
@@ -7,8 +8,12 @@ public sealed class ProductDetailsResponseExample : IExamplesProvider<ProductDet
 {
     public ProductDetailsResponse GetExamples() => new(
         Id: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa0001"),
+        Sku: "SP-001",
         Name: "Пижама женская",
-        PlanPerHour: 2.5m,
+        PlanPerHour: 2,
+        Description: "Легкая хлопковая",
+        Version: 1,
+        Status: ProductStatus.Active,
         MaterialsCost: 320m,
         ProductionCost: 200m,
         TotalCost: 520m,

@@ -10,5 +10,7 @@ public sealed class CreateProductRequestExample : IExamplesProvider<CreateProduc
         Sku: "SP-001",
         Name: "Пижама женская",
         Status: ProductStatus.Active,
-        PlanPerHour: 3);
+        PlanPerHour: 3,
+        Description: "Легкая хлопковая",
+        Version: 1);
 }

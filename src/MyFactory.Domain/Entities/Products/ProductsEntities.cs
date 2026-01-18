@@ -17,15 +17,15 @@ public class ProductEntity : AuditableEntity
     public Guid? PayrollRuleId { get; private set; }
 
 	// Navigation properties
-	public IReadOnlyCollection<ProductDepartmentCostEntity> ProductDepartmentCosts { get; private set; } = [];
-	public IReadOnlyCollection<ProductMaterialEntity> ProductMaterials { get; private set; } = [];
-    public IReadOnlyCollection<FinishedGoodsEntity> FinishedGoods { get; private set; } = [];
-    public IReadOnlyCollection<WarehouseProductEntity> WarehouseProducts { get; private set; } = [];
-    public IReadOnlyCollection<FinishedGoodsMovementItemEntity> FinishedGoodsMovementItems { get; private set; } = [];
-    public IReadOnlyCollection<ShipmentItemEntity> ShipmentItems { get; private set; } = [];
-    public IReadOnlyCollection<FinishedGoodsStockEntity> FinishedGoodsStocks { get; private set; } = [];
-    public IReadOnlyCollection<ShipmentReturnItemEntity> ShipmentReturnItems { get; private set; } = [];
-    public IReadOnlyCollection<ProductImageEntity> ProductImages { get; private set; } = [];
+	public ICollection<ProductDepartmentCostEntity> ProductDepartmentCosts { get; private set; } = [];
+	public ICollection<ProductMaterialEntity> ProductMaterials { get; private set; } = [];
+    public ICollection<FinishedGoodsEntity> FinishedGoods { get; private set; } = [];
+    public ICollection<WarehouseProductEntity> WarehouseProducts { get; private set; } = [];
+    public ICollection<FinishedGoodsMovementItemEntity> FinishedGoodsMovementItems { get; private set; } = [];
+    public ICollection<ShipmentItemEntity> ShipmentItems { get; private set; } = [];
+    public ICollection<FinishedGoodsStockEntity> FinishedGoodsStocks { get; private set; } = [];
+    public ICollection<ShipmentReturnItemEntity> ShipmentReturnItems { get; private set; } = [];
+    public ICollection<ProductImageEntity> ProductImages { get; private set; } = [];
 
     public ProductEntity(
 		string sku,
@@ -54,6 +54,8 @@ public class ProductEntity : AuditableEntity
 		string? name = null,
 		ProductStatus? status = null,
 		int? planPerHour = null,
+		string? description = null,
+		int? version = null,
         Guid? payrollRuleId = null)
 	{
 		if (name is not null)
@@ -70,6 +72,15 @@ public class ProductEntity : AuditableEntity
 		{
 			Guard.AgainstNonPositive(planPerHour.Value, "PlanPerHour must be positive if specified.");
 			PlanPerHour = planPerHour;
+		}
+		if (description is not null)
+		{
+			Description = description;
+		}
+		if (version is not null)
+		{
+			Guard.AgainstNonPositive(version.Value, "Version must be positive if specified.");
+			Version = version;
 		}
         if (payrollRuleId is not null)
         {

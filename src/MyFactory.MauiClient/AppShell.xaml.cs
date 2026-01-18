@@ -74,6 +74,7 @@ namespace MyFactory.MauiClient
             (nameof(UsersListPage), typeof(UsersListPage)),
             (nameof(WarehousesListPage), typeof(WarehousesListPage)),
             (nameof(WarehouseStockPage), typeof(WarehouseStockPage)),
+            (nameof(TransferFromWarehousePage), typeof(TransferFromWarehousePage)),
 
             };
 

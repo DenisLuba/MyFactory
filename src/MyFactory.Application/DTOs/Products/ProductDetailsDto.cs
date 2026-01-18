@@ -3,8 +3,12 @@
 public sealed record ProductDetailsDto
 {
     public Guid Id { get; init; }
+    public string Sku { get; init; } = default!;
     public string Name { get; init; } = default!;
-    public decimal? PlanPerHour { get; init; }
+    public int? PlanPerHour { get; init; }
+    public string? Description { get; init; }
+    public int? Version { get; init; }
+    public Domain.Entities.Products.ProductStatus Status { get; init; }
 
     public decimal MaterialsCost { get; init; }
     public decimal ProductionCost { get; init; }

@@ -39,7 +39,6 @@
 
 	<FlyoutItem Title="Склады">
 		<ShellContent Title="Список складов" ContentTemplate="{DataTemplate warehouses:WarehousesListPage}" />
-		<ShellContent Title="Остатки склада" ContentTemplate="{DataTemplate warehouses:WarehouseStockPage}" />
 	</FlyoutItem>
 
 	<FlyoutItem Title="Заказы клиентов">

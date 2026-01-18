@@ -24,6 +24,18 @@ public partial class ProductDetailsPageViewModel : ObservableObject
     private string? name;
 
     [ObservableProperty]
+    private string? sku;
+
+    [ObservableProperty]
+    private string? description;
+
+    [ObservableProperty]
+    private string? status;
+
+    [ObservableProperty]
+    private string? version;
+
+    [ObservableProperty]
     private string? planPerHour;
 
     [ObservableProperty]
@@ -83,8 +95,12 @@ public partial class ProductDetailsPageViewModel : ObservableObject
             if (details is null)
                 return;
 
+            Sku = details.Sku;
             Name = details.Name;
             PlanPerHour = details.PlanPerHour?.ToString();
+            Description = details.Description;
+            Status = details.Status.ToString();
+            Version = details.Version?.ToString();
             MaterialCost = details.MaterialsCost;
             ProductionCost = details.ProductionCost;
             TotalCost = details.TotalCost;
@@ -101,7 +117,7 @@ public partial class ProductDetailsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("������", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка!", ex.Message, "OK");
         }
         finally
         {

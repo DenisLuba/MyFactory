@@ -9,5 +9,7 @@ public sealed class UpdateProductRequestExample : IExamplesProvider<UpdateProduc
     public UpdateProductRequest GetExamples() => new(
         Name: "Пижама женская (обновл.)",
         PlanPerHour: 4,
-        Status: ProductStatus.Active);
+        Status: ProductStatus.Active,
+        Description: "Обновлен дизайн",
+        Version: 2);
 }

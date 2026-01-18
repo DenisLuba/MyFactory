@@ -35,11 +35,12 @@
 						Text="Себестоимость" />
 				</Grid>
 				<CollectionView
+					Grid.Row="1"
 					x:Name="ProductsCollection"
 					ItemsSource="{Binding FilteredProducts}"
 					SelectionMode="None">
 					<CollectionView.ItemTemplate>
-						<DataTemplate>
+						<DataTemplate x:DataType="view_model:ProductsListPageViewModel+ProductItemViewModel">
 							<SwipeView>
 								<SwipeView.RightItems>
 									<SwipeItems Mode="Reveal">

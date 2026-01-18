@@ -28,6 +28,18 @@ public partial class ProductEditPageViewModel : ObservableObject
     private string? name;
 
     [ObservableProperty]
+    private string? sku;
+
+    [ObservableProperty]
+    private string? description;
+
+    [ObservableProperty]
+    private ProductStatus status = ProductStatus.Active;
+
+    [ObservableProperty]
+    private string? version;
+
+    [ObservableProperty]
     private string? planPerHour;
 
     [ObservableProperty]
@@ -148,7 +160,11 @@ public partial class ProductEditPageViewModel : ObservableObject
             if (details is null)
                 return;
 
+            Sku = details.Sku;
             Name = details.Name;
+            Description = details.Description;
+            Status = details.Status;
+            Version = details.Version?.ToString();
             PlanPerHour = details.PlanPerHour?.ToString();
 
             foreach (var bom in details.Bom)

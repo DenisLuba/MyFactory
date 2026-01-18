@@ -66,6 +66,11 @@ public sealed class GetProductsQueryHandler
             {
                 Id = product.Id,
                 Name = product.Name,
+                Sku = product.Sku,
+                Status = product.Status,
+                Description = product.Description,
+                PlanPerHour = product.PlanPerHour,
+                Version = product.Version,
                 CostPrice = materialCost + departmentCost
             });
         }

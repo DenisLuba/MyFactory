@@ -22,7 +22,9 @@ public sealed class CreateProductCommandHandler
             request.Sku,
             request.Name,
             request.Status,
-            planPerHour: request.PlanPerHour
+            planPerHour: request.PlanPerHour,
+            description: request.Description,
+            version: request.Version
         );
 
         _db.Products.Add(product);

@@ -111,8 +111,12 @@ public sealed class GetProductDetailsQueryHandler
         return new ProductDetailsDto
         {
             Id = product.Id,
+            Sku = product.Sku,
             Name = product.Name,
             PlanPerHour = product.PlanPerHour,
+            Description = product.Description,
+            Version = product.Version,
+            Status = product.Status,
 
             MaterialsCost = materialsCost,
             ProductionCost = productionCost,
