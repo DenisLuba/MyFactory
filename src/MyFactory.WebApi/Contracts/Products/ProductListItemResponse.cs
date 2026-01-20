@@ -6,6 +6,6 @@ public record ProductListItemResponse(
     string Name,
     ProductStatus Status,
     string? Description,
-    int? PlanPerHour,
-    int? Version,
+    decimal? PlanPerHour,
+    decimal? Version,
     decimal CostPrice);

@@ -1,5 +1,6 @@
 using Microsoft.Maui.Controls;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
@@ -9,6 +10,7 @@ using MyFactory.MauiClient.Models.Materials;
 using MyFactory.MauiClient.Models.Products;
 using MyFactory.MauiClient.Services.Materials;
 using MyFactory.MauiClient.Services.Products;
+using MyFactory.MauiClient.Common;
 
 namespace MyFactory.MauiClient.ViewModels.Products;
 
@@ -34,7 +36,7 @@ public partial class ProductEditPageViewModel : ObservableObject
     private string? description;
 
     [ObservableProperty]
-    private ProductStatus status = ProductStatus.Active;
+    private string status = ProductStatus.Active.RusStatus();
 
     [ObservableProperty]
     private string? version;
@@ -64,13 +66,16 @@ public partial class ProductEditPageViewModel : ObservableObject
     public ObservableCollection<DepartmentOptionViewModel> DepartmentOptions { get; } = new();
     public ObservableCollection<BomEditItemViewModel> EditableBom { get; } = new();
     public ObservableCollection<ProductionCostEditViewModel> EditableProductionCosts { get; } = new();
+    public IReadOnlyCollection<string> StatusOptions { get; } = [.. Enum.GetValues<ProductStatus>().Select(s => s.RusStatus())];
+
+    private HashSet<Guid> _originalMaterialIds { get; } = new();
+    private Dictionary<Guid, decimal> _originalMaterialQuantities { get; } = new();
 
     public ProductEditPageViewModel(IProductsService productsService, IMaterialsService materialsService)
     {
         _productsService = productsService;
         _materialsService = materialsService;
         SubscribeSelectionCollections();
-        _ = LoadAsync();
     }
 
     private void SubscribeSelectionCollections()
@@ -146,6 +151,8 @@ public partial class ProductEditPageViewModel : ObservableObject
             DepartmentOptions.Clear();
             EditableBom.Clear();
             EditableProductionCosts.Clear();
+            _originalMaterialIds.Clear();
+            _originalMaterialQuantities.Clear();
 
             var materials = await _materialsService.GetListAsync();
             foreach (var m in materials ?? Array.Empty<MaterialListItemResponse>())
@@ -163,9 +170,12 @@ public partial class ProductEditPageViewModel : ObservableObject
             Sku = details.Sku;
             Name = details.Name;
             Description = details.Description;
-            Status = details.Status;
+            Status = details.Status.RusStatus();
             Version = details.Version?.ToString();
             PlanPerHour = details.PlanPerHour?.ToString();
+
+            foreach (var materialId in details.Bom.Select(b => b.MaterialId))
+                _originalMaterialIds.Add(materialId);
 
             foreach (var bom in details.Bom)
             {
@@ -179,6 +189,8 @@ public partial class ProductEditPageViewModel : ObservableObject
                     Quantity = bom.QtyPerUnit,
                     IsNew = false
                 });
+
+                _originalMaterialQuantities[bom.MaterialId] = bom.QtyPerUnit;
             }
 
             foreach (var cost in details.ProductionCosts)
@@ -265,45 +277,95 @@ public partial class ProductEditPageViewModel : ObservableObject
 
         if (string.IsNullOrWhiteSpace(Name))
         {
-            await Shell.Current.DisplayAlertAsync("������", "������� ��������", "OK");
+            await Shell.Current.DisplayAlertAsync("Внимание!", "Необходимо добавить название продукта.", "OK");
             return;
-        }
-
-        int? plan = null;
-        if (!string.IsNullOrWhiteSpace(PlanPerHour) && int.TryParse(PlanPerHour, out var parsed))
-        {
-            plan = parsed;
         }
 
         try
         {
+
+            decimal? plan = PlanPerHour?.StringToDecimal();
+
+            decimal? ver = Version?.StringToDecimal();
+
             IsBusy = true;
             ErrorMessage = null;
 
             if (ProductId is null)
             {
                 var createResponse = await _productsService.CreateAsync(new CreateProductRequest(
-                    Sku: $"PRD-{Guid.NewGuid():N}"[..8],
-                    Name: Name.Trim(),
-                    Status: ProductStatus.Active,
-                    PlanPerHour: plan));
+                    Name: Name.Trim().CapitalizeFirst(),
+                    Status: Status.StatusFromRus(),
+                    PlanPerHour: plan,
+                    Description: Description,
+                    Version: ver));
 
                 if (createResponse is null)
-                    throw new InvalidOperationException("�� ������� ������� �����");
+                    throw new InvalidOperationException("Couldn't get a response from the server.");
 
                 ProductId = createResponse.Id;
             }
             else
             {
-                await _productsService.UpdateAsync(ProductId.Value, new UpdateProductRequest(Name.Trim(), plan, ProductStatus.Active));
+                await _productsService.UpdateAsync(ProductId.Value, new UpdateProductRequest(
+                    Name: Name.Trim(),
+                    PlanPerHour: plan,
+                    Status: Status.StatusFromRus(),
+                    Description: Description,
+                    Version: ver));
             }
 
             if (ProductId is not null)
             {
-                var newBomItems = EditableBom.Where(b => b.IsNew && b.Material is not null);
-                foreach (var bom in newBomItems)
+                // fail fast if there are duplicate materials in the BOM
+                var duplicateGroup = EditableBom
+                    .Where(b => b.Material is not null)
+                    .GroupBy(b => b.Material!.Id)
+                    .FirstOrDefault(g => g.Count() > 1);
+
+                if (duplicateGroup is not null)
                 {
+                    await Shell.Current.DisplayAlertAsync("Внимание!", "Материал уже добавлен", "OK");
+                    return;
+                }
+
+                var currentMaterials = EditableBom
+                    .Where(b => b.Material is not null)
+                    .ToList();
+
+                var currentMaterialIds = currentMaterials
+                    .Select(b => b.Material!.Id)
+                    .ToHashSet();
+
+                var removedMaterialIds = _originalMaterialIds.Except(currentMaterialIds);
+                foreach (var id in removedMaterialIds)
+                    await _productsService.RemoveMaterialAsync(ProductId.Value, id);
+
+                var changedMaterialIds = currentMaterials
+                    .Where(b => _originalMaterialQuantities.TryGetValue(b.Material!.Id, out var oldQty) && b.Quantity != oldQty)
+                    .Select(b => b.Material!.Id)
+                    .ToHashSet();
+
+                foreach (var id in changedMaterialIds)
+                    await _productsService.RemoveMaterialAsync(ProductId.Value, id);
+
+                // add new materials and re-add changed ones with updated qty
+                var materialsToAdd = currentMaterials
+                    .Where(b =>
+                        !_originalMaterialQuantities.ContainsKey(b.Material!.Id) // brand new
+                        || changedMaterialIds.Contains(b.Material!.Id))         // changed qty
+                    .GroupBy(b => b.Material!.Id)
+                    .Select(g => g.First());
+
+                foreach (var bom in materialsToAdd)
                     await _productsService.AddMaterialAsync(ProductId.Value, new AddProductMaterialRequest(bom.Material!.Id, bom.Quantity));
+
+                _originalMaterialIds.Clear();
+                _originalMaterialQuantities.Clear();
+                foreach (var mat in currentMaterials)
+                {
+                    _originalMaterialIds.Add(mat.Material!.Id);
+                    _originalMaterialQuantities[mat.Material!.Id] = mat.Quantity;
                 }
 
                 if (EditableProductionCosts.Any())
@@ -323,13 +385,13 @@ public partial class ProductEditPageViewModel : ObservableObject
                 }
             }
 
-            await Shell.Current.DisplayAlertAsync("�����", "���������", "OK");
+            await Shell.Current.DisplayAlertAsync("Успешно!", "Товар сохранен.", "OK");
             await Shell.Current.GoToAsync("..", true);
         }
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("������", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка!", ex.Message, "OK");
         }
         finally
         {

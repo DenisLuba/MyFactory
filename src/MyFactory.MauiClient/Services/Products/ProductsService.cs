@@ -56,9 +56,9 @@ public sealed class ProductsService : IProductsService
         await response.EnsureSuccessWithProblemAsync();
     }
 
-    public async Task RemoveMaterialAsync(Guid productMaterialId)
+    public async Task RemoveMaterialAsync(Guid productId, Guid materialId)
     {
-        var response = await _httpClient.DeleteAsync($"api/products/materials/{productMaterialId}");
+        var response = await _httpClient.DeleteAsync($"api/products/{productId}/materials/{materialId}");
         await response.EnsureSuccessWithProblemAsync();
     }
 

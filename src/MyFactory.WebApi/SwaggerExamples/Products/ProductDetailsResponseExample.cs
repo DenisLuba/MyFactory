@@ -1,5 +1,4 @@
 using MyFactory.WebApi.Contracts.Products;
-using MyFactory.Domain.Entities.Products;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace MyFactory.WebApi.SwaggerExamples.Products;

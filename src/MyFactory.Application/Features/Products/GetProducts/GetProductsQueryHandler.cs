@@ -20,8 +20,7 @@ public sealed class GetProductsQueryHandler
         CancellationToken cancellationToken)
     {
         var productsQuery = _db.Products
-            .AsNoTracking()
-            .Where(p => p.Status == Domain.Entities.Products.ProductStatus.Active);
+            .AsNoTracking();
 
         if (!string.IsNullOrWhiteSpace(request.Search))
         {

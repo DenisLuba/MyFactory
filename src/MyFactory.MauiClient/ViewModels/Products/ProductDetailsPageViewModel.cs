@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MyFactory.MauiClient.Models.Products;
 using MyFactory.MauiClient.Services.Products;
+using MyFactory.MauiClient.Common;
 
 namespace MyFactory.MauiClient.ViewModels.Products;
 
@@ -99,7 +100,7 @@ public partial class ProductDetailsPageViewModel : ObservableObject
             Name = details.Name;
             PlanPerHour = details.PlanPerHour?.ToString();
             Description = details.Description;
-            Status = details.Status.ToString();
+            Status = details.Status.RusStatus();
             Version = details.Version?.ToString();
             MaterialCost = details.MaterialsCost;
             ProductionCost = details.ProductionCost;
@@ -146,7 +147,7 @@ public partial class ProductDetailsPageViewModel : ObservableObject
     [RelayCommand]
     private async Task DeleteAsync()
     {
-        await Shell.Current.DisplayAlertAsync("��������", "�������� ������ �� �����������", "OK");
+        // TODO: Надо реализовать удаление товара
     }
 
     public sealed class BomItemViewModel

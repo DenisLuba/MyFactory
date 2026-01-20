@@ -7,7 +7,7 @@ public sealed record ProductListItemDto
     public string Sku { get; init; } = default!;
     public Domain.Entities.Products.ProductStatus Status { get; init; }
     public string? Description { get; init; }
-    public int? PlanPerHour { get; init; }
-    public int? Version { get; init; }
+    public decimal? PlanPerHour { get; init; }
+    public decimal? Version { get; init; }
     public decimal CostPrice { get; init; }
 }

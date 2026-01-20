@@ -8,232 +8,279 @@
 
 	<Grid
 		Padding="16"
-		RowDefinitions="0.08*,0.12*,0.12*,0.2*,0.22*,0.16*,0.1*"
+		RowDefinitions="Auto,Auto,*"
 		RowSpacing="12">
-		<HorizontalStackLayout Grid.Row="0" Spacing="8">
+		<HorizontalStackLayout Spacing="8">
 			<Button Command="{Binding BackCommand}" Text="Назад" />
 			<Button Command="{Binding EditCommand}" Text="Редактировать" />
 			<Button Command="{Binding DeleteCommand}" Text="Удалить" />
 		</HorizontalStackLayout>
 
-		<Label
-			Grid.Row="1"
-			FontAttributes="Bold"
-			FontSize="20"
-			Text="{Binding Name}" />
-
 		<Grid
-			Grid.Row="2"
+			Grid.Row="1"
 			ColumnDefinitions="Auto,*"
 			ColumnSpacing="8"
-			RowDefinitions="Auto,Auto"
+			RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
 			RowSpacing="8">
-			<Label FontAttributes="Bold" Text="План пошива в смену:" />
-			<Label Grid.Column="1" Text="{Binding PlanPerHour}" />
+			<Label FontSize="20">
+				<Label.FormattedText>
+					<FormattedString>
+						<Span FontAttributes="Bold" Text="{Binding Name}" />
+						<Span Text=" " />
+						<Span FontAttributes="Italic" Text="{Binding Sku}" />
+					</FormattedString>
+				</Label.FormattedText>
+			</Label>
+
 			<Label
 				Grid.Row="1"
 				FontAttributes="Bold"
-				Text="Себестоимость:" />
+				Text="Описание: " />
 			<Label
 				Grid.Row="1"
 				Grid.Column="1"
+				MaxLines="4"
+				Text="{Binding Description}" />
+
+			<Label
+				Grid.Row="2"
+				FontAttributes="Bold"
+				Text="План пошива в смену:" />
+			<Label
+				Grid.Row="2"
+				Grid.Column="1"
+				Text="{Binding PlanPerHour}" />
+
+			<Label
+				Grid.Row="3"
+				FontAttributes="Bold"
+				Text="Себестоимость:" />
+			<Label
+				Grid.Row="3"
+				Grid.Column="1"
 				Text="{Binding TotalCost}" />
+
+			<Label
+				Grid.Row="4"
+				FontAttributes="Bold"
+				Text="Версия: " />
+			<Label
+				Grid.Row="4"
+				Grid.Column="1"
+				Text="{Binding Version}" />
+
+			<Label
+				Grid.Row="5"
+				FontAttributes="Bold"
+				Text="Статус" />
+			<Label
+				Grid.Row="5"
+				Grid.Column="1"
+				Text="{Binding Status}" />
 		</Grid>
 
-		<Border
-			Grid.Row="3"
-			Padding="8"
-			Stroke="LightGray"
-			StrokeThickness="1">
-			<VerticalStackLayout Spacing="6">
-				<Label FontAttributes="Bold" Text="Себестоимость" />
-				<Grid
-					ColumnDefinitions="Auto,*"
-					ColumnSpacing="8"
-					RowDefinitions="Auto,Auto"
-					RowSpacing="4">
-					<Label FontAttributes="Bold" Text="Материалы:" />
-					<Label Grid.Column="1" Text="{Binding MaterialCost}" />
-					<Label
-						Grid.Row="1"
-						FontAttributes="Bold"
-						Text="Производство:" />
-					<Label
-						Grid.Row="1"
-						Grid.Column="1"
-						Text="{Binding ProductionCost}" />
-				</Grid>
-			</VerticalStackLayout>
-		</Border>
+		<ScrollView Grid.Row="2">
+			<Grid
+				Margin="0,0,12,0"
+				RowDefinitions="Auto,*,*,*"
+				RowSpacing="12">
+				<Border HorizontalOptions="Start">
+					<VerticalStackLayout Spacing="6">
+						<Label
+							FontAttributes="Bold"
+							FontSize="18"
+							Text="СЕБЕСТОИМОСТЬ" />
+						<Grid
+							ColumnDefinitions="Auto,*"
+							ColumnSpacing="8"
+							RowDefinitions="Auto,Auto"
+							RowSpacing="4">
+							<Label FontAttributes="Bold" Text="Материалы:" />
+							<Label Grid.Column="1" Text="{Binding MaterialCost}" />
+							<Label
+								Grid.Row="1"
+								FontAttributes="Bold"
+								Text="Производство:" />
+							<Label
+								Grid.Row="1"
+								Grid.Column="1"
+								Text="{Binding ProductionCost}" />
+						</Grid>
+					</VerticalStackLayout>
+				</Border>
 
-		<Border
-			Grid.Row="4"
-			Padding="8"
-			Stroke="LightGray"
-			StrokeThickness="1">
-			<Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
-				<Label FontAttributes="Bold" Text="СПЕЦИФИКАЦИЯ (BOM)" />
-				<Grid
-					Grid.Row="1"
-					Padding="0,4"
-					ColumnDefinitions="*,Auto,Auto"
-					ColumnSpacing="8">
-					<Label FontAttributes="Bold" Text="Материал" />
-					<Label
-						Grid.Column="1"
-						FontAttributes="Bold"
-						HorizontalTextAlignment="End"
-						Text="Количество" />
-					<Label
-						Grid.Column="2"
-						FontAttributes="Bold"
-						HorizontalTextAlignment="End"
-						Text="Цена" />
-				</Grid>
-				<CollectionView
-					x:Name="BomCollection"
-					Grid.Row="2"
-					ItemsSource="{Binding Bom}"
-					SelectionMode="None">
-					<CollectionView.ItemTemplate>
-						<DataTemplate>
-							<Grid
-								Padding="0,6"
-								ColumnDefinitions="*,Auto,Auto"
-								ColumnSpacing="8">
-								<Label Text="{Binding MaterialName}" />
-								<Label
-									Grid.Column="1"
-									HorizontalTextAlignment="End"
-									Text="{Binding Quantity}" />
-								<Label
-									Grid.Column="2"
-									HorizontalTextAlignment="End"
-									Text="{Binding Price}" />
-							</Grid>
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
-			</Grid>
-		</Border>
+				<Border Grid.Row="1">
+					<Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
+						<Label
+							FontAttributes="Bold"
+							FontSize="18"
+							Text="СПЕЦИФИКАЦИЯ" />
+						<Grid
+							Grid.Row="1"
+							Padding="0,4"
+							ColumnDefinitions="6*,2*,2*"
+							ColumnSpacing="8">
+							<Label FontAttributes="Bold" Text="Материал" />
+							<Label
+								Grid.Column="1"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="Количество" />
+							<Label
+								Grid.Column="2"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="Цена" />
+						</Grid>
+						<CollectionView
+							x:Name="BomCollection"
+							Grid.Row="2"
+							ItemsSource="{Binding Bom}"
+							SelectionMode="None">
+							<CollectionView.ItemTemplate>
+								<DataTemplate x:DataType="view_model:ProductDetailsPageViewModel+BomItemViewModel">
+									<Grid
+										Padding="0,6"
+										ColumnDefinitions="6*,2*,2*"
+										ColumnSpacing="8">
+										<Label Text="{Binding MaterialName}" />
+										<Label
+											Grid.Column="1"
+											HorizontalTextAlignment="End"
+											Text="{Binding Quantity}" />
+										<Label
+											Grid.Column="2"
+											HorizontalTextAlignment="End"
+											Text="{Binding Price}" />
+									</Grid>
+								</DataTemplate>
+							</CollectionView.ItemTemplate>
+						</CollectionView>
+					</Grid>
+				</Border>
 
-		<Border
-			Grid.Row="5"
-			Padding="8"
-			Stroke="LightGray"
-			StrokeThickness="1">
-			<Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
-				<Label FontAttributes="Bold" Text="Производственные затраты" />
-				<Grid
-					Padding="0,4"
-					ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto"
-					ColumnSpacing="8">
-					<Label FontAttributes="Bold" Text="Цех" />
-					<Label
-						Grid.Column="1"
-						FontAttributes="Bold"
-						HorizontalTextAlignment="End"
-						Text="Раскрой" />
-					<Label
-						Grid.Column="2"
-						FontAttributes="Bold"
-						HorizontalTextAlignment="End"
-						Text="Пошив" />
-					<Label
-						Grid.Column="3"
-						FontAttributes="Bold"
-						HorizontalTextAlignment="End"
-						Text="Упаковка" />
-					<Label
-						Grid.Column="4"
-						FontAttributes="Bold"
-						HorizontalTextAlignment="End"
-						Text="Прочее" />
-					<Label
-						Grid.Column="5"
-						FontAttributes="Bold"
-						HorizontalTextAlignment="End"
-						Text="Всего" />
-				</Grid>
-				<CollectionView
-					x:Name="ProductionCostsCollection"
-					Grid.Row="1"
-					ItemsSource="{Binding ProductionCosts}"
-					SelectionMode="None">
-					<CollectionView.ItemTemplate>
-						<DataTemplate>
-							<Grid
-								Padding="0,6"
-								ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto"
-								ColumnSpacing="8">
-								<Label Text="{Binding Department}" />
-								<Label
-									Grid.Column="1"
-									HorizontalTextAlignment="End"
-									Text="{Binding Cutting}" />
-								<Label
-									Grid.Column="2"
-									HorizontalTextAlignment="End"
-									Text="{Binding Sewing}" />
-								<Label
-									Grid.Column="3"
-									HorizontalTextAlignment="End"
-									Text="{Binding Packaging}" />
-								<Label
-									Grid.Column="4"
-									HorizontalTextAlignment="End"
-									Text="{Binding Other}" />
-								<Label
-									Grid.Column="5"
-									HorizontalTextAlignment="End"
-									Text="{Binding Total}" />
-							</Grid>
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
-			</Grid>
-		</Border>
+				<Border Grid.Row="2">
+					<Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
+						<Label
+							FontAttributes="Bold"
+							FontSize="18"
+							Text="ПРОИЗВОДСТВЕННЫЕ ЗАТРАТЫ" />
+						<Grid
+							Grid.Row="1"
+							Padding="0,4"
+							ColumnDefinitions="4*,1*,1*,1*,1*,1*"
+							ColumnSpacing="8">
+							<Label FontAttributes="Bold" Text="Цех" />
+							<Label
+								Grid.Column="1"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="Раскрой" />
+							<Label
+								Grid.Column="2"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="Пошив" />
+							<Label
+								Grid.Column="3"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="Упаковка" />
+							<Label
+								Grid.Column="4"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="Прочее" />
+							<Label
+								Grid.Column="5"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="Всего" />
+						</Grid>
+						<CollectionView
+							x:Name="ProductionCostsCollection"
+							Grid.Row="1"
+							ItemsSource="{Binding ProductionCosts}"
+							SelectionMode="None">
+							<CollectionView.ItemTemplate>
+								<DataTemplate x:DataType="view_model:ProductDetailsPageViewModel+DepartmentCostViewModel">
+									<Grid
+										Padding="0,6"
+										ColumnDefinitions="4*,1*,1*,1*,1*,1*"
+										ColumnSpacing="8">
+										<Label Text="{Binding Department}" />
+										<Label
+											Grid.Column="1"
+											HorizontalTextAlignment="End"
+											Text="{Binding Cutting}" />
+										<Label
+											Grid.Column="2"
+											HorizontalTextAlignment="End"
+											Text="{Binding Sewing}" />
+										<Label
+											Grid.Column="3"
+											HorizontalTextAlignment="End"
+											Text="{Binding Packaging}" />
+										<Label
+											Grid.Column="4"
+											HorizontalTextAlignment="End"
+											Text="{Binding Other}" />
+										<Label
+											Grid.Column="5"
+											HorizontalTextAlignment="End"
+											Text="{Binding Total}" />
+									</Grid>
+								</DataTemplate>
+							</CollectionView.ItemTemplate>
+						</CollectionView>
+					</Grid>
+				</Border>
 
-		<Border
-			Grid.Row="6"
-			Padding="8"
-			Stroke="LightGray"
-			StrokeThickness="1">
-			<Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
-				<Label FontAttributes="Bold" Text="Остатки на складах" />
-				<Grid
-					Grid.Row="1"
-					Padding="0,4"
-					ColumnDefinitions="*,Auto"
-					ColumnSpacing="8">
-					<Label FontAttributes="Bold" Text="Склад" />
-					<Label
-						Grid.Column="1"
-						FontAttributes="Bold"
-						HorizontalTextAlignment="End"
-						Text="Доступно" />
-				</Grid>
-				<CollectionView
-					Grid.Row="2"
-					ItemsSource="{Binding Warehouses}"
-					SelectionMode="None">
-					<CollectionView.ItemTemplate>
-						<DataTemplate>
-							<Grid
-								Padding="0,6"
-								ColumnDefinitions="*,Auto"
-								ColumnSpacing="8">
-								<Label Text="{Binding WarehouseName}" />
-								<Label
-									Grid.Column="1"
-									HorizontalTextAlignment="End"
-									Text="{Binding Available}" />
-							</Grid>
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
+				<Border
+					Grid.Row="3"
+					Padding="8"
+					Stroke="LightGray"
+					StrokeThickness="1">
+					<Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
+						<Label
+							FontAttributes="Bold"
+							FontSize="18"
+							Text="ОСТАТКИ НА СКЛАДАХ" />
+						<Grid
+							Grid.Row="1"
+							Padding="0,4"
+							ColumnDefinitions="8*,2*"
+							ColumnSpacing="8">
+							<Label FontAttributes="Bold" Text="Склад" />
+							<Label
+								Grid.Column="1"
+								FontAttributes="Bold"
+								HorizontalTextAlignment="End"
+								Text="Доступно" />
+						</Grid>
+						<CollectionView
+							Grid.Row="2"
+							ItemsSource="{Binding Warehouses}"
+							SelectionMode="None">
+							<CollectionView.ItemTemplate>
+								<DataTemplate x:DataType="view_model:ProductDetailsPageViewModel+AvailabilityViewModel">
+									<Grid
+										Padding="0,6"
+										ColumnDefinitions="8*,2*"
+										ColumnSpacing="8">
+										<Label Text="{Binding WarehouseName}" />
+										<Label
+											Grid.Column="1"
+											HorizontalTextAlignment="End"
+											Text="{Binding Available}" />
+									</Grid>
+								</DataTemplate>
+							</CollectionView.ItemTemplate>
+						</CollectionView>
+					</Grid>
+				</Border>
 			</Grid>
-		</Border>
+		</ScrollView>
 	</Grid>
 </ContentPage>
 

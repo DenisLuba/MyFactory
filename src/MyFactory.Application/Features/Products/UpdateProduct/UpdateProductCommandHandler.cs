@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using MyFactory.Application.Common.Exceptions;
 using MyFactory.Application.Common.Interfaces;
-using Microsoft.EntityFrameworkCore; // Add this using directive
+using Microsoft.EntityFrameworkCore; 
 
 namespace MyFactory.Application.Features.Products.UpdateProduct;
 

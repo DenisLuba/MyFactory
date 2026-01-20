@@ -7,7 +7,9 @@ public sealed class RemoveProductMaterialCommandValidator
 {
     public RemoveProductMaterialCommandValidator()
     {
-        RuleFor(x => x.ProductMaterialId)
+        RuleFor(x => x.ProductId)
+            .NotEmpty();
+        RuleFor(x => x.MaterialId)
             .NotEmpty();
     }
 }

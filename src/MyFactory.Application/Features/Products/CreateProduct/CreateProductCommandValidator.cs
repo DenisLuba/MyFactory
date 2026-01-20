@@ -7,10 +7,6 @@ public sealed class CreateProductCommandValidator
 {
     public CreateProductCommandValidator()
     {
-        RuleFor(x => x.Sku)
-            .NotEmpty()
-            .MaximumLength(50);
-
         RuleFor(x => x.Name)
             .NotEmpty()
             .MaximumLength(200);

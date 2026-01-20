@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using MyFactory.MauiClient.Models.Products;
 using MyFactory.MauiClient.Services.Products;
 using MyFactory.MauiClient.Pages.Products;
+using MyFactory.MauiClient.Common;
 
 namespace MyFactory.MauiClient.ViewModels.Products;
 
@@ -43,7 +44,7 @@ public partial class ProductsListPageViewModel : ObservableObject
             ErrorMessage = null;
 
             var products = await _productsService.GetListAsync();
-            _allProducts = products?.Select(p => new ProductItemViewModel(p)).ToList() ?? new();
+            _allProducts = products?.Select(p => new ProductItemViewModel(p)).ToList() ?? [];
             ApplyFilter();
         }
         catch (Exception ex)
@@ -75,27 +76,6 @@ public partial class ProductsListPageViewModel : ObservableObject
         });
     }
 
-    [RelayCommand]
-    private async Task EditAsync(ProductItemViewModel? item)
-    {
-        if (item is null)
-            return;
-
-        await Shell.Current.GoToAsync(nameof(ProductEditPage), new Dictionary<string, object>
-        {
-            { "ProductId", item.Id.ToString() }
-        });
-    }
-
-    [RelayCommand]
-    private async Task DeleteAsync(ProductItemViewModel? item)
-    {
-        if (item is null)
-            return;
-
-        await Shell.Current.DisplayAlertAsync("��������", "�������� ������ �� �����������", "OK");
-    }
-
     partial void OnSearchTextChanged(string? value) => ApplyFilter();
 
     private void ApplyFilter()
@@ -121,8 +101,8 @@ public partial class ProductsListPageViewModel : ObservableObject
         public string Category { get; }
         public string Status { get; }
         public string? Description { get; }
-        public int? PlanPerHour { get; }
-        public int? Version { get; }
+        public decimal? PlanPerHour { get; }
+        public decimal? Version { get; }
         public decimal CostPrice { get; }
 
         public ProductItemViewModel(ProductListItemResponse response)
@@ -131,7 +111,7 @@ public partial class ProductsListPageViewModel : ObservableObject
             Sku = response.Sku;
             Name = response.Name;
             Category = string.Empty;
-            Status = response.Status.ToString();
+            Status = response.Status.RusStatus();
             Description = response.Description;
             PlanPerHour = response.PlanPerHour;
             Version = response.Version;

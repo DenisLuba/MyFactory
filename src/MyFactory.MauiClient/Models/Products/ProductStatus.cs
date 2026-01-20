@@ -2,8 +2,8 @@ namespace MyFactory.MauiClient.Models.Products;
 
 public enum ProductStatus
 {
-    Active,
-    Inactive,
-    Development,
-    Discontinued
+    Active, // Активен
+    Inactive, // Неактивен
+    Development, // В разработке
+    Discontinued // Снят с производства
 }

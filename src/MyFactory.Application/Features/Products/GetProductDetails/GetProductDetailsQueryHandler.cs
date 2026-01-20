@@ -27,10 +27,8 @@ public sealed class GetProductDetailsQueryHandler
                 .ThenInclude(pm => pm.Material)
             .Include(p => p.ProductDepartmentCosts)
                 .ThenInclude(dc => dc.Department)
-            .FirstOrDefaultAsync(p => p.Id == request.ProductId, cancellationToken);
-
-        if (product is null)
-            throw new NotFoundException($"Product {request.ProductId} not found");
+            .FirstOrDefaultAsync(p => p.Id == request.ProductId, cancellationToken) 
+            ?? throw new NotFoundException($"Product {request.ProductId} not found");
 
         // ---------- BOM ----------
         var bom = new List<ProductBomItemDto>();

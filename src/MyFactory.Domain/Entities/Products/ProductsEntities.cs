@@ -10,10 +10,10 @@ public class ProductEntity : AuditableEntity
 {
 	public string Sku { get; private set; }
 	public string Name { get; private set; }
-	public int? Version { get; private set; }
+	public decimal? Version { get; private set; }
 	public string? Description { get; private set; }
 	public ProductStatus Status { get; private set; }
-	public int? PlanPerHour { get; private set; }
+	public decimal? PlanPerHour { get; private set; }
     public Guid? PayrollRuleId { get; private set; }
 
 	// Navigation properties
@@ -31,9 +31,9 @@ public class ProductEntity : AuditableEntity
 		string sku,
 		string name,
 		ProductStatus status,
-		int? version = null,
+		decimal? version = null,
 		string? description = null,
-		int? planPerHour = null,
+		decimal? planPerHour = null,
         Guid? payrollRuleId = null)
 	{
 		Guard.AgainstNullOrWhiteSpace(sku, "SKU is required.");
@@ -53,9 +53,9 @@ public class ProductEntity : AuditableEntity
 	public void Update(
 		string? name = null,
 		ProductStatus? status = null,
-		int? planPerHour = null,
+		decimal? planPerHour = null,
 		string? description = null,
-		int? version = null,
+		decimal? version = null,
         Guid? payrollRuleId = null)
 	{
 		if (name is not null)

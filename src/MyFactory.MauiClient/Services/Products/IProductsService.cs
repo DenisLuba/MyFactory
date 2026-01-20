@@ -11,7 +11,7 @@ public interface IProductsService
 
     Task<AddProductMaterialResponse?> AddMaterialAsync(Guid productId, AddProductMaterialRequest request);
     Task UpdateMaterialAsync(Guid productMaterialId, UpdateProductMaterialRequest request);
-    Task RemoveMaterialAsync(Guid productMaterialId);
+    Task RemoveMaterialAsync(Guid productId, Guid materialId);
 
     Task SetProductionCostsAsync(Guid productId, SetProductProductionCostsRequest request);
 

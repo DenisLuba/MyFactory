@@ -17,26 +17,32 @@
 				Command="{Binding AddCommand}"
 				Text="Добавить" />
 		</Grid>
+
 		<Border Grid.Row="1">
 			<Grid RowDefinitions="Auto,*" RowSpacing="8">
 				<Grid
 					Padding="0,4"
-					ColumnDefinitions="*,*,Auto"
+					ColumnDefinitions="1*,4*,2*,2*"
 					ColumnSpacing="8">
-					<Label FontAttributes="Bold" Text="Название" />
+					<Label FontAttributes="Bold" Text="SKU" />
 					<Label
 						Grid.Column="1"
 						FontAttributes="Bold"
-						Text="Категория" />
+						Text="Название" />
 					<Label
 						Grid.Column="2"
 						FontAttributes="Bold"
 						HorizontalTextAlignment="End"
 						Text="Себестоимость" />
+					<Label
+						Grid.Column="3"
+						FontAttributes="Bold"
+						HorizontalTextAlignment="End"
+						Text="Статус" />
 				</Grid>
 				<CollectionView
-					Grid.Row="1"
 					x:Name="ProductsCollection"
+					Grid.Row="1"
 					ItemsSource="{Binding FilteredProducts}"
 					SelectionMode="None">
 					<CollectionView.ItemTemplate>
@@ -58,17 +64,21 @@
 								</SwipeView.RightItems>
 								<Grid
 									Padding="0,8"
-									ColumnDefinitions="*,*,Auto"
+									ColumnDefinitions="1*,4*,2*,2*"
 									ColumnSpacing="8">
 									<Grid.GestureRecognizers>
 										<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=ProductsCollection}}" CommandParameter="{Binding .}" />
 									</Grid.GestureRecognizers>
-									<Label Text="{Binding Name}" />
-									<Label Grid.Column="1" Text="{Binding Category}" />
+									<Label Text="{Binding Sku}" />
+									<Label Grid.Column="1" Text="{Binding Name}" />
 									<Label
 										Grid.Column="2"
 										HorizontalTextAlignment="End"
 										Text="{Binding CostPrice}" />
+									<Label
+										Grid.Column="3"
+										HorizontalTextAlignment="End"
+										Text="{Binding Status}" />
 								</Grid>
 							</SwipeView>
 						</DataTemplate>

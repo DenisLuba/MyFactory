@@ -21,7 +21,8 @@ public sealed class RemoveProductMaterialCommandHandler
     {
         var productMaterial = await _db.ProductMaterials
             .FirstOrDefaultAsync(
-                x => x.Id == request.ProductMaterialId,
+                x => x.ProductId == request.ProductId
+                     && x.MaterialId == request.MaterialId,
                 cancellationToken)
             ?? throw new NotFoundException("Product material not found");
 

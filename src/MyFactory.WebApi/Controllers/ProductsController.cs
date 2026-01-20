@@ -13,7 +13,6 @@ using MyFactory.Application.Features.Products.SetProductProductionCosts;
 using MyFactory.Application.Features.Products.UpdateProduct;
 using MyFactory.Application.Features.Products.UpdateProductMaterial;
 using MyFactory.Application.Features.Products.UploadProductImage;
-using MyFactory.Domain.Entities.Products;
 using MyFactory.WebApi.Contracts.Products;
 using MyFactory.WebApi.SwaggerExamples.Products;
 using Swashbuckle.AspNetCore.Filters;
@@ -49,7 +48,7 @@ public class ProductsController : ControllerBase
                 x.Id,
                 x.Sku,
                 x.Name,
-                x.Status,
+                x.Status.ToContract(),
                 x.Description,
                 x.PlanPerHour,
                 x.Version,
@@ -74,28 +73,28 @@ public class ProductsController : ControllerBase
             dto.PlanPerHour,
             dto.Description,
             dto.Version,
-            dto.Status,
+            dto.Status.ToContract(),
             dto.MaterialsCost,
             dto.ProductionCost,
             dto.TotalCost,
-            dto.Bom.Select(b => new ProductBomItemResponse(
+            [.. dto.Bom.Select(b => new ProductBomItemResponse(
                 b.MaterialId,
                 b.MaterialName,
                 b.QtyPerUnit,
                 b.LastUnitPrice,
-                b.TotalCost)).ToList(),
-            dto.ProductionCosts.Select(pc => new ProductDepartmentCostResponse(
+                b.TotalCost))],
+            [.. dto.ProductionCosts.Select(pc => new ProductDepartmentCostResponse(
                 pc.DepartmentId,
                 pc.DepartmentName,
                 pc.CutCost,
                 pc.SewingCost,
                 pc.PackCost,
                 pc.Expenses,
-                pc.Total)).ToList(),
-            dto.Availability.Select(a => new ProductAvailabilityResponse(
+                pc.Total))],
+            [.. dto.Availability.Select(a => new ProductAvailabilityResponse(
                 a.WarehouseId,
                 a.WarehouseName,
-                a.AvailableQty)).ToList());
+                a.AvailableQty))]);
         return Ok(response);
     }
 
@@ -110,9 +109,8 @@ public class ProductsController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateProductRequest req)
     {
         var id = await _mediator.Send(new CreateProductCommand(
-            req.Sku,
             req.Name,
-            req.Status,
+            req.Status.ToDomain(),
             req.PlanPerHour,
             req.Description,
             req.Version));
@@ -132,7 +130,7 @@ public class ProductsController : ControllerBase
             id,
             req.Name,
             req.PlanPerHour,
-            req.Status,
+            req.Status.ToDomain(),
             req.Description,
             req.Version));
         return NoContent();
@@ -167,11 +165,11 @@ public class ProductsController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("materials/{productMaterialId:guid}")]
+    [HttpDelete("{productId:guid}/materials/{materialId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> RemoveMaterial(Guid productMaterialId)
+    public async Task<IActionResult> RemoveMaterial(Guid productId, Guid materialId)
     {
-        await _mediator.Send(new RemoveProductMaterialCommand(productMaterialId));
+        await _mediator.Send(new RemoveProductMaterialCommand(productId, materialId));
         return NoContent();
     }
 

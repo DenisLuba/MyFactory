@@ -1,4 +1,3 @@
-using MyFactory.Domain.Entities.Products;
 using MyFactory.WebApi.Contracts.Products;
 using Swashbuckle.AspNetCore.Filters;
 

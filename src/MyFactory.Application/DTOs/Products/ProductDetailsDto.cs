@@ -5,9 +5,9 @@ public sealed record ProductDetailsDto
     public Guid Id { get; init; }
     public string Sku { get; init; } = default!;
     public string Name { get; init; } = default!;
-    public int? PlanPerHour { get; init; }
+    public decimal? PlanPerHour { get; init; }
     public string? Description { get; init; }
-    public int? Version { get; init; }
+    public decimal? Version { get; init; }
     public Domain.Entities.Products.ProductStatus Status { get; init; }
 
     public decimal MaterialsCost { get; init; }
