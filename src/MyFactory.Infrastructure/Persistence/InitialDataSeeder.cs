@@ -165,7 +165,7 @@ public class InitialDataSeeder
             if (pos.DepartmentId == Guid.Empty)
                 continue;
 
-            if (await _db.Positions.AnyAsync(p => p.Name == pos.Name, cancellationToken))
+            if (await _db.Positions.AnyAsync(p => p.Name == pos.Name || p.Code == pos.Code, cancellationToken))
                 continue;
 
             _db.Positions.Add(new PositionEntity(

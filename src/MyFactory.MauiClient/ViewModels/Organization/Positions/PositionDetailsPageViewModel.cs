@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
+using MyFactory.MauiClient.Common;
 using MyFactory.MauiClient.Models.Departments;
 using MyFactory.MauiClient.Models.Positions;
 using MyFactory.MauiClient.Services.Departments;
@@ -140,21 +141,29 @@ public partial class PositionDetailsPageViewModel : ObservableObject
             return;
         }
 
-        decimal? baseNormValue = null;
-        if (decimal.TryParse(BaseNorm, out var bn))
-            baseNormValue = bn;
-
-        decimal? baseRateValue = null;
-        if (decimal.TryParse(BaseRate, out var br))
-            baseRateValue = br;
-
-        decimal? premiumValue = null;
-        if (decimal.TryParse(DefaultPremiumPercent, out var pr))
-            premiumValue = pr;
+        var trimmedName = Name.Trim();
+        var trimmedCode = Code?.Trim();
+        decimal? baseNormValue = BaseNorm?.StringToDecimal();
+        decimal? baseRateValue = BaseRate?.StringToDecimal();
+        decimal? premiumValue = DefaultPremiumPercent?.StringToDecimal();
 
         try
         {
             IsBusy = true;
+
+            var existing = await _positionsService.GetListAsync();
+            var duplicateExists = existing?.Any(p =>
+                p.Id != PositionId &&
+                (string.Equals(p.Name, trimmedName, StringComparison.OrdinalIgnoreCase) || // если уже есть позици€ с таким именем
+                 (!string.IsNullOrWhiteSpace(trimmedCode) &&
+                  string.Equals(p.Code, trimmedCode, StringComparison.OrdinalIgnoreCase)))) is true; // или с таким кодом
+
+            if (duplicateExists)
+            {
+                await Shell.Current.DisplayAlertAsync("ќшибка", "ƒолжность с таким названием или кодом уже существует", "OK");
+                return;
+            }
+
             if (PositionId is null)
             {
                 var request = new CreatePositionRequest(Name.Trim(), Code, SelectedDepartment.Id, baseNormValue, baseRateValue, premiumValue, CanCut, CanSew, CanPackage, CanHandleMaterials);

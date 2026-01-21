@@ -2,77 +2,109 @@
 	x:Class="MyFactory.MauiClient.Pages.Organization.Positions.PositionsListPage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:conv="clr-namespace:MyFactory.MauiClient.Converters"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Organization.Positions"
 	Title="Должности"
 	x:DataType="view_model:PositionsListPageViewModel">
 
-		<Grid Padding="16" RowSpacing="12">
-			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-				<Label
-					FontAttributes="Bold"
-					FontSize="18"
-					Text="Должности" />
-				<Button
-					Grid.Column="1"
-					Command="{Binding AddCommand}"
-					Text="+ Добавить" />
-			</Grid>
+	<ContentPage.Resources>
+		<conv:BooleanToColorConverter x:Key="BoolToColorConverter" />
+	</ContentPage.Resources>
 
-			<Grid
-				Padding="0,4"
-				ColumnDefinitions="Auto,*,Auto"
-				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Код" />
-				<Label
-					Grid.Column="1"
-					FontAttributes="Bold"
-					Text="Наименование" />
-				<Label
-					Grid.Column="2"
-					FontAttributes="Bold"
-					Text="Цех" />
-			</Grid>
-
-			<Border Grid.Row="2">
-				<CollectionView
-					x:Name="PositionsCollection"
-					ItemsSource="{Binding Positions}"
-					SelectionMode="None">
-					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="view_model:PositionsListPageViewModel+PositionItemViewModel">
-							<SwipeView>
-								<SwipeView.RightItems>
-									<SwipeItems Mode="Reveal">
-										<SwipeItem
-											BackgroundColor="LightGray"
-											Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=PositionsCollection}}"
-											CommandParameter="{Binding .}"
-											Text="Редактировать" />
-										<SwipeItem
-											BackgroundColor="Tomato"
-											Command="{Binding BindingContext.DeactivateCommand, Source={x:Reference Name=PositionsCollection}}"
-											CommandParameter="{Binding .}"
-											Text="Деактивировать" />
-									</SwipeItems>
-								</SwipeView.RightItems>
-								<Grid
-									Padding="0,8"
-									ColumnDefinitions="1*,3*,3*,1.5*,1.5*"
-									ColumnSpacing="8">
-									<Grid.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=PositionsCollection}}" CommandParameter="{Binding .}" />
-									</Grid.GestureRecognizers>
-									<Label Text="{Binding Code}" />
-									<Label Grid.Column="1" Text="{Binding Name}" />
-									<Label Grid.Column="2" Text="{Binding DepartmentName}" />
-									<Label Grid.Column="3" Text="" />
-									<Label Grid.Column="4" Text="" />
-								</Grid>
-							</SwipeView>
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
-			</Border>
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,Auto,*"
+		RowSpacing="12">
+		<Grid
+			Grid.Row="0"
+			ColumnDefinitions="*,Auto"
+			ColumnSpacing="8">
+			<Label
+				FontAttributes="Bold"
+				FontSize="18"
+				Text="Должности" />
+			<Button
+				Grid.Column="1"
+				Command="{Binding AddCommand}"
+				Text="+" />
 		</Grid>
+
+		<Grid
+			Grid.Row="1"
+			Padding="0,4"
+			ColumnDefinitions="2*,3*,3*,2*"
+			ColumnSpacing="8">
+			<Label
+				Margin="16,0,0,0"
+				FontAttributes="Bold"
+				Text="Код" />
+			<Label
+				Grid.Column="1"
+				FontAttributes="Bold"
+				Text="Наименование" />
+			<Label
+				Grid.Column="2"
+				FontAttributes="Bold"
+				Text="Цех" />
+			<Label
+				Grid.Column="3"
+				Margin="0,0,34,0"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Статус" />
+
+		</Grid>
+
+		<Border Grid.Row="2">
+			<CollectionView
+				x:Name="PositionsCollection"
+				ItemsSource="{Binding Positions}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="view_model:PositionsListPageViewModel+PositionItemViewModel">
+						<SwipeView>
+							<SwipeView.RightItems>
+								<SwipeItems Mode="Reveal">
+									<SwipeItem
+										BackgroundColor="LightGray"
+										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=PositionsCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Редактировать" />
+									<SwipeItem
+										BackgroundColor="Tomato"
+										Command="{Binding BindingContext.DeactivateCommand, Source={x:Reference Name=PositionsCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Деактивировать" />
+								</SwipeItems>
+							</SwipeView.RightItems>
+							<Grid
+								Padding="0,8"
+								ColumnDefinitions="2*,3*,3*,2*"
+								ColumnSpacing="8">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=PositionsCollection}}" CommandParameter="{Binding .}" />
+								</Grid.GestureRecognizers>
+								<Label Text="{Binding Code}" TextColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Black;Gray'}" />
+								<Label
+									Grid.Column="1"
+									Text="{Binding Name}"
+									TextColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Black;Gray'}" />
+								<Label
+									Grid.Column="2"
+									Text="{Binding DepartmentName}"
+									TextColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Black;Gray'}" />
+								<Label
+									Grid.Column="3"
+									HorizontalTextAlignment="End"
+									Margin="0,0,16,0"
+									Text="{Binding Status}"
+									TextColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Black;Gray'}" />
+							</Grid>
+						</SwipeView>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</Border>
+	</Grid>
 </ContentPage>
 

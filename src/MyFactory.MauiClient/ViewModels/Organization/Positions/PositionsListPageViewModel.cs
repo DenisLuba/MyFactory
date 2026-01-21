@@ -136,6 +136,10 @@ public partial class PositionsListPageViewModel : ObservableObject
             set => SetProperty(ref isActive, value);
         }
 
+        public string Status => IsActive ? "Активно" : "Неактивно";
+
+        public bool IsInactive => !IsActive;
+
         public PositionItemViewModel(PositionListItemResponse response)
         {
             Id = response.Id;

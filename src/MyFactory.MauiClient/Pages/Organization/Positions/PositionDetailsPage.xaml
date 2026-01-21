@@ -2,6 +2,7 @@
 	x:Class="MyFactory.MauiClient.Pages.Organization.Positions.PositionDetailsPage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:controls="clr-namespace:MyFactory.MauiClient.Controllers"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Organization.Positions"
 	Title="Карточка должности"
 	x:DataType="view_model:PositionDetailsPageViewModel">
@@ -17,73 +18,75 @@
 				ColumnSpacing="8"
 				RowDefinitions="Auto,Auto,Auto,Auto,Auto"
 				RowSpacing="8">
-				<Label FontAttributes="Bold" Text="Наименование:" />
-				<Entry Grid.Column="1" Text="{Binding Name}" />
+
+				<Label
+					FontAttributes="Bold"
+					Text="Наименование:"
+					VerticalTextAlignment="Center" />
+				<Entry
+					Grid.Column="1"
+					Text="{Binding Name}"
+					VerticalTextAlignment="Center" />
+
 				<Label
 					Grid.Row="1"
 					FontAttributes="Bold"
-					Text="Код должности:" />
+					Text="Код должности:"
+					VerticalTextAlignment="Center" />
 				<Entry
 					Grid.Row="1"
 					Grid.Column="1"
-					Text="{Binding Code}" />
+					Text="{Binding Code}"
+					VerticalTextAlignment="Center" />
+
 				<Label
 					Grid.Row="2"
 					FontAttributes="Bold"
-					Text="Цех:" />
+					Text="Цех:"
+					VerticalTextAlignment="Center" />
 				<Picker
 					Grid.Row="2"
 					Grid.Column="1"
 					ItemDisplayBinding="{Binding Name}"
 					ItemsSource="{Binding Departments}"
-					SelectedItem="{Binding SelectedDepartment}" />
+					SelectedItem="{Binding SelectedDepartment}"
+					VerticalTextAlignment="Center" />
+
 				<Label
 					Grid.Row="3"
 					FontAttributes="Bold"
-					Text="Базовая ставка:" />
+					Text="Базовая ставка:"
+					VerticalTextAlignment="Center" />
 				<Entry
 					Grid.Row="3"
 					Grid.Column="1"
 					Keyboard="Numeric"
-					Text="{Binding BaseRate}" />
+					Text="{Binding BaseRate}"
+					VerticalTextAlignment="Center" />
+
 				<Label
 					Grid.Row="4"
 					FontAttributes="Bold"
-					Text="Премия по умолч.:" />
+					Text="Премия по умолч.:"
+					VerticalTextAlignment="Center" />
 				<Entry
 					Grid.Row="4"
 					Grid.Column="1"
 					Keyboard="Numeric"
-					Text="{Binding DefaultPremiumPercent}" />
+					Text="{Binding DefaultPremiumPercent}"
+					VerticalTextAlignment="Center" />
 			</Grid>
 
 			<VerticalStackLayout Spacing="6">
 				<Label FontAttributes="Bold" Text="Разрешенные операции:" />
-				<HorizontalStackLayout Spacing="6">
-					<CheckBox IsChecked="{Binding CanCut}" />
-					<Label VerticalTextAlignment="Center" Text="Раскрой" />
-				</HorizontalStackLayout>
-				<HorizontalStackLayout Spacing="6">
-					<CheckBox IsChecked="{Binding CanSew}" />
-					<Label VerticalTextAlignment="Center" Text="Пошив" />
-				</HorizontalStackLayout>
-				<HorizontalStackLayout Spacing="6">
-					<CheckBox IsChecked="{Binding CanPackage}" />
-					<Label VerticalTextAlignment="Center" Text="Упаковка" />
-				</HorizontalStackLayout>
-				<HorizontalStackLayout Spacing="6">
-					<CheckBox IsChecked="{Binding CanHandleMaterials}" />
-					<Label VerticalTextAlignment="Center" Text="Склад" />
-				</HorizontalStackLayout>
+
+				<controls:CheckLabel IsChecked="{Binding CanCut}" Text="Раскрой" />
+				<controls:CheckLabel IsChecked="{Binding CanSew}" Text="Пошив" />
+				<controls:CheckLabel IsChecked="{Binding CanPackage}" Text="Упаковка" />
+				<controls:CheckLabel IsChecked="{Binding CanHandleMaterials}" Text="Склад" />
 			</VerticalStackLayout>
 
-			<HorizontalStackLayout Spacing="8" VerticalOptions="Center">
-				<Label
-					FontAttributes="Bold"
-					Text="Актуальна:"
-					VerticalOptions="Center" />
-				<Switch IsToggled="{Binding IsActive}" />
-			</HorizontalStackLayout>
+			<controls:SwitchLabel IsToggled="{Binding IsActive}" Text="Актуальна:" />
 
 			<HorizontalStackLayout Spacing="12">
 				<Button Command="{Binding SaveCommand}" Text="Сохранить" />
