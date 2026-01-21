@@ -15,6 +15,9 @@ public partial class UnitsPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await _viewModel.LoadAsync();
+        if (_viewModel is UnitsPageViewModel vm)
+        {
+            await vm.LoadAsync();
+        }
     }
 }

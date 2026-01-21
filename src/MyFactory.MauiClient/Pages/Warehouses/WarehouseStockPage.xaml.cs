@@ -14,6 +14,7 @@ public partial class WarehouseStockPage : ContentPage
 
     protected override async void OnAppearing()
     {
+        base.OnAppearing();
         if (_viewModel is WarehouseStockPageViewModel vm)
         {
             await vm.LoadAsync();

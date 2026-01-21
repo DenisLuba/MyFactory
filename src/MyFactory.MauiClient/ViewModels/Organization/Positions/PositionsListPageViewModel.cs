@@ -21,16 +21,15 @@ public partial class PositionsListPageViewModel : ObservableObject
     [ObservableProperty]
     private string? errorMessage;
 
-    public ObservableCollection<PositionItemViewModel> Positions { get; } = new();
+    public ObservableCollection<PositionItemViewModel> Positions { get; } = [];
 
     public PositionsListPageViewModel(IPositionsService positionsService)
     {
         _positionsService = positionsService;
-        _ = LoadAsync();
     }
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
             return;
@@ -42,7 +41,7 @@ public partial class PositionsListPageViewModel : ObservableObject
             Positions.Clear();
 
             var items = await _positionsService.GetListAsync();
-            foreach (var pos in items ?? Array.Empty<PositionListItemResponse>())
+            foreach (var pos in items ?? [])
             {
                 Positions.Add(new PositionItemViewModel(pos));
             }
@@ -50,7 +49,7 @@ public partial class PositionsListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°!", ex.Message, "OK");
         }
         finally
         {
@@ -86,7 +85,7 @@ public partial class PositionsListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        var confirm = await Shell.Current.DisplayAlertAsync("Деактивировать", $"Деактивировать должность {item.Name}?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlertAsync("Р”РµР°РєС‚РёРІР°С†РёСЏ", $"Р”РµР°РєС‚РёРІРёСЂРѕРІР°С‚СЊ РїРѕР·РёС†РёСЋ {item.Name}?", "Р”Р°", "РќРµС‚");
         if (!confirm)
             return;
 
@@ -113,7 +112,7 @@ public partial class PositionsListPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°!", ex.Message, "OK");
         }
     }
 

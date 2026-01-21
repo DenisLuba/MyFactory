@@ -29,6 +29,7 @@
 			<Entry
 				Grid.Column="1"
 				Placeholder="Название"
+				ReturnType="Next"
 				Text="{Binding Name}" />
 
 			<Label
@@ -41,6 +42,7 @@
 				Grid.Column="1"
 				Keyboard="Numeric"
 				Placeholder="План/час"
+				ReturnType="Next"
 				Text="{Binding PlanPerHour}" />
 
 			<Label
@@ -64,6 +66,7 @@
 				Grid.Row="3"
 				Grid.Column="1"
 				Placeholder="Версия"
+				ReturnType="Next"
 				Text="{Binding Version}" />
 
 			<Label

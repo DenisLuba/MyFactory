@@ -14,6 +14,7 @@ public partial class ProductEditPage : ContentPage
 
     protected override async void OnAppearing()
     {
+        base.OnAppearing();
         if (_viewModel is ProductEditPageViewModel)
         {
             await _viewModel.LoadAsync();

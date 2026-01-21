@@ -15,6 +15,9 @@ public partial class TransferFromWarehousePage : ContentPage
 	protected override async void OnAppearing()
 	{
 		base.OnAppearing();
-		await _viewModel.LoadAsync();
+		if (_viewModel is TransferFromWarehousePageViewModel)
+		{
+			await _viewModel.LoadAsync();
+		}
 	}
 }

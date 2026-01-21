@@ -13,6 +13,7 @@ public partial class SupplierOrderCompletePage : ContentPage
 
     protected override async void OnAppearing()
     {
+        base.OnAppearing();
         if (_viewModel is SupplierOrderCompletePageViewModel)
         {
             await _viewModel.LoadAsync();

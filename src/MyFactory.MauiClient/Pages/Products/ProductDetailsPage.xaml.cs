@@ -14,6 +14,7 @@ public partial class ProductDetailsPage : ContentPage
 
     protected override async void OnAppearing()
     {
+        base.OnAppearing();
         if (_viewModel is ProductDetailsPageViewModel)
         {
             await _viewModel.LoadAsync();

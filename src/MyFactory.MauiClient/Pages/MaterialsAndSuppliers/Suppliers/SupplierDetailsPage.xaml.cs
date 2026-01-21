@@ -4,6 +4,8 @@ namespace MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Suppliers;
 
 public partial class SupplierDetailsPage : ContentPage
 {
+    private SupplierDetailsPageViewModel _viewModel;
+
     public SupplierDetailsPage(SupplierDetailsPageViewModel viewModel)
     {
         InitializeComponent();
@@ -13,7 +15,7 @@ public partial class SupplierDetailsPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        if (BindingContext is SupplierDetailsPageViewModel viewModel)
+        if (_viewModel is SupplierDetailsPageViewModel viewModel)
         {
             await viewModel.LoadAsync();
         }

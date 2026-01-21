@@ -14,6 +14,7 @@ public partial class SupplierOrderCreatePage : ContentPage
 
     protected override async void OnAppearing()
     {
+        base.OnAppearing();
         if (_viewModel is SupplierOrderCreatePageViewModel)
         {
             await _viewModel.LoadAsync();

@@ -14,6 +14,7 @@ public partial class ProductsListPage : ContentPage
 
     protected override async void OnAppearing()
     {
+        base.OnAppearing();
         if (_viewModel is ProductsListPageViewModel)
         {
             await _viewModel.LoadAsync();

@@ -15,6 +15,9 @@ public partial class MaterialTypesListPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await _viewModel.LoadAsync();
+        if (_viewModel is MaterialTypesListPageViewModel vm)
+        {
+            await vm.LoadAsync();
+        }
     }
 }
