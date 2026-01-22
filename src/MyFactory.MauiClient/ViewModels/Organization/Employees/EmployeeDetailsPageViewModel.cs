@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.Globalization;
+using MyFactory.MauiClient.Common;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -9,6 +10,7 @@ using Microsoft.Maui.Controls;
 using MyFactory.MauiClient.Models.Employees;
 using MyFactory.MauiClient.Pages.Production.ProductionOrders;
 using MyFactory.MauiClient.Services.Employees;
+using MyFactory.MauiClient.Services.Positions;
 
 namespace MyFactory.MauiClient.ViewModels.Organization.Employees;
 
@@ -16,6 +18,9 @@ namespace MyFactory.MauiClient.ViewModels.Organization.Employees;
 public partial class EmployeeDetailsPageViewModel : ObservableObject
 {
     private readonly IEmployeesService _employeesService;
+    private readonly IPositionsService _positionsService;
+    private Guid? positionId;
+    private decimal ratePerNormHour;
 
     [ObservableProperty]
     private Guid? employeeId;
@@ -33,7 +38,10 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
     private string position = string.Empty;
 
     [ObservableProperty]
-    private string hiredAt = string.Empty;
+    private DateOnly hiredAt = DateOnly.FromDateTime(DateTime.Now);
+
+    [ObservableProperty]
+    private DateOnly? firedAt;
 
     [ObservableProperty]
     private string status = string.Empty;
@@ -53,12 +61,19 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
     [ObservableProperty]
     private string? errorMessage;
 
+    public bool IsEditMode => EmployeeId.HasValue;
+
+    public ICollection<string> Positions { get; } = new List<string>();
+
+    public IReadOnlyCollection<string> Statuses { get; } = [ "РђРєС‚РёРІРµРЅ", "РќРµР°РєС‚РёРІРµРЅ" ];
+
     public ObservableCollection<AssignmentItemViewModel> CurrentTasks { get; } = new();
     public ObservableCollection<TimesheetEntryItemViewModel> TimesheetEntries { get; } = new();
 
-    public EmployeeDetailsPageViewModel(IEmployeesService employeesService)
+    public EmployeeDetailsPageViewModel(IEmployeesService employeesService, IPositionsService positionsService)
     {
         _employeesService = employeesService;
+        _positionsService = positionsService;
         _ = LoadAsync();
     }
 
@@ -88,16 +103,35 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
             IsBusy = true;
             ErrorMessage = null;
 
+            if (EmployeeId is null)
+                return;
+
+            positionId = await GetPositionIdByNameAsync(Position);
+
             var details = await _employeesService.GetDetailsAsync(EmployeeId.Value);
             if (details is not null)
             {
+                positionId = details.Position.Id;
+                ratePerNormHour = details.RatePerNormHour;
                 FullName = details.FullName;
                 Department = details.Department.Name;
                 Position = details.Position.Name;
-                HiredAt = details.HiredAt.ToString("dd.MM.yyyy");
-                Status = details.IsActive ? "Активен" : "Неактивен";
+                HiredAt = details.HiredAt;
+                FiredAt = details.FiredAt;
+                Status = details.IsActive ? "РђРєС‚РёРІРµРЅ" : "РќРµР°РєС‚РёРІРµРЅ";
                 Grade = details.Grade.ToString();
                 PremiumPercent = details.PremiumPercent?.ToString() ?? "0";
+            }
+
+            Positions.Clear();
+
+            var positionsList = (await _positionsService.GetListAsync())?.Select(p => p.Name).ToList();
+            if (positionsList is not null)
+            {
+                foreach (var pos in positionsList)
+                {
+                    Positions.Add(pos);
+                }
             }
 
             await LoadAssignmentsAsync();
@@ -106,7 +140,7 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°!", ex.Message, "OK");
         }
         finally
         {
@@ -141,42 +175,36 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task EditAsync()
-    {
-        await Shell.Current.DisplayAlertAsync("Инфо", "Редактирование сотрудника недоступно в этой версии", "OK");
-    }
-
-    [RelayCommand]
     private async Task DeactivateAsync()
     {
         if (EmployeeId is null)
             return;
 
-        var confirm = await Shell.Current.DisplayAlertAsync("Деактивировать", "Деактивировать сотрудника?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlertAsync("РџРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ.", "Р’С‹ РґРµР№СЃС‚РІРёС‚РµР»СЊРЅРѕ С…РѕС‚РёС‚Рµ СѓРІРѕР»РёС‚СЊ СЃРѕС‚СЂСѓРґРЅРёРєР°?", "Р”Р°", "РќРµС‚");
         if (!confirm)
             return;
 
         try
         {
             await _employeesService.DeactivateAsync(EmployeeId.Value, new DeactivateEmployeeRequest(DateTime.UtcNow));
-            Status = "Неактивен";
+            Status = "РќРµР°РєС‚РёРІРµРЅ";
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°!", ex.Message, "OK");
         }
     }
 
     [RelayCommand]
     private async Task AccrualsAsync()
     {
-        await Shell.Current.DisplayAlertAsync("Инфо", "Переход к начислениям пока не реализован", "OK");
+        await Shell.Current.DisplayAlertAsync("пїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
     }
 
     [RelayCommand]
     private async Task PaymentsAsync()
     {
-        await Shell.Current.DisplayAlertAsync("Инфо", "Переход к выплатам пока не реализован", "OK");
+        await Shell.Current.DisplayAlertAsync("пїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "OK");
     }
 
     [RelayCommand]
@@ -198,11 +226,11 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
         if (EmployeeId is null)
             return;
 
-        var hoursInput = await Shell.Current.DisplayPromptAsync("Табель", "Часы за день", "Сохранить", "Отмена", keyboard: Keyboard.Numeric);
+        var hoursInput = await Shell.Current.DisplayPromptAsync("Р§Р°СЃС‹", "Р’РІРµРґРёС‚Рµ С‡Р°СЃС‹", "РЎРѕС…СЂР°РЅРёС‚СЊ", "РћС‚РјРµРЅР°", keyboard: Keyboard.Numeric);
         if (string.IsNullOrWhiteSpace(hoursInput) || !decimal.TryParse(hoursInput, out var hours) || hours <= 0)
             return;
 
-        var comment = await Shell.Current.DisplayPromptAsync("Табель", "Комментарий (необязательно)", "Сохранить", "Пропустить", "", maxLength: 200);
+        var comment = await Shell.Current.DisplayPromptAsync("пїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "", maxLength: 200);
 
         try
         {
@@ -214,12 +242,112 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("пїЅпїЅпїЅпїЅпїЅпїЅ", ex.Message, "OK");
         }
         finally
         {
             IsBusy = false;
         }
+    }
+
+    [RelayCommand]
+    private async Task SaveAsync()
+    {
+        if (IsBusy)
+            return;
+
+        if (string.IsNullOrWhiteSpace(FullName))
+        {
+            await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°", "РЈРєР°Р¶РёС‚Рµ Р¤РРћ СЃРѕС‚СЂСѓРґРЅРёРєР°.", "OK");
+            return;
+        }
+
+        if (!int.TryParse(Grade, NumberStyles.Integer, CultureInfo.CurrentCulture, out var gradeValue))
+        {
+            await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°", "Р’РІРµРґРёС‚Рµ РєРѕСЂСЂРµРєС‚РЅС‹Р№ СЂР°Р·СЂСЏРґ.", "OK");
+            return;
+        }
+
+        var premiumValue = PremiumPercent?.StringToDecimal() ?? 0m;
+
+        if (ratePerNormHour <= 0)
+        {
+            var rateInput = await Shell.Current.DisplayPromptAsync("РЎС‚Р°РІРєР°", "Р’РІРµРґРёС‚Рµ СЃС‚Р°РІРєСѓ Р·Р° РЅРѕСЂРјРѕ-С‡Р°СЃ", "РЎРѕС…СЂР°РЅРёС‚СЊ", "РћС‚РјРµРЅР°", keyboard: Keyboard.Numeric);
+            if (string.IsNullOrWhiteSpace(rateInput) || !decimal.TryParse(rateInput, NumberStyles.Number, CultureInfo.CurrentCulture, out var parsedRate) || parsedRate <= 0)
+            {
+                await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°", "РќРµРєРѕСЂСЂРµРєС‚РЅР°СЏ СЃС‚Р°РІРєР° Р·Р° РЅРѕСЂРјРѕ-С‡Р°СЃ.", "OK");
+                return;
+            }
+
+            ratePerNormHour = parsedRate;
+        }
+
+        var isActive = string.IsNullOrWhiteSpace(Status) || string.Equals(Status, "РђРєС‚РёРІРµРЅ", StringComparison.OrdinalIgnoreCase);
+        var hiredAtDate = HiredAt.ToDateTime(TimeOnly.MinValue);
+
+        try
+        {
+            IsBusy = true;
+            ErrorMessage = null;
+
+            var positionId = await GetPositionIdByNameAsync(Position);
+
+            if (EmployeeId.HasValue)
+            {
+                var request = new UpdateEmployeeRequest(
+                    FullName,
+                    positionId,
+                    gradeValue,
+                    ratePerNormHour,
+                    premiumValue,
+                    hiredAtDate,
+                    isActive);
+
+                await _employeesService.UpdateAsync(EmployeeId.Value, request);
+            }
+            else
+            {
+                var request = new CreateEmployeeRequest(
+                    FullName,
+                    positionId,
+                    gradeValue,
+                    ratePerNormHour,
+                    premiumValue,
+                    hiredAtDate,
+                    isActive);
+
+                var response = await _employeesService.CreateAsync(request);
+                EmployeeId = response?.Id;
+            }
+
+            await Shell.Current.DisplayAlertAsync("Р“РѕС‚РѕРІРѕ", "Р”Р°РЅРЅС‹Рµ СЃРѕС…СЂР°РЅРµРЅС‹.", "OK");
+            await Shell.Current.GoToAsync("..");
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°!", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+    
+    [RelayCommand]
+    private async Task BackAsync()
+    {
+        await Shell.Current.GoToAsync("..");
+    }
+
+    private async Task<Guid> GetPositionIdByNameAsync(string positionName)
+    {
+        var positions = await _positionsService.GetListAsync();
+        var position = positions?.FirstOrDefault(p => string.Equals(p.Name, positionName, StringComparison.OrdinalIgnoreCase));
+        if (position is null)
+            throw new InvalidOperationException("Р”РѕР»Р¶РЅРѕСЃС‚СЊ РЅРµ РЅР°Р№РґРµРЅР°.");
+
+        return position.Id;
     }
 
     public sealed class AssignmentItemViewModel

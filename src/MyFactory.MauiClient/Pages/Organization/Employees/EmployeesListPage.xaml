@@ -8,10 +8,10 @@
 	x:DataType="view_model:EmployeesListPageViewModel">
 
 	<ContentPage.Resources>
-		<converters:BooleanToColorConverter x:Key="BooleanToColorConverter" TrueColor="Green" FalseColor="Red" />
+		<converters:BooleanToColorConverter x:Key="BooleanToColorConverter" />
 	</ContentPage.Resources>
 
-	<Grid Padding="16" RowSpacing="12" RowDefinition="Auto,Auto,Auto,*">
+	<Grid Padding="16" RowSpacing="12" RowDefinitions="Auto,Auto,Auto,*">
 
 		<Label
 			FontAttributes="Bold"
