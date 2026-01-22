@@ -172,6 +172,8 @@ public static class MauiProgram
         builder.Services.AddTransient<OrderDetailsPageViewModel>();
         builder.Services.AddTransient<OrdersListPageViewModel>();
         builder.Services.AddTransient<EmployeeDetailsPageViewModel>();
+        builder.Services.AddTransient<EmployeeAssignmentsPageViewModel>();
+        builder.Services.AddTransient<EmployeeTimesheetPageViewModel>();
         builder.Services.AddTransient<EmployeesListPageViewModel>();
         builder.Services.AddTransient<PositionDetailsPageViewModel>();
         builder.Services.AddTransient<PositionsListPageViewModel>();
@@ -227,6 +229,8 @@ public static class MauiProgram
         builder.Services.AddTransient<OrderDetailsPage>();
         builder.Services.AddTransient<OrdersListPage>();
         builder.Services.AddTransient<EmployeeDetailsPage>();
+        builder.Services.AddTransient<EmployeeAssignmentsPage>();
+        builder.Services.AddTransient<EmployeeTimesheetPage>();
         builder.Services.AddTransient<EmployeesListPage>();
         builder.Services.AddTransient<PositionDetailsPage>();
         builder.Services.AddTransient<PositionsListPage>();

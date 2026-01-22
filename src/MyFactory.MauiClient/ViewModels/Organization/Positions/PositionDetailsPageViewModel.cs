@@ -143,9 +143,9 @@ public partial class PositionDetailsPageViewModel : ObservableObject
 
         var trimmedName = Name.Trim();
         var trimmedCode = Code?.Trim();
-        decimal? baseNormValue = BaseNorm?.StringToDecimal();
-        decimal? baseRateValue = BaseRate?.StringToDecimal();
-        decimal? premiumValue = DefaultPremiumPercent?.StringToDecimal();
+        decimal? baseNormValue = string.IsNullOrWhiteSpace(BaseNorm) ? 0m : BaseNorm.StringToDecimal();
+        decimal? baseRateValue = string.IsNullOrWhiteSpace(BaseRate) ? 0m : BaseRate.StringToDecimal();
+        decimal? premiumValue = string.IsNullOrWhiteSpace(DefaultPremiumPercent) ? 0m : DefaultPremiumPercent.StringToDecimal();
 
         try
         {

@@ -57,6 +57,8 @@ namespace MyFactory.MauiClient
             (nameof(OrderDetailsPage), typeof(OrderDetailsPage)),
             (nameof(OrdersListPage), typeof(OrdersListPage)),
             (nameof(EmployeeDetailsPage), typeof(EmployeeDetailsPage)),
+            (nameof(EmployeeAssignmentsPage), typeof(EmployeeAssignmentsPage)),
+            (nameof(EmployeeTimesheetPage), typeof(EmployeeTimesheetPage)),
             (nameof(EmployeesListPage), typeof(EmployeesListPage)),
             (nameof(PositionDetailsPage), typeof(PositionDetailsPage)),
             (nameof(PositionsListPage), typeof(PositionsListPage)),

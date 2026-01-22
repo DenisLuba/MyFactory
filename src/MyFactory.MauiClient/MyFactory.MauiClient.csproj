@@ -74,6 +74,12 @@
 	  <MauiXaml Update="Controllers\SwitchLabel.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\Organization\Employees\EmployeeAssignmentsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\Organization\Employees\EmployeeTimesheetPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\Warehouses\TransferFromWarehousePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

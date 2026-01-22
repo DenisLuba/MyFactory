@@ -5,219 +5,137 @@
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Organization.Employees"
 	Title="Карточка сотрудника"
 	x:DataType="view_model:EmployeeDetailsPageViewModel">
-	<Grid Padding="16" RowSpacing="12">
-		<Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
-			<Button
-				Command="{Binding SaveCommand}"
-				Text="Сохранить" />
-			<Button
-				Grid.Column="2"
-				Command="{Binding BackCommand}"
-				Text="Назад" />
-		</Grid>
-
+	<ScrollView>
 		<Grid
-			Grid.Row="1"
-			ColumnDefinitions="Auto,*"
-			ColumnSpacing="8"
-			RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
-			RowSpacing="6">
-			<Label 
-				FontAttributes="Bold" 
-				Text="ФИО:" 
-				HorizontalTextAlignment="End" />
-			<Entry 
-				Grid.Column="1"
-				Text="{Binding FullName}" 
-				ReturnType="Next" />
-
-			<Label 
-				Grid.Row="1" 
-				FontAttributes="Bold" 
-				Text="Цех:" 
-				HorizontalTextAlignment="End" />
-			<Entry 
-				Grid.Row="1" 
-				Grid.Column="1" 
-				Text="{Binding Department}" 
-				ReturnType="Next" />
-			
-			<Label
-				Grid.Row="2"
-				FontAttributes="Bold"
-				HorizontalTextAlignment="End"
-				Text="Должность:" />
-			<Picker
-				Grid.Row="2"
-				Grid.Column="1"
-				ItemsSource="{Binding Positions}"
-				SelectedItem="{Binding Position}" />
-			<Label
-				Grid.Row="3"
-				FontAttributes="Bold"
-				HorizontalTextAlignment="End"
-				Text="Дата приёма:" />
-			<DatePicker
-				Grid.Row="3"
-				Grid.Column="1"
-				Date="{Binding HiredAt}" />
-				
-			<Label
-				Grid.Row="4"
-				FontAttributes="Bold"
-				HorizontalTextAlignment="End"
-				Text="Статус:" />
-			<Picker
-				Grid.Row="4"
-				Grid.Column="1"
-				SelectedItem="{Binding Status}"
-				ItemsSource="{Binding Statuses}" />
-
-			<Label
-				Grid.Row="5"
-				FontAttributes="Bold"
-				HorizontalTextAlignment="End"
-				Text="Разряд:" />
-			<Entry
-				Grid.Row="5"
-				Grid.Column="1"
-				Keyboard="Numeric"
-				ReturnType="Next"
-				Text="{Binding Grade}" />
-
-			<Label
-				Grid.Row="6"
-				FontAttributes="Bold"
-				HorizontalTextAlignment="End"
-				Text="Процент за переработку:" />
-			<Entry
-				Grid.Row="6"
-				Grid.Column="1"
-				Keyboard="Numeric"
-				Text="{Binding PremiumPercent}" />
-		</Grid>
-
-		<Grid Grid.Row="2" ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8">
-			<Button
-				Command="{Binding AccrualsCommand}"
-				Text="Начисления" />
-			<Button 
-				Grid.Column="1"
-				Command="{Binding PaymentsCommand}" 
-				Text="Выплаты" />
-			<Button
-				Grid.Column="3"
-				Command="{Binding DeactivateCommand}"
-				Text="Уволить" />
-		</Grid>
-			
-		<ScrollView Grid.Row="3">
-			<Grid RowDefinitions="Auto,*,Auto,*" RowSpacing="12">	
-
-				<Label FontAttributes="Bold" Text="Текущие задания" />
-
-				<Border Grid.Row="1">
-					<Grid RowSpacing="8" RowDefinitions="Auto,*">
-						<Grid
-							ColumnDefinitions="4*,2*,2*,2*"
-							ColumnSpacing="8">
-							<Label FontAttributes="Bold" Text="Производственный заказ" />
-							<Label
-								Grid.Column="1"
-								FontAttributes="Bold"
-								Text="Этап" />
-							<Label
-								Grid.Column="2"
-								FontAttributes="Bold"
-								Text="Назначено" />
-							<Label
-								Grid.Column="3"
-								FontAttributes="Bold"
-								Text="Выполнено" />
-						</Grid>
-
-						<CollectionView
-							Grid.Row="1"
-							x:Name="TasksCollection"
-							ItemsSource="{Binding CurrentTasks}"
-							SelectionMode="None">
-							<CollectionView.ItemTemplate>
-								<DataTemplate x:DataType="view_model:EmployeeDetailsPageViewModel+AssignmentItemViewModel">
-									<Grid
-										Padding="0,6"
-										ColumnDefinitions="4*,2*,2*,2*"
-										ColumnSpacing="8">
-										<Grid.GestureRecognizers>
-											<TapGestureRecognizer Command="{Binding BindingContext.OpenProductionOrderCommand, Source={x:Reference Name=TasksCollection}}" CommandParameter="{Binding .}" />
-										</Grid.GestureRecognizers>
-										<Label Text="{Binding ProductionOrder}" />
-										<Label Grid.Column="1" Text="{Binding Stage}" />
-										<Label
-											Grid.Column="2"
-											HorizontalTextAlignment="End"
-											Text="{Binding Assigned}" />
-										<Label
-											Grid.Column="3"
-											HorizontalTextAlignment="End"
-											Text="{Binding Completed}" />
-									</Grid>
-								</DataTemplate>
-							</CollectionView.ItemTemplate>
-						</CollectionView>
-					</Grid>
-				</Border>
-
-				<Grid Grid.Row="2" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
-					<Label FontAttributes="Bold" Text="Табель" />
-					<DatePicker Grid.Column="1" Date="{Binding TimesheetPeriod}" />
-					<Button
-						Grid.Column="2"
-						Command="{Binding AddTimesheetEntryCommand}"
-						Text="+" />
-				</Grid>
-
-				<Border
-					Grid.Row="3"
-					Padding="8"
-					Stroke="LightGray"
-					StrokeThickness="1">
-					<Grid RowDefinitions="Auto,*" RowSpacing="8">
-						
-						<Grid
-							Padding="0,4"
-							ColumnDefinitions="2*,2*,6*"
-							ColumnSpacing="12">
-							<Label FontAttributes="Bold" Text="Дата" />
-							<Label
-								Grid.Column="1"
-								FontAttributes="Bold"
-								Text="Часы" />
-							<Label
-								Grid.Column="2"
-								FontAttributes="Bold"
-								Text="Примечание" />
-						</Grid>
-
-						<CollectionView Grid.Row="1" ItemsSource="{Binding TimesheetEntries}" SelectionMode="None">
-							<CollectionView.ItemTemplate>
-								<DataTemplate x:DataType="view_model:EmployeeDetailsPageViewModel+TimesheetEntryItemViewModel">
-									<Grid
-										Padding="0,6"
-										ColumnDefinitions="2*,2*,6*"
-										ColumnSpacing="12">
-										<Label Text="{Binding Date}" />
-										<Label
-											Grid.Column="1"
-											HorizontalTextAlignment="End"
-											Text="{Binding Hours}" />
-										<Label Grid.Column="2" Text="{Binding Comment}" />
-									</Grid>
-								</DataTemplate>
-							</CollectionView.ItemTemplate>
-						</CollectionView>
-					</Grid>
-				</Border>
+			Padding="16"
+			RowDefinitions="Auto,Auto,Auto"
+			RowSpacing="12">
+			<Grid
+				Margin="0,16"
+				ColumnDefinitions="*,Auto,Auto"
+				ColumnSpacing="8">
+				<Button
+					Grid.Column="1"
+					Command="{Binding SaveCommand}"
+					Text="Сохранить" />
+				<Button
+					Grid.Column="2"
+					Command="{Binding BackCommand}"
+					Text="Назад" />
 			</Grid>
-		</ScrollView>
-	</Grid>
+
+			<Grid
+				Grid.Row="1"
+				ColumnDefinitions="Auto,*"
+				ColumnSpacing="12"
+				RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+				RowSpacing="6">
+				<Label
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="ФИО:"
+					VerticalTextAlignment="Center" />
+				<Entry
+					Grid.Column="1"
+					ReturnType="Next"
+					Text="{Binding FullName}" />
+
+				<Label
+					Grid.Row="1"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="Цех:"
+					VerticalTextAlignment="Center" />
+				<Picker
+					Grid.Row="1"
+					Grid.Column="1"
+					ItemsSource="{Binding Departments}"
+					SelectedItem="{Binding Department}" />
+
+				<Label
+					Grid.Row="2"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="Должность:"
+					VerticalTextAlignment="Center" />
+				<Picker
+					Grid.Row="2"
+					Grid.Column="1"
+					ItemsSource="{Binding Positions}"
+					SelectedItem="{Binding Position}" />
+
+				<Label
+					Grid.Row="3"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="Дата приёма:"
+					VerticalTextAlignment="Center" />
+				<DatePicker
+					Grid.Row="3"
+					Grid.Column="1"
+					Date="{Binding HiredAt}" />
+
+				<Label
+					Grid.Row="4"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="Статус:"
+					VerticalTextAlignment="Center" />
+				<Picker
+					Grid.Row="4"
+					Grid.Column="1"
+					ItemsSource="{Binding Statuses}"
+					SelectedItem="{Binding Status}" />
+
+				<Label
+					Grid.Row="5"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="Разряд:"
+					VerticalTextAlignment="Center" />
+				<Entry
+					Grid.Row="5"
+					Grid.Column="1"
+					Keyboard="Numeric"
+					ReturnType="Next"
+					Text="{Binding Grade}" />
+
+				<Label
+					Grid.Row="6"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="Процент за переработку:"
+					VerticalTextAlignment="Center" />
+				<Entry
+					Grid.Row="6"
+					Grid.Column="1"
+					Keyboard="Numeric"
+					Text="{Binding PremiumPercent}" />
+			</Grid>
+
+			<Grid
+				Grid.Row="2"
+				Margin="0,16"
+				ColumnDefinitions="Auto,Auto,Auto,Auto,Auto"
+				ColumnSpacing="8">
+				<Button Command="{Binding AccrualsCommand}" Text="Начисления" />
+				<Button
+					Grid.Column="1"
+					Command="{Binding PaymentsCommand}"
+					Text="Выплаты" />
+				<Button
+					Grid.Column="2"
+					Command="{Binding OpenTimesheetCommand}"
+					Text="Табель" />
+				<Button
+					Grid.Column="3"
+					Command="{Binding OpenAssignmentsCommand}"
+					Text="Задания" />
+				<Button
+					Grid.Column="4"
+					Command="{Binding DeactivateCommand}"
+					Text="Уволить" />
+			</Grid>
+		</Grid>
+	</ScrollView>
 </ContentPage>

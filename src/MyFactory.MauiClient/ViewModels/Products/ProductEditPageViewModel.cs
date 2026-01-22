@@ -284,9 +284,9 @@ public partial class ProductEditPageViewModel : ObservableObject
         try
         {
 
-            decimal? plan = PlanPerHour?.StringToDecimal();
+            decimal? plan = string.IsNullOrWhiteSpace(PlanPerHour) ? 0m : PlanPerHour.StringToDecimal();
 
-            decimal? ver = Version?.StringToDecimal();
+            decimal? ver = string.IsNullOrWhiteSpace(Version) ? 0m : Version.StringToDecimal();
 
             IsBusy = true;
             ErrorMessage = null;

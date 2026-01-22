@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using MyFactory.MauiClient.Common;
 using System.Threading.Tasks;
@@ -8,7 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
 using MyFactory.MauiClient.Models.Employees;
-using MyFactory.MauiClient.Pages.Production.ProductionOrders;
+using MyFactory.MauiClient.Pages.Organization.Employees;
 using MyFactory.MauiClient.Services.Employees;
 using MyFactory.MauiClient.Services.Positions;
 
@@ -19,8 +18,10 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
 {
     private readonly IEmployeesService _employeesService;
     private readonly IPositionsService _positionsService;
-    private Guid? positionId;
     private decimal ratePerNormHour;
+
+    public const string Active = "В штате";
+    public const string Inactive = "Не в штате";
 
     [ObservableProperty]
     private Guid? employeeId;
@@ -44,16 +45,13 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
     private DateOnly? firedAt;
 
     [ObservableProperty]
-    private string status = string.Empty;
+    private string status = Active;
 
     [ObservableProperty]
     private string grade = string.Empty;
 
     [ObservableProperty]
     private string premiumPercent = string.Empty;
-
-    [ObservableProperty]
-    private DateTime timesheetPeriod = DateTime.Today;
 
     [ObservableProperty]
     private bool isBusy;
@@ -63,12 +61,10 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
 
     public bool IsEditMode => EmployeeId.HasValue;
 
+    public ICollection<string> Departments { get; } = new List<string>();
     public ICollection<string> Positions { get; } = new List<string>();
 
-    public IReadOnlyCollection<string> Statuses { get; } = [ "Активен", "Неактивен" ];
-
-    public ObservableCollection<AssignmentItemViewModel> CurrentTasks { get; } = new();
-    public ObservableCollection<TimesheetEntryItemViewModel> TimesheetEntries { get; } = new();
+    public IReadOnlyCollection<string> Statuses { get; } = [ Active, Inactive ];
 
     public EmployeeDetailsPageViewModel(IEmployeesService employeesService, IPositionsService positionsService)
     {
@@ -87,40 +83,31 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
         EmployeeId = Guid.TryParse(value, out var id) ? id : null;
     }
 
-    partial void OnTimesheetPeriodChanged(DateTime value)
-    {
-        _ = LoadTimesheetAsync();
-    }
-
     [RelayCommand]
     private async Task LoadAsync()
     {
-        if (IsBusy || EmployeeId is null)
+        if (IsBusy)
             return;
 
         try
         {
             IsBusy = true;
             ErrorMessage = null;
-
-            if (EmployeeId is null)
-                return;
-
-            positionId = await GetPositionIdByNameAsync(Position);
-
-            var details = await _employeesService.GetDetailsAsync(EmployeeId.Value);
-            if (details is not null)
+            if (EmployeeId is not null)
             {
-                positionId = details.Position.Id;
-                ratePerNormHour = details.RatePerNormHour;
-                FullName = details.FullName;
-                Department = details.Department.Name;
-                Position = details.Position.Name;
-                HiredAt = details.HiredAt;
-                FiredAt = details.FiredAt;
-                Status = details.IsActive ? "Активен" : "Неактивен";
-                Grade = details.Grade.ToString();
-                PremiumPercent = details.PremiumPercent?.ToString() ?? "0";
+                var details = await _employeesService.GetDetailsAsync(EmployeeId.Value);
+                if (details is not null)
+                {
+                    ratePerNormHour = details.RatePerNormHour;
+                    FullName = details.FullName;
+                    Department = details.Department.Name;
+                    Position = details.Position.Name;
+                    HiredAt = details.HiredAt;
+                    FiredAt = details.FiredAt;
+                    Status = details.IsActive ? Active : Inactive;
+                    Grade = details.Grade.ToString();
+                    PremiumPercent = details.PremiumPercent?.ToString() ?? "0";
+                }
             }
 
             Positions.Clear();
@@ -133,9 +120,6 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
                     Positions.Add(pos);
                 }
             }
-
-            await LoadAssignmentsAsync();
-            await LoadTimesheetAsync();
         }
         catch (Exception ex)
         {
@@ -145,32 +129,6 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
         finally
         {
             IsBusy = false;
-        }
-    }
-
-    private async Task LoadAssignmentsAsync()
-    {
-        if (EmployeeId is null)
-            return;
-
-        CurrentTasks.Clear();
-        var assignments = await _employeesService.GetAssignmentsAsync(EmployeeId.Value);
-        foreach (var a in assignments ?? Array.Empty<EmployeeProductionAssignmentResponse>())
-        {
-            CurrentTasks.Add(new AssignmentItemViewModel(a));
-        }
-    }
-
-    private async Task LoadTimesheetAsync()
-    {
-        if (EmployeeId is null)
-            return;
-
-        TimesheetEntries.Clear();
-        var entries = await _employeesService.GetEmployeeTimesheetAsync(EmployeeId.Value, TimesheetPeriod.Year, TimesheetPeriod.Month);
-        foreach (var e in entries ?? Array.Empty<EmployeeTimesheetEntryResponse>())
-        {
-            TimesheetEntries.Add(new TimesheetEntryItemViewModel(e));
         }
     }
 
@@ -208,46 +166,35 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task OpenProductionOrderAsync(AssignmentItemViewModel? assignment)
+    private async Task OpenTimesheetAsync()
     {
-        if (assignment is null)
+        if (EmployeeId is null)
+        {
+            await Shell.Current.DisplayAlertAsync("Ошибка", "Сначала сохраните сотрудника.", "OK");
             return;
+        }
 
         var parameters = new Dictionary<string, object>
         {
-            { "ProductionOrderId", assignment.ProductionOrderId.ToString() }
+            { "EmployeeId", EmployeeId.Value.ToString() }
         };
-        await Shell.Current.GoToAsync(nameof(ProductionOrderCreatePage), parameters);
+        await Shell.Current.GoToAsync(nameof(EmployeeTimesheetPage), parameters);
     }
 
     [RelayCommand]
-    private async Task AddTimesheetEntryAsync()
+    private async Task OpenAssignmentsAsync()
     {
         if (EmployeeId is null)
+        {
+            await Shell.Current.DisplayAlertAsync("Ошибка", "Сначала сохраните сотрудника.", "OK");
             return;
-
-        var hoursInput = await Shell.Current.DisplayPromptAsync("Часы", "Введите часы", "Сохранить", "Отмена", keyboard: Keyboard.Numeric);
-        if (string.IsNullOrWhiteSpace(hoursInput) || !decimal.TryParse(hoursInput, out var hours) || hours <= 0)
-            return;
-
-        var comment = await Shell.Current.DisplayPromptAsync("������", "����������� (�������������)", "���������", "����������", "", maxLength: 200);
-
-        try
-        {
-            IsBusy = true;
-            var date = new DateOnly(TimesheetPeriod.Year, TimesheetPeriod.Month, 1);
-            var request = new AddTimesheetEntryRequest(date, hours, string.IsNullOrWhiteSpace(comment) ? null : comment);
-            await _employeesService.AddTimesheetEntryAsync(EmployeeId.Value, request);
-            await LoadTimesheetAsync();
         }
-        catch (Exception ex)
+
+        var parameters = new Dictionary<string, object>
         {
-            await Shell.Current.DisplayAlertAsync("������", ex.Message, "OK");
-        }
-        finally
-        {
-            IsBusy = false;
-        }
+            { "EmployeeId", EmployeeId.Value.ToString() }
+        };
+        await Shell.Current.GoToAsync(nameof(EmployeeAssignmentsPage), parameters);
     }
 
     [RelayCommand]
@@ -267,8 +214,8 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
             await Shell.Current.DisplayAlertAsync("Ошибка", "Введите корректный разряд.", "OK");
             return;
         }
-
-        var premiumValue = PremiumPercent?.StringToDecimal() ?? 0m;
+        
+        var premiumValue = string.IsNullOrWhiteSpace(PremiumPercent) ? 0m : PremiumPercent.StringToDecimal();
 
         if (ratePerNormHour <= 0)
         {
@@ -289,6 +236,12 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
         {
             IsBusy = true;
             ErrorMessage = null;
+
+            if (string.IsNullOrWhiteSpace(Position))
+            {
+                await Shell.Current.DisplayAlertAsync("Ошибка", "Выберите должность.", "OK");
+                return;
+            }
 
             var positionId = await GetPositionIdByNameAsync(Position);
 
@@ -348,38 +301,6 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
             throw new InvalidOperationException("Должность не найдена.");
 
         return position.Id;
-    }
-
-    public sealed class AssignmentItemViewModel
-    {
-        public Guid ProductionOrderId { get; }
-        public string ProductionOrder { get; }
-        public string Stage { get; }
-        public int Assigned { get; }
-        public int Completed { get; }
-
-        public AssignmentItemViewModel(EmployeeProductionAssignmentResponse response)
-        {
-            ProductionOrderId = response.ProductionOrderId;
-            ProductionOrder = response.ProductionOrderNumber;
-            Stage = response.Stage.ToString();
-            Assigned = response.QtyAssigned;
-            Completed = response.QtyCompleted;
-        }
-    }
-
-    public sealed class TimesheetEntryItemViewModel
-    {
-        public string Date { get; }
-        public string Hours { get; }
-        public string Comment { get; }
-
-        public TimesheetEntryItemViewModel(EmployeeTimesheetEntryResponse response)
-        {
-            Date = response.Date.ToString("dd.MM.yyyy");
-            Hours = response.Hours.ToString();
-            Comment = response.Comment ?? string.Empty;
-        }
     }
 }
 
