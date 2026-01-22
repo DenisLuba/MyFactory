@@ -39,17 +39,19 @@ public partial class WorkshopDetailsPageViewModel : ObservableObject
     [ObservableProperty]
     private string? errorMessage;
 
+    public bool IsEditMode => DepartmentId.HasValue;
+
     public ObservableCollection<DepartmentType> Types { get; } = new(Enum.GetValues<DepartmentType>());
 
     public WorkshopDetailsPageViewModel(IDepartmentsService departmentsService)
     {
         _departmentsService = departmentsService;
-        _ = LoadAsync();
     }
 
     partial void OnDepartmentIdChanged(Guid? value)
     {
         _ = LoadAsync();
+        OnPropertyChanged(nameof(IsEditMode));
     }
 
     partial void OnDepartmentIdParameterChanged(string? value)
@@ -58,7 +60,7 @@ public partial class WorkshopDetailsPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy || DepartmentId is null)
             return;
@@ -97,18 +99,34 @@ public partial class WorkshopDetailsPageViewModel : ObservableObject
             return;
         }
 
+        var trimmedName = Name.Trim();
+        var trimmedCode = Code?.Trim();
+
         try
         {
             IsBusy = true;
+
+            var existing = await _departmentsService.GetListAsync();
+            var duplicateExists = existing?.Any(d =>
+                d.Id != DepartmentId &&
+                (string.Equals(d.Name, trimmedName, StringComparison.OrdinalIgnoreCase) ||
+                 (!string.IsNullOrWhiteSpace(trimmedCode) &&
+                  string.Equals(d.Code, trimmedCode, StringComparison.OrdinalIgnoreCase)))) is true;
+
+            if (duplicateExists)
+            {
+                await Shell.Current.DisplayAlertAsync("Внимание", "Участок с таким наименованием или кодом уже существует", "OK");
+                return;
+            }
             if (DepartmentId is null)
             {
-                var request = new CreateDepartmentRequest(Name.Trim(), Code.Trim(), SelectedType);
+                var request = new CreateDepartmentRequest(trimmedName, trimmedCode ?? string.Empty, SelectedType);
                 var created = await _departmentsService.CreateAsync(request);
                 DepartmentId = created?.Id;
             }
             else
             {
-                var request = new UpdateDepartmentRequest(Name.Trim(), Code.Trim(), SelectedType, IsActive);
+                var request = new UpdateDepartmentRequest(trimmedName, trimmedCode ?? string.Empty, SelectedType, IsActive);
                 await _departmentsService.UpdateAsync(DepartmentId.Value, request);
             }
 

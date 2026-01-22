@@ -42,10 +42,10 @@ public sealed class UpdateDepartmentCommandHandler
 
         department.SetCode(request.Code);
 
-        if (request.IsActive)
-            department.Activate();
-        else
+        if (department.IsActive && !request.IsActive)
             department.Deactivate();
+        else if (!department.IsActive && request.IsActive)
+            department.Activate();
 
         await _db.SaveChangesAsync(cancellationToken);
     }

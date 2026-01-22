@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MyFactory.Application.Features.Products.AddProductMaterial;
 using MyFactory.Application.Features.Products.CreateProduct;
+using MyFactory.Application.Features.Products.DeleteProduct;
 using MyFactory.Application.Features.Products.DeleteProductImage;
 using MyFactory.Application.Features.Products.GetProductDetails;
 using MyFactory.Application.Features.Products.GetProductImage;
@@ -133,6 +134,17 @@ public class ProductsController : ControllerBase
             req.Status.ToDomain(),
             req.Description,
             req.Version));
+        return NoContent();
+    }
+
+    // -------------------------
+    //  DELETE
+    // -------------------------
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await _mediator.Send(new DeleteProductCommand(id));
         return NoContent();
     }
 

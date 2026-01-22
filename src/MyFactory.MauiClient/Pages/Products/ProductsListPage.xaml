@@ -8,83 +8,83 @@
 
 	<Grid
 		Padding="12"
-		RowDefinitions="Auto,*"
+		RowDefinitions="Auto,Auto,*"
 		RowSpacing="12">
 		<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
 			<Entry Placeholder="Поиск по названию" Text="{Binding SearchText}" />
 			<Button
 				Grid.Column="1"
 				Command="{Binding AddCommand}"
-				Text="Добавить" />
+				Text="+" />
 		</Grid>
 
-		<Border Grid.Row="1">
-			<Grid RowDefinitions="Auto,*" RowSpacing="8">
-				<Grid
-					Padding="0,4"
-					ColumnDefinitions="1*,4*,2*,2*"
-					ColumnSpacing="8">
-					<Label FontAttributes="Bold" Text="SKU" />
-					<Label
-						Grid.Column="1"
-						FontAttributes="Bold"
-						Text="Название" />
-					<Label
-						Grid.Column="2"
-						FontAttributes="Bold"
-						HorizontalTextAlignment="End"
-						Text="Себестоимость" />
-					<Label
-						Grid.Column="3"
-						FontAttributes="Bold"
-						HorizontalTextAlignment="End"
-						Text="Статус" />
-				</Grid>
-				<CollectionView
-					x:Name="ProductsCollection"
-					Grid.Row="1"
-					ItemsSource="{Binding FilteredProducts}"
-					SelectionMode="None">
-					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="view_model:ProductsListPageViewModel+ProductItemViewModel">
-							<SwipeView>
-								<SwipeView.RightItems>
-									<SwipeItems Mode="Reveal">
-										<SwipeItem
-											BackgroundColor="LightGray"
-											Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=ProductsCollection}}"
-											CommandParameter="{Binding .}"
-											Text="Редактировать" />
-										<SwipeItem
-											BackgroundColor="Tomato"
-											Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=ProductsCollection}}"
-											CommandParameter="{Binding .}"
-											Text="Удалить" />
-									</SwipeItems>
-								</SwipeView.RightItems>
-								<Grid
-									Padding="0,8"
-									ColumnDefinitions="1*,4*,2*,2*"
-									ColumnSpacing="8">
-									<Grid.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=ProductsCollection}}" CommandParameter="{Binding .}" />
-									</Grid.GestureRecognizers>
-									<Label Text="{Binding Sku}" />
-									<Label Grid.Column="1" Text="{Binding Name}" />
-									<Label
-										Grid.Column="2"
-										HorizontalTextAlignment="End"
-										Text="{Binding CostPrice}" />
-									<Label
-										Grid.Column="3"
-										HorizontalTextAlignment="End"
-										Text="{Binding Status}" />
-								</Grid>
-							</SwipeView>
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
-			</Grid>
+		<Grid
+			Grid.Row="1"
+			Padding="16"
+			ColumnDefinitions="1*,4*,2*,2*"
+			ColumnSpacing="8">
+			<Label FontAttributes="Bold" Text="SKU" />
+			<Label
+				Grid.Column="1"
+				FontAttributes="Bold"
+				Text="Название" />
+			<Label
+				Grid.Column="2"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Себестоимость" />
+			<Label
+				Grid.Column="3"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Статус" />
+		</Grid>
+
+		<Border Grid.Row="2">	
+			<CollectionView
+				x:Name="ProductsCollection"
+				Grid.Row="1"
+				ItemsSource="{Binding FilteredProducts}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="view_model:ProductsListPageViewModel+ProductItemViewModel">
+						<SwipeView>
+							<SwipeView.RightItems>
+								<SwipeItems Mode="Reveal">
+									<SwipeItem
+										BackgroundColor="LightGray"
+										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=ProductsCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Редактировать" />
+									<SwipeItem
+										BackgroundColor="Tomato"
+										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=ProductsCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Удалить" />
+								</SwipeItems>
+							</SwipeView.RightItems>
+							<Grid
+								Padding="0,8"
+								ColumnDefinitions="1*,4*,2*,2*"
+								ColumnSpacing="8">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=ProductsCollection}}" CommandParameter="{Binding .}" />
+								</Grid.GestureRecognizers>
+								<Label Text="{Binding Sku}" />
+								<Label Grid.Column="1" Text="{Binding Name}" />
+								<Label
+									Grid.Column="2"
+									HorizontalTextAlignment="End"
+									Text="{Binding CostPrice}" />
+								<Label
+									Grid.Column="3"
+									HorizontalTextAlignment="End"
+									Text="{Binding Status}" />
+							</Grid>
+						</SwipeView>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
 		</Border>
 	</Grid>
 </ContentPage>

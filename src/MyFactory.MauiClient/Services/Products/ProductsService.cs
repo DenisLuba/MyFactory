@@ -43,6 +43,12 @@ public sealed class ProductsService : IProductsService
         await response.EnsureSuccessWithProblemAsync();
     }
 
+    public async Task DeleteAsync(Guid id)
+    {
+        var response = await _httpClient.DeleteAsync($"api/products/{id}");
+        await response.EnsureSuccessWithProblemAsync();
+    }
+
     public async Task<AddProductMaterialResponse?> AddMaterialAsync(Guid productId, AddProductMaterialRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/products/{productId}/materials", request);

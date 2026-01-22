@@ -15,9 +15,20 @@ public partial class UnitsPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        
         if (_viewModel is UnitsPageViewModel vm)
         {
             await vm.LoadAsync();
+        }
+    }
+
+    protected override async void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        if (BindingContext is UnitsPageViewModel vm && vm.IsChanged && !vm.IsBusy)
+        {
+            await vm.OnSaveAsync(); 
         }
     }
 }

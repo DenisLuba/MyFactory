@@ -70,7 +70,7 @@ public partial class UnitsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°!", ex.Message, "OK");
         }
         finally
         {
@@ -80,9 +80,9 @@ public partial class UnitsPageViewModel : ObservableObject
 
     private async Task OnAddAsync()
     {
-        var saved = await SaveInternalAsync();
-        if (!saved)
-            return;
+        //var saved = await SaveInternalAsync();
+        // if (!saved)
+        //     return;
 
         Units.Insert(0, new EditableUnitModel(null, string.Empty, string.Empty, OnUnitChanged, true));
         IsChanged = true;
@@ -93,7 +93,7 @@ public partial class UnitsPageViewModel : ObservableObject
         IsChanged = true;
     }
 
-    private async Task<bool> OnSaveAsync()
+    public async Task<bool> OnSaveAsync()
     {
         return await SaveInternalAsync();
     }
@@ -114,7 +114,7 @@ public partial class UnitsPageViewModel : ObservableObject
 
             if (string.IsNullOrWhiteSpace(code) && string.IsNullOrWhiteSpace(name))
             {
-                validationErrors.Add("Укажите код или название единицы");
+                validationErrors.Add("РљРѕРґ РёР»Рё РЅР°Р·РІР°РЅРёРµ РЅРµ РјРѕРіСѓС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹РјРё");
                 continue;
             }
 
@@ -125,7 +125,7 @@ public partial class UnitsPageViewModel : ObservableObject
             {
                 if (primaryByCode.TryGetValue(code, out var existing))
                 {
-                    validationErrors.Add("Такой код уже есть в списке");
+                    validationErrors.Add("РљРѕРґ РёР»Рё РЅР°Р·РІР°РЅРёРµ РЅРµ РјРѕРіСѓС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹РјРё");
 
                     // Keep persisted item when conflict arises; otherwise keep first occurrence
                     if (!existing.IsNew && unit.IsNew)
@@ -160,7 +160,7 @@ public partial class UnitsPageViewModel : ObservableObject
         if (validationErrors.Count > 0)
         {
             IsChanged = true;
-            await Shell.Current.DisplayAlertAsync("Ошибка", string.Join("\n", validationErrors.Distinct()), "OK");
+            await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°!", string.Join("\n", validationErrors.Distinct()), "OK");
             return false;
         }
 
@@ -192,13 +192,16 @@ public partial class UnitsPageViewModel : ObservableObject
                 unit.UpdateValues(code!, name!);
             }
 
+            await Shell.Current.DisplayAlertAsync("Р“РѕС‚РѕРІРѕ", "РЎРѕС…СЂР°РЅРµРЅРѕ", "OK");
+            IsChanged = false;
+
             await LoadAsync();
             return true;
         }
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°!", ex.Message, "OK");
             return false;
         }
         finally
@@ -212,7 +215,7 @@ public partial class UnitsPageViewModel : ObservableObject
         if (unit is null)
             return;
 
-        var confirm = await Shell.Current.DisplayAlertAsync("Подтверждение", "Вы уверены, что хотите удалить запись?", "Да", "Отмена");
+        var confirm = await Shell.Current.DisplayAlertAsync("РџРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ", "Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ СѓРґР°Р»РёС‚СЊ РµРґРёРЅРёС†Сѓ?", "Р”Р°", "РќРµС‚");
         if (!confirm)
             return;
 
@@ -231,7 +234,7 @@ public partial class UnitsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°!", ex.Message, "OK");
         }
         finally
         {

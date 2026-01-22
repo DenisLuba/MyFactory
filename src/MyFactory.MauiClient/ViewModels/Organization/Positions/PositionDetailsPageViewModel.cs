@@ -124,7 +124,7 @@ public partial class PositionDetailsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°!", ex.Message, "OK");
         }
         finally
         {
@@ -137,7 +137,7 @@ public partial class PositionDetailsPageViewModel : ObservableObject
     {
         if (string.IsNullOrWhiteSpace(Name) || SelectedDepartment is null)
         {
-            await Shell.Current.DisplayAlertAsync("Ошибка", "Укажите название и цех", "OK");
+            await Shell.Current.DisplayAlertAsync("Р’РЅРёРјР°РЅРёРµ!", "РЈРєР°Р¶РёС‚Рµ РЅР°РёРјРµРЅРѕРІР°РЅРёРµ Рё РѕС‚РґРµР»", "OK");
             return;
         }
 
@@ -154,13 +154,13 @@ public partial class PositionDetailsPageViewModel : ObservableObject
             var existing = await _positionsService.GetListAsync();
             var duplicateExists = existing?.Any(p =>
                 p.Id != PositionId &&
-                (string.Equals(p.Name, trimmedName, StringComparison.OrdinalIgnoreCase) || // если уже есть позиция с таким именем
+                (string.Equals(p.Name, trimmedName, StringComparison.OrdinalIgnoreCase) || // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
                  (!string.IsNullOrWhiteSpace(trimmedCode) &&
-                  string.Equals(p.Code, trimmedCode, StringComparison.OrdinalIgnoreCase)))) is true; // или с таким кодом
+                  string.Equals(p.Code, trimmedCode, StringComparison.OrdinalIgnoreCase)))) is true; // пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 
             if (duplicateExists)
             {
-                await Shell.Current.DisplayAlertAsync("Ошибка", "Должность с таким названием или кодом уже существует", "OK");
+                await Shell.Current.DisplayAlertAsync("Р’РЅРёРјР°РЅРёРµ!", "РџРѕР·РёС†РёСЏ СЃ С‚Р°РєРёРј РЅР°РёРјРµРЅРѕРІР°РЅРёРµРј РёР»Рё РєРѕРґРѕРј СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚", "OK");
                 return;
             }
 
@@ -176,12 +176,12 @@ public partial class PositionDetailsPageViewModel : ObservableObject
                 await _positionsService.UpdateAsync(PositionId.Value, request);
             }
 
-            await Shell.Current.DisplayAlertAsync("Готово", "Сохранено", "OK");
+            await Shell.Current.DisplayAlertAsync("Р“РѕС‚РѕРІРѕ", "РЎРѕС…СЂР°РЅРµРЅРѕ", "OK");
             await Shell.Current.GoToAsync("..", true);
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("РћС€РёР±РєР°!", ex.Message, "OK");
         }
         finally
         {

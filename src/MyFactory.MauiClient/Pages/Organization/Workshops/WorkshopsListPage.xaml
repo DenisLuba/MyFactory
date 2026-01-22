@@ -2,43 +2,54 @@
 	x:Class="MyFactory.MauiClient.Pages.Organization.Workshops.WorkshopsListPage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:conv="clr-namespace:MyFactory.MauiClient.Converters"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Organization.Workshops"
 	Title="Участки / Цеха"
 	x:DataType="view_model:WorkshopsListPageViewModel">
-	<ScrollView>
-		<VerticalStackLayout Padding="16" Spacing="12">
-			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-				<Label
-					FontAttributes="Bold"
-					FontSize="18"
-					Text="Участки / Цеха" />
-				<Button
-					Grid.Column="1"
-					Command="{Binding AddCommand}"
-					Text="+ Добавить" />
-			</Grid>
 
-			<Grid
-				Padding="0,4"
-				ColumnDefinitions="Auto,*,Auto"
-				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Код" />
-				<Label
-					Grid.Column="1"
-					FontAttributes="Bold"
-					Text="Наименование" />
-				<Label
-					Grid.Column="2"
-					FontAttributes="Bold"
-					Text="Тип" />
-			</Grid>
+	<ContentPage.Resources>
+		<conv:BooleanToColorConverter x:Key="BoolToColorConverter" />
+	</ContentPage.Resources>
 
+	<Grid Padding="16" RowSpacing="12" RowDefinitions="Auto,Auto,*">
+		<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+			<Label
+				FontAttributes="Bold"
+				FontSize="18"
+				Text="Участки / Цеха" />
+			<Button
+				Grid.Column="1"
+				Command="{Binding AddCommand}"
+				Text="+" />
+		</Grid>
+
+		<Grid
+			Grid.Row="1"
+			Padding="16"
+			ColumnDefinitions="1*,5*,2*,2*"
+			ColumnSpacing="8">
+			<Label FontAttributes="Bold" Text="Код" />
+			<Label
+				Grid.Column="1"
+				FontAttributes="Bold"
+				Text="Наименование" />
+			<Label
+				Grid.Column="2"
+				FontAttributes="Bold"
+				Text="Тип" />
+			<Label
+				Grid.Column="3"
+				FontAttributes="Bold"
+				Text="Статус" />
+		</Grid>
+		
+		<Border Grid.Row="2">
 			<CollectionView
 				x:Name="WorkshopsCollection"
 				ItemsSource="{Binding Workshops}"
 				SelectionMode="None">
 				<CollectionView.ItemTemplate>
-					<DataTemplate>
+					<DataTemplate x:DataType="view_model:WorkshopsListPageViewModel+WorkshopItemViewModel">
 						<SwipeView>
 							<SwipeView.RightItems>
 								<SwipeItems Mode="Reveal">
@@ -55,20 +66,20 @@
 								</SwipeItems>
 							</SwipeView.RightItems>
 							<Grid
-								Padding="0,8"
-								ColumnDefinitions="Auto,*,Auto"
+								ColumnDefinitions="1*,5*,2*,2*"
 								ColumnSpacing="8">
 								<Grid.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=WorkshopsCollection}}" CommandParameter="{Binding .}" />
 								</Grid.GestureRecognizers>
-								<Label Text="{Binding Code}" />
-								<Label Grid.Column="1" Text="{Binding Name}" />
-								<Label Grid.Column="2" Text="{Binding Type}" />
+								<Label Text="{Binding Code}" TextColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Black;Gray'}" />
+								<Label Grid.Column="1" Text="{Binding Name}" TextColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Black;Gray'}" /> 
+								<Label Grid.Column="2" Text="{Binding Type}" TextColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Black;Gray'}" /> 
+								<Label Grid.Column="3" Text="{Binding Status}" TextColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Black;Gray'}" /> 
 							</Grid>
 						</SwipeView>
 					</DataTemplate>
 				</CollectionView.ItemTemplate>
 			</CollectionView>
-		</VerticalStackLayout>
-	</ScrollView>
+		</Border>
+	</Grid>
 </ContentPage>

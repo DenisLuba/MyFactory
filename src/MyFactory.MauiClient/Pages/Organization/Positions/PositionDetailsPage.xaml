@@ -26,6 +26,7 @@
 				<Entry
 					Grid.Column="1"
 					Text="{Binding Name}"
+					ReturnType="Next"
 					VerticalTextAlignment="Center" />
 
 				<Label
@@ -37,6 +38,7 @@
 					Grid.Row="1"
 					Grid.Column="1"
 					Text="{Binding Code}"
+					ReturnType="Next"
 					VerticalTextAlignment="Center" />
 
 				<Label
@@ -62,6 +64,7 @@
 					Grid.Column="1"
 					Keyboard="Numeric"
 					Text="{Binding BaseRate}"
+					ReturnType="Next"
 					VerticalTextAlignment="Center" />
 
 				<Label

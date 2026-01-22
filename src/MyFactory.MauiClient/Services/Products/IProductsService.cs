@@ -8,6 +8,7 @@ public interface IProductsService
     Task<ProductDetailsResponse?> GetDetailsAsync(Guid id);
     Task<CreateProductResponse?> CreateAsync(CreateProductRequest request);
     Task UpdateAsync(Guid id, UpdateProductRequest request);
+    Task DeleteAsync(Guid id);
 
     Task<AddProductMaterialResponse?> AddMaterialAsync(Guid productId, AddProductMaterialRequest request);
     Task UpdateMaterialAsync(Guid productMaterialId, UpdateProductMaterialRequest request);

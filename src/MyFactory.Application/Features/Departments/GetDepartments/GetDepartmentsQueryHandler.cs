@@ -21,9 +21,6 @@ public sealed class GetDepartmentsQueryHandler
     {
         var query = _db.Departments.AsNoTracking();
 
-        if (!request.IncludeInactive)
-            query = query.Where(x => x.IsActive);
-
         return await query
             .OrderBy(x => x.Name)
             .Select(x => new DepartmentListItemDto

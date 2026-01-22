@@ -147,7 +147,30 @@ public partial class ProductDetailsPageViewModel : ObservableObject
     [RelayCommand]
     private async Task DeleteAsync()
     {
-        // TODO: Надо реализовать удаление товара
+        if (ProductId is null)
+            return;
+
+        var confirm = await Shell.Current.DisplayAlertAsync("Подтверждение", "Вы уверены, что хотите удалить этот продукт?", "Да", "Нет");
+        if (!confirm)
+            return;
+
+        try
+        {
+            IsBusy = true;
+            ErrorMessage = null;
+            await _productsService.DeleteAsync(ProductId.Value);
+            await Shell.Current.GoToAsync("..");
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            await Shell.Current.DisplayAlertAsync("Ошибка!", ex.Message, "OK");
+            return;
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     public sealed class BomItemViewModel

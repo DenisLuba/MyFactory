@@ -29,7 +29,6 @@ public partial class EmployeesListPageViewModel : ObservableObject
     public EmployeesListPageViewModel(IEmployeesService employeesService)
     {
         _employeesService = employeesService;
-        _ = LoadAsync();
     }
 
     partial void OnSearchTextChanged(string? value)
@@ -38,7 +37,7 @@ public partial class EmployeesListPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
             return;
@@ -50,7 +49,7 @@ public partial class EmployeesListPageViewModel : ObservableObject
             Employees.Clear();
 
             var items = await _employeesService.GetListAsync(SearchText);
-            foreach (var emp in items ?? Array.Empty<EmployeeListItemResponse>())
+            foreach (var emp in items ?? [])
             {
                 Employees.Add(new EmployeeItemViewModel(emp));
             }
@@ -58,7 +57,7 @@ public partial class EmployeesListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Œ¯Ë·Í‡", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("–û—à–∏–±–∫–∞!", ex.Message, "OK");
         }
         finally
         {
@@ -94,7 +93,7 @@ public partial class EmployeesListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        var confirm = await Shell.Current.DisplayAlertAsync("ƒÂ‡ÍÚË‚ËÓ‚‡Ú¸", $"ƒÂ‡ÍÚË‚ËÓ‚‡Ú¸ ÒÓÚÛ‰ÌËÍ‡ {item.FullName}?", "ƒ‡", "ÕÂÚ");
+        var confirm = await Shell.Current.DisplayAlertAsync("–ü–æ–¥—Ç–≤–µ—Ä–∂–¥–µ–Ω–∏–µ", $"–í—ã —É–≤–µ—Ä–µ–Ω—ã, —á—Ç–æ —Ö–æ—Ç–∏—Ç–µ –¥–µ–∞–∫—Ç–∏–≤–∏—Ä–æ–≤–∞—Ç—å —Å–æ—Ç—Ä—É–¥–Ω–∏–∫–∞ {item.FullName}?", "–î–∞", "–ù–µ—Ç");
         if (!confirm)
             return;
 
@@ -106,7 +105,7 @@ public partial class EmployeesListPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync("Œ¯Ë·Í‡", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("–û—à–∏–±–∫–∞!", ex.Message, "OK");
         }
     }
 
@@ -123,6 +122,8 @@ public partial class EmployeesListPageViewModel : ObservableObject
             get => isActive;
             set => SetProperty(ref isActive, value);
         }
+
+        public string Status => IsActive ? "–ê–∫—Ç–∏–≤–µ–Ω" : "–ù–µ–∞–∫—Ç–∏–≤–µ–Ω";
 
         public EmployeeItemViewModel(EmployeeListItemResponse response)
         {

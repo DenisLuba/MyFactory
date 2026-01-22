@@ -26,11 +26,10 @@ public partial class WorkshopsListPageViewModel : ObservableObject
     public WorkshopsListPageViewModel(IDepartmentsService departmentsService)
     {
         _departmentsService = departmentsService;
-        _ = LoadAsync();
     }
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
             return;
@@ -42,7 +41,7 @@ public partial class WorkshopsListPageViewModel : ObservableObject
             Workshops.Clear();
 
             var items = await _departmentsService.GetListAsync();
-            foreach (var dept in items ?? Array.Empty<DepartmentListItemResponse>())
+            foreach (var dept in items ?? [])
             {
                 Workshops.Add(new WorkshopItemViewModel(dept));
             }
@@ -50,7 +49,7 @@ public partial class WorkshopsListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Œ¯Ë·Í‡", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("–û—à–∏–±–∫–∞!", ex.Message, "OK");
         }
         finally
         {
@@ -86,7 +85,7 @@ public partial class WorkshopsListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        var confirm = await Shell.Current.DisplayAlertAsync("ƒÂ‡ÍÚË‚ËÓ‚‡Ú¸", $"ƒÂ‡ÍÚË‚ËÓ‚‡Ú¸ Û˜‡ÒÚÓÍ {item.Name}?", "ƒ‡", "ÕÂÚ");
+        var confirm = await Shell.Current.DisplayAlertAsync("–î–µ–∞–∫—Ç–∏–≤–∞—Ü–∏—è.", $"–í—ã –¥–µ–π—Å—Ç–≤–∏—Ç–µ–ª—å–Ω–æ —Ö–æ—Ç–∏—Ç–µ –¥–µ–∞–∫—Ç–∏–≤–∏—Ä–æ–≤–∞—Ç—å —É—á–∞—Å—Ç–æ–∫ {item.Name}?", "–î–∞", "–ù–µ—Ç");
         if (!confirm)
             return;
 
@@ -98,7 +97,7 @@ public partial class WorkshopsListPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync("Œ¯Ë·Í‡", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("–û—à–∏–±–∫–∞!", ex.Message, "OK");
         }
     }
 
@@ -115,6 +114,8 @@ public partial class WorkshopsListPageViewModel : ObservableObject
             get => _isActive;
             set => SetProperty(ref _isActive, value);
         }
+
+        public string Status => IsActive ? "–ê–∫—Ç–∏–≤–µ–Ω" : "–ù–µ–∞–∫—Ç–∏–≤–µ–Ω";
 
         public WorkshopItemViewModel(DepartmentListItemResponse response)
         {

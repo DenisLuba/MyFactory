@@ -8,7 +8,7 @@
 
 	<Grid
 		Padding="16"
-		RowDefinitions="Auto,Auto,*"
+		RowDefinitions="Auto,Auto,Auto,*"
 		RowSpacing="12">
 
 		<Label
@@ -33,70 +33,68 @@
 				Text="+" />
 		</Grid>
 
-		<Border Grid.Row="2">
-			<Grid RowDefinitions="Auto,*" RowSpacing="8">
-				<Grid
-					Padding="0,4"
-					ColumnDefinitions="6.7*,1.5*,1.5*,0.3*"
-					ColumnSpacing="8">
-					<Label FontAttributes="Bold" Text="Материал / Товар" />
-					<Label
-						Grid.Column="1"
-						FontAttributes="Bold"
-						HorizontalTextAlignment="End"
-						Text="Количество" />
-				</Grid>
+		<Grid
+			Grid.Row="2"
+			Padding="16"
+			ColumnDefinitions="6.7*,1.5*,1.5*,0.3*"
+			ColumnSpacing="8">
+			<Label FontAttributes="Bold" Text="Материал / Товар" />
+			<Label
+				Grid.Column="1"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Количество" />
+		</Grid>
 
-				<CollectionView
-					x:Name="StockCollection"
-					Grid.Row="1"
-					ItemsSource="{Binding StockItems}"
-					SelectionMode="None">
-					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="view_model:WarehouseStockPageViewModel+StockItemViewModel">
-							<SwipeView>
-								<SwipeView.RightItems>
-									<SwipeItems Mode="Reveal">
-										<SwipeItem
-											BackgroundColor="LightGray"
-											Command="{Binding BindingContext.EditItemCommand, Source={x:Reference Name=StockCollection}}"
-											CommandParameter="{Binding .}"
-											Text="Редактировать" />
-										<SwipeItem
-											BackgroundColor="Tomato"
-											Command="{Binding BindingContext.TransferCommand, Source={x:Reference Name=StockCollection}}"
-											CommandParameter="{Binding .}"
-											Text="Переместить" />
-									</SwipeItems>
-								</SwipeView.RightItems>
-								<Grid
-									Padding="0,8"
-									ColumnDefinitions="6.7*,1.5*,1.5*,0.3*"
-									ColumnSpacing="8">
-									<Grid.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding BindingContext.OpenItemCommand, Source={x:Reference Name=StockCollection}}" CommandParameter="{Binding .}" />
-									</Grid.GestureRecognizers>
-									<Label Text="{Binding Name}" />
-									<Label
-										Grid.Column="1"
-										HorizontalTextAlignment="End"
-										Text="{Binding Quantity}" />
-									<Label
-										Grid.Column="2"
-										FontAttributes="Italic"
-										HorizontalTextAlignment="End"
-										Text="Переместить"
-										TextColor="Blue">
-										<Label.GestureRecognizers>
-											<TapGestureRecognizer Command="{Binding BindingContext.TransferCommand, Source={x:Reference Name=StockCollection}}" CommandParameter="{Binding .}" />
-										</Label.GestureRecognizers>
-									</Label>
-								</Grid>
-							</SwipeView>
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
-			</Grid>
+		<Border Grid.Row="3">
+			<CollectionView
+				x:Name="StockCollection"
+				Grid.Row="1"
+				ItemsSource="{Binding StockItems}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="view_model:WarehouseStockPageViewModel+StockItemViewModel">
+						<SwipeView>
+							<SwipeView.RightItems>
+								<SwipeItems Mode="Reveal">
+									<SwipeItem
+										BackgroundColor="LightGray"
+										Command="{Binding BindingContext.EditItemCommand, Source={x:Reference Name=StockCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Редактировать" />
+									<SwipeItem
+										BackgroundColor="Tomato"
+										Command="{Binding BindingContext.TransferCommand, Source={x:Reference Name=StockCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Переместить" />
+								</SwipeItems>
+							</SwipeView.RightItems>
+							<Grid
+								ColumnDefinitions="6.7*,1.5*,1.5*,0.3*"
+								ColumnSpacing="8">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding BindingContext.OpenItemCommand, Source={x:Reference Name=StockCollection}}" CommandParameter="{Binding .}" />
+								</Grid.GestureRecognizers>
+								<Label Text="{Binding Name}" />
+								<Label
+									Grid.Column="1"
+									HorizontalTextAlignment="End"
+									Text="{Binding Quantity}" />
+								<Label
+									Grid.Column="2"
+									FontAttributes="Italic"
+									HorizontalTextAlignment="End"
+									Text="Переместить"
+									TextColor="Blue">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding BindingContext.TransferCommand, Source={x:Reference Name=StockCollection}}" CommandParameter="{Binding .}" />
+									</Label.GestureRecognizers>
+								</Label>
+							</Grid>
+						</SwipeView>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
 		</Border>
 	</Grid>
 </ContentPage>

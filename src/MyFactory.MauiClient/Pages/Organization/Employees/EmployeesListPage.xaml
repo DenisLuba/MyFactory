@@ -2,54 +2,61 @@
 	x:Class="MyFactory.MauiClient.Pages.Organization.Employees.EmployeesListPage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:converters="clr-namespace:MyFactory.MauiClient.Converters"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Organization.Employees"
 	Title="Сотрудники"
 	x:DataType="view_model:EmployeesListPageViewModel">
-	<ScrollView>
-		<VerticalStackLayout Padding="16" Spacing="12">
-			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-				<HorizontalStackLayout Spacing="8">
-					<Label
-						FontAttributes="Bold"
-						FontSize="18"
-						Text="Сотрудники"
-						VerticalOptions="Center" />
-					<Entry
-						Placeholder="Поиск..."
-						Text="{Binding SearchText}"
-						WidthRequest="200" />
-				</HorizontalStackLayout>
-				<Button
-					Grid.Column="1"
-					Command="{Binding AddCommand}"
-					Text="Добавить" />
-			</Grid>
 
-			<Grid
-				Padding="0,4"
-				ColumnDefinitions="*,Auto,Auto,Auto"
-				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="ФИО" />
-				<Label
-					Grid.Column="1"
-					FontAttributes="Bold"
-					Text="Цех" />
-				<Label
-					Grid.Column="2"
-					FontAttributes="Bold"
-					Text="Должность" />
-				<Label
-					Grid.Column="3"
-					FontAttributes="Bold"
-					Text="Активен" />
-			</Grid>
+	<ContentPage.Resources>
+		<converters:BooleanToColorConverter x:Key="BooleanToColorConverter" TrueColor="Green" FalseColor="Red" />
+	</ContentPage.Resources>
 
+	<Grid Padding="16" RowSpacing="12" RowDefinition="Auto,Auto,Auto,*">
+
+		<Label
+			FontAttributes="Bold"
+			FontSize="18"
+			Text="Сотрудники"
+			VerticalOptions="Center" />
+
+		<Grid Grid.Row="1" ColumnSpacing="8" ColumnDefinitions="*,Auto">
+			<Entry
+				Placeholder="Поиск..."
+				Text="{Binding SearchText}" />
+		
+			<Button
+				Grid.Column="1"
+				Command="{Binding AddCommand}"
+				Text="+" />
+		</Grid>
+
+		<Grid
+			Grid.Row="2"
+			Padding="16"
+			ColumnDefinitions="4*,2*,2*,2*"
+			ColumnSpacing="8">
+			<Label FontAttributes="Bold" Text="ФИО" />
+			<Label
+				Grid.Column="1"
+				FontAttributes="Bold"
+				Text="Цех" />
+			<Label
+				Grid.Column="2"
+				FontAttributes="Bold"
+				Text="Должность" />
+			<Label
+				Grid.Column="3"
+				FontAttributes="Bold"
+				Text="Статус" />
+		</Grid>
+
+		<Border Grid.Row="3">
 			<CollectionView
 				x:Name="EmployeesCollection"
 				ItemsSource="{Binding Employees}"
 				SelectionMode="None">
 				<CollectionView.ItemTemplate>
-					<DataTemplate>
+					<DataTemplate x:DataType="view_model:EmployeesListPageViewModel+EmployeeItemViewModel">
 						<SwipeView>
 							<SwipeView.RightItems>
 								<SwipeItems Mode="Reveal">
@@ -67,21 +74,21 @@
 							</SwipeView.RightItems>
 							<Grid
 								Padding="0,8"
-								ColumnDefinitions="*,Auto,Auto,Auto"
+								ColumnDefinitions="4*,2*,2*,2*"
 								ColumnSpacing="8">
 								<Grid.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=EmployeesCollection}}" CommandParameter="{Binding .}" />
 								</Grid.GestureRecognizers>
-								<Label Text="{Binding FullName}" />
-								<Label Grid.Column="1" Text="{Binding Department}" />
-								<Label Grid.Column="2" Text="{Binding Position}" />
-								<Label Grid.Column="3" Text="{Binding IsActive}" />
+								<Label Text="{Binding FullName}" TextColor="{Binding IsActive, Converter={StaticResource BooleanToColorConverter}, ConverterParameter='Black;Gray'}" />
+								<Label Grid.Column="1" Text="{Binding Department}" TextColor="{Binding IsActive, Converter={StaticResource BooleanToColorConverter}, ConverterParameter='Black;Gray'}" />
+								<Label Grid.Column="2" Text="{Binding Position}" TextColor="{Binding IsActive, Converter={StaticResource BooleanToColorConverter}, ConverterParameter='Black;Gray'}" />
+								<Label Grid.Column="3" Text="{Binding Status}" TextColor="{Binding IsActive, Converter={StaticResource BooleanToColorConverter}, ConverterParameter='Black;Gray'}" />
 							</Grid>
 						</SwipeView>
 					</DataTemplate>
 				</CollectionView.ItemTemplate>
 			</CollectionView>
-		</VerticalStackLayout>
-	</ScrollView>
+		</Border>
+	</Grid>
 </ContentPage>
 

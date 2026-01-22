@@ -32,8 +32,7 @@ public sealed class CreateDepartmentCommandHandler
             request.Name,
             request.Type);
 
-        department.SetCode(request.Code); 
-        department.Activate();
+        department.SetCode(request.Code);
 
         _db.Departments.Add(department);
         await _db.SaveChangesAsync(cancellationToken);
