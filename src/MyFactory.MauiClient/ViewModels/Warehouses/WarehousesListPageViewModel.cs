@@ -67,13 +67,23 @@ public partial class WarehousesListPageViewModel : ObservableObject
         if (string.IsNullOrWhiteSpace(name))
             return;
 
-        var typeOptions = Enum.GetValues<WarehouseType>().Select(t => t.ToString()).ToArray();
-        var selectedType = await Shell.Current.DisplayActionSheetAsync("Тип склада", "Отмена", null, typeOptions);
-        if (string.IsNullOrWhiteSpace(selectedType) || selectedType == "Отмена")
+        var typeOptions = new (WarehouseType Type, string Title)[]
+        {
+            (WarehouseType.Materials, "Материалы"),
+            (WarehouseType.FinishedGoods, "Товары"),
+            (WarehouseType.Aux, "Дополнительный")
+        };
+
+        var selectedTitle = await Shell.Current.DisplayActionSheetAsync(
+            "Тип склада",
+            "Отмена",
+            null,
+            typeOptions.Select(t => t.Title).ToArray());
+
+        if (string.IsNullOrWhiteSpace(selectedTitle) || selectedTitle == "Отмена")
             return;
 
-        if (!Enum.TryParse<WarehouseType>(selectedType, out var type))
-            return;
+        var type = typeOptions.First(t => t.Title == selectedTitle).Type;
 
         try
         {
@@ -109,13 +119,23 @@ public partial class WarehousesListPageViewModel : ObservableObject
         if (string.IsNullOrWhiteSpace(name))
             return;
 
-        var typeOptions = Enum.GetValues<WarehouseType>().Select(t => t.ToString()).ToArray();
-        var selectedType = await Shell.Current.DisplayActionSheetAsync("Тип склада", "Отмена", null, typeOptions);
-        if (string.IsNullOrWhiteSpace(selectedType) || selectedType == "Отмена")
+        var typeOptions = new (WarehouseType Type, string Title)[]
+        {
+            (WarehouseType.Materials, "Материалы"),
+            (WarehouseType.FinishedGoods, "Товары"),
+            (WarehouseType.Aux, "Дополнительный")
+        };
+
+        var selectedTitle = await Shell.Current.DisplayActionSheetAsync(
+            "Тип склада",
+            "Отмена",
+            null,
+            typeOptions.Select(t => t.Title).ToArray());
+
+        if (string.IsNullOrWhiteSpace(selectedTitle) || selectedTitle == "Отмена")
             return;
 
-        if (!Enum.TryParse<WarehouseType>(selectedType, out var type))
-            return;
+        var type = typeOptions.First(t => t.Title == selectedTitle).Type;
 
         try
         {
@@ -223,6 +243,14 @@ public partial class WarehousesListPageViewModel : ObservableObject
         public string Status => IsActive ? "Активен" : "Неактивен";
         public string ActionLabel => IsActive ? "Деактивировать" : "Активировать";
         public bool IsInactive => !IsActive;
+
+        public string TypeDisplay => Type switch
+        {
+            nameof(WarehouseType.Materials) => "Материалы",
+            nameof(WarehouseType.FinishedGoods) => "Товары",
+            nameof(WarehouseType.Aux) => "Дополнительный",
+            _ => Type
+        };
 
         public static WarehouseItemViewModel FromResponse(WarehouseListItemResponse response)
         {

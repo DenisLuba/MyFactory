@@ -33,20 +33,24 @@ public sealed class AddMaterialToWarehouseCommandHandler
         if (warehouse.Type == WarehouseType.FinishedGoods)
             throw new ValidationException("Cannot add materials to finished goods warehouse");
 
-        var exists = await _db.WarehouseMaterials.AnyAsync(
+        var warehouseMaterial = await _db.WarehouseMaterials.FirstOrDefaultAsync(
             x => x.WarehouseId == request.WarehouseId &&
                  x.MaterialId == request.MaterialId,
             cancellationToken);
 
-        if (exists)
-            throw new ValidationException("Material already exists in warehouse");
+        if (warehouseMaterial is null)
+        {
+            warehouseMaterial = new WarehouseMaterialEntity(
+                request.WarehouseId,
+                request.MaterialId,
+                request.Qty);
 
-        var warehouseMaterial = new WarehouseMaterialEntity(
-            request.WarehouseId,
-            request.MaterialId,
-            request.Qty);
-
-        _db.WarehouseMaterials.Add(warehouseMaterial);
+            _db.WarehouseMaterials.Add(warehouseMaterial);
+        }
+        else
+        {
+            warehouseMaterial.AddQty(request.Qty);
+        }
 
         var unitCost = await GetUnitCost(request.MaterialId, cancellationToken);
 

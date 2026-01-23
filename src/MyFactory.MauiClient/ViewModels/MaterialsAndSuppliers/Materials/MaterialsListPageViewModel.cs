@@ -153,6 +153,7 @@ public partial class MaterialsListPageViewModel : ObservableObject
         public string MaterialTypeName { get; }
         public string MaterialName { get; }
         public decimal TotalQty { get; }
+        public string UnitCode { get;  }
 
         public MaterialItemViewModel(MaterialListItemResponse response)
         {
@@ -160,6 +161,7 @@ public partial class MaterialsListPageViewModel : ObservableObject
             MaterialTypeName = response.MaterialType;
             MaterialName = response.Name;
             TotalQty = response.TotalQty;
+            UnitCode = response.UnitCode;
         }
     }
 }

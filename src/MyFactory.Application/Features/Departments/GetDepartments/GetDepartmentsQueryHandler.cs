@@ -19,7 +19,9 @@ public sealed class GetDepartmentsQueryHandler
         GetDepartmentsQuery request,
         CancellationToken cancellationToken)
     {
-        var query = _db.Departments.AsNoTracking();
+        var query = _db.Departments
+            .AsNoTracking()
+            .Where(d => request.IncludeInactive || d.IsActive);
 
         return await query
             .OrderBy(x => x.Name)

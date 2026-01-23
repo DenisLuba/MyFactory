@@ -21,6 +21,9 @@ public partial class WorkshopsListPageViewModel : ObservableObject
     [ObservableProperty]
     private string? errorMessage;
 
+    [ObservableProperty]
+    private bool includeInactive = true;
+
     public ObservableCollection<WorkshopItemViewModel> Workshops { get; } = new();
 
     public WorkshopsListPageViewModel(IDepartmentsService departmentsService)
@@ -40,7 +43,7 @@ public partial class WorkshopsListPageViewModel : ObservableObject
             ErrorMessage = null;
             Workshops.Clear();
 
-            var items = await _departmentsService.GetListAsync();
+            var items = await _departmentsService.GetListAsync(IncludeInactive);
             foreach (var dept in items ?? [])
             {
                 Workshops.Add(new WorkshopItemViewModel(dept));
@@ -99,6 +102,14 @@ public partial class WorkshopsListPageViewModel : ObservableObject
         {
             await Shell.Current.DisplayAlertAsync("Ошибка!", ex.Message, "OK");
         }
+    }
+
+    [RelayCommand]
+    private async Task StatusSwitcherAsync()
+    {
+        IncludeInactive = !IncludeInactive;
+
+        await LoadAsync();
     }
 
     public sealed class WorkshopItemViewModel : ObservableObject

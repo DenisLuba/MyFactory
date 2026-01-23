@@ -13,6 +13,7 @@ public interface IWarehousesService
     Task DeactivateAsync(Guid id);
     Task RemoveAsync(Guid id);
     Task AddMaterialAsync(Guid warehouseId, AddMaterialToWarehouseRequest request);
+    Task AddProductAsync(Guid warehouseId, AddProductToWarehouseRequest request);
     Task RemoveMaterialAsync(Guid warehouseId, Guid materialId);
     Task UpdateMaterialQtyAsync(Guid warehouseId, Guid materialId, UpdateWarehouseMaterialQtyRequest request);
     Task TransferMaterialsAsync(TransferMaterialsRequest request);

@@ -67,6 +67,12 @@ public sealed class WarehousesService : IWarehousesService
         await response.EnsureSuccessWithProblemAsync();
     }
 
+    public async Task AddProductAsync(Guid warehouseId, AddProductToWarehouseRequest request)
+    {
+        var response = await _httpClient.PostAsJsonAsync($"api/warehouses/{warehouseId}/products", request);
+        await response.EnsureSuccessWithProblemAsync();
+    }
+
     public async Task RemoveMaterialAsync(Guid warehouseId, Guid materialId)
     {
         var response = await _httpClient.DeleteAsync($"api/warehouses/{warehouseId}/materials/{materialId}");

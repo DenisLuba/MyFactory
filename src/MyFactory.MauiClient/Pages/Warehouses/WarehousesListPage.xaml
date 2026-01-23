@@ -82,7 +82,7 @@
 								<Label
 									Grid.Column="1"
 									HorizontalTextAlignment="End"
-									Text="{Binding Type}"
+								Text="{Binding TypeDisplay}"
 									TextColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Black;Gray'}" />
 								<Label
 									Grid.Column="2"

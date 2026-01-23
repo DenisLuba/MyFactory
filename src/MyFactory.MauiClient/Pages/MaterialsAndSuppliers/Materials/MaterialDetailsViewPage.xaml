@@ -37,10 +37,15 @@
 				Grid.Row="3"
 				FontAttributes="Bold"
 				Text="Остаток:" />
-			<Label
-				Grid.Row="3"
-				Grid.Column="1"
-				Text="{Binding TotalQty}" />
+			<Label Grid.Row="3" Grid.Column="1">
+				<Label.FormattedText>
+					<FormattedString>
+						<Span Text="{Binding TotalQty}" />
+						<Span Text=" " />
+						<Span Text="{Binding UnitCode}" />
+					</FormattedString>
+				</Label.FormattedText>
+			</Label>
 		</Grid>
 
 		<HorizontalStackLayout Grid.Row="1" Spacing="8">
@@ -86,10 +91,15 @@
 										<TapGestureRecognizer Command="{Binding BindingContext.OpenWarehouseCommand, Source={x:Reference Name=WarehousesCollection}}" CommandParameter="{Binding WarehouseId}" />
 									</Grid.GestureRecognizers>
 									<Label Text="{Binding WarehouseName}" />
-									<Label
-										Grid.Column="1"
-										HorizontalTextAlignment="End"
-										Text="{Binding Qty}" />
+									<Label Grid.Column="1" HorizontalTextAlignment="End">
+										<Label.FormattedText>
+											<FormattedString>
+												<Span Text="{Binding Qty}" />
+												<Span Text=" " />
+												<Span Text="{Binding UnitCode}" />
+											</FormattedString>
+										</Label.FormattedText>
+									</Label>
 								</Grid>
 							</DataTemplate>
 						</CollectionView.ItemTemplate>

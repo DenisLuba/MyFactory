@@ -33,6 +33,9 @@ public partial class MaterialDetailsViewPageViewModel : ObservableObject
     private decimal totalQty;
 
     [ObservableProperty]
+    private string? unitCode;
+
+    [ObservableProperty]
     private bool isBusy;
 
     [ObservableProperty]
@@ -82,6 +85,7 @@ public partial class MaterialDetailsViewPageViewModel : ObservableObject
             MaterialType = details.MaterialType;
             Color = details.Color;
             TotalQty = details.TotalQty;
+            UnitCode = details.UnitCode;
 
             foreach (var w in details.Warehouses)
                 Warehouses.Add(w);

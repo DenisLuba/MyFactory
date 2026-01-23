@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MyFactory.Application.Features.Warehouses.ActivateWarehouse;
 using MyFactory.Application.Features.Warehouses.AddMaterialToWarehouse;
+using MyFactory.Application.Features.Warehouses.AddProductToWarehouse;
 using MyFactory.Application.Features.Warehouses.GetWarehouseInfo;
 using MyFactory.Application.Features.Warehouses.GetWarehouses;
 using MyFactory.Application.Features.Warehouses.GetWarehouseStock;
@@ -141,6 +142,19 @@ public class WarehousesController : ControllerBase
     public async Task<IActionResult> AddMaterial(Guid id, [FromBody] AddMaterialToWarehouseRequest req)
     {
         await _mediator.Send(new AddMaterialToWarehouseCommand(id, req.MaterialId, req.Qty));
+        return Ok();
+    }
+
+    // -------------------------
+    //  PRODUCTS
+    // -------------------------
+    [HttpPost("{id:guid}/products")]
+    [Consumes("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [SwaggerRequestExample(typeof(AddProductToWarehouseRequest), typeof(AddProductToWarehouseRequestExample))]
+    public async Task<IActionResult> AddProduct(Guid id, [FromBody] AddProductToWarehouseRequest req)
+    {
+        await _mediator.Send(new AddProductToWarehouseCommand(id, req.ProductId, req.Qty));
         return Ok();
     }
 
