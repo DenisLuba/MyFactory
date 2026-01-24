@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Text;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -10,6 +11,8 @@ using MyFactory.MauiClient.Models.Materials;
 using MyFactory.MauiClient.Models.Suppliers;
 using MyFactory.MauiClient.Services.MaterialPurchaseOrders;
 using MyFactory.MauiClient.Services.Materials;
+using MyFactory.MauiClient.Services.Printing;
+using MyFactory.MauiClient.Services.SavingFile;
 using MyFactory.MauiClient.Services.Suppliers;
 
 namespace MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.SupplierOrders;
@@ -21,6 +24,8 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
     private readonly IMaterialPurchaseOrdersService _ordersService;
     private readonly ISuppliersService _suppliersService;
     private readonly IMaterialsService _materialsService;
+    private readonly IPrintService _printService;
+    private readonly ISaveFileService _saveFileService;
 
     [ObservableProperty]
     private Guid? supplierId;
@@ -57,11 +62,15 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
     public SupplierOrderCreatePageViewModel(
         IMaterialPurchaseOrdersService ordersService,
         ISuppliersService suppliersService,
-        IMaterialsService materialsService)
+        IMaterialsService materialsService,
+        IPrintService printService,
+        ISaveFileService saveFileService)
     {
         _ordersService = ordersService;
         _suppliersService = suppliersService;
         _materialsService = materialsService;
+        _printService = printService;
+        _saveFileService = saveFileService;
 
         SubscribeSelectionCollection();
         _ = LoadAsync();
@@ -197,16 +206,16 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
         if (IsBusy)
             return;
 
-        if (Items.Count == 0)
+        if (Items.Count <= 0)
         {
-            await Shell.Current.DisplayAlertAsync("������", "�������� ���� �� ���� �������", "OK");
+            await Shell.Current.DisplayAlertAsync("Внимание!", "В заказе должна быть хотя бы одна позиция.", "OK");
             return;
         }
 
         var supplier = Items.First().Supplier;
         if (supplier is null)
         {
-            await Shell.Current.DisplayAlertAsync("������", "�������� ����������", "OK");
+            await Shell.Current.DisplayAlertAsync("Внимание!", "Определите поставщика материалов.", "OK");
             return;
         }
 
@@ -215,10 +224,7 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
             IsBusy = true;
             ErrorMessage = null;
 
-            var createResponse = await _ordersService.CreateAsync(new CreateMaterialPurchaseOrderRequest(supplier.Id, DateTime.UtcNow));
-            if (createResponse is null)
-                throw new InvalidOperationException("�� ������� ������� �����");
-
+            var createResponse = await _ordersService.CreateAsync(new CreateMaterialPurchaseOrderRequest(supplier.Id, DateTime.UtcNow)) ?? throw new InvalidOperationException("Не удалось открыть файл.");
             foreach (var item in Items)
             {
                 if (item.Material is null)
@@ -229,13 +235,39 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
             }
 
             await _ordersService.ConfirmAsync(createResponse.Id);
-            await Shell.Current.DisplayAlertAsync("�����", "����� ��������", "OK");
+            await Shell.Current.DisplayAlertAsync("Успешно!", "Заказ создан.", "OK");
             await Shell.Current.GoToAsync("..", true);
         }
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("������", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка!", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task SaveFileAsync()
+    {
+        if (IsBusy)
+            return;
+
+        try
+        {
+            IsBusy = true;
+            ErrorMessage = null;
+
+            var content = BuildPrintableText();
+            await _saveFileService.SaveFileAsync("Заказ поставщику", content);
+            await Shell.Current.DisplayAlertAsync("Сохранено", "Файл заказа сохранён.", "OK");
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
         }
         finally
         {
@@ -246,7 +278,49 @@ public partial class SupplierOrderCreatePageViewModel : ObservableObject
     [RelayCommand]
     private async Task PrintAsync()
     {
-        await Shell.Current.DisplayAlertAsync("������", "������� ������ ����������", "OK");
+        if (IsBusy) return;
+
+        try
+        {
+            IsBusy = true;
+            ErrorMessage = null;
+
+            var content = BuildPrintableText();
+            await _printService.PrintTextAsync("Заказ поставщику", content);
+        }
+        catch (PlatformNotSupportedException ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Печать", ex.Message, "Ok");
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            await Shell.Current.DisplayAlertAsync("Ошибка печати", ex.Message, "Ok");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private string BuildPrintableText()
+    {
+        var sb = new StringBuilder();
+        var supplierName = Items.FirstOrDefault()?.Supplier?.Name ?? "Поставщик не выбран.";
+        sb.AppendLine($"Поставщик: {supplierName}");
+        sb.AppendLine($"Дата: {DateTime.Now:G}");
+        sb.AppendLine(new string('-', 48));
+
+        foreach (var item in Items)
+        {
+            var name = item.Material?.Name ?? item.MaterialType ?? "Материал";
+            sb.AppendLine($"{name}");
+            sb.AppendLine($"    Количество: {item.Qty}");
+            sb.AppendLine($"    Цена: {item.Price}");
+            sb.AppendLine();
+        }
+
+        return sb.ToString();
     }
 
     [RelayCommand]

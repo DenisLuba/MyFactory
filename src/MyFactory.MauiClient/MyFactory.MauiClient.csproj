@@ -80,6 +80,15 @@
 	  <MauiXaml Update="Pages\Organization\Employees\EmployeeTimesheetPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\Products\ProductCostsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\Products\ProductSpecificationPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\Products\ProductStocksPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\Warehouses\TransferFromWarehousePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

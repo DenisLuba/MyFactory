@@ -1,12 +1,14 @@
 using Microsoft.Maui.Controls;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MyFactory.MauiClient.Models.Products;
 using MyFactory.MauiClient.Services.Products;
 using MyFactory.MauiClient.Common;
+using MyFactory.MauiClient.Pages.Products;
 
 namespace MyFactory.MauiClient.ViewModels.Products;
 
@@ -54,14 +56,22 @@ public partial class ProductDetailsPageViewModel : ObservableObject
     [ObservableProperty]
     private string? errorMessage;
 
-    public ObservableCollection<BomItemViewModel> Bom { get; } = new();
-    public ObservableCollection<DepartmentCostViewModel> ProductionCosts { get; } = new();
-    public ObservableCollection<AvailabilityViewModel> Warehouses { get; } = new();
+    [ObservableProperty]
+    private ImageItemViewModel? selectedImage;
+
+    [ObservableProperty]
+    private bool isSelected = false;
+
+    public ObservableCollection<ImageItemViewModel> Images { get; } = new();
 
     public ProductDetailsPageViewModel(IProductsService productsService)
     {
         _productsService = productsService;
-        _ = LoadAsync();
+    }
+
+    partial void OnSelectedImageChanged(ImageItemViewModel? value)
+    {
+        IsSelected = value is null ? false : true;
     }
 
     partial void OnProductIdChanged(Guid? value)
@@ -87,10 +97,7 @@ public partial class ProductDetailsPageViewModel : ObservableObject
         {
             IsBusy = true;
             ErrorMessage = null;
-
-            Bom.Clear();
-            ProductionCosts.Clear();
-            Warehouses.Clear();
+            SelectedImage = null;
 
             var details = await _productsService.GetDetailsAsync(ProductId.Value);
             if (details is null)
@@ -106,14 +113,9 @@ public partial class ProductDetailsPageViewModel : ObservableObject
             ProductionCost = details.ProductionCost;
             TotalCost = details.TotalCost;
 
-            foreach (var item in details.Bom)
-                Bom.Add(new BomItemViewModel(item));
+            await LoadImagesAsync();
 
-            foreach (var item in details.ProductionCosts)
-                ProductionCosts.Add(new DepartmentCostViewModel(item));
-
-            foreach (var a in details.Availability)
-                Warehouses.Add(new AvailabilityViewModel(a));
+            SelectedImage = null;
         }
         catch (Exception ex)
         {
@@ -173,62 +175,157 @@ public partial class ProductDetailsPageViewModel : ObservableObject
         }
     }
 
-    public sealed class BomItemViewModel
+    [RelayCommand]
+    private async Task AddImageAsync()
     {
-        public string MaterialName { get; }
-        public decimal Quantity { get; }
-        public decimal Price { get; }
+        if (IsBusy || ProductId is null)
+            return;
 
-        public BomItemViewModel(ProductBomItemResponse item)
+        var imagesList = await FilePicker.PickMultipleAsync(PickOptions.Images);
+        if (imagesList is null)
+            return;
+        try
         {
-            MaterialName = item.MaterialName;
-            Quantity = item.QtyPerUnit;
-            Price = item.LastUnitPrice;
+            IsBusy = true;
+            ErrorMessage = null;
+
+            foreach (var image in imagesList)
+            {
+                if (image is null)
+                    continue;
+
+                await using var pickedStream = await image.OpenReadAsync();
+                await using var buffer = new MemoryStream();
+                await pickedStream.CopyToAsync(buffer);
+                buffer.Position = 0;
+
+                var imageId = await _productsService.UploadImageAsync(
+                    productId: ProductId.Value,
+                    content: buffer,
+                    fileName: image.FileName,
+                    contentType: image.ContentType ?? "application/octet-stream");
+
+                if (imageId is not null)
+                {
+                    Images.Add(new ImageItemViewModel(
+                        id: imageId.Value,
+                        fileName: image.FileName,
+                        contentType: image.ContentType,
+                        content: buffer.ToArray()));
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            await Shell.Current.DisplayAlertAsync("Ошибка!", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 
-    public partial class DepartmentCostViewModel : ObservableObject
+    [RelayCommand]
+    private async Task DeleteImageAsync(ImageItemViewModel image)
     {
-        public string Department { get; }
+        if (IsBusy || image is null)
+            return;
 
-        [ObservableProperty]
-        private decimal cutting;
-
-        [ObservableProperty]
-        private decimal sewing;
-
-        [ObservableProperty]
-        private decimal packaging;
-
-        [ObservableProperty]
-        private decimal other;
-
-        public decimal Total => Cutting + Sewing + Packaging + Other;
-
-        public DepartmentCostViewModel(ProductDepartmentCostResponse source)
+        try
         {
-            Department = source.DepartmentName;
-            Cutting = source.CutCost;
-            Sewing = source.SewingCost;
-            Packaging = source.PackCost;
-            Other = source.Expenses;
-        }
 
-        partial void OnCuttingChanged(decimal value) => OnPropertyChanged(nameof(Total));
-        partial void OnSewingChanged(decimal value) => OnPropertyChanged(nameof(Total));
-        partial void OnPackagingChanged(decimal value) => OnPropertyChanged(nameof(Total));
-        partial void OnOtherChanged(decimal value) => OnPropertyChanged(nameof(Total));
+            IsBusy = true;
+            ErrorMessage = null;
+
+            await _productsService.DeleteImageAsync(image.Id);
+
+            await LoadImagesAsync();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            await Shell.Current.DisplayAlertAsync("Ошибка!", ex.Message, "Ok");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
-    public sealed class AvailabilityViewModel
+    [RelayCommand]
+    private async Task OpenSpecificationAsync()
     {
-        public string WarehouseName { get; }
-        public int Available { get; }
+        if (ProductId is null)
+            return;
 
-        public AvailabilityViewModel(ProductAvailabilityResponse source)
+        await Shell.Current.GoToAsync(nameof(ProductSpecificationPage), new Dictionary<string, object>
         {
-            WarehouseName = source.WarehouseName;
-            Available = source.AvailableQty;
+            { "ProductId", ProductId.Value.ToString() }
+        });
+    }
+
+    [RelayCommand]
+    private async Task OpenCostsAsync()
+    {
+        if (ProductId is null)
+            return;
+
+        await Shell.Current.GoToAsync(nameof(ProductCostsPage), new Dictionary<string, object>
+        {
+            { "ProductId", ProductId.Value.ToString() }
+        });
+    }
+
+    [RelayCommand]
+    private async Task OpenStocksAsync()
+    {
+        if (ProductId is null)
+            return;
+
+        await Shell.Current.GoToAsync(nameof(ProductStocksPage), new Dictionary<string, object>
+        {
+            { "ProductId", ProductId.Value.ToString() }
+        });
+    }
+
+    private async Task LoadImagesAsync()
+    {
+        if (ProductId is null)
+            return;
+
+        Images.Clear();
+        var imagesList = await _productsService.GetImagesAsync(ProductId.Value);
+        if (imagesList is null)
+            return;
+
+        foreach (var i in imagesList)
+        {
+            var bytes = i.Content ?? await _productsService.GetImageContentAsync(i.Id) ?? [];
+
+            Images.Add(new ImageItemViewModel(
+                id: i.Id,
+                fileName: i.FileName,
+                contentType: i.ContentType,
+                content: bytes));
+        }
+    }
+
+    public sealed class ImageItemViewModel
+    {
+        public Guid Id { get; }
+        public string FileName { get; }
+        public string? ContentType { get; }
+        public ImageSource? Source { get; }
+
+        public ImageItemViewModel(Guid id, string fileName, string? contentType, byte[]? content)
+        {
+            Id = id;
+            FileName = fileName;
+            ContentType = contentType;
+            Source = content is { Length: > 0 }
+                ? ImageSource.FromStream(() => new MemoryStream(content))
+                : null;
         }
     }
 }

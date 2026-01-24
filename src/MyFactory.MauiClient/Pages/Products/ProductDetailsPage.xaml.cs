@@ -15,9 +15,12 @@ public partial class ProductDetailsPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        if (_viewModel is ProductDetailsPageViewModel)
+
+        if (BindingContext is ProductDetailsPageViewModel vm
+            && vm.ProductId is not null
+            && !vm.IsBusy)
         {
-            await _viewModel.LoadAsync();
+            await vm.LoadAsync();
         }
     }
 }

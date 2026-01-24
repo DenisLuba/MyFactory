@@ -25,7 +25,7 @@
 				IsVisible="{Binding HasSelectedItems}"
 				Text="-" />
 		</Grid>
-	
+
 		<Border Grid.Row="1">
 			<Grid RowDefinitions="Auto,*" RowSpacing="8">
 				<Grid
@@ -53,8 +53,8 @@
 				</Grid>
 
 				<CollectionView
-					Grid.Row="1"
 					x:Name="SupplierOrderItemsCollection"
+					Grid.Row="1"
 					ItemsSource="{Binding Items}"
 					SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
 					SelectionMode="Multiple">
@@ -93,10 +93,10 @@
 				</CollectionView>
 			</Grid>
 		</Border>
-	
+
 		<HorizontalStackLayout Grid.Row="2" Spacing="8">
 			<Button Command="{Binding SaveCommand}" Text="Сохранить" />
-			<Button Command="{Binding PrintCommand}" Text="Печать" />
+			<Button Command="{Binding SaveFileCommand}" Text="Сохранить файл" />
 			<Button Command="{Binding BackCommand}" Text="Назад" />
 		</HorizontalStackLayout>
 	</Grid>

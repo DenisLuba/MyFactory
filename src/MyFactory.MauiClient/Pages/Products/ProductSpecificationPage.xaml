@@ -1,0 +1,57 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Products.ProductSpecificationPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Products"
+	Title="{Binding Name}"
+	x:DataType="view_model:ProductSpecificationPageViewModel">
+
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,*,Auto"
+		RowSpacing="12">
+		<Grid
+			Padding="16"
+			ColumnDefinitions="6*,2*,2*"
+			ColumnSpacing="8">
+			<Label FontAttributes="Bold" Text="Материал" />
+			<Label
+				Grid.Column="1"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Количество" />
+			<Label
+				Grid.Column="2"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Цена" />
+		</Grid>
+
+		<Border Grid.Row="1">
+			<CollectionView ItemsSource="{Binding Items}" SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="view_model:ProductSpecificationPageViewModel+BomItemViewModel">
+						<Grid
+							Padding="0,6"
+							ColumnDefinitions="6*,2*,2*"
+							ColumnSpacing="8">
+							<Label Text="{Binding MaterialName}" />
+							<Label
+								Grid.Column="1"
+								HorizontalTextAlignment="End"
+								Text="{Binding Quantity}" />
+							<Label
+								Grid.Column="2"
+								HorizontalTextAlignment="End"
+								Text="{Binding Price}" />
+						</Grid>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</Border>
+
+		<HorizontalStackLayout Grid.Row="2" Spacing="8">
+			<Button Command="{Binding BackCommand}" Text="Назад" />
+		</HorizontalStackLayout>
+	</Grid>
+</ContentPage>

@@ -6,281 +6,140 @@
 	Title="Карточка товара"
 	x:DataType="view_model:ProductDetailsPageViewModel">
 
-	<Grid
-		Padding="16"
-		RowDefinitions="Auto,Auto,*"
-		RowSpacing="12">
-		<HorizontalStackLayout Spacing="8">
-			<Button Command="{Binding BackCommand}" Text="Назад" />
-			<Button Command="{Binding EditCommand}" Text="Редактировать" />
-			<Button Command="{Binding DeleteCommand}" Text="Удалить" />
-		</HorizontalStackLayout>
-
+	<ScrollView>
 		<Grid
-			Grid.Row="1"
-			ColumnDefinitions="Auto,*"
-			ColumnSpacing="8"
-			RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
-			RowSpacing="8">
-			<Label FontSize="20">
-				<Label.FormattedText>
-					<FormattedString>
-						<Span FontAttributes="Bold" Text="{Binding Name}" />
-						<Span Text=" " />
-						<Span FontAttributes="Italic" Text="{Binding Sku}" />
-					</FormattedString>
-				</Label.FormattedText>
-			</Label>
+			Padding="16"
+			RowDefinitions="Auto,Auto,Auto,Auto"
+			RowSpacing="12">
+			<HorizontalStackLayout Spacing="8">
+				<Button Command="{Binding BackCommand}" Text="Назад" />
+				<Button Command="{Binding EditCommand}" Text="Редактировать" />
+				<Button Command="{Binding DeleteCommand}" Text="Удалить" />
+			</HorizontalStackLayout>
 
-			<Label
-				Grid.Row="1"
-				FontAttributes="Bold"
-				Text="Описание: " />
-			<Label
-				Grid.Row="1"
-				Grid.Column="1"
-				MaxLines="4"
-				Text="{Binding Description}" />
-
-			<Label
-				Grid.Row="2"
-				FontAttributes="Bold"
-				Text="План пошива в смену:" />
-			<Label
-				Grid.Row="2"
-				Grid.Column="1"
-				Text="{Binding PlanPerHour}" />
-
-			<Label
-				Grid.Row="3"
-				FontAttributes="Bold"
-				Text="Себестоимость:" />
-			<Label
-				Grid.Row="3"
-				Grid.Column="1"
-				Text="{Binding TotalCost}" />
-
-			<Label
-				Grid.Row="4"
-				FontAttributes="Bold"
-				Text="Версия: " />
-			<Label
-				Grid.Row="4"
-				Grid.Column="1"
-				Text="{Binding Version}" />
-
-			<Label
-				Grid.Row="5"
-				FontAttributes="Bold"
-				Text="Статус" />
-			<Label
-				Grid.Row="5"
-				Grid.Column="1"
-				Text="{Binding Status}" />
-		</Grid>
-
-		<ScrollView Grid.Row="2">
 			<Grid
-				Margin="0,0,12,0"
-				RowDefinitions="Auto,*,*,*"
-				RowSpacing="12">
-				<Border HorizontalOptions="Start">
-					<VerticalStackLayout Spacing="6">
-						<Label
-							FontAttributes="Bold"
-							FontSize="18"
-							Text="СЕБЕСТОИМОСТЬ" />
-						<Grid
-							ColumnDefinitions="Auto,*"
-							ColumnSpacing="8"
-							RowDefinitions="Auto,Auto"
-							RowSpacing="4">
-							<Label FontAttributes="Bold" Text="Материалы:" />
-							<Label Grid.Column="1" Text="{Binding MaterialCost}" />
-							<Label
-								Grid.Row="1"
-								FontAttributes="Bold"
-								Text="Производство:" />
-							<Label
-								Grid.Row="1"
-								Grid.Column="1"
-								Text="{Binding ProductionCost}" />
-						</Grid>
-					</VerticalStackLayout>
-				</Border>
+				Grid.Row="1"
+				ColumnDefinitions="Auto,*"
+				ColumnSpacing="8"
+				RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+				RowSpacing="8">
+				<Label FontSize="20">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span FontAttributes="Bold" Text="{Binding Name}" />
+							<Span Text=" " />
+							<Span FontAttributes="Italic" Text="{Binding Sku}" />
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
 
-				<Border Grid.Row="1">
-					<Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
-						<Label
-							FontAttributes="Bold"
-							FontSize="18"
-							Text="СПЕЦИФИКАЦИЯ" />
-						<Grid
-							Grid.Row="1"
-							Padding="0,4"
-							ColumnDefinitions="6*,2*,2*"
-							ColumnSpacing="8">
-							<Label FontAttributes="Bold" Text="Материал" />
-							<Label
-								Grid.Column="1"
-								FontAttributes="Bold"
-								HorizontalTextAlignment="End"
-								Text="Количество" />
-							<Label
-								Grid.Column="2"
-								FontAttributes="Bold"
-								HorizontalTextAlignment="End"
-								Text="Цена" />
-						</Grid>
-						<CollectionView
-							x:Name="BomCollection"
-							Grid.Row="2"
-							ItemsSource="{Binding Bom}"
-							SelectionMode="None">
-							<CollectionView.ItemTemplate>
-								<DataTemplate x:DataType="view_model:ProductDetailsPageViewModel+BomItemViewModel">
-									<Grid
-										Padding="0,6"
-										ColumnDefinitions="6*,2*,2*"
-										ColumnSpacing="8">
-										<Label Text="{Binding MaterialName}" />
-										<Label
-											Grid.Column="1"
-											HorizontalTextAlignment="End"
-											Text="{Binding Quantity}" />
-										<Label
-											Grid.Column="2"
-											HorizontalTextAlignment="End"
-											Text="{Binding Price}" />
-									</Grid>
-								</DataTemplate>
-							</CollectionView.ItemTemplate>
-						</CollectionView>
-					</Grid>
-				</Border>
+				<Label
+					Grid.Row="1"
+					FontAttributes="Bold"
+					Text="Описание: " />
+				<Label
+					Grid.Row="1"
+					Grid.Column="1"
+					MaxLines="4"
+					Text="{Binding Description}" />
 
-				<Border Grid.Row="2">
-					<Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
-						<Label
-							FontAttributes="Bold"
-							FontSize="18"
-							Text="ПРОИЗВОДСТВЕННЫЕ ЗАТРАТЫ" />
-						<Grid
-							Grid.Row="1"
-							Padding="0,4"
-							ColumnDefinitions="4*,1*,1*,1*,1*,1*"
-							ColumnSpacing="8">
-							<Label FontAttributes="Bold" Text="Цех" />
-							<Label
-								Grid.Column="1"
-								FontAttributes="Bold"
-								HorizontalTextAlignment="End"
-								Text="Раскрой" />
-							<Label
-								Grid.Column="2"
-								FontAttributes="Bold"
-								HorizontalTextAlignment="End"
-								Text="Пошив" />
-							<Label
-								Grid.Column="3"
-								FontAttributes="Bold"
-								HorizontalTextAlignment="End"
-								Text="Упаковка" />
-							<Label
-								Grid.Column="4"
-								FontAttributes="Bold"
-								HorizontalTextAlignment="End"
-								Text="Прочее" />
-							<Label
-								Grid.Column="5"
-								FontAttributes="Bold"
-								HorizontalTextAlignment="End"
-								Text="Всего" />
-						</Grid>
-						<CollectionView
-							x:Name="ProductionCostsCollection"
-							Grid.Row="1"
-							ItemsSource="{Binding ProductionCosts}"
-							SelectionMode="None">
-							<CollectionView.ItemTemplate>
-								<DataTemplate x:DataType="view_model:ProductDetailsPageViewModel+DepartmentCostViewModel">
-									<Grid
-										Padding="0,6"
-										ColumnDefinitions="4*,1*,1*,1*,1*,1*"
-										ColumnSpacing="8">
-										<Label Text="{Binding Department}" />
-										<Label
-											Grid.Column="1"
-											HorizontalTextAlignment="End"
-											Text="{Binding Cutting}" />
-										<Label
-											Grid.Column="2"
-											HorizontalTextAlignment="End"
-											Text="{Binding Sewing}" />
-										<Label
-											Grid.Column="3"
-											HorizontalTextAlignment="End"
-											Text="{Binding Packaging}" />
-										<Label
-											Grid.Column="4"
-											HorizontalTextAlignment="End"
-											Text="{Binding Other}" />
-										<Label
-											Grid.Column="5"
-											HorizontalTextAlignment="End"
-											Text="{Binding Total}" />
-									</Grid>
-								</DataTemplate>
-							</CollectionView.ItemTemplate>
-						</CollectionView>
-					</Grid>
-				</Border>
+				<Label
+					Grid.Row="2"
+					FontAttributes="Bold"
+					Text="План пошива в смену:" />
+				<Label
+					Grid.Row="2"
+					Grid.Column="1"
+					Text="{Binding PlanPerHour}" />
 
-				<Border
+				<Label
 					Grid.Row="3"
-					Padding="8"
-					Stroke="LightGray"
-					StrokeThickness="1">
-					<Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
-						<Label
-							FontAttributes="Bold"
-							FontSize="18"
-							Text="ОСТАТКИ НА СКЛАДАХ" />
-						<Grid
-							Grid.Row="1"
-							Padding="0,4"
-							ColumnDefinitions="8*,2*"
-							ColumnSpacing="8">
-							<Label FontAttributes="Bold" Text="Склад" />
-							<Label
-								Grid.Column="1"
-								FontAttributes="Bold"
-								HorizontalTextAlignment="End"
-								Text="Доступно" />
-						</Grid>
-						<CollectionView
-							Grid.Row="2"
-							ItemsSource="{Binding Warehouses}"
-							SelectionMode="None">
-							<CollectionView.ItemTemplate>
-								<DataTemplate x:DataType="view_model:ProductDetailsPageViewModel+AvailabilityViewModel">
-									<Grid
-										Padding="0,6"
-										ColumnDefinitions="8*,2*"
-										ColumnSpacing="8">
-										<Label Text="{Binding WarehouseName}" />
-										<Label
-											Grid.Column="1"
-											HorizontalTextAlignment="End"
-											Text="{Binding Available}" />
-									</Grid>
-								</DataTemplate>
-							</CollectionView.ItemTemplate>
-						</CollectionView>
-					</Grid>
-				</Border>
+					FontAttributes="Bold"
+					Text="Себестоимость:" />
+				<Label
+					Grid.Row="3"
+					Grid.Column="1"
+					Text="{Binding TotalCost}" />
+
+				<Label
+					Grid.Row="4"
+					FontAttributes="Bold"
+					Text="Версия: " />
+				<Label
+					Grid.Row="4"
+					Grid.Column="1"
+					Text="{Binding Version}" />
+
+				<Label
+					Grid.Row="5"
+					FontAttributes="Bold"
+					Text="Статус" />
+				<Label
+					Grid.Row="5"
+					Grid.Column="1"
+					Text="{Binding Status}" />
 			</Grid>
-		</ScrollView>
-	</Grid>
+
+			<Grid
+				Grid.Row="2"
+				ColumnDefinitions="*,Auto,Auto"
+				ColumnSpacing="8">
+				<Button
+					Grid.Column="1"
+					Command="{Binding AddImageCommand}"
+					Text="+">
+					<Button.Triggers>
+						<DataTrigger
+							Binding="{Binding Images.Count}}"
+							TargetType="Button"
+							Value="0">
+							<Setter Property="Text" Value="+ Изображение" />
+						</DataTrigger>
+					</Button.Triggers>
+				</Button>
+				<Button
+					Grid.Column="2"
+					Command="{Binding DeleteImageCommand}"
+					CommandParameter="{Binding SelectedImage}"
+					IsEnabled="{Binding IsSelected}"
+					IsVisible="{Binding IsSelected}"
+					Text="-" />
+			</Grid>
+
+			<Grid
+				Grid.Row="3"
+				RowDefinitions="Auto,Auto"
+				RowSpacing="12">
+
+				<CollectionView
+					x:Name="ImageList"
+					ItemsLayout="HorizontalList"
+					ItemsSource="{Binding Images}"
+					SelectedItem="{Binding SelectedImage}"
+					SelectionMode="Single">
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="view_model:ProductDetailsPageViewModel+ImageItemViewModel">
+							<Border
+								Padding="0"
+								BackgroundColor="Transparent"
+								StrokeShape="rectangle">
+								<Image
+									Aspect="AspectFill"
+									HeightRequest="120"
+									Source="{Binding Source}"
+									WidthRequest="120" />
+							</Border>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+
+				<HorizontalStackLayout Grid.Row="1" Spacing="8">
+					<Button Command="{Binding OpenSpecificationCommand}" Text="Спецификаця" />
+					<Button Command="{Binding OpenCostsCommand}" Text="Затраты" />
+					<Button Command="{Binding OpenStocksCommand}" Text="Остатки" />
+				</HorizontalStackLayout>
+			</Grid>
+		</Grid>
+	</ScrollView>
 </ContentPage>
 

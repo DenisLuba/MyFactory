@@ -30,10 +30,12 @@ using MyFactory.MauiClient.Services.Materials;
 using MyFactory.MauiClient.Services.MaterialTypes;
 using MyFactory.MauiClient.Services.PayrollRules;
 using MyFactory.MauiClient.Services.Positions;
+using MyFactory.MauiClient.Services.Printing;
 using MyFactory.MauiClient.Services.ProductionOrders;
 using MyFactory.MauiClient.Services.Products;
 using MyFactory.MauiClient.Services.Reports;
 using MyFactory.MauiClient.Services.SalesOrders;
+using MyFactory.MauiClient.Services.SavingFile;
 using MyFactory.MauiClient.Services.Suppliers;
 using MyFactory.MauiClient.Services.Units;
 using MyFactory.MauiClient.Services.Users;
@@ -135,6 +137,12 @@ public static class MauiProgram
         builder.Services.AddSingleton<IUnitsService, UnitsService>();
         builder.Services.AddSingleton<IUsersService, UsersService>();
         builder.Services.AddSingleton<IWarehousesService, WarehousesService>();
+        builder.Services.AddSingleton<ISaveFileService, SaveFileService>();
+#if WINDOWS
+        builder.Services.AddSingleton<IPrintService, PrintService>(); // Windows printable
+#else
+        builder.Services.AddSingleton<IPrintService, PrintService>(); // or a stub that throws/notifies
+#endif
 
         return builder;
     }
@@ -185,6 +193,9 @@ public static class MauiProgram
         builder.Services.AddTransient<ProductionOrdersListPageViewModel>();
         builder.Services.AddTransient<ProductDetailsPageViewModel>();
         builder.Services.AddTransient<ProductEditPageViewModel>();
+        builder.Services.AddTransient<ProductSpecificationPageViewModel>();
+        builder.Services.AddTransient<ProductCostsPageViewModel>();
+        builder.Services.AddTransient<ProductStocksPageViewModel>();
         builder.Services.AddTransient<ProductsListPageViewModel>();
         builder.Services.AddTransient<RolesPageViewModel>();
         builder.Services.AddTransient<UserDetailsPageViewModel>();
@@ -242,6 +253,9 @@ public static class MauiProgram
         builder.Services.AddTransient<ProductionOrdersListPage>();
         builder.Services.AddTransient<ProductDetailsPage>();
         builder.Services.AddTransient<ProductEditPage>();
+        builder.Services.AddTransient<ProductSpecificationPage>();
+        builder.Services.AddTransient<ProductCostsPage>();
+        builder.Services.AddTransient<ProductStocksPage>();
         builder.Services.AddTransient<ProductsListPage>();
         builder.Services.AddTransient<RolesPage>();
         builder.Services.AddTransient<UserDetailsPage>();
