@@ -28,7 +28,7 @@
 				Grid.Row="1"
 				ColumnDefinitions="Auto,*"
 				ColumnSpacing="12"
-				RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+				RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
 				RowSpacing="6">
 				<Label
 					FontAttributes="Bold"
@@ -49,8 +49,9 @@
 				<Picker
 					Grid.Row="1"
 					Grid.Column="1"
-					ItemsSource="{Binding Departments}"
-					SelectedItem="{Binding Department}" />
+				ItemsSource="{Binding Departments}"
+				ItemDisplayBinding="{Binding Name}"
+				SelectedItem="{Binding SelectedDepartment}" />
 
 				<Label
 					Grid.Row="2"
@@ -61,8 +62,9 @@
 				<Picker
 					Grid.Row="2"
 					Grid.Column="1"
-					ItemsSource="{Binding Positions}"
-					SelectedItem="{Binding Position}" />
+				ItemsSource="{Binding Positions}"
+				ItemDisplayBinding="{Binding Name}"
+				SelectedItem="{Binding SelectedPosition}" />
 
 				<Label
 					Grid.Row="3"
@@ -104,10 +106,22 @@
 					Grid.Row="6"
 					FontAttributes="Bold"
 					HorizontalTextAlignment="End"
-					Text="Процент за переработку:"
+					Text="Ставка в час"
 					VerticalTextAlignment="Center" />
 				<Entry
 					Grid.Row="6"
+					Grid.Column="1"
+					Keyboard="Numeric"
+					Text="{Binding RatePerHour}" />
+
+				<Label
+					Grid.Row="7"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="Процент за переработку:"
+					VerticalTextAlignment="Center" />
+				<Entry
+					Grid.Row="7"
 					Grid.Column="1"
 					Keyboard="Numeric"
 					Text="{Binding PremiumPercent}" />

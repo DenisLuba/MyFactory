@@ -177,7 +177,7 @@ public class EmployeeEntity : ActivatableEntity
     {
         Guard.AgainstNullOrWhiteSpace(fullName, nameof(fullName));
         Guard.AgainstEmptyGuid(positionId, nameof(positionId));
-        Guard.AgainstNonPositive(grade, nameof(grade));
+        Guard.AgainstNegative(grade, nameof(grade));
         Guard.AgainstNegative(ratePerNormHour, nameof(ratePerNormHour));
         if (premiumPercent.HasValue)
             Guard.AgainstNegative(premiumPercent.Value, nameof(premiumPercent));
@@ -188,21 +188,22 @@ public class EmployeeEntity : ActivatableEntity
         Grade = grade;
         RatePerNormHour = ratePerNormHour;
         PremiumPercent = premiumPercent;
-        HiredAt = hiredAt;
+        HiredAt = NormalizeToUtc(hiredAt);
     }
 
     public void Fire(DateTime firedAt)
     {
         Guard.AgainstDefaultDate(firedAt, nameof(firedAt));
-        FiredAt = firedAt;
+        FiredAt = NormalizeToUtc(firedAt);
         IsActive = false;
         Touch();
     }
+
     public void Rehire(DateTime hiredAt)
     {
         Guard.AgainstDefaultDate(hiredAt, nameof(hiredAt));
         FiredAt = null;
-        HiredAt = hiredAt;
+        HiredAt = NormalizeToUtc(hiredAt);
         IsActive = true;
         Touch();
     }
@@ -217,7 +218,7 @@ public class EmployeeEntity : ActivatableEntity
     {
         Guard.AgainstNullOrWhiteSpace(fullName, nameof(fullName));
         Guard.AgainstEmptyGuid(positionId, nameof(positionId));
-        Guard.AgainstNonPositive(grade, nameof(grade));
+        Guard.AgainstNegative(grade, nameof(grade));
         Guard.AgainstNegative(ratePerNormHour, nameof(ratePerNormHour));
         if (premiumPercent.HasValue)
             Guard.AgainstNegative(premiumPercent.Value, nameof(premiumPercent));
@@ -228,8 +229,16 @@ public class EmployeeEntity : ActivatableEntity
         Grade = grade;
         RatePerNormHour = ratePerNormHour;
         PremiumPercent = premiumPercent;
-        HiredAt = hiredAt;
+        HiredAt = NormalizeToUtc(hiredAt);
 
         Touch();
     }
+
+    private static DateTime NormalizeToUtc(DateTime value) =>
+        value.Kind switch
+        {
+            DateTimeKind.Utc => value,
+            DateTimeKind.Local => value.ToUniversalTime(),
+            _ => DateTime.SpecifyKind(value, DateTimeKind.Utc)
+        };
 }

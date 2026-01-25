@@ -15,7 +15,7 @@ public sealed class CreateEmployeeCommandValidator
             .NotEmpty();
 
         RuleFor(x => x.Grade)
-            .GreaterThan(0);
+            .GreaterThanOrEqualTo(0);
 
         RuleFor(x => x.RatePerNormHour)
             .GreaterThanOrEqualTo(0);
