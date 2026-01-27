@@ -19,62 +19,87 @@
 				<Button
 					Grid.Column="1"
 					Command="{Binding DeleteOrderCommand}"
+					IsEnabled="{Binding IsEditMode}"
+					IsVisible="{Binding IsEditMode}"
 					Text="Удалить заказ" />
 				<Button
 					Grid.Column="2"
 					Command="{Binding CompleteCommand}"
+					IsEnabled="{Binding IsEditMode}"
+					IsVisible="{Binding IsEditMode}"
 					Text="Завершить заказ" />
 			</Grid>
 			<Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
 				<Button
 					Grid.Column="1"
+					Margin="0,8"
 					Command="{Binding AddItemCommand}"
+					IsEnabled="{Binding IsEditMode}"
+					IsVisible="{Binding IsEditMode}"
 					Text="+" />
 				<Button
 					Grid.Column="2"
+					Margin="0,8"
 					Command="{Binding RemoveSelectedCommand}"
-					IsEnabled="{Binding HasSelectedItems}"
-					IsVisible="{Binding HasSelectedItems}"
+					IsEnabled="{Binding HasSelectedItemsForDelete}"
+					IsVisible="{Binding HasSelectedItemsForDelete}"
 					Text="-" />
 			</Grid>
 		</VerticalStackLayout>
 
-		<Border Grid.Row="1" VerticalOptions="Fill">
-			<Grid RowDefinitions="Auto,*" RowSpacing="8">
-				<Grid
-					Padding="0,4"
-					ColumnDefinitions="2*,1.2*,1.6*,1*,1*"
-					ColumnSpacing="8">
-					<Label FontAttributes="Bold" Text="Поставщик" />
-					<Label
-						Grid.Column="1"
-						FontAttributes="Bold"
-						Text="Тип" />
-					<Label
-						Grid.Column="2"
-						FontAttributes="Bold"
-						Text="Материал" />
-					<Label
-						Grid.Column="3"
-						FontAttributes="Bold"
-						Text="Количество" />
-					<Label
-						Grid.Column="4"
-						FontAttributes="Bold"
-						HorizontalTextAlignment="End"
-						Text="Цена" />
-				</Grid>
+		<Grid
+			Grid.Row="1"
+			RowDefinitions="Auto,*"
+			RowSpacing="8">
+			<Grid
+				Padding="80,0,32,0"
+				ColumnDefinitions="2*,1.2*,1.6*,1*,1*"
+				ColumnSpacing="8">
+				<Label FontAttributes="Bold" Text="Поставщик" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					Text="Тип" />
+				<Label
+					Grid.Column="2"
+					FontAttributes="Bold"
+					Text="Материал" />
+				<Label
+					Grid.Column="3"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="Количество" />
+				<Label
+					Grid.Column="4"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="Цена" />
+			</Grid>
 
+			<Border Grid.Row="1">
 				<CollectionView
 					x:Name="SupplierOrderItemsCollection"
 					Grid.Row="1"
-					ItemsSource="{Binding Items}"
-					SelectedItems="{Binding SelectedItems, Mode=TwoWay}"
-					SelectionMode="Multiple">
+					ItemsSource="{Binding Items}">
+					<CollectionView.Triggers>
+						<DataTrigger
+							Binding="{Binding IsEditMode}"
+							TargetType="CollectionView"
+							Value="True">
+							<Setter Property="SelectionMode" Value="Multiple" />
+							<Setter Property="SelectedItems" Value="{Binding SelectedItems, Mode=TwoWay}" />
+						</DataTrigger>
+						<DataTrigger
+							Binding="{Binding IsDetailsMode}"
+							TargetType="CollectionView"
+							Value="True">
+							<Setter Property="SelectionMode" Value="None" />
+						</DataTrigger>
+					</CollectionView.Triggers>
 					<CollectionView.ItemTemplate>
 						<DataTemplate x:DataType="view_model:SupplierOrderUpdatePageViewModel+OrderItemViewModel">
 							<Grid
-								Padding="32,0,6,0"
+								Padding="32,0,16,0"
 								ColumnDefinitions="2*,1.2*,1.6*,1*,1*"
 								ColumnSpacing="8"
 								Style="{StaticResource SelectableItemGridStyle}">
@@ -82,35 +107,70 @@
 									FontAttributes="Italic"
 									Text="{Binding Supplier.Name}"
 									VerticalTextAlignment="Center" />
+
 								<Label
 									Grid.Column="1"
 									FontAttributes="Italic"
+									IsVisible="{Binding BindingContext.IsDetailsMode, Source={x:Reference SupplierOrderItemsCollection}}"
 									Text="{Binding MaterialType}"
 									VerticalTextAlignment="Center" />
+								<Picker
+									Grid.Column="1"
+									IsVisible="{Binding BindingContext.IsEditMode, Source={x:Reference SupplierOrderItemsCollection}}"
+									ItemsSource="{Binding BindingContext.MaterialTypeOptions, Source={x:Reference Name=SupplierOrderItemsCollection}}"
+									SelectedItem="{Binding MaterialType}" />
+
 								<Label
 									Grid.Column="2"
 									FontAttributes="Italic"
+									IsVisible="{Binding BindingContext.IsDetailsMode, Source={x:Reference SupplierOrderItemsCollection}}"
 									Text="{Binding Material.Name}"
+									VerticalTextAlignment="Center" />
+								<Picker
+									Grid.Column="2"
+									IsVisible="{Binding BindingContext.IsEditMode, Source={x:Reference SupplierOrderItemsCollection}}"
+									ItemDisplayBinding="{Binding Name}"
+									ItemsSource="{Binding BindingContext.MaterialOptions, Source={x:Reference Name=SupplierOrderItemsCollection}}"
+									SelectedItem="{Binding Material}" />
+
+								<Label
+									Grid.Column="3"
+									FontAttributes="Italic"
+									HorizontalTextAlignment="End"
+									IsVisible="{Binding BindingContext.IsDetailsMode, Source={x:Reference SupplierOrderItemsCollection}}"
+									Text="{Binding Qty}"
 									VerticalTextAlignment="Center" />
 								<Entry
 									Grid.Column="3"
+									HorizontalTextAlignment="End"
+									IsVisible="{Binding BindingContext.IsEditMode, Source={x:Reference SupplierOrderItemsCollection}}"
 									Keyboard="Numeric"
 									Text="{Binding Qty}" />
+
+								<Label
+									Grid.Column="4"
+									FontAttributes="Italic"
+									HorizontalTextAlignment="End"
+									IsVisible="{Binding BindingContext.IsDetailsMode, Source={x:Reference SupplierOrderItemsCollection}}"
+									Text="{Binding Price}"
+									VerticalTextAlignment="Center" />
 								<Entry
 									Grid.Column="4"
 									HorizontalTextAlignment="End"
+									IsVisible="{Binding BindingContext.IsEditMode, Source={x:Reference SupplierOrderItemsCollection}}"
 									Keyboard="Numeric"
 									Text="{Binding Price}" />
 							</Grid>
 						</DataTemplate>
 					</CollectionView.ItemTemplate>
 				</CollectionView>
-			</Grid>
-		</Border>
+			</Border>
+		</Grid>
+
 
 		<HorizontalStackLayout Grid.Row="2" Spacing="8">
 			<Button Command="{Binding SaveCommand}" Text="Сохранить" />
-			<Button Command="{Binding PrintCommand}" Text="Печать" />
+			<Button Command="{Binding SaveFileCommand}" Text="Сохранить файл" />
 			<Button Command="{Binding BackCommand}" Text="Назад" />
 		</HorizontalStackLayout>
 	</Grid>

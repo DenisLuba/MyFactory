@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using MyFactory.MauiClient.Models.Materials;
 using MyFactory.MauiClient.Models.Suppliers;
 using MyFactory.MauiClient.Models.Units;
+using MyFactory.MauiClient.Pages.MaterialsAndSuppliers.SupplierOrders;
 using MyFactory.MauiClient.Services.Materials;
 using MyFactory.MauiClient.Services.MaterialTypes;
 using MyFactory.MauiClient.Services.Suppliers;
@@ -70,12 +71,11 @@ public partial class MaterialDetailsEditPageViewModel : ObservableObject
         _suppliersService = suppliersService;
         _materialTypesService = materialTypesService;
         _unitsService = unitsService;
-        _ = LoadAsync();
     }
 
     partial void OnMaterialIdChanged(Guid? value)
     {
-        _ = LoadAsync();
+        if (!IsBusy) _ = LoadAsync();
     }
 
     partial void OnMaterialIdParameterChanged(string? value)
@@ -114,7 +114,7 @@ public partial class MaterialDetailsEditPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
             return;
@@ -193,13 +193,9 @@ public partial class MaterialDetailsEditPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private Task AddPurchaseRowAsync()
+    private async Task AddPurchaseRowAsync()
     {
-        EditablePurchaseHistory.Add(new EditablePurchaseItemViewModel(_supplierOptions)
-        {
-            PurchaseDate = DateTime.Now
-        });
-        return Task.CompletedTask;
+        await Shell.Current.GoToAsync(nameof(SupplierOrderCreatePage));
     }
 
     [RelayCommand]

@@ -15,7 +15,7 @@ public partial class SupplierOrderUpdatePage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        if (_viewModel is SupplierOrderUpdatePageViewModel vm)
+        if (_viewModel is SupplierOrderUpdatePageViewModel vm && !vm.IsBusy)
         {
             await vm.LoadAsync();
         }

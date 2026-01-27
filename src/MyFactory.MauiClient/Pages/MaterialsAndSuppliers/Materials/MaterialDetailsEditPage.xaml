@@ -54,49 +54,54 @@
 			<Button Command="{Binding CancelCommand}" Text="Отменить" />
 		</HorizontalStackLayout>
 
-		<Border
+
+
+		<Grid
 			Grid.Row="2"
-			Padding="8"
-			Stroke="LightGray"
-			StrokeThickness="1">
+			RowDefinitions="Auto,*"
+			RowSpacing="8">
 
-			<Grid RowDefinitions="Auto,*" RowSpacing="8">
+			<Grid Grid.Row="0">
+				<Label
+					FontAttributes="Bold"
+					FontSize="18"
+					Text="История закупок" />
+				<Button
+					Command="{Binding AddPurchaseRowCommand}"
+					HorizontalOptions="End"
+					Text="Добавить" />
+			</Grid>
 
-				<Grid Grid.Row="0">
-					<Label FontAttributes="Bold" Text="История закупок" />
-					<Button
-						Command="{Binding AddPurchaseRowCommand}"
-						HorizontalOptions="End"
-						Text="Добавить" />
+			<Grid
+				Grid.Row="1"
+				RowDefinitions="Auto,*"
+				RowSpacing="8">
+				<Grid
+					Padding="16"
+					ColumnDefinitions="*,120,80,120"
+					ColumnSpacing="8">
+
+					<Label FontAttributes="Bold" Text="Поставщик" />
+					<Label
+						Grid.Column="1"
+						FontAttributes="Bold"
+						HorizontalTextAlignment="End"
+						Text="Кол-во" />
+					<Label
+						Grid.Column="2"
+						FontAttributes="Bold"
+						HorizontalTextAlignment="End"
+						Text="Цена" />
+					<Label
+						Grid.Column="3"
+						Margin="0,0,16,0"
+						FontAttributes="Bold"
+						HorizontalTextAlignment="End"
+						Text="Дата" />
 				</Grid>
-
-				<Grid Grid.Row="1" RowDefinitions="Auto,*" RowSpacing="8">
-					<Grid
-						Padding="0,4"
-						ColumnDefinitions="*,120,80,120"
-						ColumnSpacing="8">
-
-						<Label FontAttributes="Bold" Text="Поставщик" />
-						<Label
-							Grid.Column="1"
-							FontAttributes="Bold"
-							HorizontalTextAlignment="End"
-							Text="Кол-во" />
-						<Label
-							Grid.Column="2"
-							FontAttributes="Bold"
-							HorizontalTextAlignment="End"
-							Text="Цена" />
-						<Label
-							Grid.Column="3"
-							FontAttributes="Bold"
-							HorizontalTextAlignment="End"
-							Text="Дата" />
-					</Grid>
-
+				<Border Grid.Row="1">
 					<CollectionView
 						x:Name="PurchaseHistoryEditCollection"
-						Grid.Row="1"
 						ItemsSource="{Binding EditablePurchaseHistory}"
 						SelectionMode="None">
 
@@ -133,17 +138,16 @@
 										Text="{Binding UnitPrice}" />
 									<DatePicker
 										Grid.Column="3"
+										Margin="0,0,8,0"
 										Date="{Binding PurchaseDate}"
 										HorizontalOptions="End" />
-							</Grid>
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
+								</Grid>
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
 					</CollectionView>
-				</Grid>
+				</Border>
 			</Grid>
-		</Border>
-
+		</Grid>
 	</Grid>
-
 </ContentPage>
 

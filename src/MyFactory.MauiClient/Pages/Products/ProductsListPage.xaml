@@ -40,7 +40,7 @@
 				Text="Статус" />
 		</Grid>
 
-		<Border Grid.Row="2">	
+		<Border Grid.Row="2">
 			<CollectionView
 				x:Name="ProductsCollection"
 				Grid.Row="1"

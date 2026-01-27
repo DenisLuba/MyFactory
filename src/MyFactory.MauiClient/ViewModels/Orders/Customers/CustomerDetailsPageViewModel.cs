@@ -9,8 +9,7 @@ using MyFactory.MauiClient.Services.Customers;
 
 namespace MyFactory.MauiClient.ViewModels.Orders.Customers;
 
-[QueryProperty(nameof(CustomerIdParameter), "CustomerId")]
-public partial class CustomerDetailsPageViewModel : ObservableObject
+public partial class CustomerDetailsPageViewModel : ObservableObject, IQueryAttributable
 {
     private readonly ICustomersService _customersService;
 
@@ -19,6 +18,9 @@ public partial class CustomerDetailsPageViewModel : ObservableObject
 
     [ObservableProperty]
     private string? customerIdParameter;
+
+    [ObservableProperty]
+    private bool isEditMode;
 
     [ObservableProperty]
     private bool isBusy;
@@ -38,17 +40,50 @@ public partial class CustomerDetailsPageViewModel : ObservableObject
     [ObservableProperty]
     private string? address;
 
+    public bool IsReadOnly => !IsEditMode;
+
+    public bool IsReadyToSave => IsEditMode && !string.IsNullOrWhiteSpace(Name);
+
     public ObservableCollection<CustomerOrderItemViewModel> Orders { get; } = new();
 
     public CustomerDetailsPageViewModel(ICustomersService customersService)
     {
         _customersService = customersService;
-        _ = LoadAsync();
     }
 
     partial void OnCustomerIdChanged(Guid? value)
     {
-        _ = LoadAsync();
+        if (!IsBusy)
+            _ = LoadAsync();
+    }
+
+    partial void OnNameChanged(string value)
+    {
+        if (IsEditMode)
+            OnPropertyChanged(nameof(IsReadyToSave));
+    }
+
+    partial void OnPhoneChanged(string? value)
+    {
+        if (IsEditMode)
+            OnPropertyChanged(nameof(IsReadyToSave));
+    }
+
+    partial void OnEmailChanged(string? value)
+    {
+        if (IsEditMode)
+            OnPropertyChanged(nameof(IsReadyToSave));
+    }
+
+    partial void OnAddressChanged(string? value)
+    {
+        if (IsEditMode)
+            OnPropertyChanged(nameof(IsReadyToSave));
+    }
+
+    partial void OnIsEditModeChanged(bool value)
+    {
+        OnPropertyChanged(nameof(IsReadOnly));
     }
 
     partial void OnCustomerIdParameterChanged(string? value)
@@ -56,8 +91,26 @@ public partial class CustomerDetailsPageViewModel : ObservableObject
         CustomerId = Guid.TryParse(value, out var id) ? id : null;
     }
 
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.TryGetValue("CustomerId", out var customerIdObj) && customerIdObj is string customerIdStr)
+        {
+            CustomerIdParameter = customerIdStr;
+        }
+
+        if (query.TryGetValue("IsEditMode", out var isEditModeObj) && isEditModeObj is string isEditModeStr)
+        {
+            IsEditMode = bool.TryParse(isEditModeStr, out var isEdit) && isEdit;
+        }
+
+        if (isEditModeObj is bool isEditModeBool)
+        {
+            IsEditMode = isEditModeBool;
+        }
+    }
+
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
             return;
@@ -88,12 +141,75 @@ public partial class CustomerDetailsPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка!", ex.Message, "OK");
         }
         finally
         {
             IsBusy = false;
         }
+    }
+
+    [RelayCommand]
+    private async Task SaveAsync()
+    {
+        if (IsBusy)
+            return;
+
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+            await Shell.Current.DisplayAlertAsync("Ошибка!", "Имя клиента не может быть пустым.", "OK");
+            return;
+        }
+
+        try
+        {
+            IsBusy = true;
+            ErrorMessage = null;
+
+            if (IsEditMode && CustomerId is not null)
+            {
+                var request = new UpdateCustomerRequest
+                (
+                    Name: Name,
+                    Phone: Phone,
+                    Email: Email,
+                    Address: Address
+                );
+
+                await _customersService.UpdateAsync(CustomerId.Value, request);
+                await Shell.Current.DisplayAlertAsync("Успех!", "Данные клиента успешно обновлены.", "OK");
+                await Shell.Current.GoToAsync("..");
+            }
+            else if (IsEditMode && CustomerId is null)
+            {
+                var request = new CreateCustomerRequest
+                (
+                    Name: Name,
+                    Phone: Phone,
+                    Email: Email,
+                    Address: Address
+                );
+
+                await _customersService.CreateAsync(request);
+                await Shell.Current.DisplayAlertAsync("Успех!", "Клиент успешно создан.", "OK");
+                await Shell.Current.GoToAsync("..");
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            await Shell.Current.DisplayAlertAsync("Ошибка!", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task EditAsync()
+    {
+        IsEditMode = true;
     }
 
     [RelayCommand]
@@ -118,4 +234,3 @@ public partial class CustomerDetailsPageViewModel : ObservableObject
         }
     }
 }
-

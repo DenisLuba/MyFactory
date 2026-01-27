@@ -4,7 +4,7 @@ namespace MyFactory.MauiClient.Pages.MaterialsAndSuppliers.SupplierOrders;
 
 public partial class SupplierOrderCreatePage : ContentPage
 {
-    private SupplierOrderCreatePageViewModel _viewModel;
+    private readonly SupplierOrderCreatePageViewModel _viewModel;
 
     public SupplierOrderCreatePage(SupplierOrderCreatePageViewModel viewModel)
     {

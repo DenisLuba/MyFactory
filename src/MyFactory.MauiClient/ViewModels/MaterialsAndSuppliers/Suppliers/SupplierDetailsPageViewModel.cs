@@ -56,23 +56,34 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
     [ObservableProperty]
     private SupplierPurchaseHistoryItemViewModel? selectedPurchase;
 
-    public bool HasSelection => SelectedPurchase is not null;
+    public bool HasSelection => SelectedPurchase != null 
+        && (SelectedPurchase.Status == PurchaseOrderStatus.New || SelectedPurchase.Status == PurchaseOrderStatus.Confirmed);
+
+    public bool HasSelectionForDetails => SelectedPurchase != null && !HasSelection;
 
     public ObservableCollection<SupplierPurchaseHistoryItemViewModel> PurchaseHistory { get; } = new();
 
     private List<SupplierPurchaseHistoryItemViewModel> _allPurchases = new();
+
+    public static readonly string[] StatusList =
+    [
+        "Все",
+        "Новый",
+        "Подтвержден",
+        "Получен",
+        "Отменен"
+    ];
 
     public SupplierDetailsPageViewModel(ISuppliersService suppliersService, IMaterialPurchaseOrdersService materialPurchaseOrdersService)
     {
         _suppliersService = suppliersService;
         _materialPurchaseOrdersService = materialPurchaseOrdersService;
         Contacts = string.Empty;
-        StatusOptions.Add("Все");
-        StatusOptions.Add("Новый");
-        StatusOptions.Add("Подтвержден");
-        StatusOptions.Add("Получен");
-        StatusOptions.Add("Отменен");
-        _ = LoadAsync();
+        StatusOptions.Add(StatusList[0]);
+        StatusOptions.Add(StatusList[1]);
+        StatusOptions.Add(StatusList[2]);
+        StatusOptions.Add(StatusList[3]);
+        StatusOptions.Add(StatusList[4]);
     }
 
     partial void OnSupplierIdChanged(Guid? value)
@@ -88,6 +99,7 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
     partial void OnSelectedPurchaseChanged(SupplierPurchaseHistoryItemViewModel? value)
     {
         OnPropertyChanged(nameof(HasSelection));
+        OnPropertyChanged(nameof(HasSelectionForDetails));
     }
 
     partial void OnMaterialTypeFilterChanged(string? value) => ApplyFilter();
@@ -291,6 +303,7 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
         public decimal Qty { get; }
         public decimal UnitPrice { get; }
         public DateTime Date { get; }
+        public PurchaseOrderStatus Status { get; }
         public string StatusText { get; }
 
         public SupplierPurchaseHistoryItemViewModel(SupplierPurchaseHistoryResponse source)
@@ -301,12 +314,14 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
             Qty = source.Qty;
             UnitPrice = source.UnitPrice;
             Date = source.Date;
+            Status = source.Status;
+
             StatusText = source.Status switch
             {
-                PurchaseOrderStatus.New => "Новый",
-                PurchaseOrderStatus.Confirmed => "Подтвержден",
-                PurchaseOrderStatus.Received => "Получен",
-                PurchaseOrderStatus.Cancelled => "Отменен",
+                PurchaseOrderStatus.New => StatusList[1],
+                PurchaseOrderStatus.Confirmed => StatusList[2],
+                PurchaseOrderStatus.Received => StatusList[3],
+                PurchaseOrderStatus.Cancelled => StatusList[4],
                 _ => source.Status.ToString()
             };
         }

@@ -119,10 +119,10 @@
 					SelectionMode="Single">
 					<CollectionView.ItemTemplate>
 						<DataTemplate x:DataType="view_model:ProductDetailsPageViewModel+ImageItemViewModel">
-							<Border
-								Padding="0"
-								BackgroundColor="Transparent"
-								StrokeShape="rectangle">
+							<Border Padding="0" BackgroundColor="Transparent">
+								<Border.StrokeShape>
+									<RoundRectangle CornerRadius="0" />
+								</Border.StrokeShape>
 								<Image
 									Aspect="AspectFill"
 									HeightRequest="120"

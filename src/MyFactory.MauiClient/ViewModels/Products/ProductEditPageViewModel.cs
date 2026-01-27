@@ -284,9 +284,9 @@ public partial class ProductEditPageViewModel : ObservableObject
         try
         {
 
-            decimal? plan = string.IsNullOrWhiteSpace(PlanPerHour) ? 0m : PlanPerHour.StringToDecimal();
+            decimal? plan = string.IsNullOrWhiteSpace(PlanPerHour) ? null : PlanPerHour.StringToDecimal();
 
-            decimal? ver = string.IsNullOrWhiteSpace(Version) ? 0m : Version.StringToDecimal();
+            decimal? ver = string.IsNullOrWhiteSpace(Version) ? null : Version.StringToDecimal();
 
             IsBusy = true;
             ErrorMessage = null;
@@ -298,10 +298,8 @@ public partial class ProductEditPageViewModel : ObservableObject
                     Status: Status.StatusFromRus(),
                     PlanPerHour: plan,
                     Description: Description,
-                    Version: ver));
-
-                if (createResponse is null)
-                    throw new InvalidOperationException("Couldn't get a response from the server.");
+                    Version: ver)) 
+                    ?? throw new InvalidOperationException("Couldn't get a response from the server.");
 
                 ProductId = createResponse.Id;
             }

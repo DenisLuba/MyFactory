@@ -5,44 +5,47 @@
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Orders.Customers"
 	Title="Заказчики"
 	x:DataType="view_model:CustomersListPageViewModel">
-	<ScrollView>
-		<VerticalStackLayout Padding="16" Spacing="12">
-			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-				<Label
-					FontAttributes="Bold"
-					FontSize="18"
-					Text="Заказчики" />
-				<Button
-					Grid.Column="1"
-					Command="{Binding AddCommand}"
-					Text="+ Добавить" />
-			</Grid>
 
-			<Grid
-				Padding="0,4"
-				ColumnDefinitions="*,Auto,Auto,Auto"
-				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Название" />
-				<Label
-					Grid.Column="1"
-					FontAttributes="Bold"
-					Text="Телефон" />
-				<Label
-					Grid.Column="2"
-					FontAttributes="Bold"
-					Text="Email" />
-				<Label
-					Grid.Column="3"
-					FontAttributes="Bold"
-					Text="Адрес" />
-			</Grid>
-
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,Auto,*"
+		RowSpacing="12">
+		<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+			<Label
+				FontAttributes="Bold"
+				FontSize="18"
+				Text="Заказчики" />
+			<Button
+				Grid.Column="1"
+				Command="{Binding AddCommand}"
+				Text="+" />
+		</Grid>
+		<Grid
+			Grid.Row="1"
+			Padding="16"
+			ColumnDefinitions="3*,2*,2*,2*,1*"
+			ColumnSpacing="8">
+			<Label FontAttributes="Bold" Text="Название" />
+			<Label
+				Grid.Column="1"
+				FontAttributes="Bold"
+				Text="Телефон" />
+			<Label
+				Grid.Column="2"
+				FontAttributes="Bold"
+				Text="Email" />
+			<Label
+				Grid.Column="3"
+				FontAttributes="Bold"
+				Text="Адрес" />
+		</Grid>
+		<Border Grid.Row="2">
 			<CollectionView
 				x:Name="CustomersCollection"
 				ItemsSource="{Binding Customers}"
 				SelectionMode="None">
 				<CollectionView.ItemTemplate>
-					<DataTemplate>
+					<DataTemplate x:DataType="view_model:CustomersListPageViewModel+CustomerItemViewModel">
 						<SwipeView>
 							<SwipeView.RightItems>
 								<SwipeItems Mode="Reveal">
@@ -59,8 +62,7 @@
 								</SwipeItems>
 							</SwipeView.RightItems>
 							<Grid
-								Padding="0,8"
-								ColumnDefinitions="*,Auto,Auto,Auto"
+								ColumnDefinitions="3*,2*,2*,2*,1*"
 								ColumnSpacing="8"
 								Style="{StaticResource SelectableItemGridStyle}">
 								<Grid.GestureRecognizers>
@@ -70,12 +72,21 @@
 								<Label Grid.Column="1" Text="{Binding Phone}" />
 								<Label Grid.Column="2" Text="{Binding Email}" />
 								<Label Grid.Column="3" Text="{Binding Address}" />
+								<Label
+									Grid.Column="4"
+									Padding="0,0,12,0"
+									HorizontalTextAlignment="End"
+									Text="Удалить"
+									TextColor="Tomato">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=CustomersCollection}}" CommandParameter="{Binding .}" />
+									</Label.GestureRecognizers>
+								</Label>
 							</Grid>
 						</SwipeView>
 					</DataTemplate>
 				</CollectionView.ItemTemplate>
 			</CollectionView>
-		</VerticalStackLayout>
-	</ScrollView>
+		</Border>
+	</Grid>
 </ContentPage>
-

@@ -1,15 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
 using MyFactory.MauiClient.Models.MaterialPurchaseOrders;
 using MyFactory.MauiClient.Models.Materials;
 using MyFactory.MauiClient.Models.Suppliers;
 using MyFactory.MauiClient.Services.MaterialPurchaseOrders;
 using MyFactory.MauiClient.Services.Materials;
+using MyFactory.MauiClient.Services.Printing;
+using MyFactory.MauiClient.Services.SavingFile;
 using MyFactory.MauiClient.Services.Suppliers;
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Text;
 
 namespace MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.SupplierOrders;
 
@@ -21,6 +24,8 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
     private readonly IMaterialPurchaseOrdersService _ordersService;
     private readonly ISuppliersService _suppliersService;
     private readonly IMaterialsService _materialsService;
+    private readonly ISaveFileService _saveFileService;
+    private readonly IPrintService _printService;
 
     [ObservableProperty]
     private Guid? supplierId;
@@ -49,6 +54,13 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
     [ObservableProperty]
     private bool hasSelectedItems;
 
+    public bool HasSelectedItemsForDelete => HasSelectedItems && IsEditMode;
+
+    [ObservableProperty]
+    private bool isEditMode;
+
+    public bool IsDetailsMode => !IsEditMode;
+
     [ObservableProperty]
     private ObservableCollection<object?> selectedItems = [];
 
@@ -63,13 +75,17 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
     public SupplierOrderUpdatePageViewModel(
         IMaterialPurchaseOrdersService ordersService,
         ISuppliersService suppliersService,
-        IMaterialsService materialsService)
+        IMaterialsService materialsService,
+        IPrintService printService,
+        ISaveFileService saveFileService)
     {
         _ordersService = ordersService;
         _suppliersService = suppliersService;
         _materialsService = materialsService;
+        _saveFileService = saveFileService;
+        _printService = printService;
+
         SubscribeSelectionCollection();
-        _ = LoadAsync();
     }
 
     private void SubscribeSelectionCollection()
@@ -89,6 +105,17 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
         if (value is not null)
             value.CollectionChanged += SelectedItemsCollectionChanged;
         HasSelectedItems = value?.Count > 0;
+    }
+
+    partial void OnHasSelectedItemsChanged(bool value)
+    {
+        OnPropertyChanged(nameof(HasSelectedItemsForDelete));
+    }
+
+    partial void OnIsEditModeChanged(bool value)
+    {
+        OnPropertyChanged(nameof(IsDetailsMode));
+        OnPropertyChanged(nameof(HasSelectedItemsForDelete));
     }
 
     partial void OnSupplierIdChanged(Guid? value)
@@ -171,6 +198,8 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
                 if (details is not null)
                 {
                     SupplierId = details.SupplierId;
+
+                    IsEditMode = details.Status is PurchaseOrderStatus.New or PurchaseOrderStatus.Confirmed;
 
                     foreach (var item in details.Items)
                     {
@@ -354,9 +383,77 @@ public partial class SupplierOrderUpdatePageViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task SaveFileAsync()
+    {
+        if (IsBusy)
+            return;
+
+        try
+        {
+            IsBusy = true;
+            ErrorMessage = null;
+
+            var content = BuildPrintableText();
+            await _saveFileService.SaveFileAsync("Заказ поставщику", content);
+            await Shell.Current.DisplayAlertAsync("Сохранено", "Файл заказа сохранён.", "OK");
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
     private async Task PrintAsync()
     {
-        await Shell.Current.DisplayAlertAsync("Печать", "Функция печати недоступна", "OK");
+        if (IsBusy) return;
+
+        try
+        {
+            IsBusy = true;
+            ErrorMessage = null;
+
+            var content = BuildPrintableText();
+            await _printService.PrintTextAsync("Заказ поставщику", content);
+        }
+        catch (PlatformNotSupportedException ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Печать", ex.Message, "Ok");
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            await Shell.Current.DisplayAlertAsync("Ошибка печати", ex.Message, "Ok");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private string BuildPrintableText()
+    {
+        var sb = new StringBuilder();
+        var supplierName = Items.FirstOrDefault()?.Supplier?.Name ?? "Поставщик не выбран.";
+        sb.AppendLine($"Поставщик: {supplierName}");
+        sb.AppendLine($"Дата: {DateTime.Now:G}");
+        sb.AppendLine(new string('-', 48));
+
+        foreach (var item in Items)
+        {
+            var name = item.Material?.Name ?? item.MaterialType ?? "Материал";
+            sb.AppendLine($"{name}");
+            sb.AppendLine($"    Количество: {item.Qty}");
+            sb.AppendLine($"    Цена: {item.Price}");
+            sb.AppendLine();
+        }
+
+        return sb.ToString();
     }
 
     [RelayCommand]

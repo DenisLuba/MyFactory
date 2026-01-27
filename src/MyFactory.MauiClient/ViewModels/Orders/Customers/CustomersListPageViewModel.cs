@@ -21,16 +21,15 @@ public partial class CustomersListPageViewModel : ObservableObject
     [ObservableProperty]
     private string? errorMessage;
 
-    public ObservableCollection<CustomerItemViewModel> Customers { get; } = new();
+    public ObservableCollection<CustomerItemViewModel> Customers { get; } = [];
 
     public CustomersListPageViewModel(ICustomersService customersService)
     {
         _customersService = customersService;
-        _ = LoadAsync();
     }
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
             return;
@@ -53,7 +52,7 @@ public partial class CustomersListPageViewModel : ObservableObject
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка!", ex.Message, "OK");
         }
         finally
         {
@@ -64,7 +63,10 @@ public partial class CustomersListPageViewModel : ObservableObject
     [RelayCommand]
     private async Task AddAsync()
     {
-        await Shell.Current.DisplayAlertAsync("Инфо", "Добавление клиента не реализовано", "OK");
+        await Shell.Current.GoToAsync(nameof(CustomerDetailsPage), new Dictionary<string, object>
+        {
+            { "IsEditMode", true }
+        });
     }
 
     [RelayCommand]
@@ -73,7 +75,11 @@ public partial class CustomersListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        await Shell.Current.DisplayAlertAsync("Инфо", "Редактирование клиента не реализовано", "OK");
+        await Shell.Current.GoToAsync(nameof(CustomerDetailsPage), new Dictionary<string, object>
+        {
+            { "CustomerId", item.Id.ToString() },
+            { "IsEditMode", true }
+        });
     }
 
     [RelayCommand]
@@ -82,7 +88,7 @@ public partial class CustomersListPageViewModel : ObservableObject
         if (item is null)
             return;
 
-        var confirm = await Shell.Current.DisplayAlertAsync("Удалить", $"Деактивировать клиента {item.Name}?", "Да", "Нет");
+        var confirm = await Shell.Current.DisplayAlertAsync("Внимание", $"Вы действительно хотите удалить {item.Name}?", "Да", "Нет");
         if (!confirm)
             return;
 
@@ -93,7 +99,7 @@ public partial class CustomersListPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            await Shell.Current.DisplayAlertAsync("Ошибка!", ex.Message, "OK");
         }
     }
 
@@ -105,7 +111,8 @@ public partial class CustomersListPageViewModel : ObservableObject
 
         var parameters = new Dictionary<string, object>
         {
-            { "CustomerId", item.Id.ToString() }
+            { "CustomerId", item.Id.ToString() },
+            { "IsEditMode", false }
         };
 
         await Shell.Current.GoToAsync(nameof(CustomerDetailsPage), parameters);
@@ -129,4 +136,3 @@ public partial class CustomersListPageViewModel : ObservableObject
         }
     }
 }
-

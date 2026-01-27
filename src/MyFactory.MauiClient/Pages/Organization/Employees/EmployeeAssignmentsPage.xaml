@@ -35,6 +35,7 @@
 				</Grid>
 
 				<CollectionView
+					x:Name="EmployeeAssignmentsCollectionView"
 					Grid.Row="1"
 					ItemsSource="{Binding CurrentTasks}"
 					SelectionMode="None">
@@ -45,7 +46,7 @@
 								ColumnDefinitions="4*,2*,2*,2*"
 								ColumnSpacing="8">
 								<Grid.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding BindingContext.OpenProductionOrderCommand, Source={RelativeSource AncestorType=CollectionView}}" CommandParameter="{Binding .}" />
+									<TapGestureRecognizer Command="{Binding BindingContext.OpenProductionOrderCommand, Source={x:Reference Name=EmployeeAssignmentsCollectionView}}" CommandParameter="{Binding .}" />
 								</Grid.GestureRecognizers>
 								<Label Text="{Binding ProductionOrder}" />
 								<Label Grid.Column="1" Text="{Binding Stage}" />
