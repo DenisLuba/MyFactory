@@ -14,13 +14,17 @@ public sealed class EmployeesService : IEmployeesService
         _httpClient = httpClient;
     }
 
-    public async Task<IReadOnlyList<EmployeeListItemResponse>?> GetListAsync(string? search = null, EmployeeSortBy sortBy = EmployeeSortBy.FullName, bool sortDesc = false)
+    public async Task<IReadOnlyList<EmployeeListItemResponse>?> GetListAsync(string? search = null, bool includeInactive = false, EmployeeSortBy sortBy = EmployeeSortBy.FullName, bool sortDesc = false)
     {
         var builder = new UriBuilder(new Uri(_httpClient.BaseAddress!, "api/employees"));
         var query = HttpUtility.ParseQueryString(string.Empty);
         if (!string.IsNullOrWhiteSpace(search))
         {
             query["search"] = search;
+        }
+        if (includeInactive)
+        {
+            query["includeInactive"] = "true";
         }
         if (sortBy != EmployeeSortBy.FullName)
         {

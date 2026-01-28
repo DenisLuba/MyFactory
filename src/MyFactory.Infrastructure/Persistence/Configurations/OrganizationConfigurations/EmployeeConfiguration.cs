@@ -17,11 +17,17 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<EmployeeEntity>
             .HasMaxLength(200);
 
         builder.Property(e => e.PositionId).IsRequired();
+        builder.Property(e => e.DepartmentId).IsRequired();
         builder.Property(e => e.Grade).IsRequired();
         builder.Property(e => e.RatePerNormHour).IsRequired().HasColumnType("numeric(18,2)");
         builder.Property(e => e.PremiumPercent).HasColumnType("numeric(18,2)");
         builder.Property(e => e.HiredAt).IsRequired();
         builder.Property(e => e.FiredAt);
+
+        builder.HasOne(e => e.Department)
+            .WithMany()
+            .HasForeignKey(e => e.DepartmentId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(e => e.ContactLinks)
             .WithOne()

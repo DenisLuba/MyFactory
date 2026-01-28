@@ -65,6 +65,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public DbSet<PositionEntity> Positions { get; set; } = default!;
     public DbSet<DepartmentEntity> Departments { get; set; } = default!;
+    public DbSet<DepartmentPositionEntity> DepartmentPositions { get; set; } = default!;
     public DbSet<TimesheetEntity> Timesheets { get; set; } = default!;
 
     public DbSet<PayrollAccrualEntity> PayrollAccruals { get; set; } = default!;

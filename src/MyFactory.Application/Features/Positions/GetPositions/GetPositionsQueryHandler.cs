@@ -21,16 +21,30 @@ public sealed class GetPositionsQueryHandler
     {
         var query =
             from p in _db.Positions.AsNoTracking()
+            from dp in p.DepartmentPositions
             join d in _db.Departments.AsNoTracking()
-                on p.DepartmentId equals d.Id
+                on dp.DepartmentId equals d.Id
             select new PositionListItemDto
             {
                 Id = p.Id,
                 Code = p.Code,
                 Name = p.Name,
+                DepartmentId = d.Id,
                 DepartmentName = d.Name,
                 IsActive = p.IsActive
             };
+
+        // Filter by IsActive if IncludeInactive is false
+        if (!request.IncludeInactive)
+        {
+            query = query.Where(x => x.IsActive);
+        }
+
+        // Optionally filter by DepartmentId if provided
+        if (request.DepartmentId.HasValue)
+        {
+            query = query.Where(x => x.DepartmentId == request.DepartmentId.Value);
+        }
 
         query = request.SortBy switch
         {

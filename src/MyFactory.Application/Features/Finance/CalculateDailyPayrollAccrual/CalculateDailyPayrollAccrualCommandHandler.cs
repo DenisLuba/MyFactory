@@ -81,10 +81,10 @@ public sealed class CalculateDailyPayrollAccrualCommandHandler
             //if (premiumPercent > maxPremiumApplied)
             //    maxPremiumApplied = premiumPercent;
 
-            premiumAmount += extra * employee.RatePerNormHour * premiumPercent / 100m;
+            premiumAmount += extra * (employee.RatePerNormHour ?? 0m) * premiumPercent / 100m;
         }
 
-        var baseAmount = hoursWorked * employee.RatePerNormHour;
+        var baseAmount = hoursWorked * (employee.RatePerNormHour ?? 0m);
         var totalAmount = baseAmount + premiumAmount;
 
         var existing =

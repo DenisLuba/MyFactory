@@ -8,6 +8,7 @@ public sealed class CreateEmployeeRequestExample : IExamplesProvider<CreateEmplo
     public CreateEmployeeRequest GetExamples() => new(
         FullName: "Иванов Иван Иванович",
         PositionId: Guid.Parse("pppppppp-pppp-pppp-pppp-pppppppp0001"),
+        DepartmentId: Guid.Parse("8c7f2e70-62f5-4e2d-9f0a-8a5a6a7bdede"),
         Grade: 3,
         RatePerNormHour: 200,
         PremiumPercent: 15,

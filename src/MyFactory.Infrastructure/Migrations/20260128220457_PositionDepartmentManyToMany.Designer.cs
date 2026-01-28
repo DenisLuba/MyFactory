@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyFactory.Infrastructure.Persistence;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyFactory.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260128220457_PositionDepartmentManyToMany")]
+    partial class PositionDepartmentManyToMany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1201,9 +1204,6 @@ namespace MyFactory.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("DepartmentId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime?>("FiredAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -1236,8 +1236,6 @@ namespace MyFactory.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("PositionId");
 
@@ -1278,6 +1276,9 @@ namespace MyFactory.Infrastructure.Migrations
                     b.Property<decimal?>("DefaultPremiumPercent")
                         .HasColumnType("numeric(18,2)");
 
+                    b.Property<Guid?>("DepartmentEntityId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
@@ -1297,6 +1298,8 @@ namespace MyFactory.Infrastructure.Migrations
 
                     b.HasIndex("Code")
                         .IsUnique();
+
+                    b.HasIndex("DepartmentEntityId");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -2278,21 +2281,20 @@ namespace MyFactory.Infrastructure.Migrations
 
             modelBuilder.Entity("MyFactory.Domain.Entities.Organization.EmployeeEntity", b =>
                 {
-                    b.HasOne("MyFactory.Domain.Entities.Organization.DepartmentEntity", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("MyFactory.Domain.Entities.Organization.PositionEntity", "Position")
                         .WithMany("Employees")
                         .HasForeignKey("PositionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Department");
-
                     b.Navigation("Position");
+                });
+
+            modelBuilder.Entity("MyFactory.Domain.Entities.Organization.PositionEntity", b =>
+                {
+                    b.HasOne("MyFactory.Domain.Entities.Organization.DepartmentEntity", null)
+                        .WithMany("Positions")
+                        .HasForeignKey("DepartmentEntityId");
                 });
 
             modelBuilder.Entity("MyFactory.Domain.Entities.Parties.ContactLinkEntity", b =>
@@ -2579,6 +2581,8 @@ namespace MyFactory.Infrastructure.Migrations
                     b.Navigation("DepartmentPositions");
 
                     b.Navigation("InventoryMovements");
+
+                    b.Navigation("Positions");
 
                     b.Navigation("ProductDepartmentCosts");
 

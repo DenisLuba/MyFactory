@@ -21,6 +21,9 @@ public partial class PositionsListPageViewModel : ObservableObject
     [ObservableProperty]
     private string? errorMessage;
 
+    [ObservableProperty]
+    private bool includeInactive = true;
+
     public ObservableCollection<PositionItemViewModel> Positions { get; } = [];
 
     public PositionsListPageViewModel(IPositionsService positionsService)
@@ -40,7 +43,7 @@ public partial class PositionsListPageViewModel : ObservableObject
             ErrorMessage = null;
             Positions.Clear();
 
-            var items = await _positionsService.GetListAsync();
+            var items = await _positionsService.GetListAsync(includeInactive: IncludeInactive);
             foreach (var pos in items ?? [])
             {
                 Positions.Add(new PositionItemViewModel(pos));
@@ -114,6 +117,14 @@ public partial class PositionsListPageViewModel : ObservableObject
         {
             await Shell.Current.DisplayAlertAsync("Ошибка!", ex.Message, "OK");
         }
+    }
+
+    [RelayCommand]
+    private async Task StatusSwitcherAsync()
+    {
+        IncludeInactive = !IncludeInactive;
+
+        await LoadAsync();
     }
 
     public sealed class PositionItemViewModel : ObservableObject

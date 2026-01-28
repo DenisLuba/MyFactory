@@ -22,7 +22,7 @@ public sealed class GetEmployeesQueryHandler
         var query =
             from e in _db.Employees.AsNoTracking()
             join p in _db.Positions.AsNoTracking() on e.PositionId equals p.Id
-            join d in _db.Departments.AsNoTracking() on p.DepartmentId equals d.Id
+            join d in _db.Departments.AsNoTracking() on e.DepartmentId equals d.Id
             select new
             {
                 e,
@@ -35,6 +35,11 @@ public sealed class GetEmployeesQueryHandler
             var search = request.Search.Trim();
             // query = query.Where(x => x.e.FullName.Contains(search));
             query = query.Where(x => EF.Functions.Like(x.e.FullName, $"%{search}%"));
+        }
+
+        if (!request.IncludeInactive)
+        {
+            query = query.Where(x => x.e.IsActive);
         }
 
         query = request.SortBy switch

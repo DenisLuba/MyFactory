@@ -34,7 +34,7 @@ public sealed class GetEmployeeDetailsQueryHandler
 
         var department = await _db.Departments
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == position.DepartmentId, cancellationToken)
+            .FirstOrDefaultAsync(x => x.Id == employee.DepartmentId, cancellationToken)
             ?? throw new NotFoundException("Department not found");
 
         var contacts =

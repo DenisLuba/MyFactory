@@ -21,8 +21,6 @@ public class PositionConfiguration : IEntityTypeConfiguration<PositionEntity>
 
         builder.Property(p => p.Description)
             .HasMaxLength(500);
-
-        builder.Property(p => p.DepartmentId).IsRequired();
         builder.Property(p => p.BaseNormPerHour).HasColumnType("numeric(18,2)");
         builder.Property(p => p.BaseRatePerNormHour).HasColumnType("numeric(18,2)");
         builder.Property(p => p.DefaultPremiumPercent).HasColumnType("numeric(18,2)");
@@ -33,6 +31,11 @@ public class PositionConfiguration : IEntityTypeConfiguration<PositionEntity>
 
         builder.HasIndex(p => p.Name).IsUnique();
         builder.HasIndex(p => p.Code).IsUnique();
+
+        builder.HasMany(p => p.DepartmentPositions)
+            .WithOne(dp => dp.Position)
+            .HasForeignKey(dp => dp.PositionId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(p => p.Employees)
             .WithOne(e => e.Position)

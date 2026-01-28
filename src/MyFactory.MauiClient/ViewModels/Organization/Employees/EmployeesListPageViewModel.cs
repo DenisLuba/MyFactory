@@ -19,6 +19,16 @@ public partial class EmployeesListPageViewModel : ObservableObject
     private string? searchText;
 
     [ObservableProperty]
+    private bool includeInactive = true;
+
+    [ObservableProperty]
+    private EmployeeSortBy sortBy = EmployeeSortBy.FullName;
+
+    [ObservableProperty]
+    private bool sortDesk = false;
+
+
+    [ObservableProperty]
     private bool isBusy;
 
     [ObservableProperty]
@@ -48,7 +58,7 @@ public partial class EmployeesListPageViewModel : ObservableObject
             ErrorMessage = null;
             Employees.Clear();
 
-            var items = await _employeesService.GetListAsync(SearchText);
+            var items = await _employeesService.GetListAsync(search: SearchText, includeInactive: IncludeInactive, sortBy: SortBy, sortDesc: SortDesk);
             foreach (var emp in items ?? [])
             {
                 Employees.Add(new EmployeeItemViewModel(emp));
@@ -107,6 +117,30 @@ public partial class EmployeesListPageViewModel : ObservableObject
         {
             await Shell.Current.DisplayAlertAsync("Ошибка!", ex.Message, "OK");
         }
+    }
+
+    [RelayCommand]
+    private async Task StatusSwitcherAsync()
+    {
+        IncludeInactive = !IncludeInactive;
+
+        await LoadAsync();
+    }
+
+    [RelayCommand]
+    private async Task SortByFullNameSwitcherAsync()
+    {
+        SortDesk = !SortDesk;
+        SortBy = EmployeeSortBy.FullName;
+        await LoadAsync();
+    }
+
+    [RelayCommand]
+    private async Task SortByDepartmentSwitcherAsync()
+    {
+        SortDesk = !SortDesk;
+        SortBy = EmployeeSortBy.Department;
+        await LoadAsync();
     }
 
     public sealed class EmployeeItemViewModel : ObservableObject

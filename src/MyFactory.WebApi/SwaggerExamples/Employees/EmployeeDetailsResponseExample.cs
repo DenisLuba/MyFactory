@@ -8,7 +8,7 @@ public sealed class EmployeeDetailsResponseExample : IExamplesProvider<EmployeeD
     public EmployeeDetailsResponse GetExamples() => new(
         Id: Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaa0001"),
         FullName: "Иванов Иван Иванович",
-        Department: new DepartmentInfoResponse(Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddd0001"), "Швейный цех"),
+        Department: new DepartmentInfoResponse(Guid.Parse("3c91af0c-6b2b-45c6-9b3d-4cd5a4d8f3b9"), "Швейный цех"),
         Position: new PositionInfoResponse(Guid.Parse("pppppppp-pppp-pppp-pppp-pppppppp0001"), "Швея", "Швейный цех"),
         Grade: 3,
         RatePerNormHour: 200,

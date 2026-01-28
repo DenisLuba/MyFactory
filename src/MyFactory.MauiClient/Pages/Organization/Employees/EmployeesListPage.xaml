@@ -39,11 +39,23 @@
 			Padding="16"
 			ColumnDefinitions="4*,2*,2*,2*"
 			ColumnSpacing="8">
-			<Label FontAttributes="Bold" Text="ФИО" />
+			<Label
+				FontAttributes="Bold"
+				Text="ФИО"
+				TextColor="SteelBlue">
+				<Label.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding SortByFullNameSwitcherCommand}" />
+				</Label.GestureRecognizers>
+			</Label>
 			<Label
 				Grid.Column="1"
 				FontAttributes="Bold"
-				Text="Цех" />
+				Text="Цех"
+				TextColor="SteelBlue">
+				<Label.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding SortByDepartmentSwitcherCommand}" />
+				</Label.GestureRecognizers>
+			</Label>
 			<Label
 				Grid.Column="2"
 				FontAttributes="Bold"
@@ -51,7 +63,12 @@
 			<Label
 				Grid.Column="3"
 				FontAttributes="Bold"
-				Text="Статус" />
+				Text="Статус"
+				TextColor="SteelBlue">
+				<Label.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding StatusSwitcherCommand}" />
+				</Label.GestureRecognizers>
+			</Label>
 		</Grid>
 
 		<Border Grid.Row="3">

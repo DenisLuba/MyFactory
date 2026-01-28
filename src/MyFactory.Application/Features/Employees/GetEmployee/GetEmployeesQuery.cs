@@ -6,6 +6,7 @@ namespace MyFactory.Application.Features.Organization.Employees.GetEmployee;
 public sealed class GetEmployeesQuery : IRequest<IReadOnlyList<EmployeeListItemDto>>
 {
     public string? Search { get; init; }
+    public bool IncludeInactive { get; init; } = false;
     public EmployeeSortBy SortBy { get; init; } = EmployeeSortBy.FullName;
     public bool SortDesc { get; init; } = false;
 }

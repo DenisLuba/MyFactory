@@ -21,6 +21,7 @@ public sealed class UpdatePositionCommandHandler
     {
         var position =
             await _db.Positions
+                .Include(p => p.DepartmentPositions)
                 .FirstOrDefaultAsync(x => x.Id == request.PositionId, cancellationToken)
             ?? throw new NotFoundException("Position not found");
 

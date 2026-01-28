@@ -23,15 +23,25 @@ public sealed class UpdateEmployeeCommandHandler
             .FirstOrDefaultAsync(x => x.Id == request.EmployeeId, cancellationToken)
             ?? throw new NotFoundException("Employee not found");
 
-        var positionExists = await _db.Positions
-            .AnyAsync(x => x.Id == request.PositionId, cancellationToken);
+        var position = await _db.Positions
+            .Include(p => p.DepartmentPositions)
+            .FirstOrDefaultAsync(x => x.Id == request.PositionId, cancellationToken)
+            ?? throw new NotFoundException("Position not found");
 
-        if (!positionExists)
-            throw new NotFoundException("Position not found");
+        var departmentExists = await _db.Departments
+            .AnyAsync(x => x.Id == request.DepartmentId, cancellationToken);
+
+        if (!departmentExists)
+            throw new NotFoundException("Department not found");
+
+        var positionInDepartment = position.DepartmentPositions.Any(dp => dp.DepartmentId == request.DepartmentId);
+        if (!positionInDepartment)
+            throw new DomainApplicationException("Position is not linked to the specified department.");
 
         employee.Update(
             request.FullName,
             request.PositionId,
+            request.DepartmentId,
             request.Grade,
             request.RatePerNormHour,
             request.PremiumPercent,

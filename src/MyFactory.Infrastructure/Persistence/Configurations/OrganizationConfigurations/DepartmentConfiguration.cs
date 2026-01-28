@@ -21,11 +21,14 @@ public class DepartmentConfiguration : IEntityTypeConfiguration<DepartmentEntity
 
         builder.Property(d => d.Type).IsRequired();
 
+        // Computed convenience navigation, not mapped in EF model
+        builder.Ignore(d => d.Positions);
+
         builder.HasIndex(d => d.Name).IsUnique();
 
-        builder.HasMany(d => d.Positions)
-            .WithOne(p => p.Department)
-            .HasForeignKey(p => p.DepartmentId)
+        builder.HasMany(d => d.DepartmentPositions)
+            .WithOne(dp => dp.Department)
+            .HasForeignKey(dp => dp.DepartmentId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(d => d.ProductDepartmentCosts)

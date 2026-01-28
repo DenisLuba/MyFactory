@@ -70,12 +70,12 @@ public partial class PositionDetailsPageViewModel : ObservableObject
     {
         _positionsService = positionsService;
         _departmentsService = departmentsService;
-        _ = LoadAsync();
     }
 
     partial void OnPositionIdChanged(Guid? value)
     {
-        _ = LoadAsync();
+        if (!IsBusy)
+            _ = LoadAsync();
     }
 
     partial void OnPositionIdParameterChanged(string? value)
@@ -84,7 +84,7 @@ public partial class PositionDetailsPageViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
             return;
@@ -143,9 +143,9 @@ public partial class PositionDetailsPageViewModel : ObservableObject
 
         var trimmedName = Name.Trim();
         var trimmedCode = Code?.Trim();
-        decimal? baseNormValue = string.IsNullOrWhiteSpace(BaseNorm) ? 0m : BaseNorm.StringToDecimal();
-        decimal? baseRateValue = string.IsNullOrWhiteSpace(BaseRate) ? 0m : BaseRate.StringToDecimal();
-        decimal? premiumValue = string.IsNullOrWhiteSpace(DefaultPremiumPercent) ? 0m : DefaultPremiumPercent.StringToDecimal();
+        decimal? baseNormValue = string.IsNullOrWhiteSpace(BaseNorm) ? null : BaseNorm.StringToDecimal();
+        decimal? baseRateValue = string.IsNullOrWhiteSpace(BaseRate) ? null : BaseRate.StringToDecimal();
+        decimal? premiumValue = string.IsNullOrWhiteSpace(DefaultPremiumPercent) ? null : DefaultPremiumPercent.StringToDecimal();
 
         try
         {
@@ -154,9 +154,9 @@ public partial class PositionDetailsPageViewModel : ObservableObject
             var existing = await _positionsService.GetListAsync();
             var duplicateExists = existing?.Any(p =>
                 p.Id != PositionId &&
-                (string.Equals(p.Name, trimmedName, StringComparison.OrdinalIgnoreCase) || // ���� ��� ���� ������� � ����� ������
+                (string.Equals(p.Name, trimmedName, StringComparison.OrdinalIgnoreCase) || 
                  (!string.IsNullOrWhiteSpace(trimmedCode) &&
-                  string.Equals(p.Code, trimmedCode, StringComparison.OrdinalIgnoreCase)))) is true; // ��� � ����� �����
+                  string.Equals(p.Code, trimmedCode, StringComparison.OrdinalIgnoreCase)))) is true; 
 
             if (duplicateExists)
             {

@@ -1,9 +1,11 @@
+using System.Linq;
 using MyFactory.Domain.Common;
 using MyFactory.Domain.Entities.Finance;
 using MyFactory.Domain.Entities.Inventory;
 using MyFactory.Domain.Entities.Parties;
 using MyFactory.Domain.Entities.Production;
 using MyFactory.Domain.Entities.Products;
+using MyFactory.Domain.Exceptions;
 
 namespace MyFactory.Domain.Entities.Organization;
 
@@ -15,7 +17,10 @@ public class DepartmentEntity : ActivatableEntity
 
     // Navigation properties
 
-    public IReadOnlyCollection<PositionEntity> Positions { get; private set; } = new List<PositionEntity>();
+    private readonly List<DepartmentPositionEntity> _departmentPositions = new();
+    public IReadOnlyCollection<DepartmentPositionEntity> DepartmentPositions => _departmentPositions.AsReadOnly();
+    public IEnumerable<PositionEntity> Positions => DepartmentPositions.Select(dp => dp.Position!).Where(p => p is not null);
+
     public IReadOnlyCollection<ProductDepartmentCostEntity> ProductDepartmentCosts { get; private set; } = new List<ProductDepartmentCostEntity>();
     public IReadOnlyCollection<InventoryMovementEntity> InventoryMovements { get; private set; } = new List<InventoryMovementEntity>();
     public IReadOnlyCollection<ProductionOrderEntity> ProductionOrders { get; private set; } = new List<ProductionOrderEntity>();
@@ -61,7 +66,6 @@ public class PositionEntity : ActivatableEntity
     public string Name { get; private set; }
     public string? Code { get; private set; }
     public string? Description { get; private set; }
-    public Guid DepartmentId { get; private set; }
     public decimal? BaseNormPerHour { get; private set; }
     public decimal? BaseRatePerNormHour { get; private set; }
     public decimal? DefaultPremiumPercent { get; private set; }
@@ -71,9 +75,16 @@ public class PositionEntity : ActivatableEntity
     public bool CanHandleMaterials { get; private set; }
 
     // Navigation properties
-    public DepartmentEntity? Department { get; private set; }
+    private readonly List<DepartmentPositionEntity> _departmentPositions = new();
+    public IReadOnlyCollection<DepartmentPositionEntity> DepartmentPositions => _departmentPositions.AsReadOnly();
+    public Guid DepartmentId => _departmentPositions.FirstOrDefault()?.DepartmentId ?? Guid.Empty;
 
     public IReadOnlyCollection<EmployeeEntity> Employees { get; private set; } = new List<EmployeeEntity>();
+
+    private PositionEntity()
+    {
+        // For EF
+    }
 
     public PositionEntity(
         string name,
@@ -99,7 +110,6 @@ public class PositionEntity : ActivatableEntity
             Guard.AgainstNegative(defaultPremiumPercent.Value, nameof(defaultPremiumPercent));
 
         Name = name;
-        DepartmentId = departmentId;
         Code = code;
         Description = description;
         BaseNormPerHour = baseNormPerHour;
@@ -109,6 +119,8 @@ public class PositionEntity : ActivatableEntity
         CanSew = canSew;
         CanPackage = canPackage;
         CanHandleMaterials = canHandleMaterials;
+
+        AddDepartment(departmentId);
     }
 
     public void Update(
@@ -132,9 +144,8 @@ public class PositionEntity : ActivatableEntity
             Guard.AgainstNonPositive(baseRatePerNormHour.Value, nameof(baseRatePerNormHour));
         if (defaultPremiumPercent.HasValue)
             Guard.AgainstNegative(defaultPremiumPercent.Value, nameof(defaultPremiumPercent));
-        
+
         Name = name;
-        DepartmentId = departmentId;
         Code = code;
         BaseNormPerHour = baseNormPerHour;
         BaseRatePerNormHour = baseRatePerNormHour;
@@ -144,7 +155,58 @@ public class PositionEntity : ActivatableEntity
         CanPackage = canPackage;
         CanHandleMaterials = canHandleMaterials;
 
+        _departmentPositions.Clear();
+        AddDepartment(departmentId);
+
         Touch();
+    }
+
+    public void AddDepartment(Guid departmentId)
+    {
+        Guard.AgainstEmptyGuid(departmentId, nameof(departmentId));
+
+        if (_departmentPositions.Any(dp => dp.DepartmentId == departmentId))
+            return;
+
+        _departmentPositions.Add(new DepartmentPositionEntity(departmentId, Id));
+    }
+
+    public void SetDepartments(IEnumerable<Guid> departmentIds)
+    {
+        if (departmentIds is null)
+            throw new DomainException("Department list cannot be null.");
+
+        var ids = departmentIds.Distinct().ToList();
+        if (ids.Count == 0)
+            throw new DomainException("Position must belong to at least one department.");
+
+        _departmentPositions.Clear();
+        foreach (var id in ids)
+        {
+            AddDepartment(id);
+        }
+    }
+}
+
+public class DepartmentPositionEntity
+{
+    public Guid DepartmentId { get; private set; }
+    public DepartmentEntity? Department { get; private set; }
+
+    public Guid PositionId { get; private set; }
+    public PositionEntity? Position { get; private set; }
+
+    private DepartmentPositionEntity()
+    {
+    }
+
+    public DepartmentPositionEntity(Guid departmentId, Guid positionId)
+    {
+        Guard.AgainstEmptyGuid(departmentId, nameof(departmentId));
+        Guard.AgainstEmptyGuid(positionId, nameof(positionId));
+
+        DepartmentId = departmentId;
+        PositionId = positionId;
     }
 }
 
@@ -152,14 +214,16 @@ public class EmployeeEntity : ActivatableEntity
 {
     public string FullName { get; private set; }
     public Guid PositionId { get; private set; }
-    public int Grade { get; private set; }
-    public decimal RatePerNormHour { get; private set; }
+    public Guid DepartmentId { get; private set; }
+    public int? Grade { get; private set; }
+    public decimal? RatePerNormHour { get; private set; }
     public decimal? PremiumPercent { get; private set; }
     public DateTime HiredAt { get; private set; }
     public DateTime? FiredAt { get; private set; }
 
     // Navigation properties
     public PositionEntity? Position { get; private set; }
+    public DepartmentEntity? Department { get; private set; }
 
     public IReadOnlyCollection<ContactLinkEntity> ContactLinks { get; private set; } = new List<ContactLinkEntity>();
     public IReadOnlyCollection<CuttingOperationEntity> CuttingOperations { get; private set; } = new List<CuttingOperationEntity>();
@@ -173,18 +237,28 @@ public class EmployeeEntity : ActivatableEntity
     //public IReadOnlyCollection<ProductionOrderDepartmentEmployeeEntity> ProductionOrderDepartmentEmployees => _productionOrderDepartmentEmployees;
     //private readonly List<ProductionOrderDepartmentEmployeeEntity> _productionOrderDepartmentEmployees = new();
 
-    public EmployeeEntity(string fullName, Guid positionId, int grade, decimal ratePerNormHour, decimal? premiumPercent, DateTime hiredAt)
+    public EmployeeEntity(string fullName, Guid positionId, Guid departmentId, int? grade, decimal? ratePerNormHour, decimal? premiumPercent, DateTime hiredAt)
     {
         Guard.AgainstNullOrWhiteSpace(fullName, nameof(fullName));
         Guard.AgainstEmptyGuid(positionId, nameof(positionId));
-        Guard.AgainstNegative(grade, nameof(grade));
-        Guard.AgainstNegative(ratePerNormHour, nameof(ratePerNormHour));
+        Guard.AgainstEmptyGuid(departmentId, nameof(departmentId));
+        if (grade.HasValue)
+        {
+            Guard.AgainstNegative(grade.Value, nameof(grade));
+        }
+        if (ratePerNormHour.HasValue)
+        { 
+            Guard.AgainstNegative(ratePerNormHour.Value, nameof(ratePerNormHour)); 
+        }
         if (premiumPercent.HasValue)
-            Guard.AgainstNegative(premiumPercent.Value, nameof(premiumPercent));
+        { 
+            Guard.AgainstNegative(premiumPercent.Value, nameof(premiumPercent)); 
+        }
         Guard.AgainstDefaultDate(hiredAt, nameof(hiredAt));
 
         FullName = fullName;
         PositionId = positionId;
+        DepartmentId = departmentId;
         Grade = grade;
         RatePerNormHour = ratePerNormHour;
         PremiumPercent = premiumPercent;
@@ -211,21 +285,32 @@ public class EmployeeEntity : ActivatableEntity
     public void Update(
         string fullName,
         Guid positionId,
-        int grade,
-        decimal ratePerNormHour,
+        Guid departmentId,
+        int? grade,
+        decimal? ratePerNormHour,
         decimal? premiumPercent,
         DateTime hiredAt)
     {
         Guard.AgainstNullOrWhiteSpace(fullName, nameof(fullName));
         Guard.AgainstEmptyGuid(positionId, nameof(positionId));
-        Guard.AgainstNegative(grade, nameof(grade));
-        Guard.AgainstNegative(ratePerNormHour, nameof(ratePerNormHour));
+        Guard.AgainstEmptyGuid(departmentId, nameof(departmentId));
+        if (grade.HasValue)
+        {
+            Guard.AgainstNegative(grade.Value, nameof(grade));
+        }
+        if (ratePerNormHour.HasValue)
+        {
+            Guard.AgainstNegative(ratePerNormHour.Value, nameof(ratePerNormHour));
+        }
         if (premiumPercent.HasValue)
+        {
             Guard.AgainstNegative(premiumPercent.Value, nameof(premiumPercent));
+        }
         Guard.AgainstDefaultDate(hiredAt, nameof(hiredAt));
 
         FullName = fullName;
         PositionId = positionId;
+        DepartmentId = departmentId;
         Grade = grade;
         RatePerNormHour = ratePerNormHour;
         PremiumPercent = premiumPercent;

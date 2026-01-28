@@ -10,9 +10,9 @@ public sealed class EmployeeDetailsDto
     public DepartmentDto Department { get; init; } = null!;
     public PositionDto Position { get; init; } = null!;
 
-    public int Grade { get; init; }
+    public int? Grade { get; init; }
 
-    public decimal RatePerNormHour { get; init; }
+    public decimal? RatePerNormHour { get; init; }
     public decimal? PremiumPercent { get; init; }
 
     public DateOnly HiredAt { get; init; }

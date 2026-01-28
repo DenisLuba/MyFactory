@@ -37,9 +37,9 @@ public class EmployeesController : ControllerBase
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<EmployeeListItemResponse>), StatusCodes.Status200OK)]
     [SwaggerResponseExample(200, typeof(EmployeeListResponseExample))]
-    public async Task<IActionResult> GetList([FromQuery] string? search, [FromQuery] EmployeeSortBy sortBy = EmployeeSortBy.FullName, [FromQuery] bool sortDesc = false)
+    public async Task<IActionResult> GetList([FromQuery] string? search, [FromQuery] bool includeInactive = false, [FromQuery] EmployeeSortBy sortBy = EmployeeSortBy.FullName, [FromQuery] bool sortDesc = false)
     {
-        var items = await _mediator.Send(new GetEmployeesQuery { Search = search, SortBy = sortBy, SortDesc = sortDesc });
+        var items = await _mediator.Send(new GetEmployeesQuery { Search = search, IncludeInactive = includeInactive, SortBy = sortBy, SortDesc = sortDesc });
         var response = items.Select(x => new EmployeeListItemResponse(x.Id, x.FullName, x.DepartmentName, x.PositionName, x.IsActive)).ToList();
         return Ok(response);
     }
@@ -78,7 +78,7 @@ public class EmployeesController : ControllerBase
     [SwaggerResponseExample(201, typeof(CreateEmployeeResponseExample))]
     public async Task<IActionResult> Create([FromBody] CreateEmployeeRequest req)
     {
-        var id = await _mediator.Send(new CreateEmployeeCommand(req.FullName, req.PositionId, req.Grade, req.RatePerNormHour, req.PremiumPercent, req.HiredAt, req.IsActive));
+        var id = await _mediator.Send(new CreateEmployeeCommand(req.FullName, req.PositionId, req.DepartmentId, req.Grade, req.RatePerNormHour, req.PremiumPercent, req.HiredAt, req.IsActive));
         return Created(string.Empty, new CreateEmployeeResponse(id));
     }
 
@@ -91,7 +91,7 @@ public class EmployeesController : ControllerBase
     [SwaggerRequestExample(typeof(UpdateEmployeeRequest), typeof(UpdateEmployeeRequestExample))]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateEmployeeRequest req)
     {
-        await _mediator.Send(new UpdateEmployeeCommand(id, req.FullName, req.PositionId, req.Grade, req.RatePerNormHour, req.PremiumPercent, req.HiredAt, req.IsActive));
+        await _mediator.Send(new UpdateEmployeeCommand(id, req.FullName, req.PositionId, req.DepartmentId, req.Grade, req.RatePerNormHour, req.PremiumPercent, req.HiredAt, req.IsActive));
         return NoContent();
     }
 

@@ -14,14 +14,23 @@ public sealed class CreateEmployeeCommandValidator
         RuleFor(x => x.PositionId)
             .NotEmpty();
 
+        RuleFor(x => x.DepartmentId)
+            .NotEmpty();
+
+        RuleFor(x => x.DepartmentId)
+            .NotEmpty();
+
         RuleFor(x => x.Grade)
-            .GreaterThanOrEqualTo(0);
+            .GreaterThanOrEqualTo(0)
+            .When(x => x.Grade.HasValue);
 
         RuleFor(x => x.RatePerNormHour)
-            .GreaterThanOrEqualTo(0);
+            .GreaterThanOrEqualTo(0)
+            .When(x => x.RatePerNormHour.HasValue);
 
         RuleFor(x => x.PremiumPercent)
-            .GreaterThanOrEqualTo(0);
+            .GreaterThanOrEqualTo(0)
+            .When(x => x.PremiumPercent.HasValue);
 
         RuleFor(x => x.HiredAt)
             .NotEmpty()
@@ -32,3 +41,4 @@ public sealed class CreateEmployeeCommandValidator
             .WithMessage("Inactive employee must have valid hire date.");
     }
 }
+

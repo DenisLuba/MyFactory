@@ -23,13 +23,17 @@ public sealed class GetPositionDetailsQueryHandler
         var position =
             await _db.Positions
                 .AsNoTracking()
+                .Include(p => p.DepartmentPositions)
                 .FirstOrDefaultAsync(x => x.Id == request.PositionId, cancellationToken)
             ?? throw new NotFoundException("Position not found");
+
+        var departmentId = position.DepartmentPositions.FirstOrDefault()?.DepartmentId
+            ?? throw new NotFoundException("Department not found");
 
         var department =
             await _db.Departments
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == position.DepartmentId, cancellationToken)
+                .FirstOrDefaultAsync(x => x.Id == departmentId, cancellationToken)
             ?? throw new NotFoundException("Department not found");
 
         return new PositionDetailsDto
@@ -37,7 +41,7 @@ public sealed class GetPositionDetailsQueryHandler
             Id = position.Id,
             Name = position.Name,
             Code = position.Code,
-            DepartmentId = position.DepartmentId,
+            DepartmentId = department.Id,
             DepartmentName = department.Name,
 
             BaseNormPerHour = position.BaseNormPerHour,

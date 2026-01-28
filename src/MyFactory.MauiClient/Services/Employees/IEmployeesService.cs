@@ -4,7 +4,7 @@ namespace MyFactory.MauiClient.Services.Employees;
 
 public interface IEmployeesService
 {
-    Task<IReadOnlyList<EmployeeListItemResponse>?> GetListAsync(string? search = null, EmployeeSortBy sortBy = EmployeeSortBy.FullName, bool sortDesc = false);
+    Task<IReadOnlyList<EmployeeListItemResponse>?> GetListAsync(string? search = null, bool includeInactive = false, EmployeeSortBy sortBy = EmployeeSortBy.FullName, bool sortDesc = false);
     Task<EmployeeDetailsResponse?> GetDetailsAsync(Guid id);
     Task<CreateEmployeeResponse?> CreateAsync(CreateEmployeeRequest request);
     Task UpdateAsync(Guid id, UpdateEmployeeRequest request);

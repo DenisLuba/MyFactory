@@ -49,9 +49,9 @@
 				<Picker
 					Grid.Row="1"
 					Grid.Column="1"
-				ItemsSource="{Binding Departments}"
-				ItemDisplayBinding="{Binding Name}"
-				SelectedItem="{Binding SelectedDepartment}" />
+					ItemDisplayBinding="{Binding Name}"
+					ItemsSource="{Binding Departments}"
+					SelectedItem="{Binding SelectedDepartment}" />
 
 				<Label
 					Grid.Row="2"
@@ -62,9 +62,9 @@
 				<Picker
 					Grid.Row="2"
 					Grid.Column="1"
-				ItemsSource="{Binding Positions}"
-				ItemDisplayBinding="{Binding Name}"
-				SelectedItem="{Binding SelectedPosition}" />
+					ItemDisplayBinding="{Binding Name}"
+					ItemsSource="{Binding Positions}"
+					SelectedItem="{Binding SelectedPosition}" />
 
 				<Label
 					Grid.Row="3"

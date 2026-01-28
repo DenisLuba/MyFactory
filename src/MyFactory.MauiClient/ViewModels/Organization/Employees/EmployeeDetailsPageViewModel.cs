@@ -126,15 +126,15 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
                 var details = await _employeesService.GetDetailsAsync(EmployeeId.Value);
                 if (details is not null)
                 {
-                    RatePerHour = details.RatePerNormHour.ToString();
+                    RatePerHour = details.RatePerNormHour?.ToString() ?? "";
                     FullName = details.FullName;
                     Department = details.Department.Name;
                     Position = details.Position.Name;
                     HiredAt = details.HiredAt;
                     FiredAt = details.FiredAt;
                     Status = details.IsActive ? Active : Inactive;
-                    Grade = details.Grade.ToString();
-                    PremiumPercent = details.PremiumPercent?.ToString() ?? "0";
+                    Grade = details.Grade?.ToString() ?? "";
+                    PremiumPercent = details.PremiumPercent?.ToString() ?? "";
                     positionId = details.Position.Id;
                     departmentId = details.Department.Id;
                 }
@@ -260,20 +260,28 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
             return;
         }
 
+        if (SelectedDepartment is null)
+        {
+            await Shell.Current.DisplayAlertAsync("Ошибка", "Выберите цех/отдел.", "OK");
+            return;
+        }
+
         try
         {
             IsBusy = true;
             ErrorMessage = null;
 
             var positionId = SelectedPosition.Id;
+            var departmentId = SelectedDepartment.Id;
 
-            if (!int.TryParse(Grade, NumberStyles.Integer, CultureInfo.CurrentCulture, out var gradeValue))
+            int? gradeValue = null;
+            if (int.TryParse(Grade, NumberStyles.Integer, CultureInfo.CurrentCulture, out var parsedGrade))
             {
-                gradeValue = 0;
+                gradeValue = parsedGrade;
             }
 
-            var ratePerNormHour = string.IsNullOrEmpty(RatePerHour) ? 0m : RatePerHour.StringToDecimal();
-            var premiumValue = string.IsNullOrWhiteSpace(PremiumPercent) ? 0m : PremiumPercent.StringToDecimal();
+            decimal? ratePerNormHour = string.IsNullOrEmpty(RatePerHour) ? (decimal?)null : RatePerHour.StringToDecimal();
+            decimal? premiumValue = string.IsNullOrWhiteSpace(PremiumPercent) ? null : PremiumPercent.StringToDecimal();
 
             var isActive = string.IsNullOrWhiteSpace(Status) || string.Equals(Status, Active, StringComparison.OrdinalIgnoreCase);
             var hiredAtDate = HiredAt.ToDateTime(TimeOnly.MinValue);
@@ -283,6 +291,7 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
                 var request = new UpdateEmployeeRequest(
                     FullName: FullName,
                     PositionId: positionId,
+                    DepartmentId: departmentId,
                     Grade: gradeValue,
                     RatePerNormHour: ratePerNormHour,
                     PremiumPercent: premiumValue,
@@ -296,6 +305,7 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
                 var request = new CreateEmployeeRequest(
                     FullName,
                     positionId,
+                    departmentId,
                     gradeValue,
                     ratePerNormHour,
                     premiumValue,

@@ -51,7 +51,12 @@
 				Margin="0,0,34,0"
 				FontAttributes="Bold"
 				HorizontalTextAlignment="End"
-				Text="Статус" />
+				Text="Статус"
+				TextColor="SteelBlue">
+				<Label.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding StatusSwitcherCommand}" />
+				</Label.GestureRecognizers>
+			</Label>
 		</Grid>
 
 		<Border Grid.Row="2">
@@ -76,9 +81,7 @@
 										Text="Деактивировать" />
 								</SwipeItems>
 							</SwipeView.RightItems>
-							<Grid
-								ColumnDefinitions="2*,3*,3*,2*"
-								ColumnSpacing="8">
+							<Grid ColumnDefinitions="2*,3*,3*,2*" ColumnSpacing="8">
 								<Grid.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=PositionsCollection}}" CommandParameter="{Binding .}" />
 								</Grid.GestureRecognizers>
@@ -93,8 +96,8 @@
 									TextColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Black;Gray'}" />
 								<Label
 									Grid.Column="3"
-									HorizontalTextAlignment="End"
 									Margin="0,0,16,0"
+									HorizontalTextAlignment="End"
 									Text="{Binding Status}"
 									TextColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Black;Gray'}" />
 							</Grid>
