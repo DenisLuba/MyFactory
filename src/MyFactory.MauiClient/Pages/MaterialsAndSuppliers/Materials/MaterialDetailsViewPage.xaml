@@ -48,12 +48,26 @@
 			</Label>
 		</Grid>
 
-		<HorizontalStackLayout Grid.Row="1" Spacing="8">
+		<Grid
+			Grid.Row="1"
+			ColumnDefinitions="Auto,Auto,Auto,*"
+			ColumnSpacing="8">
 			<Button Command="{Binding EditCommand}" Text="Редактировать" />
-			<Button Command="{Binding DeleteCommand}" Text="Удалить" />
-			<Button Command="{Binding AddPriceCommand}" Text="Создать заказ" />
-			<Button Command="{Binding BackCommand}" Text="Назад" />
-		</HorizontalStackLayout>
+			<Button
+				Grid.Column="1"
+				Command="{Binding AddPriceCommand}"
+				Text="Создать заказ" />
+			<Button
+				Grid.Column="2"
+				Command="{Binding BackCommand}"
+				Text="Назад" />
+			<Button
+				Grid.Column="3"
+				Background="Tomato"
+				Command="{Binding DeleteCommand}"
+				HorizontalOptions="End"
+				Text="Удалить" />
+		</Grid>
 
 		<Border Grid.Row="2">
 			<Grid RowDefinitions="Auto, *" RowSpacing="8">

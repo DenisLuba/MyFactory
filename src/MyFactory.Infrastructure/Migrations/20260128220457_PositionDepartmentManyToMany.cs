@@ -11,9 +11,19 @@ namespace MyFactory.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_POSITIONS_DEPARTMENTS_DepartmentId",
-                table: "POSITIONS");
+            migrationBuilder.Sql("""
+                DO $$
+                BEGIN
+                    IF EXISTS (
+                        SELECT 1
+                        FROM pg_constraint
+                        WHERE conname = 'FK_POSITIONS_DEPARTMENTS_DepartmentEntityId'
+                    ) THEN
+                        ALTER TABLE "POSITIONS"
+                        DROP CONSTRAINT "FK_POSITIONS_DEPARTMENTS_DepartmentEntityId";
+                    END IF;
+                END $$;
+                """);
 
             migrationBuilder.DropIndex(
                 name: "IX_POSITIONS_DepartmentId",

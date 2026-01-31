@@ -7,6 +7,7 @@ using MyFactory.Application.Features.Users.DeactivateUser;
 using MyFactory.Application.Features.Users.GetRoles;
 using MyFactory.Application.Features.Users.GetUserDetails;
 using MyFactory.Application.Features.Users.GetUsers;
+using MyFactory.Application.Features.Users.RemoveUser;
 using MyFactory.Application.Features.Users.UpdateRole;
 using MyFactory.Application.Features.Users.UpdateUser;
 using MyFactory.WebApi.Contracts.Users;
@@ -77,9 +78,9 @@ public class UsersController : ControllerBase
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<UserListItemResponse>), StatusCodes.Status200OK)]
     [SwaggerResponseExample(200, typeof(UserListResponseExample))]
-    public async Task<IActionResult> GetUsers([FromQuery] Guid? roleId, [FromQuery] string? roleName)
+    public async Task<IActionResult> GetUsers([FromQuery] Guid? roleId, [FromQuery] string? roleName, [FromQuery] bool includeInactive = false, [FromQuery] bool sortDesk = false)
     {
-        var dtos = await _mediator.Send(new GetUsersQuery(roleId, roleName));
+        var dtos = await _mediator.Send(new GetUsersQuery(roleId, roleName, includeInactive, sortDesk));
         var response = dtos
             .Select(u => new UserListItemResponse(
                 u.Id,
@@ -133,6 +134,14 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> DeactivateUser(Guid id)
     {
         await _mediator.Send(new DeactivateUserCommand(id));
+        return Ok();
+    }
+
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> RemoveUser(Guid id)
+    {
+        await _mediator.Send(new RemoveUserCommand(id));
         return Ok();
     }
 }

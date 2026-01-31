@@ -28,9 +28,9 @@
 				Text="{Binding Password}" />
 			<Button Command="{Binding LoginCommand}" Text="Войти" />
 
-			<!-- Optional registration button
+			<!--  Optional registration button  -->
 			<Button Command="{Binding NavigateToRegisterCommand}" Text="Регистрация" />
-			-->
+			<!--    -->
 
 			<ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
 			<Label

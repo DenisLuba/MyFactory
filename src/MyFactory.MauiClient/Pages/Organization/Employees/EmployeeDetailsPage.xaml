@@ -130,7 +130,7 @@
 			<Grid
 				Grid.Row="2"
 				Margin="0,16"
-				ColumnDefinitions="Auto,Auto,Auto,Auto,Auto"
+				ColumnDefinitions="Auto,Auto,Auto,Auto,*"
 				ColumnSpacing="8">
 				<Button Command="{Binding AccrualsCommand}" Text="Начисления" />
 				<Button
@@ -147,7 +147,9 @@
 					Text="Задания" />
 				<Button
 					Grid.Column="4"
+					Background="Tomato"
 					Command="{Binding DeactivateCommand}"
+					HorizontalOptions="End"
 					Text="Уволить" />
 			</Grid>
 		</Grid>

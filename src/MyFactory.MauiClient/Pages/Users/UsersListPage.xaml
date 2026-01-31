@@ -2,61 +2,70 @@
 	x:Class="MyFactory.MauiClient.Pages.Users.UsersListPage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:conv="clr-namespace:MyFactory.MauiClient.Converters"
 	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Users"
 	Title="Пользователи"
 	x:DataType="view_model:UsersListPageViewModel">
-	<ScrollView>
-		<VerticalStackLayout Padding="16" Spacing="12">
-			<Grid
-				ColumnDefinitions="*,Auto,Auto"
-				ColumnSpacing="8"
-				RowSpacing="8">
-				<Entry
-					Grid.ColumnSpan="2"
-					Placeholder="Поиск по роли или логину"
-					Text="{Binding SearchText}" />
-				<Picker
-					Grid.Column="2"
-					ItemDisplayBinding="{Binding Name}"
-					ItemsSource="{Binding Roles}"
-					SelectedItem="{Binding SelectedRole}" />
-				<Label
-					Grid.Row="1"
-					FontAttributes="Bold"
-					FontSize="18"
-					Text="Пользователи" />
-				<Button
-					Grid.Row="1"
-					Grid.Column="2"
-					Command="{Binding AddCommand}"
-					Text="Добавить" />
-			</Grid>
 
-			<Grid
-				Padding="0,4"
-				ColumnDefinitions="Auto,Auto,Auto,Auto"
-				ColumnSpacing="8">
-				<Label FontAttributes="Bold" Text="Логин" />
-				<Label
-					Grid.Column="1"
-					FontAttributes="Bold"
-					Text="Роль" />
-				<Label
-					Grid.Column="2"
-					FontAttributes="Bold"
-					Text="Статус" />
-				<Label
-					Grid.Column="3"
-					FontAttributes="Bold"
-					Text="Создан" />
-			</Grid>
+	<ContentPage.Resources>
+		<conv:BooleanToColorConverter x:Key="BoolToColorConverter" />
+	</ContentPage.Resources>
 
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,Auto,*"
+		RowSpacing="12">
+		<Grid ColumnDefinitions="6*,2*,2*" ColumnSpacing="8">
+			<Entry Placeholder="Поиск по роли или логину" Text="{Binding SearchText}" />
+			<Picker
+				Grid.Column="1"
+				ItemsSource="{Binding Roles}"
+				SelectedItem="{Binding SelectedRole}" />
+			<Button
+				Grid.Column="2"
+				Command="{Binding AddCommand}"
+				Text="Добавить" />
+		</Grid>
+
+		<Grid
+			Grid.Row="1"
+			Padding="16"
+			ColumnDefinitions="4*,2*,2*,2*"
+			ColumnSpacing="8">
+			<Label
+				FontAttributes="Bold"
+				Text="Логин"
+				TextColor="SteelBlue">
+				<Label.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding SortByLoginSwitcherCommand}" />
+				</Label.GestureRecognizers>
+			</Label>
+			<Label
+				Grid.Column="1"
+				FontAttributes="Bold"
+				Text="Роль" />
+			<Label
+				Grid.Column="2"
+				FontAttributes="Bold"
+				Text="Статус"
+				TextColor="SteelBlue">
+				<Label.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding StatusSwitcherCommand}" />
+				</Label.GestureRecognizers>
+			</Label>
+			<Label
+				Grid.Column="3"
+				FontAttributes="Bold"
+				Text="Создан" />
+		</Grid>
+
+		<Border Grid.Row="2">
 			<CollectionView
 				x:Name="UsersCollection"
 				ItemsSource="{Binding Users}"
 				SelectionMode="None">
 				<CollectionView.ItemTemplate>
-					<DataTemplate>
+					<DataTemplate x:DataType="view_model:UsersListPageViewModel+UserItemViewModel">
 						<SwipeView>
 							<SwipeView.RightItems>
 								<SwipeItems Mode="Reveal">
@@ -74,21 +83,30 @@
 							</SwipeView.RightItems>
 							<Grid
 								Padding="0,8"
-								ColumnDefinitions="Auto,Auto,Auto,Auto"
+								ColumnDefinitions="4*,2*,2*,2*"
 								ColumnSpacing="8">
 								<Grid.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=UsersCollection}}" CommandParameter="{Binding .}" />
 								</Grid.GestureRecognizers>
-								<Label Text="{Binding Username}" />
-								<Label Grid.Column="1" Text="{Binding RoleName}" />
-								<Label Grid.Column="2" Text="{Binding Status}" />
-								<Label Grid.Column="3" Text="{Binding CreatedAt}" />
+								<Label Text="{Binding Username}" TextColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Black;Gray'}" />
+								<Label
+									Grid.Column="1"
+									Text="{Binding RoleName}"
+									TextColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Black;Gray'}" />
+								<Label
+									Grid.Column="2"
+									Text="{Binding Status}"
+									TextColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Black;Gray'}" />
+								<Label
+									Grid.Column="3"
+									Text="{Binding CreatedAt}"
+									TextColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Black;Gray'}" />
 							</Grid>
 						</SwipeView>
 					</DataTemplate>
 				</CollectionView.ItemTemplate>
 			</CollectionView>
-		</VerticalStackLayout>
-	</ScrollView>
+		</Border>
+	</Grid>
 </ContentPage>
 

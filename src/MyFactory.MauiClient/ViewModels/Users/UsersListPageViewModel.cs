@@ -5,6 +5,7 @@ using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MyFactory.MauiClient.Models.Users;
+using MyFactory.MauiClient.Pages.Users;
 using MyFactory.MauiClient.Services.Users;
 
 namespace MyFactory.MauiClient.ViewModels.Users;
@@ -24,19 +25,24 @@ public partial class UsersListPageViewModel : ObservableObject
     private string? searchText;
 
     [ObservableProperty]
-    private RoleResponse? selectedRole;
+    private string? selectedRole;
 
-    public ObservableCollection<RoleResponse> Roles { get; } = new();
+    [ObservableProperty]
+    private bool includeInactive = true;
+
+    [ObservableProperty]
+    private bool sortDesk = false; 
+
+    public ObservableCollection<string> Roles { get; } = new();
     public ObservableCollection<UserItemViewModel> Users { get; } = new();
 
     public UsersListPageViewModel(IUsersService usersService)
     {
         _usersService = usersService;
-        _ = LoadAsync();
     }
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
         {
@@ -51,13 +57,17 @@ public partial class UsersListPageViewModel : ObservableObject
             Roles.Clear();
             Users.Clear();
 
-            var roles = await _usersService.GetRolesAsync() ?? Array.Empty<RoleResponse>();
+            var roles = await _usersService.GetRolesAsync() ?? [];
             foreach (var role in roles.OrderBy(r => r.Name))
             {
-                Roles.Add(role);
+                Roles.Add(role.Name);
             }
 
-            var users = await _usersService.GetUsersAsync();
+            var all = "Все";
+            Roles.Add(all);
+            SelectedRole = all;
+
+            var users = await _usersService.GetUsersAsync(includeInactive: IncludeInactive, sortDesk: SortDesk);
             _allUsers = users?.Select(u => new UserItemViewModel(u)).ToList() ?? new List<UserItemViewModel>();
 
             ApplyFilters();
@@ -76,7 +86,7 @@ public partial class UsersListPageViewModel : ObservableObject
     [RelayCommand]
     private async Task AddAsync()
     {
-        await Shell.Current.GoToAsync("UserDetailsPage");
+        await Shell.Current.GoToAsync(nameof(UserDetailsPage));
     }
 
     [RelayCommand]
@@ -87,9 +97,9 @@ public partial class UsersListPageViewModel : ObservableObject
             return;
         }
 
-        await Shell.Current.GoToAsync("UserDetailsPage", new Dictionary<string, object>
+        await Shell.Current.GoToAsync(nameof(UserDetailsPage), new Dictionary<string, object>
         {
-            { "UserId", user.Id }
+            { "UserId", user.Id.ToString() }
         });
     }
 
@@ -137,7 +147,7 @@ public partial class UsersListPageViewModel : ObservableObject
         ApplyFilters();
     }
 
-    partial void OnSelectedRoleChanged(RoleResponse? value)
+    partial void OnSelectedRoleChanged(string? value)
     {
         ApplyFilters();
     }
@@ -152,9 +162,9 @@ public partial class UsersListPageViewModel : ObservableObject
             query = query.Where(u => u.Username.Contains(term, StringComparison.OrdinalIgnoreCase) || u.RoleName.Contains(term, StringComparison.OrdinalIgnoreCase));
         }
 
-        if (SelectedRole is not null)
+        else if (SelectedRole is not null && !string.Equals(SelectedRole, "Все", StringComparison.OrdinalIgnoreCase))
         {
-            query = query.Where(u => string.Equals(u.RoleName, SelectedRole.Name, StringComparison.OrdinalIgnoreCase));
+            query = query.Where(u => string.Equals(u.RoleName, SelectedRole, StringComparison.OrdinalIgnoreCase));
         }
 
         var filtered = query.ToList();
@@ -164,6 +174,20 @@ public partial class UsersListPageViewModel : ObservableObject
         {
             Users.Add(user);
         }
+    }
+
+    [RelayCommand]
+    private async Task StatusSwitcherAsync()
+    {
+        IncludeInactive = !IncludeInactive;
+        await LoadAsync();
+    }
+
+    [RelayCommand]
+    private async Task SortByLoginSwitcherAsync()
+    {
+        SortDesk = !SortDesk;
+        await LoadAsync();
     }
 
     public partial class UserItemViewModel : ObservableObject
@@ -190,7 +214,7 @@ public partial class UsersListPageViewModel : ObservableObject
             Username = dto.Username;
             RoleName = dto.RoleName;
             IsActive = dto.IsActive;
-            CreatedAt = dto.CreatedAt;
+            CreatedAt = dto.CreatedAt.ToLocalTime();
         }
     }
 }

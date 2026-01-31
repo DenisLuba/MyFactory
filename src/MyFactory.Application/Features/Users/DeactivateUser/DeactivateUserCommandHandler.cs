@@ -16,13 +16,8 @@ public sealed class DeactivateUserCommandHandler : IRequestHandler<DeactivateUse
     public async Task Handle(DeactivateUserCommand request, CancellationToken cancellationToken)
     {
         var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
-
-        if (user is null)
-        {
-            throw new InvalidOperationException($"User with id {request.UserId} not found.");
-        }
-
+            .FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken) ?? throw new InvalidOperationException($"User with id {request.UserId} not found.");
+        
         if (user.IsActive)
         {
             user.Deactivate();

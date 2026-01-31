@@ -11,11 +11,19 @@
 			Padding="16"
 			RowDefinitions="Auto,Auto,Auto,Auto"
 			RowSpacing="12">
-			<HorizontalStackLayout Spacing="8">
+			<Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="8">
 				<Button Command="{Binding BackCommand}" Text="Назад" />
-				<Button Command="{Binding EditCommand}" Text="Редактировать" />
-				<Button Command="{Binding DeleteCommand}" Text="Удалить" />
-			</HorizontalStackLayout>
+				<Button
+					Grid.Column="1"
+					Command="{Binding EditCommand}"
+					Text="Редактировать" />
+				<Button
+					Grid.Column="2"
+					Background="Tomato"
+					Command="{Binding DeleteCommand}"
+					HorizontalOptions="End"
+					Text="Удалить" />
+			</Grid>
 
 			<Grid
 				Grid.Row="1"

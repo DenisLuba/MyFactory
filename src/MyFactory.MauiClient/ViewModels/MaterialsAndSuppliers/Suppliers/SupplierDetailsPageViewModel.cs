@@ -88,7 +88,8 @@ public partial class SupplierDetailsPageViewModel : ObservableObject
 
     partial void OnSupplierIdChanged(Guid? value)
     {
-        _ = LoadAsync();
+        if (!IsBusy)
+            _ = LoadAsync();
     }
 
     partial void OnSupplierIdParameterChanged(string? value)

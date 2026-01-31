@@ -29,6 +29,20 @@ public sealed class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IReadO
             query = query.Where(x => x.role.Name == request.RoleName);
         }
 
+        if (!request.IncludeInactive)
+        {
+            query = query.Where(x => x.user.IsActive);
+        }
+
+        if (request.SortDesk)
+        {
+            query = query.OrderByDescending(x => x.user.Username);
+        }
+        else
+        {
+            query = query.OrderBy(x => x.user.Username);
+        }
+
         return await query
             .Select(x => new UserListItemDto(
                 x.user.Id,

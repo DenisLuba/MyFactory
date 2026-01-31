@@ -8,13 +8,19 @@ using MyFactory.MauiClient.Services.Users;
 
 namespace MyFactory.MauiClient.ViewModels.Users;
 
-[QueryProperty(nameof(UserId), "UserId")]
+[QueryProperty(nameof(UserIdParameter), "UserId")]
 public partial class UserDetailsPageViewModel : ObservableObject
 {
     private readonly IUsersService _usersService;
 
+    private const string Active = "Активен";
+    private const string Inactive = "Неактивен";
+
     [ObservableProperty]
     private Guid? userId;
+
+    [ObservableProperty]
+    private string? userIdParameter;
 
     [ObservableProperty]
     private string? username;
@@ -24,6 +30,9 @@ public partial class UserDetailsPageViewModel : ObservableObject
 
     [ObservableProperty]
     private bool isActive;
+
+    [ObservableProperty]
+    public string isUserActive = Active;
 
     [ObservableProperty]
     private DateTime createdAt;
@@ -39,16 +48,28 @@ public partial class UserDetailsPageViewModel : ObservableObject
     public UserDetailsPageViewModel(IUsersService usersService)
     {
         _usersService = usersService;
-        _ = LoadAsync();
+    }
+
+    partial void OnIsActiveChanged(bool value)
+    {
+        IsUserActive = IsActive ? Active : Inactive;
+    }
+
+    partial void OnUserIdParameterChanged(string? value)
+    {
+        UserId = Guid.TryParse(value, out var userId) 
+            ? userId
+            : null;
     }
 
     partial void OnUserIdChanged(Guid? value)
     {
-        _ = LoadAsync();
+        if (!IsBusy)
+            _ = LoadAsync();
     }
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (IsBusy)
         {
@@ -59,6 +80,8 @@ public partial class UserDetailsPageViewModel : ObservableObject
         {
             IsBusy = true;
             ErrorMessage = null;
+
+            IsUserActive = IsActive ? Active : Inactive;
 
             Roles.Clear();
             var roles = await _usersService.GetRolesAsync() ?? Array.Empty<RoleResponse>();
@@ -132,6 +155,7 @@ public partial class UserDetailsPageViewModel : ObservableObject
                 var request = new UpdateUserRequest(SelectedRole.Id, IsActive);
                 await _usersService.UpdateUserAsync(UserId.Value, request);
                 await Shell.Current.DisplayAlertAsync("Успех", "Данные сохранены", "OK");
+                await Shell.Current.GoToAsync("..", true);
             }
         }
         catch (Exception ex)
@@ -167,6 +191,7 @@ public partial class UserDetailsPageViewModel : ObservableObject
             await _usersService.DeactivateUserAsync(UserId.Value);
             IsActive = false;
             await Shell.Current.DisplayAlertAsync("Готово", "Пользователь заблокирован", "OK");
+            await Shell.Current.GoToAsync("..");
         }
         catch (Exception ex)
         {
@@ -177,6 +202,47 @@ public partial class UserDetailsPageViewModel : ObservableObject
         {
             IsBusy = false;
         }
+    }
+
+    [RelayCommand]
+    private async Task RemoveAsync()
+    {
+        if (UserId is null)
+        {
+            return;
+        }
+
+        var confirm = await Shell.Current.DisplayAlertAsync("Удаление", $"Удалить пользователя {Username}?", "Да", "Нет");
+        if (!confirm)
+        {
+            return;
+        }
+
+        try
+        {
+            IsBusy = true;
+            ErrorMessage = null;
+
+            await _usersService.RemoveUserAsync(UserId.Value);
+
+            await Shell.Current.DisplayAlertAsync("Готово", "Пользователь удален.", "OK");
+            await Shell.Current.GoToAsync("..");
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task BackAsync()
+    {
+        await Shell.Current.GoToAsync("..");
     }
 }
 

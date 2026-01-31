@@ -37,11 +37,13 @@ public sealed class UsersService : IUsersService
         await response.EnsureSuccessWithProblemAsync();
     }
 
-    public async Task<IReadOnlyList<UserListItemResponse>?> GetUsersAsync(Guid? roleId = null, string? roleName = null)
+    public async Task<IReadOnlyList<UserListItemResponse>?> GetUsersAsync(Guid? roleId = null, string? roleName = null, bool includeInactive = false, bool sortDesk = false)
     {
         var query = new List<string>();
         if (roleId is not null) query.Add($"roleId={roleId}");
         if (!string.IsNullOrWhiteSpace(roleName)) query.Add($"roleName={Uri.EscapeDataString(roleName)}");
+        if (includeInactive) query.Add("includeInactive=true");
+        if (sortDesk) query.Add("sortDesk=true");
         var path = "api/users" + (query.Count > 0 ? $"?{string.Join("&", query)}" : string.Empty);
         return await _httpClient.GetFromJsonAsync<List<UserListItemResponse>>(path);
     }
@@ -67,6 +69,12 @@ public sealed class UsersService : IUsersService
     public async Task DeactivateUserAsync(Guid id)
     {
         var response = await _httpClient.PostAsync($"api/users/{id}/deactivate", null);
+        await response.EnsureSuccessWithProblemAsync();
+    }
+
+    public async Task RemoveUserAsync(Guid id)
+    {
+        var response = await _httpClient.DeleteAsync($"api/users/{id}");
         await response.EnsureSuccessWithProblemAsync();
     }
 }

@@ -34,12 +34,18 @@
 				<DataTemplate x:DataType="viewmodels:MaterialTypesListPageViewModel+EditableMaterialTypeModel">
 					<Border>
 						<VerticalStackLayout>
-							<Grid ColumnDefinitions="*, Auto">
+							<Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto,Auto">
 								<Entry
 									FontAttributes="Bold"
 									FontSize="16"
 									Text="{Binding Name, Mode=TwoWay}" />
+								<Entry
+									Grid.Row="1"
+									FontSize="13"
+									Text="{Binding Description, Mode=TwoWay}"
+									TextColor="Gray" />
 								<Label
+									Grid.RowSpan="2"
 									Grid.Column="1"
 									Margin="10,0,10,0"
 									FontAttributes="Italic"
@@ -52,10 +58,7 @@
 								</Label>
 							</Grid>
 
-							<Entry
-								FontSize="13"
-								Text="{Binding Description, Mode=TwoWay}"
-								TextColor="Gray" />
+
 						</VerticalStackLayout>
 					</Border>
 				</DataTemplate>
