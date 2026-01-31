@@ -29,6 +29,7 @@ public class PositionConfiguration : IEntityTypeConfiguration<PositionEntity>
         builder.Property(p => p.CanPackage).IsRequired();
         builder.Property(p => p.CanHandleMaterials).IsRequired();
 
+        // Allow same position name/code to be reused across departments; enforce uniqueness at application level per department
         builder.HasIndex(p => p.Name).IsUnique();
         builder.HasIndex(p => p.Code).IsUnique();
 

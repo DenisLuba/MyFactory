@@ -21,16 +21,17 @@ public sealed class GetPositionsQueryHandler
     {
         var query =
             from p in _db.Positions.AsNoTracking()
-            from dp in p.DepartmentPositions
+            from dp in p.DepartmentPositions.DefaultIfEmpty()
             join d in _db.Departments.AsNoTracking()
-                on dp.DepartmentId equals d.Id
+                on dp.DepartmentId equals d.Id into dJoin
+            from d in dJoin.DefaultIfEmpty()
             select new PositionListItemDto
             {
                 Id = p.Id,
                 Code = p.Code,
                 Name = p.Name,
-                DepartmentId = d.Id,
-                DepartmentName = d.Name,
+                DepartmentId = d != null ? d.Id : Guid.Empty,
+                DepartmentName = d != null ? d.Name : string.Empty,
                 IsActive = p.IsActive
             };
 

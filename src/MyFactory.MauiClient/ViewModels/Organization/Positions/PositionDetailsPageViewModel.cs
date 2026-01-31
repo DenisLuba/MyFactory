@@ -98,13 +98,16 @@ public partial class PositionDetailsPageViewModel : ObservableObject
             {
                 var deps = await _departmentsService.GetListAsync();
                 Departments.Clear();
-                foreach (var d in deps ?? Array.Empty<DepartmentListItemResponse>())
+                foreach (var d in deps ?? [])
                     Departments.Add(d);
             }
 
             if (PositionId is null)
+            {
+                SelectedDepartment = Departments.FirstOrDefault();
                 return;
-
+            }
+                
             var details = await _positionsService.GetDetailsAsync(PositionId.Value);
             if (details is not null)
             {
@@ -151,12 +154,13 @@ public partial class PositionDetailsPageViewModel : ObservableObject
         {
             IsBusy = true;
 
-            var existing = await _positionsService.GetListAsync();
+            var existing = await _positionsService.GetListAsync(includeInactive: true);
             var duplicateExists = existing?.Any(p =>
                 p.Id != PositionId &&
-                (string.Equals(p.Name, trimmedName, StringComparison.OrdinalIgnoreCase) || 
+                p.DepartmentId == SelectedDepartment.Id &&
+                (string.Equals(p.Name, trimmedName, StringComparison.OrdinalIgnoreCase) ||
                  (!string.IsNullOrWhiteSpace(trimmedCode) &&
-                  string.Equals(p.Code, trimmedCode, StringComparison.OrdinalIgnoreCase)))) is true; 
+                  string.Equals(p.Code, trimmedCode, StringComparison.OrdinalIgnoreCase)))) is true;
 
             if (duplicateExists)
             {

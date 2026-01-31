@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MyFactory.MauiClient.ViewModels.Organization.Employees;
@@ -21,6 +22,9 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
     private readonly IEmployeesService _employeesService;
     private readonly IPositionsService _positionsService;
     private readonly IDepartmentsService _departmentsService;
+
+    private readonly List<LookupItem> allDepartments = new();
+    private readonly List<(Guid Id, string Name, Guid DepartmentId)> allPositions = new();
 
     public const string Active = "В штате";
     public const string Inactive = "Не в штате";
@@ -66,6 +70,9 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
     partial void OnSelectedDepartmentChanged(LookupItem? value)
     {
         Department = value?.Name ?? string.Empty;
+
+        ApplyPositionsFilter(value?.Id, SelectedPosition?.Id);
+
     }
 
     [ObservableProperty]
@@ -88,7 +95,7 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
     [ObservableProperty]
     private LookupItem? selectedPosition;
 
-    public IReadOnlyCollection<string> Statuses { get; } = [ Active, Inactive ];
+    public IReadOnlyCollection<string> Statuses { get; } = [Active, Inactive];
 
     public EmployeeDetailsPageViewModel(IEmployeesService employeesService, IPositionsService positionsService, IDepartmentsService departmentService)
     {
@@ -142,29 +149,28 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
 
             Positions.Clear();
 
-            var positionsList = (await _positionsService.GetListAsync())?.Select(p => new LookupItem(p.Id, p.Name)).ToList();
-            if (positionsList is not null)
+            var positionsFull = (await _positionsService.GetListAsync(includeInactive: true))?
+                .Select(p => (p.Id, p.Name, p.DepartmentId)).ToList();
+            allPositions.Clear();
+            if (positionsFull is not null)
             {
-                foreach (var pos in positionsList)
-                {
-                    Positions.Add(pos);
-                }
-
-                SelectedPosition = Positions.FirstOrDefault(p => positionId.HasValue && p.Id == positionId.Value) ?? Positions.FirstOrDefault();
+                allPositions.AddRange(positionsFull);
             }
 
-            Departments.Clear();
-
-            var departmentsList = (await _departmentsService.GetListAsync())?.Select(d => new LookupItem(d.Id, d.Name)).ToList();
-            if (departmentsList is not null)
+            var departmentsFull = (await _departmentsService.GetListAsync(includeInactive: true))?
+                .Select(d => new LookupItem(d.Id, d.Name)).ToList();
+            allDepartments.Clear();
+            if (departmentsFull is not null)
             {
-                foreach (var dept in departmentsList)
-                {
-                    Departments.Add(dept);
-                }
-
-                SelectedDepartment = Departments.FirstOrDefault(d => departmentId.HasValue && d.Id == departmentId.Value) ?? Departments.FirstOrDefault();
+                allDepartments.AddRange(departmentsFull);
             }
+
+            ApplyDepartmentFilter(departmentId);
+            ApplyPositionsFilter(departmentId, positionId);
+
+
+            Department = SelectedDepartment?.Name ?? string.Empty;
+            Position = SelectedPosition?.Name ?? string.Empty;
         }
         catch (Exception ex)
         {
@@ -176,6 +182,38 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
             IsBusy = false;
         }
     }
+
+    private void ApplyDepartmentFilter(Guid? departmentId)
+    {
+        Departments.Clear();
+
+        foreach (var item in allDepartments)
+        {
+            Departments.Add(item);
+        }
+
+        SelectedDepartment = Departments.FirstOrDefault(d => departmentId.HasValue && d.Id == departmentId.Value) ?? Departments.FirstOrDefault();
+    }
+
+    private void ApplyPositionsFilter(Guid? departmentId, Guid? positionId)
+    {
+        Positions.Clear();
+
+        IEnumerable<(Guid Id, string Name, Guid DepartmentId)> source = allPositions;
+        if (departmentId.HasValue)
+        {
+            source = source.Where(p => p.DepartmentId == departmentId.Value);
+        }
+
+        foreach (var pos in source)
+        {
+            Positions.Add(new LookupItem(pos.Id, pos.Name));
+        }
+
+        SelectedPosition = Positions.FirstOrDefault(p => positionId.HasValue && p.Id == positionId.Value)
+            ?? Positions.FirstOrDefault();
+    }
+
 
     [RelayCommand]
     private async Task DeactivateAsync()
@@ -329,7 +367,7 @@ public partial class EmployeeDetailsPageViewModel : ObservableObject
             IsBusy = false;
         }
     }
-    
+
     [RelayCommand]
     private async Task BackAsync()
     {

@@ -27,14 +27,25 @@ public sealed class GetPositionDetailsQueryHandler
                 .FirstOrDefaultAsync(x => x.Id == request.PositionId, cancellationToken)
             ?? throw new NotFoundException("Position not found");
 
-        var departmentId = position.DepartmentPositions.FirstOrDefault()?.DepartmentId
-            ?? throw new NotFoundException("Department not found");
+        var departmentId = position.DepartmentPositions.FirstOrDefault()?.DepartmentId;
 
-        var department =
-            await _db.Departments
+        // Fallback for legacy data without department link
+        var department = departmentId.HasValue
+            ? await _db.Departments
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == departmentId, cancellationToken)
-            ?? throw new NotFoundException("Department not found");
+                .FirstOrDefaultAsync(x => x.Id == departmentId.Value, cancellationToken)
+            : null;
+
+        if (department is null)
+        {
+            department = await _db.Departments
+                .AsNoTracking()
+                .OrderBy(x => x.Name)
+                .FirstOrDefaultAsync(cancellationToken)
+                ?? throw new NotFoundException("Department not found");
+        }
+
+        departmentId = department.Id;
 
         return new PositionDetailsDto
         {

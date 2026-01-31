@@ -84,6 +84,7 @@ public class PositionEntity : ActivatableEntity
     private PositionEntity()
     {
         // For EF
+        Name = string.Empty;
     }
 
     public PositionEntity(

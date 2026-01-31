@@ -17,12 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFactory.MauiClient", "src
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFactory.Domain.Tests", "tests\MyFactory.Domain.Tests\MyFactory.Domain.Tests.csproj", "{31673B2C-B24D-49E7-B33D-DA660AC9F202}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFactory.Application.Tests", "tests\MyFactory.Application.Tests\MyFactory.Application.Tests.csproj", "{CE060910-DEFA-46F1-BCC6-3268C3039495}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFactory.Integration.Tests", "tests\MyFactory.Integration.Tests\MyFactory.Integration.Tests.csproj", "{81E07B32-B646-43BF-AB67-58E3BC0B917B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -134,9 +128,6 @@ Global
 		{0A81462F-CFEF-4ECA-BA08-CE243595B6A3} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{B2820856-732A-4A44-A616-31B7BFA29DF9} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{20B38297-F036-40BC-B77E-AD50E5A32147} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
-		{31673B2C-B24D-49E7-B33D-DA660AC9F202} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
-		{CE060910-DEFA-46F1-BCC6-3268C3039495} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
-		{81E07B32-B646-43BF-AB67-58E3BC0B917B} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {80284D24-9DFB-416C-8A16-EE99CC6D74B6}

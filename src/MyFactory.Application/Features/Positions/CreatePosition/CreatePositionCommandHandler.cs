@@ -26,14 +26,32 @@ public sealed class CreatePositionCommandHandler
         if (!departmentExists)
             throw new NotFoundException("Department not found");
 
+        // Try to reuse existing position by code or name
+        PositionEntity? existing = null;
         if (!string.IsNullOrWhiteSpace(request.Code))
         {
-            var codeExists = await _db.Positions.AnyAsync(
-                x => x.Code == request.Code,
-                cancellationToken);
+            existing = await _db.Positions
+                .Include(p => p.DepartmentPositions)
+                .FirstOrDefaultAsync(x => x.Code == request.Code, cancellationToken);
+        }
 
-            if (codeExists)
-                throw new DomainApplicationException("Position with the same code already exists.");
+        if (existing is null)
+        {
+            var nameNormalized = request.Name.Trim();
+            existing = await _db.Positions
+                .Include(p => p.DepartmentPositions)
+                .FirstOrDefaultAsync(x => x.Name.ToLower() == nameNormalized.ToLower(), cancellationToken);
+        }
+
+        if (existing is not null)
+        {
+            var alreadyLinked = existing.DepartmentPositions.Any(dp => dp.DepartmentId == request.DepartmentId);
+            if (alreadyLinked)
+                throw new DomainApplicationException("Position already exists in this department.");
+
+            existing.AddDepartment(request.DepartmentId);
+            await _db.SaveChangesAsync(cancellationToken);
+            return existing.Id;
         }
 
         var position = new PositionEntity(
