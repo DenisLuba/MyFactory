@@ -1,0 +1,124 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Products.ProductsListPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:controllers="clr-namespace:MyFactory.MauiClient.Controllers"
+	xmlns:response="clr-namespace:MyFactory.MauiClient.Models.Products"
+	xmlns:viewModel="clr-namespace:MyFactory.MauiClient.ViewModels.Products"
+	Title="Товары"
+	x:DataType="viewModel:ProductsListPageViewModel">
+
+	<Grid
+		Padding="12"
+		RowDefinitions="Auto,Auto,Auto,*"
+		RowSpacing="12">
+		<Grid ColumnDefinitions="1*,1*,Auto" ColumnSpacing="8">
+			<Entry Placeholder="Поиск по названию" Text="{Binding SearchText}" />
+			<Entry
+				Grid.Column="1"
+				Placeholder="Поиск по Типу"
+				Text="{Binding SearchType}" />
+			<Button
+				Grid.Column="2"
+				Command="{Binding AddCommand}"
+				IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+				Text="{x:StaticResource PlusIcon}" />
+		</Grid>
+
+		<Grid
+			Grid.Row="1"
+			Padding="16"
+			ColumnDefinitions="1*,3*,3*,2*,2*,1*"
+			ColumnSpacing="8">
+			<Label FontAttributes="Bold" Text="SKU" />
+			<controllers:SortLabel
+				Grid.Column="1"
+				Command="{Binding SortCommand}"
+				IsDescending="{Binding IsDescending}"
+				IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+				SortKey="name"
+				Text="Название" />
+			<controllers:SortLabel
+				Grid.Column="2"
+				Command="{Binding SortCommand}"
+				IsDescending="{Binding IsDescending}"
+				IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+				SortKey="type"
+				Text="Тип товара" />
+			<controllers:SortLabel
+				Grid.Column="3"
+				Command="{Binding SortCommand}"
+				HorizontalTextAlignment="End"
+				IsDescending="{Binding IsDescending}"
+				IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+				SortKey="cost"
+				Text="Себестоимость" />
+			<Label
+				Grid.Column="4"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Статус" />
+		</Grid>
+
+		<ActivityIndicator
+			Grid.Row="2"
+			IsRunning="{Binding IsBusy}"
+			IsVisible="{Binding IsBusy}" />
+
+		<Border Grid.Row="3">
+			<CollectionView
+				x:Name="ProductsCollection"
+				ItemsSource="{Binding FilteredItems}"
+				ItemsUpdatingScrollMode="KeepScrollOffset"
+				RemainingItemsThreshold="5"
+				RemainingItemsThresholdReachedCommand="{Binding LoadNextPageCommand}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="response:ProductListItemResponse">
+						<SwipeView>
+							<SwipeView.RightItems>
+								<SwipeItems Mode="Reveal">
+									<SwipeItem
+										BackgroundColor="LightGray"
+										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=ProductsCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Редактировать" />
+									<SwipeItem
+										BackgroundColor="Tomato"
+										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=ProductsCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Удалить" />
+								</SwipeItems>
+							</SwipeView.RightItems>
+							<Grid
+								Padding="0,8"
+								ColumnDefinitions="1*,3*,3*,2*,2*,1*"
+								ColumnSpacing="8">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=ProductsCollection}}" CommandParameter="{Binding .}" />
+								</Grid.GestureRecognizers>
+								<Label Text="{Binding Sku}" />
+								<Label Grid.Column="1" Text="{Binding Name}" />
+								<Label Grid.Column="2" Text="{Binding ProductTypeName}" />
+								<Label Grid.Column="3" HorizontalTextAlignment="End">
+									<Label.FormattedText>
+										<FormattedString>
+											<Span Text="{Binding CostPrice, StringFormat='{0:0.##}'}" />
+											<Span Text=" " />
+											<Span Text="р." />
+										</FormattedString>
+									</Label.FormattedText>
+								</Label>
+								<Label
+									Grid.Column="4"
+									HorizontalTextAlignment="End"
+									Text="{Binding Status}" />
+							</Grid>
+						</SwipeView>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</Border>
+	</Grid>
+</ContentPage>
+

@@ -1,0 +1,181 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Organization.Employees.EmployeesListPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:controllers="clr-namespace:MyFactory.MauiClient.Controllers"
+	xmlns:converters="clr-namespace:MyFactory.MauiClient.Converters"
+	xmlns:models="clr-namespace:MyFactory.MauiClient.Models.Employees"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Organization.Employees"
+	Title="Сотрудники"
+	x:DataType="view_model:EmployeesListPageViewModel">
+
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,Auto,Auto,Auto,*"
+		RowSpacing="12">
+
+		<Label
+			FontAttributes="Bold"
+			FontSize="18"
+			Text="Сотрудники"
+			VerticalOptions="Center" />
+
+		<Grid
+			Grid.Row="1"
+			ColumnDefinitions="*,Auto"
+			ColumnSpacing="8">
+			<Entry Placeholder="ФИО..." Text="{Binding SearchName}" />
+
+			<Button
+				Grid.Column="1"
+				Command="{Binding AddCommand}"
+				Text="{x:StaticResource PlusIcon}" />
+		</Grid>
+
+		<Grid
+			Grid.Row="2"
+			ColumnDefinitions="*,*,0.5*,Auto,Auto,Auto"
+			ColumnSpacing="8"
+			RowDefinitions="Auto,Auto"
+			RowSpacing="4">
+			<Label Text="Цех" VerticalTextAlignment="Center" />
+			<Picker
+				Grid.Row="1"
+				ItemsSource="{Binding DepartmentNames}"
+				SelectedItem="{Binding SelectedDepartmentName, Mode=TwoWay}" />
+
+			<Label
+				Grid.Column="1"
+				Text="Должность"
+				VerticalTextAlignment="Center" />
+			<Picker
+				Grid.Row="1"
+				Grid.Column="1"
+				ItemsSource="{Binding PositionNames}"
+				SelectedItem="{Binding SelectedPositionName, Mode=TwoWay}" />
+
+			<Label
+				Grid.Column="2"
+				Text="Разряд"
+				VerticalTextAlignment="Center" />
+			<Entry
+				Grid.Row="1"
+				Grid.Column="2"
+				Placeholder="Разряд"
+				Text="{Binding Grade}" />
+
+			<Label
+				Grid.Column="3"
+				Text="Нанят после"
+				VerticalTextAlignment="Center" />
+			<DatePicker
+				Grid.Row="1"
+				Grid.Column="3"
+				Date="{Binding HiredFrom, Mode=TwoWay}"
+				Format="yyyy-MM-dd" />
+
+			<Label
+				Grid.Column="4"
+				Text="Нанят до"
+				VerticalTextAlignment="Center" />
+			<DatePicker
+				Grid.Row="1"
+				Grid.Column="4"
+				Date="{Binding HiredTo, Mode=TwoWay}"
+				Format="yyyy-MM-dd" />
+			<Button
+				Grid.Row="1"
+				Grid.Column="5"
+				Command="{Binding ResetCommand}"
+				Style="{StaticResource XButton}" />
+		</Grid>
+
+		<Grid
+			Grid.Row="3"
+			Padding="16"
+			ColumnDefinitions="4*,2*,2*,2*"
+			ColumnSpacing="8">
+			<controllers:SortLabel
+				Command="{Binding SortCommand}"
+				IsDescending="{Binding IsDescending}"
+				SortKey="fullname"
+				Text="ФИО" />
+			<controllers:SortLabel
+				Grid.Column="1"
+				Command="{Binding SortCommand}"
+				IsDescending="{Binding IsDescending}"
+				SortKey="department"
+				Text="Цех" />
+			<controllers:SortLabel
+				Grid.Column="2"
+				Command="{Binding SortCommand}"
+				IsDescending="{Binding IsDescending}"
+				SortKey="position"
+				Text="Должность" />
+			<Label
+				Grid.Column="3"
+				FontAttributes="Bold"
+				Text="Статус"
+				TextColor="SteelBlue">
+				<Label.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding StatusSwitcherCommand}" />
+				</Label.GestureRecognizers>
+			</Label>
+		</Grid>
+
+		<ActivityIndicator
+			Grid.Row="3"
+			IsRunning="{Binding IsBusy}"
+			IsVisible="{Binding IsBusy}" />
+
+		<Border Grid.Row="4">
+			<CollectionView
+				x:Name="EmployeesCollection"
+				ItemsSource="{Binding FilteredItems}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="models:EmployeeListItemResponse">
+						<SwipeView>
+							<SwipeView.RightItems>
+								<SwipeItems Mode="Reveal">
+									<SwipeItem
+										BackgroundColor="LightGray"
+										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=EmployeesCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Редактировать" />
+									<SwipeItem
+										BackgroundColor="Tomato"
+										Command="{Binding BindingContext.DeactivateCommand, Source={x:Reference Name=EmployeesCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Деактивировать" />
+								</SwipeItems>
+							</SwipeView.RightItems>
+							<Grid
+								Padding="0,8"
+								ColumnDefinitions="4*,2*,2*,2*"
+								ColumnSpacing="8">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=EmployeesCollection}}" CommandParameter="{Binding .}" />
+								</Grid.GestureRecognizers>
+								<Label Text="{Binding FullName}" TextColor="{Binding IsActive, Converter={StaticResource BooleanToColorConverter}, ConverterParameter='Black;Gray'}" />
+								<Label
+									Grid.Column="1"
+									Text="{Binding DepartmentName}"
+									TextColor="{Binding IsActive, Converter={StaticResource BooleanToColorConverter}, ConverterParameter='Black;Gray'}" />
+								<Label
+									Grid.Column="2"
+									Text="{Binding PositionName}"
+									TextColor="{Binding IsActive, Converter={StaticResource BooleanToColorConverter}, ConverterParameter='Black;Gray'}" />
+								<Label
+									Grid.Column="3"
+									Text="{Binding IsActive, Converter={StaticResource BooleanToActiveStatusConverter}}"
+									TextColor="{Binding IsActive, Converter={StaticResource BooleanToColorConverter}, ConverterParameter='Black;Gray'}" />
+							</Grid>
+						</SwipeView>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</Border>
+	</Grid>
+</ContentPage>
+

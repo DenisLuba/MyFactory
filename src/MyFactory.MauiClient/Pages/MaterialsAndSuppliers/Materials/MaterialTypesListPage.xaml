@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Materials.MaterialTypesListPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:viewmodels="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Materials"
+	Title="Типы материалов"
+	x:DataType="viewmodels:MaterialTypesListPageViewModel">
+
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,*"
+		RowSpacing="12">
+
+		<!--  Buttons  -->
+		<HorizontalStackLayout Grid.Row="0">
+			<Button
+				Command="{Binding AddCommand}"
+				IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+				Text="Добавить" />
+			<Button
+				Command="{Binding SaveCommand}"
+				IsEnabled="{Binding IsChanged}"
+				IsVisible="{Binding IsChanged}"
+				Text="Сохранить" />
+		</HorizontalStackLayout>
+
+		<!--  List  -->
+		<CollectionView
+			x:Name="MaterialTypesCollection"
+			Grid.Row="1"
+			ItemsSource="{Binding MaterialTypes}"
+			SelectedItem="{Binding SelectedMaterialType, Mode=TwoWay}"
+			SelectionMode="Single">
+
+			<CollectionView.ItemTemplate>
+				<DataTemplate x:DataType="viewmodels:MaterialTypesListPageViewModel+EditableMaterialTypeModel">
+					<Border>
+						<VerticalStackLayout>
+							<Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto,Auto">
+								<Entry
+									FontAttributes="Bold"
+									FontSize="16"
+									Text="{Binding Name, Mode=TwoWay}" />
+								<Entry
+									Grid.Row="1"
+									FontSize="13"
+									Text="{Binding Description, Mode=TwoWay}"
+									TextColor="Gray" />
+								<Label
+									Grid.RowSpan="2"
+									Grid.Column="1"
+									Margin="10,0,10,0"
+									FontAttributes="Italic"
+									Text="Удалить"
+									TextColor="Tomato"
+									VerticalTextAlignment="Center">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=MaterialTypesCollection}}" CommandParameter="{Binding .}" />
+									</Label.GestureRecognizers>
+								</Label>
+							</Grid>
+
+
+						</VerticalStackLayout>
+					</Border>
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+
+		</CollectionView>
+
+	</Grid>
+</ContentPage>

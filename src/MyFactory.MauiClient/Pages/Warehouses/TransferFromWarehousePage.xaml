@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Warehouses.TransferFromWarehousePage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Warehouses"
+	Title="Перемещение"
+	x:DataType="view_model:TransferFromWarehousePageViewModel">
+
+	<ContentPage.Resources>
+		<ResourceDictionary>
+			<Style TargetType="Label">
+				<Setter Property="FontSize" Value="18" />
+			</Style>
+			<Style TargetType="Span">
+				<Setter Property="FontSize" Value="16" />
+			</Style>
+		</ResourceDictionary>
+	</ContentPage.Resources>
+
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+		RowSpacing="12">
+		<VerticalStackLayout Spacing="4">
+
+			<Label>
+				<Label.FormattedText>
+					<FormattedString>
+						<Span FontAttributes="Bold" Text="Склад-отправитель: " />
+						<Span FontAttributes="Bold" Text="{Binding SourceWarehouseName}" />
+					</FormattedString>
+				</Label.FormattedText>
+			</Label>
+			<Label>
+				<Label.FormattedText>
+					<FormattedString>
+						<Span FontAttributes="Bold" Text="{Binding ItemType}" />
+						<Span FontAttributes="Bold" Text=": " />
+						<Span Text="{Binding ItemName}" />
+					</FormattedString>
+				</Label.FormattedText>
+			</Label>
+			<Label>
+				<Label.FormattedText>
+					<FormattedString>
+						<Span FontAttributes="Bold" Text="Доступно: " />
+						<Span Text="{Binding AvailableQty, StringFormat='{0:0.##}'}" />
+						<Span Text=" " />
+						<Span Text="{Binding UnitCode}" />
+					</FormattedString>
+				</Label.FormattedText>
+			</Label>
+		</VerticalStackLayout>
+
+		<Grid
+			Grid.Row="1"
+			ColumnDefinitions="2*,4*,4*"
+			ColumnSpacing="8">
+			<Label
+				FontAttributes="Bold"
+				Text="Склад назначения"
+				VerticalOptions="Center" />
+			<Picker
+				Grid.Column="1"
+				ItemDisplayBinding="{Binding Name}"
+				ItemsSource="{Binding Warehouses}"
+				SelectedItem="{Binding SelectedWarehouse}" />
+		</Grid>
+
+		<Grid
+			Grid.Row="2"
+			ColumnDefinitions="2*,1.5*,0.5*,6*"
+			ColumnSpacing="8">
+			<Label
+				FontAttributes="Bold"
+				MaxLines="2"
+				Text="Количество для перемещения"
+				VerticalTextAlignment="Center" />
+
+			<Entry
+				Grid.Column="1"
+				HorizontalTextAlignment="End"
+				Keyboard="Numeric"
+				Placeholder="0"
+				Text="{Binding QuantityInput}"
+				TextColor="{Binding QuantityColor}" />
+			<Label
+				Grid.Column="2"
+				HorizontalTextAlignment="Start"
+				Text="{Binding UnitCode}"
+				VerticalTextAlignment="Center" />
+		</Grid>
+
+		<Label
+			Grid.Row="3"
+			Padding="20"
+			Text="{Binding ErrorMessage}"
+			TextColor="Tomato" />
+
+		<Grid Grid.Row="4" ColumnDefinitions="Auto,*">
+			<Button Command="{Binding TransferCommand}" Text="Переместить" />
+			<Button
+				Grid.Column="1"
+				Command="{Binding BackCommand}"
+				HorizontalOptions="End"
+				Style="{StaticResource BackButtonStyle}"
+				Text="Назад" />
+		</Grid>
+	</Grid>
+</ContentPage>

@@ -1,0 +1,282 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Materials.MaterialDetailsViewPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:models="clr-namespace:MyFactory.MauiClient.Models.Materials"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Materials"
+	Title="Карточка материала"
+	x:DataType="view_model:MaterialDetailsViewPageViewModel">
+
+	<Grid>
+		<ScrollView>
+			<Grid
+				Padding="16"
+				RowDefinitions="Auto,Auto,Auto,Auto,*"
+				RowSpacing="12">
+				<Grid
+					ColumnDefinitions="Auto,*"
+					ColumnSpacing="8"
+					RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+					RowSpacing="8">
+
+					<Label FontAttributes="Bold" Text="Материал:" />
+					<Label Grid.Column="1" Text="{Binding Name}" />
+
+					<Label
+						Grid.Row="1"
+						FontAttributes="Bold"
+						Text="Тип:" />
+					<Label
+						Grid.Row="1"
+						Grid.Column="1"
+						Text="{Binding MaterialType}" />
+
+					<Label
+						Grid.Row="2"
+						FontAttributes="Bold"
+						Text="Цвет:" />
+					<Label
+						Grid.Row="2"
+						Grid.Column="1"
+						Text="{Binding Color}" />
+
+					<Label
+						Grid.Row="3"
+						FontAttributes="Bold"
+						Text="Остаток:" />
+					<Label Grid.Row="3" Grid.Column="1">
+						<Label.FormattedText>
+							<FormattedString>
+								<Span Text="{Binding TotalQty}" />
+								<Span Text=" " />
+								<Span Text="{Binding UnitCode}" />
+							</FormattedString>
+						</Label.FormattedText>
+					</Label>
+
+					<Label
+						Grid.Row="4"
+						FontAttributes="Bold"
+						Text="Описание:" />
+					<Label
+						Grid.Row="4"
+						Grid.Column="1"
+						FontAttributes="Italic"
+						Text="{Binding Description}" />
+
+				</Grid>
+
+				<Grid
+					Grid.Row="1"
+					ColumnDefinitions="Auto,Auto,*,Auto,Auto"
+					ColumnSpacing="8">
+					<Button
+						Command="{Binding EditCommand}"
+						IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+						Text="Редактировать" />
+					<Button
+						Grid.Column="1"
+						Command="{Binding AddPriceCommand}"
+						IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+						Text="Создать заказ" />
+					<Button
+						Grid.Column="2"
+						Command="{Binding CopyCommand}"
+						HorizontalOptions="End"
+						IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+						Text="Копировать" />
+					<Button
+						Grid.Column="3"
+						Command="{Binding BackCommand}"
+						HorizontalOptions="End"
+						IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+						Style="{StaticResource BackButtonStyle}"
+						Text="Назад" />
+					<Button
+						Grid.Column="4"
+						Command="{Binding DeleteCommand}"
+						HorizontalOptions="End"
+						IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+						Style="{StaticResource RemoveButtonStyle}"
+						Text="Удалить" />
+				</Grid>
+
+				<CollectionView
+					x:Name="ImageList"
+					Grid.Row="2"
+					ItemsLayout="HorizontalList"
+					ItemsSource="{Binding Images}"
+					SelectedItem="{Binding SelectedImage}"
+					SelectionMode="Single">
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="view_model:MaterialDetailsViewPageViewModel+ImageItemViewModel">
+							<Border Padding="0" BackgroundColor="Transparent">
+								<Border.StrokeShape>
+									<RoundRectangle CornerRadius="0" />
+								</Border.StrokeShape>
+								<Image
+									Aspect="AspectFill"
+									HeightRequest="120"
+									Source="{Binding Source}">
+									<Image.GestureRecognizers>
+										<TapGestureRecognizer
+											Command="{Binding BindingContext.PreviewImageCommand, Source={x:Reference Name=ImageList}}"
+											CommandParameter="{Binding .}"
+											NumberOfTapsRequired="2" />
+									</Image.GestureRecognizers>
+								</Image>
+							</Border>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+
+				<Border Grid.Row="3">
+					<Grid RowDefinitions="Auto, *" RowSpacing="8">
+						<Label
+							FontAttributes="Bold"
+							FontSize="Medium"
+							Text="Склады" />
+						<Grid
+							Grid.Row="1"
+							RowDefinitions="Auto,*"
+							RowSpacing="8">
+							<Grid
+								Padding="0,4"
+								ColumnDefinitions="1*,0.1*,0.02*"
+								ColumnSpacing="8">
+								<Label FontAttributes="Bold" Text="Склад" />
+								<Label
+									Grid.Column="1"
+									FontAttributes="Bold"
+									HorizontalTextAlignment="End"
+									Text="Кол-во" />
+							</Grid>
+							<CollectionView
+								x:Name="WarehousesCollection"
+								Grid.Row="1"
+								ItemsSource="{Binding Warehouses}"
+								SelectionMode="None">
+								<CollectionView.ItemTemplate>
+									<DataTemplate x:DataType="models:WarehouseQtyResponse">
+										<Grid
+											Padding="0,6"
+											ColumnDefinitions="1*,0.1*,0.02*"
+											ColumnSpacing="8">
+											<Grid.GestureRecognizers>
+												<TapGestureRecognizer Command="{Binding BindingContext.OpenWarehouseCommand, Source={x:Reference Name=WarehousesCollection}}" CommandParameter="{Binding WarehouseId}" />
+											</Grid.GestureRecognizers>
+											<Label Text="{Binding WarehouseName}" />
+											<Label Grid.Column="1" HorizontalTextAlignment="End">
+												<Label.FormattedText>
+													<FormattedString>
+														<Span Text="{Binding Qty}" />
+														<Span Text=" " />
+														<Span Text="{Binding UnitCode}" />
+													</FormattedString>
+												</Label.FormattedText>
+											</Label>
+										</Grid>
+									</DataTemplate>
+								</CollectionView.ItemTemplate>
+							</CollectionView>
+						</Grid>
+					</Grid>
+				</Border>
+
+				<Border
+					Grid.Row="4"
+					Padding="8"
+					Stroke="LightGray"
+					StrokeThickness="1">
+					<Grid RowDefinitions="Auto, *" RowSpacing="8">
+						<Label
+							FontAttributes="Bold"
+							FontSize="Medium"
+							Text="История закупок" />
+						<Grid
+							Grid.Row="1"
+							RowDefinitions="Auto,*"
+							RowSpacing="8">
+							<Grid
+								Padding="0,4"
+								ColumnDefinitions="4*,1*,1*,1.6*,0.1*"
+								ColumnSpacing="8">
+								<Label FontAttributes="Bold" Text="Поставщик" />
+								<Label
+									Grid.Column="1"
+									FontAttributes="Bold"
+									HorizontalTextAlignment="End"
+									Text="Кол-во" />
+								<Label
+									Grid.Column="2"
+									FontAttributes="Bold"
+									HorizontalTextAlignment="End"
+									Text="Цена" />
+								<Label
+									Grid.Column="3"
+									FontAttributes="Bold"
+									HorizontalTextAlignment="End"
+									Text="Дата" />
+							</Grid>
+							<CollectionView
+								x:Name="PurchaseHistoryCollection"
+								Grid.Row="1"
+								ItemsSource="{Binding PurchaseHistory}"
+								SelectionMode="None">
+								<CollectionView.ItemTemplate>
+									<DataTemplate x:DataType="models:MaterialPurchaseHistoryItemResponse">
+										<Grid
+											Padding="0,6"
+											ColumnDefinitions="4*,1*,1*,1.6*,0.1*"
+											ColumnSpacing="8">
+											<Grid.GestureRecognizers>
+												<TapGestureRecognizer Command="{Binding BindingContext.OpenSupplierCommand, Source={x:Reference Name=PurchaseHistoryCollection}}" CommandParameter="{Binding SupplierId}" />
+											</Grid.GestureRecognizers>
+											<Label Text="{Binding SupplierName}" />
+											<Label
+												Grid.Column="1"
+												HorizontalTextAlignment="End"
+												Text="{Binding Qty}" />
+											<Label
+												Grid.Column="2"
+												HorizontalTextAlignment="End"
+												Text="{Binding UnitPrice}" />
+											<Label
+												Grid.Column="3"
+												HorizontalTextAlignment="End"
+												Text="{Binding PurchaseDate}" />
+										</Grid>
+									</DataTemplate>
+								</CollectionView.ItemTemplate>
+							</CollectionView>
+						</Grid>
+					</Grid>
+				</Border>
+			</Grid>
+		</ScrollView>
+		<Grid IsEnabled="{Binding IsImagePreviewVisible}" IsVisible="{Binding IsImagePreviewVisible}">
+			<Border
+				Padding="4"
+				BackgroundColor="#80000000"
+				Stroke="Transparent"
+				StrokeShape="Rectangle"
+				StrokeThickness="0">
+				<Grid>
+					<Image Aspect="AspectFit" Source="{Binding PreviewImageSource}" />
+					<Button
+						Margin="8"
+						BackgroundColor="Transparent"
+						Command="{Binding ClosePreviewCommand}"
+						FontAttributes="Bold"
+						FontSize="14"
+						HorizontalOptions="End"
+						IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+						Shadow="{x:Null}"
+						Text="X"
+						TextColor="SlateGray"
+						VerticalOptions="Start" />
+				</Grid>
+			</Border>
+		</Grid>
+	</Grid>
+</ContentPage>

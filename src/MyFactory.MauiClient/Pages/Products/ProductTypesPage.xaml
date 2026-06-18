@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Products.ProductTypesPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Products"
+	Title="Типы продуктов"
+	x:DataType="view_model:ProductTypesPageViewModel">
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,*"
+		RowSpacing="12">
+		<HorizontalStackLayout Spacing="8">
+			<Button Command="{Binding AddCommand}" Text="Добавить" />
+			<Button
+				Command="{Binding SaveCommand}"
+				IsEnabled="{Binding HasChanges}"
+				IsVisible="{Binding HasChanges}"
+				Text="Сохранить" />
+		</HorizontalStackLayout>
+
+		<Grid
+			Grid.Row="1"
+			RowDefinitions="Auto,*"
+			RowSpacing="8">
+			<Grid
+				Padding="16"
+				ColumnDefinitions="4*,6*,2*"
+				ColumnSpacing="8">
+				<Label FontAttributes="Bold" Text="Название" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					Text="Описание" />
+			</Grid>
+
+			<Border Grid.Row="1">
+				<CollectionView ItemsSource="{Binding Items}" SelectionMode="None">
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="view_model:ProductTypesPageViewModel+ProductTypeItemViewModel">
+							<Grid ColumnDefinitions="4*,6*,2*" ColumnSpacing="8">
+								<Entry Placeholder="Название" Text="{Binding Name, Mode=TwoWay}" />
+								<Entry
+									Grid.Column="1"
+									Placeholder="Описание"
+									Text="{Binding Description, Mode=TwoWay}" />
+								<Label
+									Grid.Column="2"
+									Padding="0,0,16,0"
+									FontAttributes="Italic"
+									HorizontalTextAlignment="End"
+									Text="Удалить"
+									TextColor="Tomato"
+									VerticalTextAlignment="Center">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type view_model:ProductTypesPageViewModel}}, Path=DeleteCommand}" CommandParameter="{Binding .}" />
+									</Label.GestureRecognizers>
+								</Label>
+							</Grid>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+			</Border>
+		</Grid>
+	</Grid>
+</ContentPage>

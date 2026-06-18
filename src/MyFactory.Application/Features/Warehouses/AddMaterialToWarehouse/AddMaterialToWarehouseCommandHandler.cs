@@ -1,0 +1,113 @@
+﻿using MyFactory.Application.Common.Exceptions;
+using MyFactory.Application.Common.Interfaces;
+using MyFactory.Domain.Entities.Inventory;
+using MyFactory.Domain.Entities.Materials;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+
+namespace MyFactory.Application.Features.Warehouses.AddMaterialToWarehouse;
+
+public sealed class AddMaterialToWarehouseCommandHandler
+    : IRequestHandler<AddMaterialToWarehouseCommand>
+{
+    private readonly IApplicationDbContext _db;
+    private readonly ICurrentUserService _currentUser;
+
+    public AddMaterialToWarehouseCommandHandler(
+        IApplicationDbContext db,
+        ICurrentUserService currentUser)
+    {
+        _db = db;
+        _currentUser = currentUser;
+    }
+
+    public async Task Handle(
+        AddMaterialToWarehouseCommand request,
+        CancellationToken cancellationToken)
+    {
+        var warehouse = await _db.Warehouses
+            .FirstOrDefaultAsync(x => x.Id == request.WarehouseId, cancellationToken)
+            ?? throw new NotFoundException("Warehouse not found");
+
+        if (warehouse.Type == WarehouseType.FinishedGoods)
+            throw new ValidationException("Cannot add materials to finished goods warehouse");
+
+        var warehouseMaterial = await _db.WarehouseMaterials.FirstOrDefaultAsync(
+            x => x.WarehouseId == request.WarehouseId &&
+                 x.MaterialId == request.MaterialId,
+            cancellationToken);
+
+        var addedTotal = CalculateTotal(request.QtyPerPackage, request.PackageCount);
+
+        if (warehouseMaterial is null)
+        {
+            warehouseMaterial = new WarehouseMaterialEntity(
+                request.WarehouseId,
+                request.MaterialId,
+                request.QtyPerPackage,
+                request.PackageCount);
+
+            _db.WarehouseMaterials.Add(warehouseMaterial);
+        }
+        else
+        {
+            warehouseMaterial.AddQty(request.QtyPerPackage, request.PackageCount);
+        }
+
+        var unitCost = await GetUnitCost(request.MaterialId, cancellationToken);
+
+        await CreateAdjustmentMovement(
+            request.WarehouseId,
+            request.MaterialId,
+            addedTotal,
+            unitCost,
+            cancellationToken);
+
+        await _db.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task CreateAdjustmentMovement(
+        Guid warehouseId,
+        Guid materialId,
+        decimal qty,
+        decimal unitCost,
+        CancellationToken cancellationToken)
+    {
+        var movement = new InventoryMovementEntity(
+            InventoryMovementType.Adjustment,
+            warehouseId,
+            null,
+            null,
+            null,
+            _currentUser.UserId);
+
+        _db.InventoryMovements.Add(movement);
+
+        _db.InventoryMovementItems.Add(
+            new InventoryMovementItemEntity(
+                movement.Id,
+                materialId,
+                qty,
+                unitCost));
+
+        await Task.CompletedTask;
+    }
+
+    // Получаем стоимость из последнего принятого заказа на закупку данного материала
+    private async Task<decimal> GetUnitCost(Guid materialId, CancellationToken cancellationToken)
+    {
+        var cost = await (
+            from i in _db.MaterialPurchaseOrderItems.AsNoTracking()
+            join o in _db.MaterialPurchaseOrders.AsNoTracking() on i.PurchaseOrderId equals o.Id
+            where i.MaterialId == materialId && o.Status == PurchaseOrderStatus.Received
+            orderby o.OrderDate descending
+            select (decimal?)i.UnitPrice)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return cost ?? 0m;
+    }
+
+    private static decimal CalculateTotal(decimal qty, decimal? packageCount)
+        => packageCount is null ? qty : qty * packageCount.Value;
+}
+

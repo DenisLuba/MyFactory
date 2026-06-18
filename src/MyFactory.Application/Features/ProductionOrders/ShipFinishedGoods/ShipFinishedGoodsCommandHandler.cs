@@ -1,0 +1,83 @@
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using MyFactory.Application.Common.Exceptions;
+using MyFactory.Application.Common.Interfaces;
+using MyFactory.Domain.Entities.Inventory;
+using MyFactory.Domain.Entities.Production;
+
+namespace MyFactory.Application.Features.ProductionOrders.ShipFinishedGoods;
+
+public sealed class ShipFinishedGoodsCommandHandler
+    : IRequestHandler<ShipFinishedGoodsCommand>
+{
+    private readonly IApplicationDbContext _db;
+    private readonly ICurrentUserService _currentUser;
+
+    public ShipFinishedGoodsCommandHandler(
+        IApplicationDbContext db,
+        ICurrentUserService currentUser)
+    {
+        _db = db;
+        _currentUser = currentUser;
+    }
+
+    public async Task Handle(
+        ShipFinishedGoodsCommand request,
+        CancellationToken cancellationToken)
+    {
+        var po = await _db.ProductionOrders
+            .FirstOrDefaultAsync(x => x.Id == request.ProductionOrderId, cancellationToken)
+            ?? throw new NotFoundException("Production order not found");
+
+        if (po.Status != ProductionOrderStatus.Packaging &&
+            po.Status != ProductionOrderStatus.Finished)
+            throw new DomainApplicationException("Finished goods cannot be shipped at this stage.");
+
+        var soi = await _db.SalesOrderItems
+            .FirstOrDefaultAsync(x => x.Id == po.SalesOrderItemId, cancellationToken)
+            ?? throw new NotFoundException("Sales order item not found");
+
+        var totalToShip = CalculateTotal(request.QtyPerPackage, request.PackageCount);
+
+        if (soi.QtyShipped + totalToShip > soi.QtyAllocated)
+            throw new DomainApplicationException("Cannot ship more than allocated quantity.");
+
+        soi.UpdateQtyShipped(soi.QtyShipped + totalToShip);
+
+        var productId = soi.ProductId;
+
+        var stock = await _db.FinishedGoodsStocks
+            .FirstOrDefaultAsync(x =>
+                x.WarehouseId == request.FromWarehouseId &&
+                x.ProductId == productId,
+                cancellationToken)
+            ?? throw new DomainApplicationException("Finished goods stock not found.");
+
+        if (stock.Qty < totalToShip)
+            throw new DomainApplicationException("Not enough finished goods in stock.");
+
+        var movement = new FinishedGoodsMovementEntity(
+            FinishedGoodsMovementType.Shipment,
+            request.FromWarehouseId,
+            request.ToWarehouseId,
+            DateTime.UtcNow,
+            _currentUser.UserId);
+
+        _db.FinishedGoodsMovements.Add(movement);
+
+        var movementItem = new FinishedGoodsMovementItemEntity(
+            movement.Id,
+            productId,
+            totalToShip);
+
+        _db.FinishedGoodsMovementItems.Add(movementItem);
+
+        stock.RemoveQty(request.QtyPerPackage, request.PackageCount);
+
+        await _db.SaveChangesAsync(cancellationToken);
+    }
+
+    private static decimal CalculateTotal(decimal qtyPerPackage, decimal? packageCount)
+        => packageCount is null ? qtyPerPackage : qtyPerPackage * packageCount.Value;
+}
+

@@ -1,0 +1,183 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Products.ProductDetailsPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Products"
+	Title="Карточка товара"
+	x:DataType="view_model:ProductDetailsPageViewModel">
+
+	<Grid>
+		<ScrollView>
+			<Grid
+				Padding="16"
+				RowDefinitions="Auto,Auto,Auto,Auto"
+				RowSpacing="12">
+				<Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+					<Button
+						Command="{Binding EditCommand}"
+						HorizontalOptions="Start"
+						Text="Редактировать" />
+					<Button
+						Grid.Column="1"
+						Command="{Binding BackCommand}"
+						Style="{StaticResource BackButtonStyle}"
+						Text="Назад" />
+					<Button
+						Grid.Column="2"
+						Background="Tomato"
+						Command="{Binding DeleteCommand}"
+						HorizontalOptions="End"
+						Text="Удалить" />
+				</Grid>
+
+				<Label
+					Grid.Row="1"
+					Padding="0,20"
+					FontSize="20">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span FontAttributes="Bold" Text="{Binding Name}" />
+							<Span Text=" " />
+							<Span FontAttributes="Italic" Text="{Binding Sku}" />
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+
+				<Grid
+					Grid.Row="2"
+					ColumnDefinitions="Auto,*"
+					ColumnSpacing="8"
+					RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+					RowSpacing="8">
+
+					<Label FontAttributes="Bold" Text="Тип товара:" />
+					<Label Grid.Column="1" Text="{Binding ProductType}" />
+
+					<Label
+						Grid.Row="1"
+						FontAttributes="Bold"
+						Text="Описание: " />
+					<Label
+						Grid.Row="1"
+						Grid.Column="1"
+						MaxLines="4"
+						Text="{Binding Description}" />
+
+					<Label
+						Grid.Row="2"
+						FontAttributes="Bold"
+						Text="План пошива в смену:" />
+					<Label
+						Grid.Row="2"
+						Grid.Column="1"
+						Text="{Binding PlanPerHour}" />
+
+					<Label
+						Grid.Row="3"
+						FontAttributes="Bold"
+						Text="Себестоимость:" />
+					<Label
+						Grid.Row="3"
+						Grid.Column="1"
+						Text="{Binding TotalCost}" />
+
+					<Label
+						Grid.Row="4"
+						FontAttributes="Bold"
+						Text="Версия: " />
+					<Label
+						Grid.Row="4"
+						Grid.Column="1"
+						Text="{Binding Version}" />
+
+					<Label
+						Grid.Row="5"
+						FontAttributes="Bold"
+						Text="Статус" />
+					<Label
+						Grid.Row="5"
+						Grid.Column="1"
+						Text="{Binding Status}" />
+				</Grid>
+
+				<Grid
+					Grid.Row="3"
+					RowDefinitions="Auto,Auto"
+					RowSpacing="12">
+
+					<CollectionView
+						x:Name="ImageList"
+						ItemsLayout="HorizontalList"
+						ItemsSource="{Binding Images}"
+						SelectedItem="{Binding SelectedImage}"
+						SelectionMode="Single">
+						<CollectionView.ItemTemplate>
+							<DataTemplate x:DataType="view_model:ProductDetailsPageViewModel+ImageItemViewModel">
+								<Border Padding="0" BackgroundColor="Transparent">
+									<Border.StrokeShape>
+										<RoundRectangle CornerRadius="0" />
+									</Border.StrokeShape>
+									<Image
+										Aspect="AspectFill"
+										HeightRequest="120"
+										Source="{Binding Source}">
+										<Image.GestureRecognizers>
+											<TapGestureRecognizer
+												Command="{Binding BindingContext.PreviewImageCommand, Source={x:Reference Name=ImageList}}"
+												CommandParameter="{Binding .}"
+												NumberOfTapsRequired="2" />
+										</Image.GestureRecognizers>
+									</Image>
+								</Border>
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
+					</CollectionView>
+
+					<Grid
+						Grid.Row="1"
+						ColumnDefinitions="Auto,Auto,Auto,*"
+						ColumnSpacing="8">
+						<Button Command="{Binding OpenSpecificationCommand}" Text="Спецификация" />
+						<Button
+							Grid.Column="1"
+							Command="{Binding OpenCostsCommand}"
+							Text="Затраты" />
+						<Button
+							Grid.Column="2"
+							Command="{Binding OpenStocksCommand}"
+							Text="Остатки" />
+						<Button
+							Grid.Column="3"
+							Command="{Binding CopyCommand}"
+							HorizontalOptions="End"
+							Text="Копировать" />
+					</Grid>
+				</Grid>
+			</Grid>
+		</ScrollView>
+		<Grid IsEnabled="{Binding IsImagePreviewVisible}" IsVisible="{Binding IsImagePreviewVisible}">
+			<Border
+				Padding="4"
+				BackgroundColor="#80000000"
+				Stroke="Transparent"
+				StrokeShape="Rectangle"
+				StrokeThickness="0">
+				<Grid>
+					<Image Aspect="AspectFit" Source="{Binding PreviewImageSource}" />
+					<Button
+						Margin="8"
+						BackgroundColor="Transparent"
+						Command="{Binding ClosePreviewCommand}"
+						FontAttributes="Bold"
+						FontSize="14"
+						HorizontalOptions="End"
+						Shadow="{x:Null}"
+						Text="X"
+						TextColor="SlateGray"
+						VerticalOptions="Start" />
+				</Grid>
+			</Border>
+		</Grid>
+	</Grid>
+</ContentPage>
+

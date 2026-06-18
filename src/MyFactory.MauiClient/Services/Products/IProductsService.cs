@@ -1,0 +1,24 @@
+using MyFactory.MauiClient.Models.Common;
+using MyFactory.MauiClient.Models.Products;
+using MyFactory.MauiClient.Services.Common;
+
+namespace MyFactory.MauiClient.Services.Products;
+
+public interface IProductsService : IGetListService<ProductListItemResponse>
+{
+    Task<ProductDetailsResponse?> GetDetailsAsync(Guid id);
+    Task<CreateProductResponse?> CreateAsync(CreateProductRequest request);
+    Task UpdateAsync(Guid id, UpdateProductRequest request);
+    Task DeleteAsync(Guid id);
+
+    Task<AddProductMaterialResponse?> AddMaterialAsync(Guid productId, AddProductMaterialRequest request);
+    Task UpdateMaterialAsync(Guid productMaterialId, UpdateProductMaterialRequest request);
+    Task RemoveMaterialAsync(Guid productId, Guid materialId);
+
+    Task SetProductionCostsAsync(Guid productId, SetProductProductionCostsRequest request);
+
+    Task<IReadOnlyList<ProductImageFileResponse>?> GetImagesAsync(Guid productId);
+    Task<byte[]?> GetImageContentAsync(Guid imageId, CancellationToken cancellationToken = default);
+    Task<Guid?> UploadImageAsync(Guid productId, Stream content, string fileName, string contentType, CancellationToken cancellationToken = default);
+    Task DeleteImageAsync(Guid imageId);
+}

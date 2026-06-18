@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="MyFactory.MauiClient/MyFactory.MauiClient.csproj" Id="53b9ad60-85d3-459b-8bee-69c605e5a811">
+      <Deploy Solution="Debug|*" />
+    </Project>
+  </Folder>
+  <Folder Name="/tests/" />
+</Solution>

@@ -1,0 +1,227 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Application
+	x:Class="MyFactory.MauiClient.App"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:converters="clr-namespace:MyFactory.MauiClient.Converters"
+	xmlns:local="clr-namespace:MyFactory.MauiClient">
+	<Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+				<ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+
+			<!--  Converters  -->
+			<converters:GreaterThanZeroToRedColorConverter x:Key="GreaterThanZeroToRedColorConverter" />
+			<converters:GreaterThanZeroConverter x:Key="GreaterThanZero" />
+			<converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+			<converters:BooleanToYesNoConverter x:Key="BooleanToYesNoConverter" />
+			<converters:BooleanToActiveStatusConverter x:Key="BooleanToActiveStatusConverter" />
+			<converters:BooleanToColorConverter x:Key="BooleanToColorConverter" />
+			<converters:StatusToRusConverter x:Key="StatusToRusConverter" />
+
+			<x:String x:Key="PlusIcon">✚</x:String>
+
+			<!--  BORDER  -->
+			<Style TargetType="Border">
+				<Setter Property="Stroke" Value="{StaticResource BaseButtonColor}" />
+				<Setter Property="StrokeThickness" Value="1" />
+				<Setter Property="Background">
+					<Setter.Value>
+						<LinearGradientBrush EndPoint="0,1">
+							<GradientStop Offset="0" Color="{StaticResource BorderStartColor}" />
+							<GradientStop Offset="1" Color="{StaticResource BorderEndColor}" />
+						</LinearGradientBrush>
+					</Setter.Value>
+				</Setter>
+				<Setter Property="Padding" Value="16" />
+				<Setter Property="StrokeShape">
+					<Setter.Value>
+						<RoundRectangle CornerRadius="12" />
+					</Setter.Value>
+				</Setter>
+			</Style>
+
+			<!--  COLLECTION VIEW BASE  -->
+			<Style x:Key="BaseCollectionViewStyle" TargetType="CollectionView">
+				<Setter Property="ItemsLayout">
+					<Setter.Value>
+						<LinearItemsLayout ItemSpacing="12" Orientation="Vertical" />
+					</Setter.Value>
+				</Setter>
+			</Style>
+
+			<!--  COLLECTION VIEW  -->
+			<Style BasedOn="{StaticResource BaseCollectionViewStyle}" TargetType="CollectionView" />
+
+			<!--  COLLECTION VIEW HORIZONTAL  -->
+			<Style
+				x:Key="HorizontalCollectionViewStyle"
+				BasedOn="{StaticResource BaseCollectionViewStyle}"
+				TargetType="CollectionView">
+				<Setter Property="ItemsLayout">
+					<Setter.Value>
+						<LinearItemsLayout ItemSpacing="12" Orientation="Horizontal" />
+					</Setter.Value>
+				</Setter>
+			</Style>
+
+			<!--  BASE BUTTON  -->
+			<Style x:Key="BaseButtonStyle" TargetType="Button">
+				<Setter Property="Padding" Value="26,8,26,8" />
+				<Setter Property="Margin" Value="0,0,8,0" />
+				<Setter Property="HorizontalOptions" Value="Center" />
+				<Setter Property="TextTransform" Value="Uppercase" />
+				<Setter Property="FontSize" Value="18" />
+				<Setter Property="CornerRadius" Value="18" />
+				<Setter Property="TextColor" Value="WhiteSmoke" />
+				<Setter Property="BackgroundColor" Value="{StaticResource BaseButtonColor}" />
+				<Setter Property="Scale" Value="1" />
+				<Setter Property="Shadow">
+					<Setter.Value>
+						<Shadow
+							Brush="#80000000"
+							Radius="8"
+							Offset="4,4" />
+					</Setter.Value>
+				</Setter>
+
+				<Setter Property="VisualStateManager.VisualStateGroups">
+					<Setter.Value>
+						<VisualStateGroupList>
+							<VisualStateGroup Name="CommonStates">
+								<VisualState Name="Normal" />
+								<VisualState Name="Pressed">
+									<VisualState.Setters>
+										<Setter Property="TextColor" Value="LightGray" />
+										<Setter Property="BackgroundColor" Value="{StaticResource BasePressedButtonColor}" />
+										<Setter Property="Scale" Value="0.96" />
+										<Setter Property="Shadow">
+											<Setter.Value>
+												<Shadow
+													Brush="#B0000000"
+													Radius="4"
+													Offset="2,2" />
+											</Setter.Value>
+										</Setter>
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState Name="Disabled">
+									<VisualState.Setters>
+										<Setter Property="Opacity" Value="0.6" />
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateGroupList>
+					</Setter.Value>
+				</Setter>
+			</Style>
+
+			<Style BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button" />
+
+			<!--  X BUTTON  -->
+			<Style
+				x:Key="XButton"
+				BasedOn="{StaticResource BaseButtonStyle}"
+				TargetType="Button">
+				<Setter Property="Margin" Value="0" />
+				<Setter Property="Padding" Value="0" />
+				<Setter Property="BackgroundColor" Value="Transparent" />
+				<Setter Property="CornerRadius" Value="0" />
+				<Setter Property="HeightRequest" Value="42" />
+				<Setter Property="WidthRequest" Value="42" />
+				<Setter Property="HorizontalOptions" Value="Start" />
+				<Setter Property="VerticalOptions" Value="End" />
+				<Setter Property="Shadow" Value="Transparent 0,0" />
+				<Setter Property="Text" Value="X" />
+				<Setter Property="TextColor" Value="Gray" />
+			</Style>
+
+			<!--  BACK BUTTON  -->
+			<Style
+				x:Key="BackButtonStyle"
+				BasedOn="{StaticResource BaseButtonStyle}"
+				TargetType="Button">
+				<Setter Property="BackgroundColor" Value="{StaticResource BackButtonColor}" />
+				<Setter Property="VisualStateManager.VisualStateGroups">
+					<Setter.Value>
+						<VisualStateGroupList>
+							<VisualStateGroup Name="CommonStates">
+								<VisualState Name="Pressed">
+									<VisualState.Setters>
+										<Setter Property="TextColor" Value="LightBlue" />
+										<Setter Property="BackgroundColor" Value="{StaticResource BackPressedButtonColor}" />
+										<Setter Property="Scale" Value="0.96" />
+										<Setter Property="Shadow">
+											<Setter.Value>
+												<Shadow
+													Brush="#B0000000"
+													Radius="4"
+													Offset="2,2" />
+											</Setter.Value>
+										</Setter>
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateGroupList>
+					</Setter.Value>
+				</Setter>
+			</Style>
+
+			<!--  REMOVE BUTTON  -->
+			<Style
+				x:Key="RemoveButtonStyle"
+				BasedOn="{StaticResource BaseButtonStyle}"
+				TargetType="Button">
+				<Setter Property="BackgroundColor" Value="{StaticResource RemoveButtonColor}" />
+				<Setter Property="VisualStateManager.VisualStateGroups">
+					<Setter.Value>
+						<VisualStateGroupList>
+							<VisualStateGroup Name="CommonStates">
+								<VisualState Name="Pressed">
+									<VisualState.Setters>
+										<Setter Property="TextColor" Value="LightCoral" />
+										<Setter Property="BackgroundColor" Value="{StaticResource RemovePressedButtonColor}" />
+										<Setter Property="Scale" Value="0.96" />
+										<Setter Property="Shadow">
+											<Setter.Value>
+												<Shadow
+													Brush="#B0000000"
+													Radius="4"
+													Offset="2,2" />
+											</Setter.Value>
+										</Setter>
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateGroupList>
+					</Setter.Value>
+				</Setter>
+			</Style>
+
+			<!--  GRID  -->
+			<Style x:Key="SelectableItemGridStyle" TargetType="Grid">
+				<Setter Property="VisualStateManager.VisualStateGroups">
+					<Setter.Value>
+						<VisualStateGroupList>
+							<VisualStateGroup Name="CommonStates">
+								<VisualState Name="Normal">
+									<VisualState.Setters>
+										<Setter Property="Background" Value="Transparent" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState Name="Selected">
+									<VisualState.Setters>
+										<Setter Property="Background" Value="{StaticResource SelectedGridColor}" />
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateGroupList>
+					</Setter.Value>
+				</Setter>
+			</Style>
+
+		</ResourceDictionary>
+	</Application.Resources>
+</Application>

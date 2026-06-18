@@ -1,0 +1,144 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Suppliers.SupplierDetailsPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Suppliers"
+	Title="Карточка поставщика"
+	x:DataType="view_model:SupplierDetailsPageViewModel">
+	<ScrollView>
+		<Grid
+			Padding="16"
+			RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,*"
+			RowSpacing="12">
+			<Label
+				FontAttributes="Bold"
+				FontSize="20"
+				Text="{Binding Name}" />
+			<Label Grid.Row="1" Text="{Binding Description}" />
+			<Label Grid.Row="2" Text="{Binding Contacts}" />
+			<ScrollView
+				Grid.Row="3"
+				Padding="0,0,0,16"
+				Orientation="Horizontal">
+				<Grid
+					ColumnDefinitions="Auto,Auto,Auto,Auto,*,Auto"
+					ColumnSpacing="12"
+					IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
+					<Button Command="{Binding EditCommand}" Text="Редактировать поставщика" />
+					<Button
+						Grid.Column="1"
+						Command="{Binding AddPurchaseCommand}"
+						Text="Добавить закупку" />
+					<Button
+						Grid.Column="2"
+						Command="{Binding EditOrderCommand}"
+						IsEnabled="{Binding HasSelection}"
+						IsVisible="{Binding HasSelection}"
+						Text="Редактировать заказ" />
+					<Button
+						Grid.Column="3"
+						Command="{Binding EditOrderCommand}"
+						IsEnabled="{Binding HasSelectionForDetails}"
+						IsVisible="{Binding HasSelectionForDetails}"
+						Text="Детали заказа" />
+
+					<Button
+						Grid.Column="4"
+						Command="{Binding DeleteOrderCommand}"
+						HorizontalOptions="End"
+						IsEnabled="{Binding HasSelection}"
+						IsVisible="{Binding HasSelection}"
+						Style="{StaticResource RemoveButtonStyle}"
+						Text="Удалить заказ" />
+					<Button
+						Grid.Column="5"
+						Command="{Binding BackCommand}"
+						HorizontalOptions="End"
+						Style="{StaticResource BackButtonStyle}"
+						Text="Назад" />
+				</Grid>
+			</ScrollView>
+			<Grid
+				Grid.Row="4"
+				ColumnDefinitions="2*,2*,2*,4*"
+				ColumnSpacing="8">
+
+				<Picker
+					Title="Статус"
+					ItemsSource="{Binding StatusOptions}"
+					SelectedItem="{Binding SelectedStatus, Mode=TwoWay}" />
+				<VerticalStackLayout Grid.Column="1" HorizontalOptions="End">
+					<Label Text="От" />
+					<DatePicker Date="{Binding FromDateFilter, Mode=TwoWay}" Format="dd.MM.yyyy" />
+				</VerticalStackLayout>
+				<VerticalStackLayout Grid.Column="2">
+					<Label Text="До" />
+					<DatePicker Date="{Binding ToDateFilter, Mode=TwoWay}" Format="dd.MM.yyyy" />
+				</VerticalStackLayout>
+
+			</Grid>
+
+			<Grid Grid.Row="5" RowDefinitions="Auto,Auto">
+				<Label
+					Margin="16"
+					FontAttributes="Bold"
+					FontSize="20"
+					Text="История закупок" />
+
+				<Grid
+					Grid.Row="1"
+					Padding="16,0"
+					RowDefinitions="Auto,*"
+					RowSpacing="8">
+					<Grid
+						Padding="0,4"
+						ColumnDefinitions="0.5*,4*,5*,0.5*"
+						ColumnSpacing="8">
+
+						<Label FontAttributes="Bold" Text="№" />
+						<Label
+							Grid.Column="1"
+							FontAttributes="Bold"
+							HorizontalTextAlignment="End"
+							Text="Статус" />
+						<Label
+							Grid.Column="2"
+							FontAttributes="Bold"
+							HorizontalTextAlignment="End"
+							Text="Дата" />
+					</Grid>
+				</Grid>
+			</Grid>
+
+			<Border Grid.Row="6">
+
+				<CollectionView
+					Grid.Row="1"
+					ItemsSource="{Binding PurchaseHistory}"
+					SelectedItem="{Binding SelectedPurchase, Mode=TwoWay}"
+					SelectionMode="Single">
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="view_model:SupplierDetailsPageViewModel+SupplierPurchaseHistoryViewModel">
+							<Grid
+								Padding="0,6"
+								ColumnDefinitions="0.5*,4*,5*,0.5*"
+								ColumnSpacing="8"
+								Style="{StaticResource SelectableItemGridStyle}">
+								<Label Text="{Binding PurchaseNumberText}" />
+								<Label
+									Grid.Column="1"
+									HorizontalTextAlignment="End"
+									Text="{Binding StatusText}" />
+								<Label
+									Grid.Column="2"
+									HorizontalTextAlignment="End"
+									Text="{Binding Date, StringFormat='{0:d}'}" />
+							</Grid>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+			</Border>
+		</Grid>
+	</ScrollView>
+</ContentPage>
+

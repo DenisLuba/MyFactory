@@ -1,0 +1,305 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Production.ProductionOrders.ProductionOrderCreatePage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Production.ProductionOrders"
+	Title="Производственный заказ"
+	x:DataType="view_model:ProductionOrderCreatePageViewModel">
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,Auto,Auto,Auto,*,Auto,Auto,*,Auto"
+		RowSpacing="12">
+		<Label
+			FontAttributes="Bold"
+			FontSize="18"
+			Text="Производственный заказ" />
+
+		<Grid
+			Grid.Row="1"
+			ColumnDefinitions="Auto,*"
+			ColumnSpacing="8"
+			RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+			RowSpacing="8">
+			<Label
+				FontAttributes="Bold,Italic"
+				FontSize="16"
+				IsVisible="{Binding IsCreateMode, Converter={StaticResource InvertedBoolConverter}}"
+				Text="{Binding ProductionOrderNumber, StringFormat='Номер ПЗ: {0}'}" />
+
+			<Label
+				Grid.Row="1"
+				FontAttributes="Bold"
+				Text="Заказ клиента:"
+				VerticalTextAlignment="Center" />
+			<Entry
+				Grid.Row="1"
+				Grid.Column="1"
+				IsVisible="{Binding IsCreateMode}">
+				<Entry.Text>
+					<MultiBinding StringFormat="№: {0}, заказчик: {1}">
+						<Binding Path="SelectedSalesOrder.OrderNumber" />
+						<Binding Path="SelectedSalesOrder.Customer.Name" />
+					</MultiBinding>
+				</Entry.Text>
+				<Entry.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding SalesOrderEntryFocusedCommand}" />
+				</Entry.GestureRecognizers>
+			</Entry>
+			<Label
+				Grid.Row="1"
+				Grid.Column="1"
+				IsVisible="{Binding IsCreateMode, Converter={StaticResource InvertedBoolConverter}}"
+				VerticalTextAlignment="Center">
+				<Label.Text>
+					<MultiBinding StringFormat="№: {0}, заказчик: {1}">
+						<Binding Path="SelectedSalesOrder.OrderNumber" />
+						<Binding Path="SelectedSalesOrder.Customer.Name" />
+					</MultiBinding>
+				</Label.Text>
+			</Label>
+
+			<Label
+				Grid.Row="2"
+				FontAttributes="Bold"
+				Text="Изделие:"
+				VerticalTextAlignment="Center" />
+			<Picker
+				Grid.Row="2"
+				Grid.Column="1"
+				IsVisible="{Binding IsCreateMode}"
+				ItemDisplayBinding="{Binding ProductName}"
+				ItemsSource="{Binding Products}"
+				SelectedItem="{Binding SelectedProduct}" />
+			<Label
+				Grid.Row="2"
+				Grid.Column="1"
+				IsVisible="{Binding IsCreateMode, Converter={StaticResource InvertedBoolConverter}}"
+				Text="{Binding SelectedProduct.ProductName}"
+				VerticalTextAlignment="Center" />
+
+			<Label
+				Grid.Row="3"
+				FontAttributes="Bold"
+				Text="Количество:"
+				VerticalTextAlignment="Center" />
+			<Entry
+				Grid.Row="3"
+				Grid.Column="1"
+				IsVisible="{Binding IsViewMode, Converter={StaticResource InvertedBoolConverter}}"
+				Keyboard="Numeric"
+				Text="{Binding Quantity, StringFormat='{0:0.##}'}" />
+			<Label
+				Grid.Row="3"
+				Grid.Column="1"
+				IsVisible="{Binding IsViewMode}"
+				Text="{Binding Quantity}"
+				VerticalTextAlignment="Center" />
+
+			<Label
+				Grid.Row="4"
+				FontAttributes="Bold"
+				Text="Цех:"
+				VerticalTextAlignment="Center" />
+			<Picker
+				Grid.Row="4"
+				Grid.Column="1"
+				IsVisible="{Binding IsViewMode, Converter={StaticResource InvertedBoolConverter}}"
+				ItemDisplayBinding="{Binding Name}"
+				ItemsSource="{Binding Departments}"
+				SelectedItem="{Binding SelectedDepartment}" />
+			<Label
+				Grid.Row="4"
+				Grid.Column="1"
+				IsVisible="{Binding IsViewMode}"
+				Text="{Binding SelectedDepartment.Name}"
+				VerticalTextAlignment="Center" />
+
+			<Label
+				Grid.Row="5"
+				FontAttributes="Bold"
+				IsVisible="{Binding IsCreateMode, Converter={StaticResource InvertedBoolConverter}}"
+				Text="Статус:" />
+			<Label
+				Grid.Row="5"
+				Grid.Column="1"
+				IsVisible="{Binding IsCreateMode, Converter={StaticResource InvertedBoolConverter}}"
+				Text="{Binding Status}" />
+		</Grid>
+
+		<!--  СПЕЦИФИКАЦИЯ  -->
+		<!--  Title  -->
+		<Label
+			Grid.Row="2"
+			Padding="0,20,0,0"
+			FontAttributes="Bold"
+			FontSize="18"
+			Text="Материалы (спецификация)" />
+
+		<Grid
+			Grid.Row="3"
+			Padding="16,0"
+			ColumnDefinitions="2*,1.8*,1.8*,1.8*,2.6*"
+			ColumnSpacing="8">
+			<Label FontAttributes="Bold" Text="Материал" />
+			<Label
+				Grid.Column="1"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Нужно" />
+			<Label
+				Grid.Column="2"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Есть" />
+			<Label
+				Grid.Column="3"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Не хватает" />
+			<Label
+				Grid.Column="4"
+				Padding="0,0,20,0"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Действия" />
+		</Grid>
+
+		<!--  Collection  -->
+		<Border Grid.Row="4">
+			<CollectionView
+				x:Name="MaterialsCollection"
+				ItemsSource="{Binding Materials}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="view_model:ProductionOrderCreatePageViewModel+MaterialItemViewModel">
+						<Grid
+							Padding="0,6"
+							ColumnDefinitions="2*,1.8*,1.8*,1.8*,2.6*"
+							ColumnSpacing="8">
+							<Label Text="{Binding Name}" />
+							<Label
+								Grid.Column="1"
+								HorizontalTextAlignment="End"
+								Text="{Binding RequiredString}" />
+							<Label
+								Grid.Column="2"
+								HorizontalTextAlignment="End"
+								Text="{Binding AvailableString}" />
+							<Label
+								Grid.Column="3"
+								HorizontalTextAlignment="End"
+								Text="{Binding MissingString}"
+								TextColor="{Binding Missing, Converter={StaticResource GreaterThanZeroToRedColorConverter}, ConverterParameter='#FE6347,Black'}" />
+							<HorizontalStackLayout
+								Grid.Column="4"
+								Padding="0,0,20,0"
+								HorizontalOptions="End"
+								Spacing="20">
+								<Label
+									FontAttributes="Bold,Italic"
+									FontSize="16"
+									Text="Заказать"
+									TextColor="{StaticResource BackButtonColor}">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding BindingContext.CreatePurchaseCommand, Source={x:Reference Name=MaterialsCollection}}" CommandParameter="{Binding .}" />
+									</Label.GestureRecognizers>
+								</Label>
+								<Label
+									FontAttributes="Bold,Italic"
+									FontSize="16"
+									IsVisible="{Binding BindingContext.CanIssueMaterials, Source={x:Reference Name=MaterialsCollection}}"
+									Text="Списать"
+									TextColor="{StaticResource BackButtonColor}">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding BindingContext.ConsumeCommand, Source={x:Reference Name=MaterialsCollection}}" CommandParameter="{Binding .}" />
+									</Label.GestureRecognizers>
+								</Label>
+
+							</HorizontalStackLayout>
+						</Grid>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</Border>
+
+		<!--  ОТГРУЗКИ  -->
+		<!--  Title  -->
+		<Label
+			Grid.Row="5"
+			Padding="0,20,0,0"
+			FontAttributes="Bold"
+			FontSize="18"
+			Text="Отгружено" />
+
+		<Grid
+			Grid.Row="6"
+			Padding="16,0"
+			ColumnDefinitions="4*,2*,2*"
+			ColumnSpacing="8">
+			<Label FontAttributes="Bold" Text="Склад" />
+			<Label
+				Grid.Column="1"
+				FontAttributes="Bold"
+				Text="Кол-во" />
+			<Label
+				Grid.Column="2"
+				FontAttributes="Bold"
+				Text="Дата" />
+		</Grid>
+
+		<!--  Collection  -->
+		<Border Grid.Row="7">
+			<CollectionView
+				x:Name="ShipmentsCollection"
+				ItemsSource="{Binding Shipments}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="view_model:ProductionOrderCreatePageViewModel+ShipmentItemViewModel">
+						<Grid ColumnDefinitions="4*,2*,2*" ColumnSpacing="8">
+							<Label Text="{Binding WarehouseName}" />
+							<Label
+								Grid.Column="1"
+								HorizontalTextAlignment="End"
+								Text="{Binding Quantity}" />
+							<Label
+								Grid.Column="2"
+								HorizontalTextAlignment="End"
+								Text="{Binding Date}" />
+						</Grid>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</Border>
+
+		<!--  Кнопки  -->
+		<Grid
+			Grid.Row="8"
+			ColumnDefinitions="Auto,Auto,*"
+			ColumnSpacing="12">
+			<Button
+				Command="{Binding SaveCommand}"
+				IsEnabled="{Binding IsViewMode, Converter={StaticResource InvertedBoolConverter}}"
+				IsVisible="{Binding IsViewMode, Converter={StaticResource InvertedBoolConverter}}"
+				Text="Сохранить" />
+			<Button
+				Command="{Binding EditCommand}"
+				IsEnabled="{Binding IsViewMode}"
+				IsVisible="{Binding IsViewMode}"
+				Text="Редактировать" />
+			<Button
+				Grid.Column="1"
+				Command="{Binding StagesCommand}"
+				IsEnabled="{Binding IsCreateMode, Converter={StaticResource InvertedBoolConverter}}"
+				IsVisible="{Binding IsCreateMode, Converter={StaticResource InvertedBoolConverter}}"
+				Text="Этапы производства" />
+
+			<Button
+				Grid.Column="2"
+				Command="{Binding CancelCommand}"
+				HorizontalOptions="End"
+				Style="{StaticResource BackButtonStyle}"
+				Text="Назад" />
+		</Grid>
+	</Grid>
+</ContentPage>
+

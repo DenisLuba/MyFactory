@@ -1,0 +1,17 @@
+namespace MyFactory.WebApi.Contracts.Products;
+
+public record ProductDetailsResponse(
+    Guid Id,
+    string Sku,
+    string Name,
+    Guid? ProductTypeId,
+    decimal? PlanPerHour,
+    string? Description,
+    decimal? Version,
+    ProductStatus Status,
+    decimal MaterialsCost,
+    decimal ProductionCost,
+    decimal TotalCost,
+    IReadOnlyList<ProductBomItemResponse> Bom,
+    IReadOnlyList<ProductDepartmentCostResponse> ProductionCosts,
+    IReadOnlyList<ProductAvailabilityResponse> Availability);

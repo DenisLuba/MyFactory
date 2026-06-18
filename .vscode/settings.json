@@ -1,0 +1,20 @@
+{
+  "cSpell.words": [
+    "appicon",
+    "appiconfg",
+    "companyname",
+    "maccatalyst",
+    "mauiclient",
+    "MVVMTK",
+    "myfactory",
+    "Newtonsoft",
+    "Timesheet",
+    "Mvvm"
+  ],
+  "dotnet.defaultSolution": "MyFactory.sln",
+  "java.import.exclusions": [
+    "**/bin/**",
+    "**/obj/**"
+  ],
+  "java.errors.incompleteClasspath.severity": "ignore"
+}

@@ -1,0 +1,9 @@
+{
+  "Api": {
+    "BaseUrl": "http://localhost:5237",
+    "AllowedInsecureHosts": [
+      "localhost",
+      "10.0.2.2"
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+namespace MyFactory.MauiClient.Models.Expences;
+
+public record ExpenseListItemResponse(
+    Guid Id,
+    DateOnly ExpenseDate,
+    string ExpenseTypeName,
+    decimal Amount,
+    string? Description,
+    string CreatedBy);

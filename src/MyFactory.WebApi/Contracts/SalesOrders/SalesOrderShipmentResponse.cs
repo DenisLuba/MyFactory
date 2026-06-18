@@ -1,0 +1,9 @@
+namespace MyFactory.WebApi.Contracts.SalesOrders;
+
+public sealed record SalesOrderShipmentResponse(
+    Guid Id,
+    string ProductName,
+    int ProductionOrderNumber,
+    string WarehouseName,
+    decimal Qty,
+    DateTime ShippedAt);

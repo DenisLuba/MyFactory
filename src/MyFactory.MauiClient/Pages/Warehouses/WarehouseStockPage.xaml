@@ -1,0 +1,242 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Warehouses.WarehouseStockPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Warehouses"
+	Title="Остатки склада"
+	x:DataType="view_model:WarehouseStockPageViewModel">
+
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,*"
+		RowSpacing="12">
+
+		<Label
+			Grid.Column="1"
+			FontAttributes="Bold"
+			FontSize="18"
+			Text="{Binding WarehouseName}"
+			VerticalTextAlignment="Center" />
+
+		<Grid
+			Grid.Row="1"
+			ColumnDefinitions="*,Auto,Auto"
+			ColumnSpacing="8">
+
+			<Button
+				Command="{Binding BackCommand}"
+				HorizontalOptions="Start"
+				Style="{x:StaticResource BackButtonStyle}"
+				Text="Назад" />
+			<Button
+				Grid.Column="1"
+				Command="{Binding EditQtyCommand}"
+				IsEnabled="{Binding IsEditQtyButtonVisible}"
+				IsVisible="{Binding IsEditQtyButtonVisible}"
+				Text="Редактировать" />
+			<Button
+				Grid.Column="2"
+				Command="{Binding AddItemCommand}"
+				IsEnabled="{Binding IsAddItemButtonVisible}"
+				IsVisible="{Binding IsAddItemButtonVisible}"
+				Text="{x:StaticResource PlusIcon}" />
+			<Button
+				Grid.Column="2"
+				Command="{Binding SaveCommand}"
+				IsEnabled="{Binding IsSaveAddedItemButtonVisible}"
+				IsVisible="{Binding IsSaveAddedItemButtonVisible}"
+				Text="Сохранить" />
+			<Button
+				Grid.Column="1"
+				Command="{Binding SaveQtyCommand}"
+				IsEnabled="{Binding IsSaveQtyChangesButtonVisible}"
+				IsVisible="{Binding IsSaveQtyChangesButtonVisible}"
+				Text="Сохранить" />
+		</Grid>
+
+		<Grid
+			Grid.Row="2"
+			ColumnDefinitions="3.5*,2*,2*,0.8*,1.5*,0.2*"
+			ColumnSpacing="8"
+			IsVisible="{Binding IsEditMode}">
+			<Label FontAttributes="Bold" Text="Наименование" />
+			<Label
+				Grid.Column="1"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Упаковок" />
+			<Label
+				Grid.Column="2"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Количество" />
+			<Label
+				Grid.Column="4"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Всего" />
+		</Grid>
+
+		<Grid
+			Grid.Row="3"
+			ColumnDefinitions="3.5*,2*,2*,0.8*,1.5*,0.2*"
+			ColumnSpacing="8"
+			IsVisible="{Binding IsEditMode}">
+			<Entry Placeholder="Поиск..." Text="{Binding Item.Name, Mode=OneWay, TargetNullValue=''}">
+				<Entry.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding ItemEntryFocusedCommand}" />
+				</Entry.GestureRecognizers>
+			</Entry>
+			<Entry
+				Grid.Column="1"
+				HorizontalTextAlignment="End"
+				Keyboard="Numeric"
+				Placeholder="Упаковок"
+				Text="{Binding PackageCount}" />
+			<Entry
+				Grid.Column="2"
+				HorizontalTextAlignment="End"
+				Keyboard="Numeric"
+				Placeholder="Количество"
+				Text="{Binding QtyPerPackage}" />
+			<Label
+				Grid.Column="3"
+				Text="{Binding Units}"
+				VerticalTextAlignment="Center" />
+			<Label
+				Grid.Column="4"
+				HorizontalTextAlignment="End"
+				VerticalTextAlignment="Center">
+				<Label.FormattedText>
+					<FormattedString>
+						<Span Text="{Binding TotalQty}" />
+						<Span Text=" " />
+						<Span Text="{Binding Units}" />
+					</FormattedString>
+				</Label.FormattedText>
+			</Label>
+
+		</Grid>
+
+		<Grid
+			Grid.Row="4"
+			Padding="16,20,16,0"
+			ColumnDefinitions="3.2*,1.5*,1.5*,1.5*,2*,0.3*"
+			ColumnSpacing="8">
+			<Label FontAttributes="Bold" Text="{Binding ProductOrMaterial}" />
+			<Label
+				Grid.Column="1"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Упаковок" />
+			<Label
+				Grid.Column="2"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="В упаковке" />
+			<Label
+				Grid.Column="3"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Всего" />
+		</Grid>
+
+		<ActivityIndicator
+			Grid.Row="5"
+			IsEnabled="{Binding IsBusy}"
+			IsVisible="{Binding IsBusy}" />
+
+		<Border Grid.Row="6">
+			<CollectionView
+				x:Name="StockCollection"
+				Grid.Row="0"
+				ItemsSource="{Binding StockItems}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="view_model:WarehouseStockPageViewModel+StockItemViewModel">
+						<SwipeView>
+							<SwipeView.RightItems>
+								<SwipeItems Mode="Reveal">
+									<SwipeItem
+										BackgroundColor="LightGray"
+										Command="{Binding BindingContext.EditItemCommand, Source={x:Reference Name=StockCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Редактировать" />
+									<SwipeItem
+										BackgroundColor="Tomato"
+										Command="{Binding BindingContext.TransferCommand, Source={x:Reference Name=StockCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Переместить" />
+								</SwipeItems>
+							</SwipeView.RightItems>
+							<Grid ColumnDefinitions="3.2*,1.5*,1.5*,1.5*,2*,0.3*" ColumnSpacing="8">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding BindingContext.OpenItemCommand, Source={x:Reference Name=StockCollection}}" CommandParameter="{Binding .}" />
+								</Grid.GestureRecognizers>
+								<Label Text="{Binding Name}" VerticalTextAlignment="Center" />
+
+								<Label
+									Grid.Column="1"
+									HorizontalTextAlignment="End"
+									IsVisible="{Binding BindingContext.IsViewQtyMode, Source={x:Reference Name=StockCollection}}"
+									Text="{Binding PackageCount, StringFormat='{0:0.##}'}"
+									VerticalTextAlignment="Center" />
+								<Entry
+									Grid.Column="1"
+									HorizontalTextAlignment="End"
+									IsVisible="{Binding BindingContext.IsEditQtyMode, Source={x:Reference Name=StockCollection}}"
+									Text="{Binding PackageCount}" />
+
+								<Label
+									Grid.Column="2"
+									HorizontalTextAlignment="End"
+									IsVisible="{Binding BindingContext.IsViewQtyMode, Source={x:Reference Name=StockCollection}}"
+									Text="{Binding QtyPerPackage, StringFormat='{0:0.##}'}"
+									VerticalTextAlignment="Center" />
+								<Entry
+									Grid.Column="2"
+									HorizontalTextAlignment="End"
+									IsVisible="{Binding BindingContext.IsEditQtyMode, Source={x:Reference Name=StockCollection}}"
+									Text="{Binding QtyPerPackage}" />
+
+								<Label
+									Grid.Column="3"
+									HorizontalTextAlignment="End"
+									Text="{Binding TotalQty, StringFormat='{0:0.##}'}"
+									VerticalTextAlignment="Center" />
+
+								<Label
+									Grid.Column="4"
+									FontAttributes="Italic"
+									HorizontalTextAlignment="End"
+									IsEnabled="{Binding BindingContext.IsViewQtyMode, Source={x:Reference Name=StockCollection}}"
+									IsVisible="{Binding BindingContext.IsViewQtyMode, Source={x:Reference Name=StockCollection}}"
+									Text="Переместить"
+									TextColor="Blue"
+									VerticalTextAlignment="Center">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding BindingContext.TransferCommand, Source={x:Reference Name=StockCollection}}" CommandParameter="{Binding .}" />
+									</Label.GestureRecognizers>
+								</Label>
+								<Label
+									Grid.Column="4"
+									FontAttributes="Italic"
+									HorizontalTextAlignment="End"
+									IsEnabled="{Binding BindingContext.IsEditQtyMode, Source={x:Reference Name=StockCollection}}"
+									IsVisible="{Binding BindingContext.IsEditQtyMode, Source={x:Reference Name=StockCollection}}"
+									Text="Удалить"
+									TextColor="Tomato"
+									VerticalTextAlignment="Center">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding BindingContext.RemoveItemCommand, Source={x:Reference Name=StockCollection}}" CommandParameter="{Binding .}" />
+									</Label.GestureRecognizers>
+								</Label>
+							</Grid>
+						</SwipeView>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</Border>
+	</Grid>
+</ContentPage>
+

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.MaterialsAndSuppliers.SupplierOrders.SupplierOrderUpdatePage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.SupplierOrders"
+	Title="{Binding Title}"
+	x:DataType="view_model:SupplierOrderUpdatePageViewModel">
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,Auto,*,Auto"
+		RowSpacing="12">
+		<VerticalStackLayout>
+			<Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+				<Label
+					FontAttributes="Bold"
+					FontSize="18"
+					Text="{Binding Title}" />
+				<Button
+					Grid.Column="1"
+					Command="{Binding DeleteOrderCommand}"
+					IsEnabled="{Binding IsEditMode}"
+					IsVisible="{Binding IsEditMode}"
+					Text="Удалить заказ" />
+				<Button
+					Grid.Column="2"
+					Command="{Binding CompleteCommand}"
+					IsEnabled="{Binding IsEditMode}"
+					IsVisible="{Binding IsEditMode}"
+					Text="Завершить заказ" />
+			</Grid>
+			<Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+				<Button
+					Grid.Column="1"
+					Margin="0,8"
+					Command="{Binding AddItemCommand}"
+					IsEnabled="{Binding IsEditMode}"
+					IsVisible="{Binding IsEditMode}"
+					Text="{x:StaticResource PlusIcon}" />
+				<Button
+					Grid.Column="2"
+					Margin="0,8"
+					Command="{Binding RemoveSelectedCommand}"
+					IsEnabled="{Binding HasSelectedItemsForDelete}"
+					IsVisible="{Binding HasSelectedItemsForDelete}"
+					Text="-" />
+			</Grid>
+		</VerticalStackLayout>
+
+
+		<Label
+			Grid.Row="1"
+			Padding="16"
+			FontAttributes="Italic"
+			FontSize="20"
+			Text="{Binding Supplier.Name, StringFormat='Поставщик: {0}'}"
+			VerticalTextAlignment="Center" />
+
+		<Grid
+			Grid.Row="2"
+			RowDefinitions="Auto,*"
+			RowSpacing="8">
+			<Grid
+				Padding="36,0,16,0"
+				ColumnDefinitions="2*,4*,1.8*,2*,0.2*"
+				ColumnSpacing="8">
+				<Label
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="Тип" />
+				<Label
+					Grid.Column="1"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="Материал" />
+				<Label
+					Grid.Column="2"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="Количество" />
+				<Label
+					Grid.Column="3"
+					FontAttributes="Bold"
+					HorizontalTextAlignment="End"
+					Text="Цена" />
+			</Grid>
+
+			<Border Grid.Row="1">
+				<CollectionView
+					x:Name="SupplierOrderItemsCollection"
+					Grid.Row="1"
+					ItemsSource="{Binding Items}">
+					<CollectionView.Triggers>
+						<DataTrigger
+							Binding="{Binding IsEditMode}"
+							TargetType="CollectionView"
+							Value="True">
+							<Setter Property="SelectionMode" Value="Multiple" />
+							<Setter Property="SelectedItems" Value="{Binding SelectedItems, Mode=TwoWay}" />
+						</DataTrigger>
+						<DataTrigger
+							Binding="{Binding IsDetailsMode}"
+							TargetType="CollectionView"
+							Value="True">
+							<Setter Property="SelectionMode" Value="None" />
+						</DataTrigger>
+					</CollectionView.Triggers>
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="view_model:SupplierOrderUpdatePageViewModel+OrderItemViewModel">
+							<Grid
+								Padding="20,0,0,0"
+								ColumnDefinitions="2*,4*,1.8*,2*,0.2*"
+								ColumnSpacing="8"
+								Style="{StaticResource SelectableItemGridStyle}">
+
+								<Label
+									FontAttributes="Italic"
+									HorizontalTextAlignment="End"
+									IsVisible="{Binding BindingContext.IsDetailsMode, Source={x:Reference SupplierOrderItemsCollection}}"
+									Text="{Binding MaterialType}"
+									VerticalTextAlignment="Center" />
+								<Picker
+									IsVisible="{Binding BindingContext.IsEditMode, Source={x:Reference SupplierOrderItemsCollection}}"
+									ItemsSource="{Binding BindingContext.MaterialTypeOptions, Source={x:Reference Name=SupplierOrderItemsCollection}}"
+									SelectedItem="{Binding MaterialType}" />
+
+								<Label
+									Grid.Column="1"
+									FontAttributes="Italic"
+									HorizontalTextAlignment="End"
+									IsVisible="{Binding BindingContext.IsDetailsMode, Source={x:Reference SupplierOrderItemsCollection}}"
+									Text="{Binding MaterialName}"
+									VerticalTextAlignment="Center" />
+								<Entry
+									Grid.Column="1"
+									HorizontalTextAlignment="End"
+									IsVisible="{Binding BindingContext.IsEditMode, Source={x:Reference SupplierOrderItemsCollection}}"
+									Placeholder="Материал..."
+									Text="{Binding MaterialName, Mode=OneWay, TargetNullValue=''}">
+									<Entry.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding BindingContext.MaterialEntryFocusedCommand, Source={x:Reference SupplierOrderItemsCollection}}" CommandParameter="{Binding .}" />
+									</Entry.GestureRecognizers>
+								</Entry>
+
+								<Label
+									Grid.Column="2"
+									FontAttributes="Italic"
+									HorizontalTextAlignment="End"
+									IsVisible="{Binding BindingContext.IsDetailsMode, Source={x:Reference SupplierOrderItemsCollection}}"
+									VerticalTextAlignment="Center">
+									<Label.FormattedText>
+										<FormattedString>
+											<Span Text="{Binding Qty}" />
+											<Span Text=" " />
+											<Span Text="{Binding UnitCode}" />
+										</FormattedString>
+									</Label.FormattedText>
+								</Label>
+								<Grid
+									Grid.Column="2"
+									ColumnDefinitions="*,Auto"
+									ColumnSpacing="4"
+									IsVisible="{Binding BindingContext.IsEditMode, Source={x:Reference SupplierOrderItemsCollection}}">
+									<Entry
+										HorizontalOptions="Fill"
+										HorizontalTextAlignment="End"
+										Keyboard="Numeric"
+										Text="{Binding Qty, StringFormat='{0:0.##}'}" />
+									<Label
+										Grid.Column="1"
+										HorizontalTextAlignment="Start"
+										Text="{Binding UnitCode}"
+										VerticalTextAlignment="Center" />
+								</Grid>
+
+								<Label
+									Grid.Column="3"
+									FontAttributes="Italic"
+									HorizontalTextAlignment="End"
+									IsVisible="{Binding BindingContext.IsDetailsMode, Source={x:Reference SupplierOrderItemsCollection}}"
+									Text="{Binding Price, StringFormat='{0:0.##}'}"
+									VerticalTextAlignment="Center" />
+								<Entry
+									Grid.Column="3"
+									HorizontalTextAlignment="End"
+									IsVisible="{Binding BindingContext.IsEditMode, Source={x:Reference SupplierOrderItemsCollection}}"
+									Keyboard="Numeric"
+									Text="{Binding Price, StringFormat='{0:0.##}'}" />
+							</Grid>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+			</Border>
+		</Grid>
+
+		<Grid
+			Grid.Row="3"
+			ColumnDefinitions="Auto,Auto,*"
+			ColumnSpacing="8"
+			IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}">
+			<Button Command="{Binding SaveCommand}" Text="Сохранить" />
+			<Button
+				Grid.Column="1"
+				Command="{Binding SaveFileCommand}"
+				Text="Сохранить файл" />
+			<Button
+				Grid.Column="2"
+				Command="{Binding BackCommand}"
+				HorizontalOptions="End"
+				Style="{StaticResource BackButtonStyle}"
+				Text="Назад" />
+		</Grid>
+	</Grid>
+</ContentPage>

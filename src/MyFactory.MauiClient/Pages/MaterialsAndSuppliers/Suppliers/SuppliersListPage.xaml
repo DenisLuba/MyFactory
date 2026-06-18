@@ -1,0 +1,73 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Suppliers.SuppliersListPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:controllers="clr-namespace:MyFactory.MauiClient.Controllers"
+	xmlns:models="clr-namespace:MyFactory.MauiClient.Models.Suppliers"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Suppliers"
+	Title="Поставщики"
+	x:DataType="view_model:SuppliersListPageViewModel">
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,Auto,*"
+		RowSpacing="12">
+		<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+			<Entry Placeholder="Поиск поставщика" Text="{Binding SearchName}" />
+			<Button
+				Grid.Column="1"
+				Command="{Binding AddCommand}"
+				Text="{x:StaticResource PlusIcon}" />
+		</Grid>
+
+		<Grid
+			Grid.Row="1"
+			Padding="0,4"
+			ColumnDefinitions="*">
+			<controllers:SortLabel
+				Command="{Binding SortCommand}"
+				IsDescending="{Binding IsDescending}"
+				SortKey="type"
+				Text="ПОСТАВЩИК" />
+		</Grid>
+
+		<CollectionView
+			x:Name="SuppliersCollection"
+			Grid.Row="2"
+			ItemsSource="{Binding FilteredItems}"
+			ItemsUpdatingScrollMode="KeepScrollOffset"
+			RemainingItemsThreshold="5"
+			RemainingItemsThresholdReachedCommand="{Binding LoadNextPageCommand}"
+			SelectionMode="None">
+			<CollectionView.ItemTemplate>
+				<DataTemplate x:DataType="models:SupplierListItemResponse">
+					<SwipeView>
+						<SwipeView.RightItems>
+							<SwipeItems Mode="Reveal">
+								<SwipeItem
+									BackgroundColor="{StaticResource BaseButtonColor}"
+									Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=SuppliersCollection}}"
+									CommandParameter="{Binding .}"
+									Text="Редактировать" />
+								<SwipeItem
+									BackgroundColor="{StaticResource RemoveButtonColor}"
+									Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=SuppliersCollection}}"
+									CommandParameter="{Binding .}"
+									Text="Удалить" />
+							</SwipeItems>
+						</SwipeView.RightItems>
+						<Grid
+							Padding="0,8"
+							ColumnDefinitions="*"
+							Style="{StaticResource SelectableItemGridStyle}">
+							<Grid.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=SuppliersCollection}}" CommandParameter="{Binding .}" />
+							</Grid.GestureRecognizers>
+							<Label Text="{Binding Name}" />
+						</Grid>
+					</SwipeView>
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+		</CollectionView>
+	</Grid>
+</ContentPage>
+

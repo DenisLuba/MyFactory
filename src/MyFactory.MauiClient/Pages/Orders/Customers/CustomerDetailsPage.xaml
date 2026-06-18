@@ -1,0 +1,174 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Orders.Customers.CustomerDetailsPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Orders.Customers"
+	Title="Карточка заказчика"
+	x:DataType="view_model:CustomerDetailsPageViewModel">
+
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,Auto,Auto,Auto,*"
+		RowSpacing="12">
+
+		<Grid
+			ColumnDefinitions="Auto,*,Auto"
+			ColumnSpacing="12"
+			RowDefinitions="Auto,Auto,Auto,Auto"
+			RowSpacing="12">
+			<Button
+				Grid.Column="2"
+				Command="{Binding BackCommand}"
+				HorizontalOptions="End"
+				Text="Назад"
+				VerticalOptions="Start" />
+
+			<Label
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Имя/Название:"
+				VerticalTextAlignment="Center" />
+			<Label
+				Grid.Column="1"
+				FontAttributes="Italic"
+				HorizontalTextAlignment="Start"
+				IsVisible="{Binding IsReadOnly}"
+				Text="{Binding Name}"
+				VerticalTextAlignment="Center" />
+			<Entry
+				Grid.Column="1"
+				HorizontalTextAlignment="Start"
+				IsVisible="{Binding IsEditMode}"
+				Placeholder="Имя/Название"
+				ReturnType="Next"
+				Text="{Binding Name}"
+				VerticalTextAlignment="Center" />
+
+			<Label
+				Grid.Row="1"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				IsVisible="{Binding IsPhoneVisible}"
+				Text="Телефон:"
+				VerticalTextAlignment="Center" />
+			<Label
+				Grid.Row="1"
+				Grid.Column="1"
+				FontAttributes="Italic"
+				HorizontalTextAlignment="Start"
+				IsVisible="{Binding IsReadOnly}"
+				Text="{Binding Phone}"
+				VerticalTextAlignment="Center" />
+			<Entry
+				Grid.Row="1"
+				Grid.Column="1"
+				HorizontalTextAlignment="Start"
+				IsVisible="{Binding IsEditMode}"
+				Placeholder="Телефон"
+				ReturnType="Next"
+				Text="{Binding Phone}"
+				VerticalTextAlignment="Center" />
+
+			<Label
+				Grid.Row="2"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				IsVisible="{Binding IsEmailVisible}"
+				Text="Email:"
+				VerticalTextAlignment="Center" />
+			<Label
+				Grid.Row="2"
+				Grid.Column="1"
+				HorizontalTextAlignment="Start"
+				IsVisible="{Binding IsReadOnly}"
+				Text="{Binding Email}"
+				VerticalTextAlignment="Center" />
+			<Entry
+				Grid.Row="2"
+				Grid.Column="1"
+				HorizontalTextAlignment="Start"
+				IsVisible="{Binding IsEditMode}"
+				Placeholder="Email"
+				ReturnType="Next"
+				Text="{Binding Email}"
+				VerticalTextAlignment="Center" />
+
+			<Label
+				Grid.Row="3"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				IsVisible="{Binding IsAddressVisible}"
+				Text="Адрес:"
+				VerticalTextAlignment="Center" />
+			<Label
+				Grid.Row="3"
+				Grid.Column="1"
+				FontAttributes="Italic"
+				HorizontalTextAlignment="Start"
+				IsVisible="{Binding IsReadOnly}"
+				Text="{Binding Address}"
+				VerticalTextAlignment="Center" />
+			<Entry
+				Grid.Row="3"
+				Grid.Column="1"
+				HorizontalTextAlignment="Start"
+				IsVisible="{Binding IsEditMode}"
+				Placeholder="Адрес"
+				ReturnCommand="{Binding SaveCommand}"
+				Text="{Binding Address}"
+				VerticalTextAlignment="Center" />
+		</Grid>
+
+		<Label
+			Grid.Row="2"
+			FontAttributes="Bold"
+			FontSize="18"
+			IsVisible="{Binding IsHistoryVisible}"
+			Text="История заказов" />
+
+		<Grid Grid.Row="1" ColumnDefinitions="Auto,Auto">
+			<Button
+				Command="{Binding EditCommand}"
+				IsEnabled="{Binding IsReadOnly}"
+				IsVisible="{Binding IsReadOnly}"
+				Text="Редактировать" />
+			<Button
+				Grid.Row="1"
+				Command="{Binding SaveCommand}"
+				IsEnabled="{Binding IsReadyToSave}"
+				IsVisible="{Binding IsReadyToSave}"
+				Text="Сохранить" />
+		</Grid>
+
+		<Grid
+			Grid.Row="3"
+			Padding="16"
+			ColumnDefinitions="2.5*,3.75*,3.75*"
+			ColumnSpacing="8"
+			IsVisible="{Binding IsHistoryVisible}">
+			<Label FontAttributes="Bold" Text="Номер" />
+			<Label
+				Grid.Column="1"
+				FontAttributes="Bold"
+				Text="Дата" />
+			<Label
+				Grid.Column="2"
+				FontAttributes="Bold"
+				Text="Статус" />
+		</Grid>
+
+		<Border Grid.Row="4" IsVisible="{Binding IsHistoryVisible}">
+			<CollectionView ItemsSource="{Binding Orders}" SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="view_model:CustomerDetailsPageViewModel+CustomerOrderItemViewModel">
+						<Grid ColumnDefinitions="2.5*,3.75*,3.75*" ColumnSpacing="8">
+							<Label Text="{Binding OrderNumber}" />
+							<Label Grid.Column="1" Text="{Binding OrderDate}" />
+							<Label Grid.Column="2" Text="{Binding Status}" />
+						</Grid>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</Border>
+	</Grid>
+</ContentPage>

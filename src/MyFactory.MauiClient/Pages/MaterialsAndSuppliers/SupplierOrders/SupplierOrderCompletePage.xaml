@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.MaterialsAndSuppliers.SupplierOrders.SupplierOrderCompletePage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.SupplierOrders"
+	Title="Завершение заказа"
+	x:DataType="view_model:SupplierOrderCompletePageViewModel">
+
+	<Grid RowDefinitions="*,Auto">
+		<ScrollView>
+			<Grid
+				Padding="16"
+				RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+				RowSpacing="12">
+
+				<VerticalStackLayout Margin="12" Spacing="16">
+					<Label>
+						<Label.FormattedText>
+							<FormattedString>
+								<Span
+									FontAttributes="Bold"
+									FontSize="24"
+									Text="Завершение заказа № " />
+								<Span
+									FontAttributes="Bold"
+									FontSize="24"
+									Text="{Binding PurchaseNumberText}" />
+							</FormattedString>
+						</Label.FormattedText>
+					</Label>
+					<Label>
+						<Label.FormattedText>
+							<FormattedString>
+								<Span
+									FontAttributes="Bold"
+									FontSize="18"
+									Text="Поставщик: " />
+								<Span
+									FontAttributes="Bold"
+									FontSize="18"
+									Text="{Binding SupplierName}" />
+							</FormattedString>
+						</Label.FormattedText>
+					</Label>
+				</VerticalStackLayout>
+
+				<BoxView
+					Grid.Row="1"
+					Margin="0,16"
+					Background="SlateGray"
+					HeightRequest="1" />
+
+				<Grid
+					Grid.Row="2"
+					Padding="16,0"
+					ColumnDefinitions="2*,4*,2*,2*">
+					<Label
+						FontAttributes="Bold"
+						FontSize="15"
+						Text="Тип материала" />
+					<Label
+						Grid.Column="1"
+						FontAttributes="Bold"
+						FontSize="15"
+						Text="Материал" />
+					<Label
+						Grid.Column="2"
+						FontAttributes="Bold"
+						FontSize="15"
+						HorizontalOptions="End"
+						Text="Всего" />
+					<Label
+						Grid.Column="3"
+						FontAttributes="Bold"
+						FontSize="15"
+						HorizontalOptions="End"
+						Text="Осталось" />
+				</Grid>
+
+				<CollectionView
+					Grid.Row="3"
+					ItemsSource="{Binding Items}"
+					SelectionMode="None">
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="view_model:SupplierOrderCompletePageViewModel+PurchaseOrderItemViewModel">
+							<Grid Padding="16,0" ColumnDefinitions="2*,4*,2*,2*">
+								<Label FontSize="14" Text="{Binding MaterialType}" />
+								<Label
+									Grid.Column="1"
+									FontSize="14"
+									Text="{Binding MaterialName}" />
+								<Label Grid.Column="2" HorizontalOptions="End">
+									<Label.FormattedText>
+										<FormattedString>
+											<Span FontSize="14" Text="{Binding TotalQty}" />
+											<Span FontSize="14" Text=" " />
+											<Span FontSize="14" Text="{Binding UnitCode}" />
+										</FormattedString>
+									</Label.FormattedText>
+								</Label>
+								<Label Grid.Column="3" HorizontalOptions="End">
+									<Label.FormattedText>
+										<FormattedString>
+											<Span
+												FontSize="14"
+												Text="{Binding RemainingQty}"
+												TextColor="{Binding RemainingColor}" />
+											<Span FontSize="14" Text=" " />
+											<Span FontSize="14" Text="{Binding UnitCode}" />
+										</FormattedString>
+									</Label.FormattedText>
+								</Label>
+							</Grid>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+
+				<Grid
+					Grid.Row="4"
+					Margin="16"
+					ColumnDefinitions="Auto,Auto"
+					ColumnSpacing="8"
+					HorizontalOptions="Start">
+					<Button
+						Command="{Binding AddWarehouseCommand}"
+						IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+						Text="+ Склад" />
+					<Button
+						Grid.Column="1"
+						Command="{Binding RemoveWarehouseCommand}"
+						IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+						IsVisible="{Binding IsSelectedWarehouse}"
+						Text="- Склад" />
+
+				</Grid>
+
+
+				<CollectionView
+					x:Name="WarehousesCollection"
+					Grid.Row="5"
+					ItemsSource="{Binding SelectedWarehouses}"
+					SelectedItem="{Binding SelectedWarehouseAllocation}"
+					SelectionMode="Single">
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="view_model:SupplierOrderCompletePageViewModel+WarehouseAllocationViewModel">
+							<Border Padding="24">
+								<Grid RowDefinitions="Auto,Auto,*" RowSpacing="4">
+									<Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
+										<Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+											<Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="16">
+												<Label
+													FontAttributes="Bold"
+													FontSize="15"
+													Text="Склад"
+													VerticalTextAlignment="Center" />
+												<Picker
+													Grid.Column="1"
+													FontSize="15"
+													ItemDisplayBinding="{Binding Name}"
+													ItemsSource="{Binding BindingContext.Warehouses, Source={x:Reference WarehousesCollection}}"
+													SelectedItem="{Binding Warehouse}" />
+
+											</Grid>
+											<Grid
+												Grid.Row="1"
+												ColumnDefinitions="Auto,*,*"
+												ColumnSpacing="8">
+												<Label
+													FontAttributes="Bold"
+													FontSize="15"
+													Text="Цена доставки: "
+													VerticalTextAlignment="Center" />
+												<Entry
+													Grid.Column="1"
+													FontSize="15"
+													HorizontalTextAlignment="End"
+													Keyboard="Numeric"
+													Text="{Binding ShippingCost}" />
+												<Label
+													Grid.Column="2"
+													FontAttributes="Bold"
+													HorizontalTextAlignment="Start"
+													Text="р."
+													VerticalOptions="Center"
+													VerticalTextAlignment="Center" />
+											</Grid>
+
+										</Grid>
+										<Button
+											Grid.Column="1"
+											Command="{Binding BindingContext.AddMaterialToWarehouseCommand, Source={x:Reference WarehousesCollection}}"
+											CommandParameter="{Binding .}"
+											IsEnabled="{Binding BindingContext.IsBusy, Source={x:Reference WarehousesCollection}, Converter={StaticResource InvertedBoolConverter}}"
+											Text="+ материал"
+											VerticalOptions="Center" />
+										<Button
+											Grid.Column="2"
+											Command="{Binding BindingContext.RemoveMaterialFromWarehouseCommand, Source={x:Reference WarehousesCollection}}"
+											CommandParameter="{Binding .}"
+											IsEnabled="{Binding BindingContext.IsBusy, Source={x:Reference WarehousesCollection}, Converter={StaticResource InvertedBoolConverter}}"
+											IsVisible="{Binding HasSelectedMaterial}"
+											Text="-"
+											VerticalOptions="Center" />
+									</Grid>
+
+									<BoxView
+										Grid.Row="1"
+										Margin="0,16"
+										Background="SlateGray"
+										HeightRequest="1" />
+
+
+									<CollectionView
+										Grid.Row="2"
+										ItemsSource="{Binding Lines}"
+										SelectedItem="{Binding SelectedMaterial}"
+										SelectionMode="Single">
+										<CollectionView.Header>
+											<Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+												<Label
+													FontAttributes="Bold"
+													FontSize="16"
+													Text="Материал" />
+												<Label
+													Grid.Column="1"
+													FontAttributes="Bold"
+													FontSize="16"
+													Text="Количество" />
+											</Grid>
+										</CollectionView.Header>
+										<CollectionView.ItemTemplate>
+											<DataTemplate x:DataType="view_model:SupplierOrderCompletePageViewModel+MaterialAllocationViewModel">
+												<Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+													<Picker
+														FontSize="14"
+														ItemDisplayBinding="{Binding MaterialName}"
+														ItemsSource="{Binding BindingContext.Items, Source={x:Reference WarehousesCollection}}"
+														SelectedItem="{Binding Item}" />
+													<Entry
+														Grid.Column="1"
+														FontSize="14"
+														HorizontalTextAlignment="End"
+														Keyboard="Numeric"
+														Text="{Binding Qty}" />
+													<Label
+														Grid.Column="2"
+														FontAttributes="Italic"
+														FontSize="14"
+														HorizontalTextAlignment="Start"
+														Text="{Binding UnitCode}"
+														VerticalTextAlignment="Center" />
+												</Grid>
+											</DataTemplate>
+										</CollectionView.ItemTemplate>
+									</CollectionView>
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+
+			</Grid>
+		</ScrollView>
+
+		<Grid
+			Grid.Row="1"
+			Padding="16"
+			ColumnDefinitions="Auto,*"
+			ColumnSpacing="8">
+			<Button
+				Command="{Binding CompleteCommand}"
+				IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+				Text="Завершить" />
+			<Button
+				Grid.Column="1"
+				Command="{Binding BackCommand}"
+				HorizontalOptions="End"
+				IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+				Style="{StaticResource BackButtonStyle}"
+				Text="Назад" />
+		</Grid>
+	</Grid>
+
+</ContentPage>

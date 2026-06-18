@@ -1,0 +1,328 @@
+﻿#region USINGS
+using System.Text.Json;
+using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
+using MyFactory.MauiClient.Controllers;
+using MyFactory.MauiClient.Pages.Authentication;
+using MyFactory.MauiClient.Pages.Finance.Expenses;
+using MyFactory.MauiClient.Pages.Finance.FinancialReports;
+using MyFactory.MauiClient.Pages.Finance.Payroll;
+using MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Materials;
+using MyFactory.MauiClient.Pages.MaterialsAndSuppliers.SupplierOrders;
+using MyFactory.MauiClient.Pages.MaterialsAndSuppliers.Suppliers;
+using MyFactory.MauiClient.Pages.Orders.Customers;
+using MyFactory.MauiClient.Pages.Orders.SalesOrders;
+using MyFactory.MauiClient.Pages.Organization.Employees;
+using MyFactory.MauiClient.Pages.Organization.Positions;
+using MyFactory.MauiClient.Pages.Organization.Workshops;
+using MyFactory.MauiClient.Pages.Production;
+using MyFactory.MauiClient.Pages.Production.ProductionOrders;
+using MyFactory.MauiClient.Pages.Products;
+using MyFactory.MauiClient.Pages.Users;
+using MyFactory.MauiClient.Pages.Warehouses;
+using MyFactory.MauiClient.Services.Advances;
+using MyFactory.MauiClient.Services.Auth;
+using MyFactory.MauiClient.Services.Customers;
+using MyFactory.MauiClient.Services.Departments;
+using MyFactory.MauiClient.Services.Employees;
+using MyFactory.MauiClient.Services.Expences;
+using MyFactory.MauiClient.Services.ExpenceTypes;
+using MyFactory.MauiClient.Services.Finance;
+using MyFactory.MauiClient.Services.MaterialPurchaseOrders;
+using MyFactory.MauiClient.Services.Materials;
+using MyFactory.MauiClient.Services.MaterialTypes;
+using MyFactory.MauiClient.Services.ProductTypes;
+using MyFactory.MauiClient.Services.PayrollRules;
+using MyFactory.MauiClient.Services.Positions;
+using MyFactory.MauiClient.Services.Printing;
+using MyFactory.MauiClient.Services.ProductionOrders;
+using MyFactory.MauiClient.Services.Products;
+using MyFactory.MauiClient.Services.Reports;
+using MyFactory.MauiClient.Services.SalesOrders;
+using MyFactory.MauiClient.Services.SavingFile;
+using MyFactory.MauiClient.Services.Suppliers;
+using MyFactory.MauiClient.Services.Units;
+using MyFactory.MauiClient.Services.Users;
+using MyFactory.MauiClient.Services.Warehouses;
+using MyFactory.MauiClient.ViewModels.Authentication;
+using MyFactory.MauiClient.ViewModels.Finance.Expenses;
+using MyFactory.MauiClient.ViewModels.Finance.FinancialReports;
+using MyFactory.MauiClient.ViewModels.Finance.Payroll;
+using MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Materials;
+using MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.SupplierOrders;
+using MyFactory.MauiClient.ViewModels.MaterialsAndSuppliers.Suppliers;
+using MyFactory.MauiClient.ViewModels.Orders.Customers;
+using MyFactory.MauiClient.ViewModels.Orders.SalesOrders;
+using MyFactory.MauiClient.ViewModels.Organization.Employees;
+using MyFactory.MauiClient.ViewModels.Organization.Positions;
+using MyFactory.MauiClient.ViewModels.Organization.Workshops;
+using MyFactory.MauiClient.ViewModels.Production;
+using MyFactory.MauiClient.ViewModels.Production.ProductionOrders;
+using MyFactory.MauiClient.ViewModels.Products;
+using MyFactory.MauiClient.ViewModels.Users;
+using MyFactory.MauiClient.ViewModels.Warehouses;
+#endregion 
+
+namespace MyFactory.MauiClient;
+
+public static class MauiProgram
+{
+    #region CREATE MAUI APP
+    public static MauiApp CreateMauiApp()
+    {
+        var builder = MauiApp.CreateBuilder();
+        builder
+            .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            });
+
+#if DEBUG
+		builder.Logging.AddDebug();
+#endif
+
+        builder.Services.AddSingleton(CreateHttpClient());
+
+        builder.AddMyFactoryServices();
+        builder.AddViewModelsServices();
+        builder.AddPagesServices();
+
+        // Регистрация AutocompletePopup и его ViewModel
+        builder.AddTransientPopup();
+
+        return builder.Build();
+    }
+    #endregion
+
+    #region POPUP
+    private static MauiAppBuilder AddTransientPopup(this MauiAppBuilder builder)
+    {
+        builder.Services.AddTransientPopup<SearchView, SearchViewModel>();
+
+        return builder;
+    }
+    #endregion
+
+    #region HTTP CLIENT
+    private static HttpClient CreateHttpClient()
+    {
+        var clientSettings = LoadClientSettings();
+        var baseAddress = new Uri(clientSettings.Api.BaseUrl);
+        var allowedInsecureHosts = clientSettings.Api.AllowedInsecureHosts.ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+            {
+                if (message?.RequestUri?.Host is { } requestHost && allowedInsecureHosts.Contains(requestHost))
+                    return true;
+
+                return errors == System.Net.Security.SslPolicyErrors.None;
+            }
+        };
+       
+        return new HttpClient(handler)
+        {
+            BaseAddress = baseAddress,
+            Timeout = TimeSpan.FromSeconds(100)
+        };
+    }
+
+    private static ClientSettings LoadClientSettings()
+    {
+        using var stream = OpenClientSettingsFile();
+        var settings = JsonSerializer.Deserialize<ClientSettings>(stream, new JsonSerializerOptions(JsonSerializerDefaults.Web))
+            ?? throw new InvalidOperationException("Client settings file is empty.");
+
+        if (string.IsNullOrWhiteSpace(settings.Api.BaseUrl))
+            throw new InvalidOperationException("Api:BaseUrl is not configured in client settings.");
+
+        return settings;
+    }
+
+    private static Stream OpenClientSettingsFile()
+    {
+        try
+        {
+            return FileSystem.OpenAppPackageFileAsync("clientsettings.local.json").GetAwaiter().GetResult();
+        }
+        catch (FileNotFoundException)
+        {
+            return FileSystem.OpenAppPackageFileAsync("clientsettings.json").GetAwaiter().GetResult();
+        }
+    }
+
+    private sealed record ClientSettings(ApiSettings Api);
+
+    private sealed record ApiSettings(string BaseUrl, string[] AllowedInsecureHosts);
+    #endregion
+
+    #region ADD SERVICES
+    private static MauiAppBuilder AddMyFactoryServices(this MauiAppBuilder builder)
+    {
+        builder.Services.AddSingleton<IAdvancesService, AdvancesService>();
+        builder.Services.AddSingleton<IAuthService, AuthService>();
+        builder.Services.AddSingleton<ICustomersService, CustomersService>();
+        builder.Services.AddSingleton<IDepartmentsService, DepartmentsService>();
+        builder.Services.AddSingleton<IEmployeesService, EmployeesService>();
+        builder.Services.AddSingleton<IExpencesService, ExpencesService>();
+        builder.Services.AddSingleton<IExpenceTypesService, ExpenceTypesService>();
+        builder.Services.AddSingleton<IFinanceService, FinanceService>();
+        builder.Services.AddSingleton<IMaterialPurchaseOrdersService, MaterialPurchaseOrdersService>();
+        builder.Services.AddSingleton<IMaterialsService, MaterialsService>();
+        builder.Services.AddSingleton<IMaterialTypesService, MaterialTypesService>();
+        builder.Services.AddSingleton<IProductTypesService, ProductTypesService>();
+        builder.Services.AddSingleton<IPayrollRulesService, PayrollRulesService>();
+        builder.Services.AddSingleton<IPositionsService, PositionsService>();
+        builder.Services.AddSingleton<IProductionOrdersService, ProductionOrdersService>();
+        builder.Services.AddSingleton<IProductsService, ProductsService>();
+        builder.Services.AddSingleton<IReportsService, ReportsService>();
+        builder.Services.AddSingleton<ISalesOrdersService, SalesOrdersService>();
+        builder.Services.AddSingleton<ISuppliersService, SuppliersService>();
+        builder.Services.AddSingleton<IUnitsService, UnitsService>();
+        builder.Services.AddSingleton<IUsersService, UsersService>();
+        builder.Services.AddSingleton<IWarehousesService, WarehousesService>();
+        builder.Services.AddSingleton<ISaveFileService, SaveFileService>();
+#if WINDOWS
+        builder.Services.AddSingleton<IPrintService, PrintService>(); // Windows printable
+#else
+        builder.Services.AddSingleton<IPrintService, PrintService>(); // or a stub that throws/notifies
+#endif
+
+        return builder;
+    }
+    #endregion
+
+    #region ADD VIEW MODELS
+    private static MauiAppBuilder AddViewModelsServices(this MauiAppBuilder builder)
+    {
+        builder.Services.AddTransient<LoginPageViewModel>();
+        builder.Services.AddTransient<RegisterPageViewModel>();
+        builder.Services.AddTransient<PasswordResetPageViewModel>();
+        builder.Services.AddTransient<CashAdvanceCreatePageViewModel>();
+        builder.Services.AddTransient<CashAdvanceDetailsPageViewModel>();
+        builder.Services.AddTransient<CashAdvancesListPageViewModel>();
+        builder.Services.AddTransient<ExpenseCategoriesPageViewModel>();
+        builder.Services.AddTransient<ExpensesListPageViewModel>();
+        builder.Services.AddTransient<FinancialReportsListPageViewModel>();
+        builder.Services.AddTransient<MonthlyReportDetailsPageViewModel>();
+        builder.Services.AddTransient<PayrollAccrualsPageViewModel>();
+        builder.Services.AddTransient<PayrollDailyBreakdownPageViewModel>();
+        builder.Services.AddTransient<PayrollRuleDetailsPageViewModel>();
+        builder.Services.AddTransient<PayrollRulesListPageViewModel>();
+        builder.Services.AddTransient<MaterialDetailsEditPageViewModel>();
+        builder.Services.AddTransient<MaterialDetailsViewPageViewModel>();
+        builder.Services.AddTransient<MaterialsListPageViewModel>();
+        builder.Services.AddTransient<MaterialTypeDetailsEditPageViewModel>();
+        builder.Services.AddTransient<MaterialTypeDetailsViewPageViewModel>();
+        builder.Services.AddTransient<MaterialTypesListPageViewModel>();
+        builder.Services.AddTransient<UnitsPageViewModel>();
+        builder.Services.AddTransient<SupplierOrderCreatePageViewModel>();
+        builder.Services.AddTransient<SupplierOrderUpdatePageViewModel>();
+        builder.Services.AddTransient<SupplierOrderCompletePageViewModel>();
+        builder.Services.AddTransient<SupplierDetailsPageViewModel>();
+        builder.Services.AddTransient<SuppliersListPageViewModel>();
+        builder.Services.AddTransient<CustomerDetailsPageViewModel>();
+        builder.Services.AddTransient<CustomersListPageViewModel>();
+        builder.Services.AddTransient<OrderDetailsPageViewModel>();
+        builder.Services.AddTransient<OrdersListPageViewModel>();
+        builder.Services.AddTransient<EmployeeDetailsPageViewModel>();
+        builder.Services.AddTransient<EmployeeAssignmentsPageViewModel>();
+        builder.Services.AddTransient<EmployeeTimesheetPageViewModel>();
+        builder.Services.AddTransient<EmployeesListPageViewModel>();
+        builder.Services.AddTransient<PositionDetailsPageViewModel>();
+        builder.Services.AddTransient<PositionsListPageViewModel>();
+        builder.Services.AddTransient<WorkshopDetailsPageViewModel>();
+        builder.Services.AddTransient<WorkshopsListPageViewModel>();
+        builder.Services.AddTransient<MaterialConsumptionPageViewModel>();
+        builder.Services.AddTransient<ProductionStagesPageViewModel>();
+        builder.Services.AddTransient<ProductionOrderCreatePageViewModel>();
+        builder.Services.AddTransient<ProductionOrdersListPageViewModel>();
+        builder.Services.AddTransient<ProductDetailsPageViewModel>();
+        builder.Services.AddTransient<ProductEditPageViewModel>();
+        builder.Services.AddTransient<ProductSpecificationPageViewModel>();
+        builder.Services.AddTransient<ProductCostsPageViewModel>();
+        builder.Services.AddTransient<ProductStocksPageViewModel>();
+        builder.Services.AddTransient<ProductsListPageViewModel>();
+        builder.Services.AddTransient<ProductTypesPageViewModel>();
+        builder.Services.AddTransient<RolesPageViewModel>();
+        builder.Services.AddTransient<UserDetailsPageViewModel>();
+        builder.Services.AddTransient<UsersListPageViewModel>();
+        builder.Services.AddTransient<WarehousesListPageViewModel>();
+        builder.Services.AddTransient<WarehouseStockPageViewModel>();
+        builder.Services.AddTransient<TransferFromWarehousePageViewModel>();
+        builder.Services.AddTransient<OrderCreatePageViewModel>();
+        builder.Services.AddTransient<OrderUpdatePageViewModel>();
+
+        return builder;
+    }
+    #endregion
+
+    #region ADD PAGES
+    private static MauiAppBuilder AddPagesServices(this MauiAppBuilder builder)
+    {
+        builder.Services.AddTransient<LoginPage>();
+        builder.Services.AddTransient<RegisterPage>();
+        builder.Services.AddTransient<PasswordResetPage>();
+        builder.Services.AddTransient<CashAdvanceCreatePage>();
+        builder.Services.AddTransient<CashAdvanceDetailsPage>();
+        builder.Services.AddTransient<CashAdvancesListPage>();
+        builder.Services.AddTransient<ExpenseCategoriesPage>();
+        builder.Services.AddTransient<ExpensesListPage>();
+        builder.Services.AddTransient<FinancialReportsListPage>();
+        builder.Services.AddTransient<MonthlyReportDetailsPage>();
+        builder.Services.AddTransient<PayrollAccrualsPage>();
+        builder.Services.AddTransient<PayrollDailyBreakdownPage>();
+        builder.Services.AddTransient<PayrollRuleDetailsPage>();
+        builder.Services.AddTransient<PayrollRulesListPage>();
+        builder.Services.AddTransient<MaterialDetailsEditPage>();
+        builder.Services.AddTransient<MaterialDetailsViewPage>();
+        builder.Services.AddTransient<MaterialsListPage>();
+        builder.Services.AddTransient<MaterialTypeDetailsEditPage>();
+        builder.Services.AddTransient<MaterialTypeDetailsViewPage>();
+        builder.Services.AddTransient<MaterialTypesListPage>();
+        builder.Services.AddTransient<UnitsPage>();
+        builder.Services.AddTransient<SupplierOrderCreatePage>();
+        builder.Services.AddTransient<SupplierOrderUpdatePage>();
+        builder.Services.AddTransient<SupplierOrderCompletePage>();
+        builder.Services.AddTransient<SupplierDetailsPage>();
+        builder.Services.AddTransient<SuppliersListPage>();
+        builder.Services.AddTransient<CustomerDetailsPage>();
+        builder.Services.AddTransient<CustomersListPage>();
+        builder.Services.AddTransient<OrderDetailsPage>();
+        builder.Services.AddTransient<OrdersListPage>();
+        builder.Services.AddTransient<EmployeeDetailsPage>();
+        builder.Services.AddTransient<EmployeeAssignmentsPage>();
+        builder.Services.AddTransient<EmployeeTimesheetPage>();
+        builder.Services.AddTransient<EmployeesListPage>();
+        builder.Services.AddTransient<PositionDetailsPage>();
+        builder.Services.AddTransient<PositionsListPage>();
+        builder.Services.AddTransient<WorkshopDetailsPage>();
+        builder.Services.AddTransient<WorkshopsListPage>();
+        builder.Services.AddTransient<MaterialConsumptionPage>();
+        builder.Services.AddTransient<ProductionStagesPage>();
+        builder.Services.AddTransient<ProductionOrderCreatePage>();
+        builder.Services.AddTransient<ProductionOrdersListPage>();
+        builder.Services.AddTransient<ProductDetailsPage>();
+        builder.Services.AddTransient<ProductEditPage>();
+        builder.Services.AddTransient<ProductSpecificationPage>();
+        builder.Services.AddTransient<ProductCostsPage>();
+        builder.Services.AddTransient<ProductStocksPage>();
+        builder.Services.AddTransient<ProductsListPage>();
+        builder.Services.AddTransient<ProductTypesPage>();
+        builder.Services.AddTransient<RolesPage>();
+        builder.Services.AddTransient<UserDetailsPage>();
+        builder.Services.AddTransient<UsersListPage>();
+        builder.Services.AddTransient<WarehousesListPage>();
+        builder.Services.AddTransient<WarehouseStockPage>();
+        builder.Services.AddTransient<TransferFromWarehousePage>();
+        builder.Services.AddTransient<OrderCreatePage>();
+        builder.Services.AddTransient<OrderUpdatePage>();
+
+        return builder;
+    }
+    #endregion
+}

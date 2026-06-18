@@ -1,0 +1,183 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Orders.SalesOrders.OrdersListPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:controllers="clr-namespace:MyFactory.MauiClient.Controllers"
+	xmlns:response="clr-namespace:MyFactory.MauiClient.Models.SalesOrders"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Orders.SalesOrders"
+	Title="Заказы"
+	x:DataType="view_model:OrdersListPageViewModel">
+
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,Auto,Auto,*"
+		RowSpacing="12">
+		<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+			<Label
+				FontAttributes="Bold"
+				FontSize="18"
+				Text="Заказы клиентов" />
+			<Button
+				Grid.Column="1"
+				Command="{Binding AddCommand}"
+				Text="{x:StaticResource PlusIcon}" />
+		</Grid>
+
+		<Grid Grid.Row="1" ColumnDefinitions="3.5*,0.5*,2.5*,1.75*,1.75*">
+			<Grid
+				HorizontalOptions="Fill"
+				RowDefinitions="Auto,Auto"
+				RowSpacing="8"
+				VerticalOptions="End">
+				<Label
+					FontAttributes="Bold"
+					FontSize="13"
+					Text="Заказчик" />
+				<Entry
+					Grid.Row="1"
+					HeightRequest="42"
+					HorizontalOptions="Fill"
+					Placeholder="Поиск по заказчику..."
+					Text="{Binding SearchName}"
+					VerticalOptions="End">
+					<Entry.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding CustomerEntryFocusedCommand}" />
+					</Entry.GestureRecognizers>
+				</Entry>
+			</Grid>
+			<Button
+				Grid.Column="1"
+				Command="{Binding CleanSearchNameCommand}"
+				Style="{StaticResource XButton}" />
+
+			<Grid
+				Grid.Column="2"
+				Padding="12,0"
+				HorizontalOptions="Fill"
+				RowDefinitions="Auto,Auto"
+				RowSpacing="8"
+				VerticalOptions="End">
+				<Label
+					FontAttributes="Bold"
+					FontSize="13"
+					Text="Статус" />
+				<Picker
+					Grid.Row="1"
+					HeightRequest="42"
+					HorizontalOptions="Fill"
+					ItemsSource="{Binding StatusOptions}"
+					SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"
+					VerticalOptions="End" />
+			</Grid>
+
+			<VerticalStackLayout
+				Grid.Column="3"
+				HorizontalOptions="End"
+				Spacing="8"
+				VerticalOptions="End">
+				<Label
+					FontAttributes="Bold"
+					FontSize="13"
+					Text="От" />
+				<DatePicker
+					Date="{Binding FromDate, Mode=TwoWay}"
+					Format="dd.MM.yyyy"
+					HeightRequest="42" />
+			</VerticalStackLayout>
+			<VerticalStackLayout
+				Grid.Column="4"
+				Spacing="8"
+				VerticalOptions="End">
+				<Label
+					FontAttributes="Bold"
+					FontSize="13"
+					Text="До" />
+				<DatePicker
+					Date="{Binding ToDate, Mode=TwoWay}"
+					Format="dd.MM.yyyy"
+					HeightRequest="42" />
+			</VerticalStackLayout>
+		</Grid>
+
+		<Grid
+			Grid.Row="2"
+			Padding="16,0"
+			ColumnDefinitions="1*,4*,3*,2*"
+			ColumnSpacing="8">
+			<controllers:SortLabel
+				Command="{Binding SortCommand}"
+				IsDescending="{Binding IsDescending}"
+				SortKey="number"
+				Text="№" />
+			<controllers:SortLabel
+				Grid.Column="1"
+				Command="{Binding SortCommand}"
+				IsDescending="{Binding IsDescending}"
+				SortKey="number"
+				Text="Заказчик" />
+			<controllers:SortLabel
+				Grid.Column="2"
+				Command="{Binding SortCommand}"
+				HorizontalTextAlignment="End"
+				IsDescending="{Binding IsDescending}"
+				SortKey="number"
+				Text="Дата" />
+			<Label
+				Grid.Column="3"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Статус" />
+		</Grid>
+
+		<Border Grid.Row="3">
+			<CollectionView
+				x:Name="OrdersCollection"
+				ItemsSource="{Binding FilteredItems}"
+				ItemsUpdatingScrollMode="KeepScrollOffset"
+				RemainingItemsThreshold="5"
+				RemainingItemsThresholdReachedCommand="{Binding LoadNextPageCommand}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="response:SalesOrderListItemResponse">
+						<SwipeView>
+							<SwipeView.RightItems>
+								<SwipeItems Mode="Reveal">
+									<SwipeItem
+										BackgroundColor="{StaticResource BaseButtonColor}"
+										Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=OrdersCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Редактировать" />
+									<SwipeItem
+										BackgroundColor="{StaticResource RemoveButtonColor}"
+										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=OrdersCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Удалить" />
+								</SwipeItems>
+							</SwipeView.RightItems>
+							<Grid
+								Padding="0,8"
+								ColumnDefinitions="1*,4*,3*,2*"
+								ColumnSpacing="8">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=OrdersCollection}}" CommandParameter="{Binding .}" />
+								</Grid.GestureRecognizers>
+								<Label Text="{Binding OrderNumber}" />
+								<Label Grid.Column="1" Text="{Binding CustomerName}" />
+								<Label
+									Grid.Column="2"
+									HorizontalTextAlignment="End"
+									Text="{Binding OrderDate}" />
+								<Label
+									Grid.Column="3"
+									HorizontalTextAlignment="End"
+									Text="{Binding Status, Converter={StaticResource StatusToRusConverter}}" />
+							</Grid>
+						</SwipeView>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</Border>
+
+	</Grid>
+
+</ContentPage>

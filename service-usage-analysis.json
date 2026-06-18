@@ -1,0 +1,3227 @@
+{
+  "ViewModels": [
+    {
+      "Name": "SpecificationBomPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Specifications\\SpecificationBomPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSpecificationNameChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnHasItemsChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanInteract",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "ISpecificationsService",
+              "MethodName": "GetBomAsync"
+            }
+          ]
+        },
+        {
+          "Name": "AddItemAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IMaterialsService",
+              "MethodName": "ListAsync"
+            },
+            {
+              "ServiceType": "ISpecificationsService",
+              "MethodName": "AddBomAsync"
+            }
+          ]
+        },
+        {
+          "Name": "DeleteItemAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "ISpecificationsService",
+              "MethodName": "DeleteBomItemAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ShowAlertAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "SpecificationCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Specifications\\SpecificationCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsEditingChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnNameChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "InitializeForCreate",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanLoad",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanSave",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanOpenDetails",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "ISpecificationsService",
+              "MethodName": "GetAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ApplySpecification",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "StartEditing",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "SaveAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "ISpecificationsService",
+              "MethodName": "CreateAsync"
+            },
+            {
+              "ServiceType": "ISpecificationsService",
+              "MethodName": "UpdateAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenBomAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OpenOperationsAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OpenCostAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ShowAlertAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "SpecificationCostCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Specifications\\SpecificationCostCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSelectedSpecificationChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanRefreshCost",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadSpecificationsAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "ISpecificationsService",
+              "MethodName": "ListAsync"
+            }
+          ]
+        },
+        {
+          "Name": "LoadCostAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "ISpecificationsService",
+              "MethodName": "CostAsync"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "SpecificationOperationsPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Specifications\\SpecificationOperationsPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSpecificationNameChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnHasOperationsChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanInteract",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "ISpecificationsService",
+              "MethodName": "GetOperationsAsync"
+            }
+          ]
+        },
+        {
+          "Name": "AddOperationAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IOperationsService",
+              "MethodName": "GetOperationsAsync"
+            },
+            {
+              "ServiceType": "ISpecificationsService",
+              "MethodName": "AddOperationAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ShowAlertAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "SpecificationsListPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Specifications\\SpecificationsListPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnHasSpecificationsChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "ISpecificationsService",
+              "MethodName": "ListAsync"
+            }
+          ]
+        },
+        {
+          "Name": "CreateAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OpenCardAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "AdvanceCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Finance\\Advances\\AdvanceCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "SetParentViewModel",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnAdvanceChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnReportItemsChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CalculateBalance",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "AddReport",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "EditAdvance",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CloseAdvanceAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IFinanceService",
+              "MethodName": "CloseAdvanceAsync"
+            }
+          ]
+        },
+        {
+          "Name": "DeleteAdvanceAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IFinanceService",
+              "MethodName": "DeleteAdvanceAsync"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "AdvanceReportCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Finance\\Advances\\AdvanceReportCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "AttachParentTable",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ReportItemsCollectionChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnReportItemsChanging",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnReportItemsChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnAdvanceChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnNewItemNameChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnNewItemAmountChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnNewItemDateChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "AddReportItem",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanAddReportItem",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "DeleteReportItem",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ResetNewItemForm",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "GetDefaultExpenseDate",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanPersistReport",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "SaveReportAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "SubmitReportAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IFinanceService",
+              "MethodName": "SubmitAdvanceReportAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ValidateReport",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "RecalculateTotals",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "UpdateCommandStates",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ShowAlertAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "AdvancesTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Finance\\Advances\\AdvancesTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnEmployeeFilterChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnStatusFilterChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnPeriodStartChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnPeriodEndChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAdvancesAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IFinanceService",
+              "MethodName": "GetAdvancesAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ApplyFilters",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OpenAdvance",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CreateAdvance",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OpenReport",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "OverheadCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Finance\\Overheads\\OverheadCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnArticleChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnStatusChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsEditModeChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "SetParentViewModel",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanSave",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanPost",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "EnableEditing",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadArticlesAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IFinanceService",
+              "MethodName": "GetOverheadArticlesAsync"
+            }
+          ]
+        },
+        {
+          "Name": "EnsurePendingArticle",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "SaveAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IFinanceService",
+              "MethodName": "AddOverheadAsync"
+            },
+            {
+              "ServiceType": "IFinanceService",
+              "MethodName": "UpdateOverheadAsync"
+            }
+          ]
+        },
+        {
+          "Name": "PostAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IFinanceService",
+              "MethodName": "PostOverheadAsync"
+            }
+          ]
+        },
+        {
+          "Name": "DeleteAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IFinanceService",
+              "MethodName": "DeleteOverheadAsync"
+            }
+          ]
+        },
+        {
+          "Name": "Validate",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ShowAlertAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "OverheadsTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Finance\\Overheads\\OverheadsTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnSelectedMonthChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSelectedYearChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSelectedArticleChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSelectedStatusChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSelectedSortOptionChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadOverheadsAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IFinanceService",
+              "MethodName": "GetOverheadsAsync"
+            }
+          ]
+        },
+        {
+          "Name": "EnsureArticlesAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IFinanceService",
+              "MethodName": "GetOverheadArticlesAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ApplyFilters",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "AddOverheadAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OpenOverheadAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ResetFilters",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "MonthlyProfitReportPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Finance\\Profits\\MonthlyProfitReportPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnSelectedYearChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadReportAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IReportsService",
+              "MethodName": "GetMonthlyProfitByYearAsync"
+            }
+          ]
+        },
+        {
+          "Name": "RefreshAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "FinishedGoodsReceiptCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\FinishedGoods\\Receipt\\FinishedGoodsReceiptCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadReceiptAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IFinishedGoodsService",
+              "MethodName": "GetReceiptByIdAsync"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "FinishedGoodsReceiptTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\FinishedGoods\\Receipt\\FinishedGoodsReceiptTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "LoadReceiptsAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IFinishedGoodsService",
+              "MethodName": "GetReceiptsAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenReceiptAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "ReturnCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\FinishedGoods\\Returns\\ReturnCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnDateChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnCommentChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnReasonChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSelectedCustomerSummaryChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSelectedProductSummaryChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnCustomerQueryChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSpecificationQueryChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnReturnIdChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsSavingChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadReturnAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IReturnsService",
+              "MethodName": "GetReturnAsync"
+            }
+          ]
+        },
+        {
+          "Name": "CreateReturnAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IReturnsService",
+              "MethodName": "CreateReturnAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ShowAlertAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "RefreshCustomerSuggestionsAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IReturnLookupService",
+              "MethodName": "GetCustomerSuggestionsAsync"
+            }
+          ]
+        },
+        {
+          "Name": "RefreshProductSuggestionsAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IReturnLookupService",
+              "MethodName": "GetProductSuggestionsAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ApplySuggestions",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "UseCustomerSuggestion",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "UseProductSuggestion",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "BuildSummaryText",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ShowToastAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "ReturnsTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\FinishedGoods\\Returns\\ReturnsTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "LoadReturnsAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IReturnsService",
+              "MethodName": "GetReturnsAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenReturnAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CreateReturnAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "ShipmentCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\FinishedGoods\\Shipment\\ShipmentCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadShipmentAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IShipmentsService",
+              "MethodName": "GetShipmentByIdAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ConfirmPaymentAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IShipmentsService",
+              "MethodName": "ConfirmPaymentAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OnShipmentChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsConfirmingPaymentChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnCanConfirmPaymentChanged",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "ShipmentsTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\FinishedGoods\\Shipment\\ShipmentsTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "LoadShipmentsAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IShipmentsService",
+              "MethodName": "GetShipmentsAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ApplyFilters",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OpenShipmentAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CreateShipmentAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ClearFilters",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnCustomerFilterChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnStatusFilterChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnDateFilterChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsDateFilterActiveChanged",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "MaterialTransferCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Production\\Materials\\MaterialTransferCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnTransferChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IMaterialTransfersService",
+              "MethodName": "GetByIdAsync"
+            }
+          ]
+        },
+        {
+          "Name": "SubmitAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IMaterialTransfersService",
+              "MethodName": "SubmitAsync"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "MaterialTransferTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Production\\Materials\\MaterialTransferTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IMaterialTransfersService",
+              "MethodName": "GetTransfersAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ClearFilters",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OpenCardAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CreateAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ApplyFilters",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnWarehouseFilterChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnProductionOrderFilterChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnDateFilterChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsDateFilterActiveChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnHasTransfersChanged",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "MaterialTransfersForOrderPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Production\\ProductionOrders\\MaterialTransfersForOrderPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IProductionOrdersService",
+              "MethodName": "GetMaterialTransfersAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OnHasItemsChanged",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "ProductionOrderCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Production\\ProductionOrders\\ProductionOrderCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IProductionOrdersService",
+              "MethodName": "GetByIdAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenTransfersAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OpenStageDistributionAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnOrderChanged",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "ProductionOrdersTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Production\\ProductionOrders\\ProductionOrdersTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IProductionOrdersService",
+              "MethodName": "GetListAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenCardAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnHasOrdersChanged",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "StageDistributionPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Production\\ProductionOrders\\StageDistributionPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IProductionOrdersService",
+              "MethodName": "GetStageDistributionAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OnHasItemsChanged",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "ShiftPlanCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Production\\ShiftPlans\\ShiftPlanCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnPlanChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IShiftPlansService",
+              "MethodName": "GetPlanByIdAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenResultAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "ShiftPlansTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Production\\ShiftPlans\\ShiftPlansTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnHasPlansChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IShiftPlansService",
+              "MethodName": "GetPlansAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenCardAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSelectedDateChanged",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "ShiftResultCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Production\\ShiftResults\\ShiftResultCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnResultChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IShiftsService",
+              "MethodName": "GetResultByIdAsync"
+            }
+          ]
+        },
+        {
+          "Name": "SaveAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IShiftsService",
+              "MethodName": "SaveResultAsync"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "ShiftResultsTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Production\\ShiftResults\\ShiftResultsTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnHasResultsChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IShiftsService",
+              "MethodName": "GetResultsAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenCardAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSelectedDateChanged",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "EmployeeCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Employees\\EmployeeCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnHireDateChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IEmployeesService",
+              "MethodName": "GetEmployeeAsync"
+            }
+          ]
+        },
+        {
+          "Name": "SaveAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IEmployeesService",
+              "MethodName": "UpdateEmployeeAsync"
+            }
+          ]
+        },
+        {
+          "Name": "MapEmployee",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "EmployeesTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Employees\\EmployeesTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnHasEmployeesChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnRoleFilterChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IEmployeesService",
+              "MethodName": "GetEmployeesAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenCardAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "MaterialCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Materials\\MaterialCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnMaterialIdChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsActiveChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnLastPriceChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanLoad",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanExecutePriceActions",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IMaterialsService",
+              "MethodName": "GetAsync"
+            }
+          ]
+        },
+        {
+          "Name": "UpdatePriceHistory",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OpenAddPriceModalAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "MaterialPriceAddModalViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Materials\\MaterialPriceAddModalViewModel.cs",
+      "Methods": [
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "WaitForCompletionAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "NotifyClosedExternally",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsSubmittingChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "SaveAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IMaterialsService",
+              "MethodName": "AddPriceAsync"
+            }
+          ]
+        },
+        {
+          "Name": "CancelAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CloseAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ShowAlertAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "MaterialsTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Materials\\MaterialsTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnHasMaterialsChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSearchTextChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IMaterialsService",
+              "MethodName": "ListAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ApplyFilters",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OpenCardAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "OperationCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Operations\\OperationCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsEditingChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnNameChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanLoad",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanSave",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IOperationsService",
+              "MethodName": "GetOperationAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ApplyOperation",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "StartEditing",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "SaveAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IOperationsService",
+              "MethodName": "UpdateOperationAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ShowAlertAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "OperationsTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Operations\\OperationsTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnHasOperationsChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSelectedOperationTypeChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IOperationsService",
+              "MethodName": "GetOperationsAsync"
+            }
+          ]
+        },
+        {
+          "Name": "PopulateOperationTypes",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "RestoreSelectionOrDefault",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ApplyFilters",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OpenCardAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "ProductBomItemModalViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Products\\ProductBomItemModalViewModel.cs",
+      "Methods": [
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "WaitForResultAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "NotifyClosedExternally",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsSubmittingChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanSubmit",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "SaveAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IProductsService",
+              "MethodName": "AddBomItemAsync"
+            }
+          ]
+        },
+        {
+          "Name": "CancelAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CloseAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "TryParseDouble",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "TryParseDecimal",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ShowAlertAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "ProductBomTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Products\\ProductBomTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnProductNameChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnHasItemsChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanLoad",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanAdd",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanModify",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IProductsService",
+              "MethodName": "GetBomAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenAddModalAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "DeleteItemAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IProductsService",
+              "MethodName": "DeleteBomItemAsync"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "ProductCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Products\\ProductCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsEditingChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnNameChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanLoad",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanSave",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanOpenDetails",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IProductsService",
+              "MethodName": "GetProductAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ApplyProduct",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "StartEditing",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "SaveAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IProductsService",
+              "MethodName": "UpdateProductAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenBomAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OpenOperationsAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ShowAlertAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "ProductOperationModalViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Products\\ProductOperationModalViewModel.cs",
+      "Methods": [
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "WaitForResultAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "NotifyClosedExternally",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsSubmittingChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanSubmit",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "SaveAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IProductsService",
+              "MethodName": "AddOperationAsync"
+            }
+          ]
+        },
+        {
+          "Name": "CancelAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CloseAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "TryParseDouble",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "TryParseDecimal",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ShowAlertAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "ProductOperationsTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Products\\ProductOperationsTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnProductNameChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnHasOperationsChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanLoad",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanAdd",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanModify",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IProductsService",
+              "MethodName": "GetOperationsAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenAddModalAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "DeleteOperationAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IProductsService",
+              "MethodName": "DeleteOperationAsync"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "ProductsTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Products\\ProductsTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnHasProductsChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IProductsService",
+              "MethodName": "GetProductsAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenCardAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "SettingEditModalViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Settings\\SettingEditModalViewModel.cs",
+      "Methods": [
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "WaitForResultAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "NotifyClosedExternally",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsSavingChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanLoad",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanSave",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "ISettingsService",
+              "MethodName": "GetAsync"
+            }
+          ]
+        },
+        {
+          "Name": "SaveAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "ISettingsService",
+              "MethodName": "UpdateAsync"
+            }
+          ]
+        },
+        {
+          "Name": "CancelAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CloseAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "SettingsTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Settings\\SettingsTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanLoad",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "EnsureLoadedAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "ISettingsService",
+              "MethodName": "GetAllAsync"
+            }
+          ]
+        },
+        {
+          "Name": "EditAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "WarehouseCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Warehouses\\WarehouseCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadWarehouseAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWarehousesService",
+              "MethodName": "GetAsync"
+            }
+          ]
+        },
+        {
+          "Name": "SaveWarehouseAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWarehousesService",
+              "MethodName": "UpdateAsync"
+            }
+          ]
+        },
+        {
+          "Name": "DeleteWarehouseAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWarehousesService",
+              "MethodName": "DeleteAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsSavingChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsDeletingChanged",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "WarehousesTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Warehouses\\WarehousesTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "LoadWarehousesAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWarehousesService",
+              "MethodName": "ListAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenWarehouseAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "WorkshopCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Workshops\\WorkshopCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWorkshopsService",
+              "MethodName": "GetAsync"
+            }
+          ]
+        },
+        {
+          "Name": "SaveAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWorkshopsService",
+              "MethodName": "CreateAsync"
+            },
+            {
+              "ServiceType": "IWorkshopsService",
+              "MethodName": "UpdateAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenExpensesAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "WorkshopExpenseCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Workshops\\WorkshopExpenseCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWorkshopExpensesService",
+              "MethodName": "GetAsync"
+            }
+          ]
+        },
+        {
+          "Name": "SaveAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWorkshopExpensesService",
+              "MethodName": "CreateAsync"
+            },
+            {
+              "ServiceType": "IWorkshopExpensesService",
+              "MethodName": "UpdateAsync"
+            }
+          ]
+        },
+        {
+          "Name": "LoadWorkshopsAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWorkshopsService",
+              "MethodName": "ListAsync"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "WorkshopExpensesTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Workshops\\WorkshopExpensesTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWorkshopExpensesService",
+              "MethodName": "ListAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenCardAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CreateNewAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "WorkshopsTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Reference\\Workshops\\WorkshopsTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWorkshopsService",
+              "MethodName": "ListAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenCardAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CreateNewAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "MaterialReceiptCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Warehouse\\Materials\\MaterialReceiptCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnReceiptIdChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnStatusChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "RaiseCanExecute",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanLoad",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanSave",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanPost",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanOpenLines",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWarehouseMaterialsService",
+              "MethodName": "GetReceiptAsync"
+            }
+          ]
+        },
+        {
+          "Name": "SaveAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWarehouseMaterialsService",
+              "MethodName": "CreateReceiptAsync"
+            },
+            {
+              "ServiceType": "IWarehouseMaterialsService",
+              "MethodName": "UpdateReceiptAsync"
+            }
+          ]
+        },
+        {
+          "Name": "PostAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWarehouseMaterialsService",
+              "MethodName": "PostReceiptAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenLinesAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "GetStatusDisplay",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "MaterialReceiptLineEditorViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Warehouse\\Materials\\MaterialReceiptLineEditorViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnIsEditModeChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "WaitForResultAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "NotifyClosedExternally",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "SaveAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CancelAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CloseAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ValidateAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "TryParseDecimal",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ShowAlertAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "MaterialReceiptLinesPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Warehouse\\Materials\\MaterialReceiptLinesPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnReceiptStatusChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnDocumentNumberChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnHasLinesChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnTotalAmountChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "RaiseCanExecute",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanLoad",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanModifyLines",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWarehouseMaterialsService",
+              "MethodName": "GetLinesAsync"
+            }
+          ]
+        },
+        {
+          "Name": "AddLineAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWarehouseMaterialsService",
+              "MethodName": "AddLineAsync"
+            }
+          ]
+        },
+        {
+          "Name": "EditLineAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWarehouseMaterialsService",
+              "MethodName": "UpdateLineAsync"
+            }
+          ]
+        },
+        {
+          "Name": "DeleteLineAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWarehouseMaterialsService",
+              "MethodName": "DeleteLineAsync"
+            }
+          ]
+        },
+        {
+          "Name": "OpenLineEditorAsync",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "MaterialReceiptsTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Warehouse\\Materials\\MaterialReceiptsTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnHasReceiptsChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSearchTextChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IWarehouseMaterialsService",
+              "MethodName": "ListReceiptsAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ApplyFilters",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OpenNewReceiptAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OpenReceiptAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "GetStatusDisplay",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "MaterialStockTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Warehouse\\Materials\\MaterialStockTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnHasItemsChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnTotalAmountChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSearchTextChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnWarehouseFilterChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IInventoryService",
+              "MethodName": "GetAllAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ApplyFilters",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "PurchaseRequestCardPageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Warehouse\\Purchases\\PurchaseRequestCardPageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "Initialize",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnDocumentNumberChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnHasLinesChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnStatusChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnTotalAmountChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "RaiseCanExecute",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "PrepareNewDraft",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnLinesCollectionChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "UpdateAggregates",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CanLoad",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IPurchasesService",
+              "MethodName": "GetPurchaseRequestAsync"
+            }
+          ]
+        },
+        {
+          "Name": "SaveAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IPurchasesService",
+              "MethodName": "UpdatePurchaseAsync"
+            },
+            {
+              "ServiceType": "IPurchasesService",
+              "MethodName": "CreatePurchaseAsync"
+            }
+          ]
+        },
+        {
+          "Name": "DeleteAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IPurchasesService",
+              "MethodName": "DeletePurchaseAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ConvertToOrderAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IPurchasesService",
+              "MethodName": "ConvertToOrderAsync"
+            }
+          ]
+        },
+        {
+          "Name": "AddLineAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "EditLineAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "DeleteLineAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OpenLineEditorAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IServiceProvider",
+              "MethodName": "GetRequiredService"
+            }
+          ]
+        },
+        {
+          "Name": "BuildRequestAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "EnsureLookupsLoadedAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "ISuppliersService",
+              "MethodName": "ListAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ToLineItem",
+          "ServiceCalls": []
+        }
+      ]
+    },
+    {
+      "Name": "PurchaseRequestLineEditorViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Warehouse\\Purchases\\PurchaseRequestLineEditorViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnIsEditModeChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "InitializeAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "WaitForResultAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "NotifyClosedExternally",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "SaveAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CancelAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "CloseAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ValidateAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "TryParseDouble",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "TryParseDecimal",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "ShowAlertAsync",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSelectedMaterialChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "EnsureMaterialsLoadedAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IMaterialsService",
+              "MethodName": "ListAsync"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "PurchaseRequestsTablePageViewModel",
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\ViewModels\\Warehouse\\Purchases\\PurchaseRequestsTablePageViewModel.cs",
+      "Methods": [
+        {
+          "Name": "OnIsBusyChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnHasRequestsChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OnSearchTextChanged",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "LoadAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IPurchasesService",
+              "MethodName": "PurchasesListAsync"
+            }
+          ]
+        },
+        {
+          "Name": "ApplyFilters",
+          "ServiceCalls": []
+        },
+        {
+          "Name": "OpenNewRequestAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IServiceProvider",
+              "MethodName": "GetRequiredService"
+            }
+          ]
+        },
+        {
+          "Name": "OpenRequestAsync",
+          "ServiceCalls": [
+            {
+              "ServiceType": "IServiceProvider",
+              "MethodName": "GetRequiredService"
+            }
+          ]
+        },
+        {
+          "Name": "GetStatusDisplay",
+          "ServiceCalls": []
+        }
+      ]
+    }
+  ],
+  "Services": [
+    {
+      "Name": "AuthService",
+      "Interfaces": [
+        "IAuthService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\AuthServices\\AuthService.cs",
+      "Methods": []
+    },
+    {
+      "Name": "EmployeesService",
+      "Interfaces": [
+        "IEmployeesService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\EmployeesServices\\EmployeesService.cs",
+      "Methods": [
+        {
+          "Name": "GetEmployeesAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetEmployeeAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "UpdateEmployeeAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "FilesService",
+      "Interfaces": [
+        "IFilesService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\FilesServices\\FilesService.cs",
+      "Methods": []
+    },
+    {
+      "Name": "FinanceService",
+      "Interfaces": [
+        "IFinanceService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\FinanceServices\\FinanceService.cs",
+      "Methods": [
+        {
+          "Name": "AddOverheadAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "UpdateOverheadAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "PostOverheadAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "DeleteOverheadAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetOverheadsAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetOverheadArticlesAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "SubmitAdvanceReportAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetAdvancesAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "CloseAdvanceAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "DeleteAdvanceAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "FinishedGoodsService",
+      "Interfaces": [
+        "IFinishedGoodsService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\FinishedGoodsServices\\FinishedGoodsService.cs",
+      "Methods": [
+        {
+          "Name": "GetReceiptsAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetReceiptByIdAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "InventoryService",
+      "Interfaces": [
+        "IInventoryService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\InventoryServices\\InventoryService.cs",
+      "Methods": [
+        {
+          "Name": "GetAllAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "MaterialsService",
+      "Interfaces": [
+        "IMaterialsService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\MaterialsServices\\MaterialsService.cs",
+      "Methods": [
+        {
+          "Name": "ListAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "OperationsService",
+      "Interfaces": [
+        "IOperationsService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\OperationsServices\\OperationsService.cs",
+      "Methods": [
+        {
+          "Name": "GetOperationsAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetOperationAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "UpdateOperationAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "PayrollService",
+      "Interfaces": [
+        "IPayrollService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\PayrollServices\\PayrollService.cs",
+      "Methods": []
+    },
+    {
+      "Name": "MaterialTransfersService",
+      "Interfaces": [
+        "IMaterialTransfersService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\ProductionServices\\MaterialTransfersService.cs",
+      "Methods": [
+        {
+          "Name": "GetTransfersAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetByIdAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "SubmitAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "ProductionOrdersService",
+      "Interfaces": [
+        "IProductionOrdersService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\ProductionServices\\ProductionOrdersService.cs",
+      "Methods": [
+        {
+          "Name": "GetListAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetByIdAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetMaterialTransfersAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetStageDistributionAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "ProductionService",
+      "Interfaces": [
+        "IProductionService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\ProductionServices\\ProductionService.cs",
+      "Methods": []
+    },
+    {
+      "Name": "ProductsService",
+      "Interfaces": [
+        "IProductsService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\ProductsServices\\ProductsService.cs",
+      "Methods": [
+        {
+          "Name": "GetProductsAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetProductAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "UpdateProductAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetBomAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetOperationsAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "AddBomItemAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "DeleteBomItemAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "AddOperationAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "DeleteOperationAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "PurchasesService",
+      "Interfaces": [
+        "IPurchasesService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\PurchasesServices\\PurchasesService.cs",
+      "Methods": [
+        {
+          "Name": "PurchasesListAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetPurchaseRequestAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "CreatePurchaseAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "UpdatePurchaseAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "DeletePurchaseAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "ConvertToOrderAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "ReportsService",
+      "Interfaces": [
+        "IReportsService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\ReportsServices\\ReportsService.cs",
+      "Methods": [
+        {
+          "Name": "GetMonthlyProfitByYearAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "ReturnLookupService",
+      "Interfaces": [
+        "IReturnLookupService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\ReturnsServices\\ReturnLookupService.cs",
+      "Methods": [
+        {
+          "Name": "GetCustomerSuggestionsAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetProductSuggestionsAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "ReturnsService",
+      "Interfaces": [
+        "IReturnsService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\ReturnsServices\\ReturnsService.cs",
+      "Methods": [
+        {
+          "Name": "GetReturnsAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetReturnAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "CreateReturnAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "SettingsService",
+      "Interfaces": [
+        "ISettingsService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\SettingsServices\\SettingsService.cs",
+      "Methods": [
+        {
+          "Name": "GetAllAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "UpdateAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "ShiftPlansService",
+      "Interfaces": [
+        "IShiftPlansService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\ShiftsServices\\ShiftPlansService.cs",
+      "Methods": [
+        {
+          "Name": "GetPlansAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetPlanByIdAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "ShiftsService",
+      "Interfaces": [
+        "IShiftsService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\ShiftsServices\\ShiftsService.cs",
+      "Methods": [
+        {
+          "Name": "GetResultsAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetResultByIdAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "SaveResultAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "ShipmentsService",
+      "Interfaces": [
+        "IShipmentsService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\ShipmentsServices\\ShipmentsService.cs",
+      "Methods": [
+        {
+          "Name": "GetShipmentsAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetShipmentByIdAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "ConfirmPaymentAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "SpecificationsService",
+      "Interfaces": [
+        "ISpecificationsService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\SpecificationsServices\\SpecificationsService.cs",
+      "Methods": [
+        {
+          "Name": "ListAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "CreateAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "UpdateAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetBomAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "AddBomAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "DeleteBomItemAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetOperationsAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "AddOperationAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "CostAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "SuppliersService",
+      "Interfaces": [
+        "ISuppliersService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\SuppliersServices\\SuppliersService.cs",
+      "Methods": [
+        {
+          "Name": "ListAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "UsersService",
+      "Interfaces": [
+        "IUsersService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\UsersServices\\UsersService.cs",
+      "Methods": []
+    },
+    {
+      "Name": "WarehouseMaterialsService",
+      "Interfaces": [
+        "IWarehouseMaterialsService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\WarehouseMaterialsServices\\WarehouseMaterialsService.cs",
+      "Methods": [
+        {
+          "Name": "ListReceiptsAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetReceiptAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "CreateReceiptAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "UpdateReceiptAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "PostReceiptAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetLinesAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "AddLineAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "UpdateLineAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "DeleteLineAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "WarehousesService",
+      "Interfaces": [
+        "IWarehousesService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\WarehousesServices\\WarehousesService.cs",
+      "Methods": [
+        {
+          "Name": "ListAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "UpdateAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "DeleteAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "WorkshopExpensesService",
+      "Interfaces": [
+        "IWorkshopExpensesService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\WorkshopExpensesServices\\WorkshopExpensesService.cs",
+      "Methods": [
+        {
+          "Name": "ListAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "CreateAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "UpdateAsync",
+          "IsUsed": true
+        }
+      ]
+    },
+    {
+      "Name": "WorkshopsService",
+      "Interfaces": [
+        "IWorkshopsService"
+      ],
+      "FilePath": "v:\\KworkProjects\\MyFactory\\src\\MyFactory.MauiClient\\Services\\WorkshopsServices\\WorkshopsService.cs",
+      "Methods": [
+        {
+          "Name": "ListAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "GetAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "CreateAsync",
+          "IsUsed": true
+        },
+        {
+          "Name": "UpdateAsync",
+          "IsUsed": true
+        }
+      ]
+    }
+  ]
+}

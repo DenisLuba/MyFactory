@@ -1,0 +1,69 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Users.RolesPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:models="clr-namespace:MyFactory.MauiClient.Models.Users"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Users"
+	Title="Роли"
+	x:DataType="view_model:RolesPageViewModel">
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,Auto,*"
+		RowSpacing="12">
+		<Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+			<Label
+				FontAttributes="Bold"
+				FontSize="18"
+				Text="Роли" />
+			<Button
+				Grid.Column="1"
+				Command="{Binding AddCommand}"
+				Text="{x:StaticResource PlusIcon}" />
+		</Grid>
+
+		<Grid
+			Grid.Row="1"
+			Padding="16"
+			ColumnDefinitions="*,Auto">
+			<Label FontAttributes="Bold" Text="Название роли" />
+		</Grid>
+
+		<Border Grid.Row="2">
+			<CollectionView
+				x:Name="RolesCollection"
+				ItemsSource="{Binding Roles}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="models:RoleResponse">
+						<SwipeView>
+							<SwipeView.RightItems>
+								<SwipeItems Mode="Reveal">
+									<SwipeItem
+										BackgroundColor="Tomato"
+										Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=RolesCollection}}"
+										CommandParameter="{Binding .}"
+										Text="Удалить" />
+								</SwipeItems>
+							</SwipeView.RightItems>
+							<Grid ColumnDefinitions="*,Auto">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding BindingContext.OpenDetailsCommand, Source={x:Reference Name=RolesCollection}}" CommandParameter="{Binding .}" />
+								</Grid.GestureRecognizers>
+								<Label Text="{Binding Name}" />
+								<Label
+									Grid.Column="1"
+									FontAttributes="Italic"
+									Text="Удалить"
+									TextColor="Tomato">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding BindingContext.DeleteCommand, Source={x:Reference Name=RolesCollection}}" CommandParameter="{Binding .}" />
+									</Label.GestureRecognizers>
+								</Label>
+							</Grid>
+						</SwipeView>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</Border>
+	</Grid>
+</ContentPage>

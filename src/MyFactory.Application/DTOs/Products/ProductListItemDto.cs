@@ -1,0 +1,15 @@
+namespace MyFactory.Application.DTOs.Products;
+
+public sealed record ProductListItemDto
+{
+    public Guid Id { get; init; }
+    public string Name { get; init; } = default!;
+    public Guid? ProductTypeId { get; init; }
+    public string? ProductTypeName { get; init; }
+    public string Sku { get; init; } = default!;
+    public Domain.Entities.Products.ProductStatus Status { get; init; }
+    public string? Description { get; init; }
+    public decimal? PlanPerHour { get; init; }
+    public decimal? Version { get; init; }
+    public decimal CostPrice { get; init; }
+}

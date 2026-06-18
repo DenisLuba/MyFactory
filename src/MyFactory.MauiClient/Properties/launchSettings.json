@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Windows Machine": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    },
+    "MyFactory.MauiClient (MSIX)": {
+      "commandName": "MsixPackage"
+    }
+  }
+}

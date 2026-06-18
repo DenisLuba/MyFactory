@@ -1,0 +1,70 @@
+<ContentPage
+	x:Class="MyFactory.MauiClient.Pages.Organization.Employees.EmployeeAssignmentsPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:view_model="clr-namespace:MyFactory.MauiClient.ViewModels.Organization.Employees"
+	Title="Задания сотрудника"
+	x:DataType="view_model:EmployeeAssignmentsPageViewModel">
+
+	<Grid
+		Padding="16"
+		RowDefinitions="Auto,Auto,*"
+		RowSpacing="12">
+		<Label
+			FontAttributes="Bold"
+			FontSize="18"
+			Text="{Binding EmployeeName, StringFormat='Задания сотрудника: {0}'}" />
+
+		<Grid 
+			Grid.Row="1"
+			Padding="16,20,16,0" 
+			ColumnDefinitions="4*,2*,2*,2*" 
+			ColumnSpacing="8">
+			<Label FontAttributes="Bold" Text="Производственный заказ" />
+			<Label
+				Grid.Column="1"
+				FontAttributes="Bold"
+				Text="Этап" />
+			<Label
+				Grid.Column="2"
+				FontAttributes="Bold"
+				Text="Назначено" />
+			<Label
+				Grid.Column="3"
+				FontAttributes="Bold"
+				HorizontalTextAlignment="End"
+				Text="Выполнено" />
+		</Grid>
+
+		<Border Grid.Row="2">
+			<CollectionView
+				x:Name="EmployeeAssignmentsCollectionView"
+				Grid.Row="1"
+				ItemsSource="{Binding CurrentTasks}"
+				SelectionMode="None">
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="view_model:EmployeeAssignmentsPageViewModel+AssignmentItemViewModel">
+						<Grid
+							Padding="0,6"
+							ColumnDefinitions="4*,2*,2*,2*"
+							ColumnSpacing="8">
+							<Grid.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding BindingContext.OpenProductionOrderCommand, Source={x:Reference Name=EmployeeAssignmentsCollectionView}}" CommandParameter="{Binding .}" />
+							</Grid.GestureRecognizers>
+							<Label Text="{Binding ProductionOrder}" />
+							<Label Grid.Column="1" Text="{Binding Stage}" />
+							<Label
+								Grid.Column="2"
+								HorizontalTextAlignment="End"
+								Text="{Binding Assigned}" />
+							<Label
+								Grid.Column="3"
+								HorizontalTextAlignment="End"
+								Text="{Binding Completed}" />
+						</Grid>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</Border>
+	</Grid>
+</ContentPage>
